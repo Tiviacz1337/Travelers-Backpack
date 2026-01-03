@@ -32,12 +32,9 @@ public class ReiTransferHandler implements SimpleTransferHandler {
     @Override
     public Iterable<SlotAccessor> getInputSlots(Context context) {
         if(context.getMenu() instanceof BackpackBaseMenu menu) {
-            CraftingUpgrade upgrade = menu.getWrapper().getUpgradeManager().getUpgrade(CraftingUpgrade.class).get();
-            if(upgrade.isTabOpened()) {
-                return IntStream.range(menu.CRAFTING_GRID_START, menu.CRAFTING_GRID_START + 9)
-                        .mapToObj(id -> SlotAccessor.fromSlot(context.getMenu().getSlot(id)))
-                        .toList();
-            }
+            return IntStream.range(menu.CRAFTING_GRID_START, menu.CRAFTING_GRID_START + 9)
+                    .mapToObj(id -> SlotAccessor.fromSlot(context.getMenu().getSlot(id)))
+                    .toList();
         }
         return List.of();
     }
@@ -64,10 +61,12 @@ public class ReiTransferHandler implements SimpleTransferHandler {
 
     @Override
     public Result handle(Context context) {
-        if(context.getMenu() instanceof BackpackBaseMenu menu) {
-            CraftingUpgrade upgrade = menu.getWrapper().getUpgradeManager().getUpgrade(CraftingUpgrade.class).get();
-            if(!upgrade.isTabOpened() && context.isActuallyCrafting()) {
-                ServerboundActionTagPacket.create(ServerboundActionTagPacket.UPGRADE_TAB, upgrade.getDataHolderSlot(), true, ServerActions.TAB_OPEN);
+        if(context.isActuallyCrafting()) {
+            if(context.getMenu() instanceof BackpackBaseMenu menu) {
+                CraftingUpgrade upgrade = menu.getWrapper().getUpgradeManager().getUpgrade(CraftingUpgrade.class).get();
+                if(!upgrade.isTabOpened()) {
+                    ServerboundActionTagPacket.create(ServerboundActionTagPacket.UPGRADE_TAB, upgrade.getDataHolderSlot(), true, ServerActions.TAB_OPEN);
+                }
             }
         }
         return handleSimpleTransfer(context, getMissingInputRenderer(), getInputsIndexed(context), getInputSlots(context), getInventorySlots(context));

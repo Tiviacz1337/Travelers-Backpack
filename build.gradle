@@ -117,10 +117,10 @@ dependencies {
 	modImplementation("io.wispforest:accessories-fabric:${project.accessories_version}")
 
 	//REI
-	modCompileOnly "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
+	modImplementation "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
 
 	//JEI
-	modImplementation("maven.modrinth:jei:P23di0ns")
+	modCompileOnly("maven.modrinth:jei:P23di0ns")
 
 	//Item scroller
 	modImplementation("maven.modrinth:item-scroller:uK5Njuv8")
