@@ -3,6 +3,7 @@ package com.tiviacz.travelersbackpack;
 import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
 import com.tiviacz.travelersbackpack.compat.accessories.TravelersBackpackAccessory;
 import com.tiviacz.travelersbackpack.compat.common.RecipeViewersNetwork;
+import com.tiviacz.travelersbackpack.compat.craftingtweaks.CraftingTweaksCompat;
 import com.tiviacz.travelersbackpack.compat.pneumonogravestones.PneumonoGravestonesCompat;
 import com.tiviacz.travelersbackpack.compat.trinkets.TravelersBackpackTrinket;
 import com.tiviacz.travelersbackpack.compat.universalgraves.UniversalGravesCompat;
@@ -74,8 +75,7 @@ public class TravelersBackpack implements ModInitializer {
         accessoriesLoaded = fabricLoader.isModLoaded("accessories");
         trinketsLoaded = fabricLoader.isModLoaded("trinkets");
         craftingTweaksLoaded = fabricLoader.isModLoaded("craftingtweaks");
-
-        //if (craftingTweaksLoaded) new TravelersBackpackCraftingGridProvider();
+        if(craftingTweaksLoaded) CraftingTweaksCompat.registerCraftingTweaksAddition();
 
         if(accessoriesLoaded) TravelersBackpackAccessory.init();
         if(trinketsLoaded) TravelersBackpackTrinket.init();
