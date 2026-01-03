@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '1.7-SNAPSHOT'
+	id 'fabric-loom' version '1.14-SNAPSHOT'
 	id 'maven-publish'
 }
 
@@ -117,10 +117,10 @@ dependencies {
 	modImplementation("io.wispforest:accessories-fabric:${project.accessories_version}")
 
 	//REI
-	modImplementation "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
+	modCompileOnly "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
 
 	//JEI
-	modCompileOnly("maven.modrinth:jei:P23di0ns")
+	modImplementation("maven.modrinth:jei:P23di0ns")
 
 	//Item scroller
 	modImplementation("maven.modrinth:item-scroller:uK5Njuv8")
@@ -154,6 +154,9 @@ dependencies {
 
     modCompileOnly("maven.modrinth:always-eat:pANmjAAt")
 
+	//Gravestones
+	modImplementation("maven.modrinth:pneumono_gravestones:HO3Zv8HU")
+	modImplementation("maven.modrinth:pneumono_core:QKvgjhTZ")
 
 	//ESB
 	//modImplementation ("maven.modrinth:easy-shulker-boxes:m5lAjDSt")
