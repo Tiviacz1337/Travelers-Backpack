@@ -122,6 +122,10 @@ dependencies {
 	//JEI
 	modImplementation("maven.modrinth:jei:P23di0ns")
 
+	//Item scroller
+	modImplementation("maven.modrinth:item-scroller:uK5Njuv8")
+	modImplementation("maven.modrinth:malilib:f8wE52F5")
+
 	//Polymorph
 	modCompileOnly("maven.modrinth:polymorph:j4jPy88h")
 
@@ -149,6 +153,7 @@ dependencies {
 	modCompileOnly("maven.modrinth:terrastorage:4lI1uVXX")
 
     modCompileOnly("maven.modrinth:always-eat:pANmjAAt")
+
 
 	//ESB
 	//modImplementation ("maven.modrinth:easy-shulker-boxes:m5lAjDSt")
