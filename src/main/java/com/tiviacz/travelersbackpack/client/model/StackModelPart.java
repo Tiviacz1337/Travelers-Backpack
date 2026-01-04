@@ -10,6 +10,7 @@ import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,7 +63,7 @@ public class StackModelPart extends BackpackModelPart {
             poseStack.mulPose(Axis.XP.rotationDegrees(180F));
             poseStack.scale(0.50F, 0.50F, 0.50F);
 
-            resolver.updateForTopItem(upper, toolUpper, ItemDisplayContext.NONE, null, null, 0);
+            resolver.updateForTopItem(upper, toolUpper, getDisplayContext(toolUpper), null, null, 0);
             upper.submit(poseStack, collector, pPackedLight, pPackedOverlay, 0);
            // Minecraft.getInstance().getItemRenderer().renderStatic(toolUpper, ItemDisplayContext.NONE, pPackedLight, pPackedOverlay, poseStack, buffer, null, 0);
 
@@ -79,7 +80,7 @@ public class StackModelPart extends BackpackModelPart {
             poseStack.mulPose(Axis.ZP.rotationDegrees(45F));
             poseStack.scale(0.50F, 0.50F, 0.50F);
 
-            resolver.updateForTopItem(lower, toolLower, ItemDisplayContext.NONE, null, null, 0);
+            resolver.updateForTopItem(lower, toolLower, getDisplayContext(toolLower), null, null, 0);
             lower.submit(poseStack, collector, pPackedLight, pPackedOverlay, 0);
             //Minecraft.getInstance().getItemRenderer().renderStatic(toolLower, ItemDisplayContext.NONE, pPackedLight, pPackedOverlay, poseStack, buffer, null, 0);
 
@@ -87,5 +88,12 @@ public class StackModelPart extends BackpackModelPart {
         }
 
         poseStack.popPose();
+    }
+
+    public ItemDisplayContext getDisplayContext(ItemStack stack) {
+        if(stack.is(Items.TRIDENT) || stack.is(Items.SPYGLASS)) {
+            return ItemDisplayContext.GUI;
+        }
+        return ItemDisplayContext.NONE;
     }
 }
