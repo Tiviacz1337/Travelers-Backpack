@@ -2,6 +2,7 @@ package com.tiviacz.travelersbackpack;
 
 import com.tiviacz.travelersbackpack.advancements.ActionTypeTrigger;
 import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
+import com.tiviacz.travelersbackpack.compat.craftingtweaks.CraftingTweaksCompat;
 import com.tiviacz.travelersbackpack.compat.curios.TravelersBackpackCurio;
 import com.tiviacz.travelersbackpack.compat.polymorph.PolymorphCompat;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
@@ -105,9 +106,9 @@ public class TravelersBackpack {
             ModNetwork.registerNetworkChannel();
             TravelersBackpackBlock.registerDispenserBehaviour();
             EffectFluidRegistry.initEffects();
-            enableCraftingTweaks();
             TravelersBackpackItem.registerCauldronInteraction();
             ActionTypeTrigger.register();
+            if(craftingTweaksLoaded) CraftingTweaksCompat.registerCraftingTweaksAddition();
         });
     }
 
@@ -115,6 +116,7 @@ public class TravelersBackpack {
         event.enqueueWork(() -> {
             ModClientEventHandler.registerScreenFactories();
             ModClientEventHandler.registerItemModelProperties();
+            if(craftingTweaksLoaded) CraftingTweaksCompat.registerCraftingTweaksAdditionClient();
         });
         if(curiosLoaded) TravelersBackpackCurio.registerCurioRenderer();
         if(polymorphLoaded) PolymorphCompat.registerWidget();
@@ -126,16 +128,6 @@ public class TravelersBackpack {
 
     public static boolean enableCurios() {
         return curiosLoaded && TravelersBackpackConfig.SERVER.backpackSettings.backSlotIntegration.get();
-    }
-
-    public static void enableCraftingTweaks() {
-        if(craftingTweaksLoaded) {
-            try {
-                Class.forName("com.tiviacz.travelersbackpack.compat.craftingtweaks.TravelersBackpackCraftingGridProvider").getConstructor().newInstance();
-            } catch(Throwable e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     public static boolean isAnyGraveModInstalled() {

@@ -58,6 +58,7 @@ jobs:
           game-versions: "${{ env.MINECRAFT_VERSION }}"
           dependencies: |
             curios-api(optional){modrinth:vvuO3ImH}{curseforge:309927}
+            crafting-tweaks(optional){modrinth:DMu0oBKf}{curseforge:233071}
             polymorph(optional){modrinth:tagwiZkJ}{curseforge:388800}
             comforts(optional){modrinth:SaCpeal4}{curseforge:276951}
             jei(optional){modrinth:u6dRKJwZ}{curseforge:238222}

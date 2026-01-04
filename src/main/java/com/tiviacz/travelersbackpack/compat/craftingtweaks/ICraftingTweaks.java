@@ -1,11 +1,13 @@
 package com.tiviacz.travelersbackpack.compat.craftingtweaks;
 
-public interface ICraftingTweaks { //#TODO
+import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
+
+public interface ICraftingTweaks {
     void onCraftingSlotsHidden();
 
     void onCraftingSlotsDisplayed();
 
-   /* void setScreen(TravelersBackpackScreen screen);
+    void setScreen(BackpackScreen screen);
 
     ICraftingTweaks EMPTY = new ICraftingTweaks() {
         @Override
@@ -17,7 +19,7 @@ public interface ICraftingTweaks { //#TODO
         }
 
         @Override
-        public void setScreen(TravelersBackpackScreen screen) {
+        public void setScreen(BackpackScreen screen) {
         }
-    }; */
+    };
 }
