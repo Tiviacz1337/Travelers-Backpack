@@ -63,7 +63,7 @@ public abstract class FilterSettingsBase {
         this.tags.clear();
         if(this.filterTags != null) {
             this.filterTags.forEach(string -> {
-                TagKey<Item> tagKey = TagKey.create(Registries.ITEM, ResourceLocation.parse(string));
+                TagKey<Item> tagKey = TagKey.create(Registries.ITEM, new ResourceLocation(string));
                 if(!tags.contains(tagKey)) {
                     tags.add(tagKey);
                 }
