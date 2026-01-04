@@ -54,6 +54,7 @@ public class EmiCompat implements EmiPlugin {
 
         emiRegistry.addRecipeHandler(ModMenuTypes.BACKPACK_BLOCK_MENU.get(), new GridMenuInfo<>());
         emiRegistry.addRecipeHandler(ModMenuTypes.BACKPACK_MENU.get(), new GridMenuInfo<>());
+        emiRegistry.addDragDropHandler(BackpackScreen.class, new DragDropHandler());
     }
 
     private static class GridMenuInfo<T extends BackpackBaseMenu> implements StandardRecipeHandler<T> {
@@ -82,12 +83,9 @@ public class EmiCompat implements EmiPlugin {
         @Override
         public List<Slot> getCraftingSlots(T handler) {
             List<Slot> list = new ArrayList<>();
-            CraftingUpgrade upgrade = handler.getWrapper().getUpgradeManager().getUpgrade(CraftingUpgrade.class).get();
-            if(upgrade.isTabOpened()) {
-                int firstCraftSlot = handler.CRAFTING_GRID_START;
-                for(int i = 0; i < 9; i++) {
-                    list.add(handler.getSlot(firstCraftSlot + i));
-                }
+            int firstCraftSlot = handler.CRAFTING_GRID_START;
+            for(int i = 0; i < 9; i++) {
+                list.add(handler.getSlot(firstCraftSlot + i));
             }
             return list;
         }
@@ -97,7 +95,6 @@ public class EmiCompat implements EmiPlugin {
             CraftingUpgrade upgrade = context.getScreenHandler().getWrapper().getUpgradeManager().getUpgrade(CraftingUpgrade.class).get();
             if(!upgrade.isTabOpened()) {
                 ServerboundActionTagPacket.create(ServerboundActionTagPacket.UPGRADE_TAB, upgrade.getDataHolderSlot(), true, ServerActions.TAB_OPEN);
-                return false;
             }
             return StandardRecipeHandler.super.craft(recipe, context);
         }

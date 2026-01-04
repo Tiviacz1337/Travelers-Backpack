@@ -43,6 +43,8 @@ public class TravelersBackpack {
     public static boolean createLoaded;
 
     public static boolean jeiLoaded;
+    public static boolean reiLoaded;
+    public static boolean emiLoaded;
     public static boolean polymorphLoaded;
 
     public TravelersBackpack(IEventBus eventBus, ModContainer modContainer) {
@@ -88,6 +90,8 @@ public class TravelersBackpack {
         createLoaded = ModList.get().isLoaded("create");
 
         jeiLoaded = ModList.get().isLoaded("jei");
+        reiLoaded = ModList.get().isLoaded("roughlyenoughitems");
+        emiLoaded = ModList.get().isLoaded("emi");
         polymorphLoaded = ModList.get().isLoaded("polymorph");
 
         //Fetch supporters

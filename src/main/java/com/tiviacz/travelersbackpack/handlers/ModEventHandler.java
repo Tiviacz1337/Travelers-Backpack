@@ -1,6 +1,7 @@
 package com.tiviacz.travelersbackpack.handlers;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
+import com.tiviacz.travelersbackpack.compat.common.RecipeViewersNetwork;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.datagen.ModLootTableProvider;
 import com.tiviacz.travelersbackpack.datagen.ModRecipeProvider;
@@ -20,6 +21,7 @@ import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
 @EventBusSubscriber(modid = TravelersBackpack.MODID, bus = EventBusSubscriber.Bus.MOD)
 public class ModEventHandler {
@@ -34,7 +36,11 @@ public class ModEventHandler {
 
     @SubscribeEvent
     public static void registerPayloadHandler(RegisterPayloadHandlersEvent event) {
-        ModNetwork.register(event.registrar(TravelersBackpack.MODID));
+        PayloadRegistrar payloadRegistrar = event.registrar(TravelersBackpack.MODID);
+        ModNetwork.register(payloadRegistrar);
+        if(TravelersBackpack.jeiLoaded || TravelersBackpack.reiLoaded || TravelersBackpack.emiLoaded) {
+            RecipeViewersNetwork.registerPackets(payloadRegistrar);
+        }
     }
 
     @SubscribeEvent
