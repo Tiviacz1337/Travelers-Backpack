@@ -1,5 +1,6 @@
 package com.tiviacz.travelersbackpack.inventory.upgrades;
 
+import com.mojang.datafixers.util.Pair;
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetBase;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
@@ -36,6 +37,8 @@ public interface IUpgrade<T> {
 
     @OnlyIn(Dist.CLIENT)
     WidgetBase createWidget(BackpackScreen screen, int x, int y);
+
+    List<Pair<Integer, Integer>> getUpgradeSlotsPosition(int x, int y);
 
     List<? extends Slot> getUpgradeSlots(BackpackBaseMenu menu, BackpackWrapper wrapper, int x, int y);
 

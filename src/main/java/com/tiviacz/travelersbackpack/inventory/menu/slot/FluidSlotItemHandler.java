@@ -47,9 +47,4 @@ public class FluidSlotItemHandler extends UpgradeSlotItemHandler<TanksUpgrade> {
         }
         return false;
     }
-
-    @Override
-    public boolean isActive() {
-        return super.isActive() && upgrade.isTabOpened();
-    }
 }

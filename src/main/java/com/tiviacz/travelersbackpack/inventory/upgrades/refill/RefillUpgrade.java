@@ -59,6 +59,17 @@ public class RefillUpgrade extends UpgradeBase<RefillUpgrade> implements IEnable
     }
 
     @Override
+    public List<Pair<Integer, Integer>> getUpgradeSlotsPosition(int x, int y) {
+        List<Pair<Integer, Integer>> positions = new ArrayList<>();
+        for(int i = 0; i < getRows(); i++) {
+            for(int j = 0; j < getSlotsInRow(i); j++) {
+                positions.add(Pair.of(x + 7 + j * 18, y + 23 + i * 18));
+            }
+        }
+        return positions;
+    }
+
+    @Override
     public List<? extends Slot> getUpgradeSlots(BackpackBaseMenu menu, BackpackWrapper wrapper, int x, int y) {
         List<Slot> slots = new ArrayList<>();
         for(int i = 0; i < getRows(); i++) {
