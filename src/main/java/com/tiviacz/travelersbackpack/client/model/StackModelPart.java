@@ -11,6 +11,7 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
@@ -61,7 +62,7 @@ public class StackModelPart extends BackpackModelPart {
 
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
             RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
-            Minecraft.getInstance().getItemRenderer().render(toolUpper, ItemDisplayContext.NONE, false, poseStack, buffer, pPackedLight, pPackedOverlay, model);
+            Minecraft.getInstance().getItemRenderer().render(toolUpper, getDisplayContext(toolUpper), false, poseStack, buffer, pPackedLight, pPackedOverlay, model);
 
             RenderSystem.disableBlend();
             poseStack.popPose();
@@ -84,7 +85,7 @@ public class StackModelPart extends BackpackModelPart {
 
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
             RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
-            Minecraft.getInstance().getItemRenderer().render(toolLower, ItemDisplayContext.NONE, false, poseStack, buffer, pPackedLight, pPackedOverlay, model);
+            Minecraft.getInstance().getItemRenderer().render(toolLower, getDisplayContext(toolLower), false, poseStack, buffer, pPackedLight, pPackedOverlay, model);
 
             RenderSystem.disableBlend();
             poseStack.popPose();
@@ -96,5 +97,12 @@ public class StackModelPart extends BackpackModelPart {
     //Forge
     public BakedModel applyTransform(BakedModel model, PoseStack poseStack) {
         return model.applyTransform(ItemDisplayContext.NONE, poseStack, false);
+    }
+
+    public ItemDisplayContext getDisplayContext(ItemStack stack) {
+        if(stack.is(Items.TRIDENT) || stack.is(Items.SPYGLASS)) {
+            return ItemDisplayContext.GUI;
+        }
+        return ItemDisplayContext.NONE;
     }
 }
