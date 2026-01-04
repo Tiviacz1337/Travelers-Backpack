@@ -1,5 +1,6 @@
 package com.tiviacz.travelersbackpack.inventory.upgrades.tanks;
 
+import com.mojang.datafixers.util.Pair;
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetBase;
 import com.tiviacz.travelersbackpack.components.Fluids;
@@ -111,6 +112,16 @@ public class TanksUpgrade extends UpgradeBase<TanksUpgrade> {
     @OnlyIn(Dist.CLIENT)
     public WidgetBase<BackpackScreen> createWidget(BackpackScreen screen, int x, int y) {
         return new TankWidget(screen, this, new Point(screen.getGuiLeft() + x, screen.getGuiTop() + y));
+    }
+
+    @Override
+    public List<Pair<Integer, Integer>> getUpgradeSlotsPosition(int x, int y) {
+        List<Pair<Integer, Integer>> positions = new ArrayList<>();
+        positions.add(Pair.of(x + 7, y + 23));
+        positions.add(Pair.of(x + 7, y + 49));
+        positions.add(Pair.of(x + 28, y + 23));
+        positions.add(Pair.of(x + 28, y + 49));
+        return positions;
     }
 
     @Override

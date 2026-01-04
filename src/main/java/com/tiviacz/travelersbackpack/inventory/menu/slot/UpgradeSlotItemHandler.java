@@ -15,11 +15,6 @@ public class UpgradeSlotItemHandler<T extends UpgradeBase<?>> extends SlotItemHa
         this.upgradeParent = upgradeParent;
     }
 
-    @Override
-    public boolean isActive() {
-        return getUpgradeParent().isTabOpened();
-    }
-
     public T getUpgradeParent() {
         return this.upgradeParent;
     }

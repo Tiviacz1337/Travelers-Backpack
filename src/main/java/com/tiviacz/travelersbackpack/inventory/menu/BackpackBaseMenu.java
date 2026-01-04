@@ -34,13 +34,12 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.items.ItemStackHandler;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class BackpackBaseMenu extends AbstractBackpackMenu {
     public List<UpgradeLockableSlotItemHandler> upgradeSlot = new ArrayList<>();
+    public Map<Optional<UpgradeBase<?>>, List<Integer>> mappedSlots = new HashMap<>();
     public int unmodifiableSlotCount = 0;
     public int TOOL_START, TOOL_END;
     public int UPGRADE_START, UPGRADE_END;
@@ -106,6 +105,15 @@ public class BackpackBaseMenu extends AbstractBackpackMenu {
         this.addUpgradeSlots(wrapper);
     }
 
+    //Update slot positions without rebuilding menu
+    public void addModifiableSlots(int slot) {
+        //Update Upgrade Slots
+        this.updateBackpackUpgradeSlots();
+
+        //Slots from Upgrades
+        this.updateUpgradeSlotsPosition(slot);
+    }
+
     //Reset Modifiable slots - remove slots if upgrades removed
     public void updateModifiableSlots() {
         this.extendedScreenOffset = 0;
@@ -121,6 +129,16 @@ public class BackpackBaseMenu extends AbstractBackpackMenu {
         }
 
         this.addModifiableSlots();
+
+        //Update result slot on client
+        this.wrapper.getUpgradeManager().getUpgrade(CraftingUpgrade.class).ifPresent(craftingUpgrade -> canCraft(inventory.player.level(), inventory.player));
+    }
+
+    //Reset Modifiable slots - remove slots if upgrades removed
+    public void updateModifiableSlotsPosition(int slot) {
+        this.extendedScreenOffset = 0;
+
+        this.addModifiableSlots(slot);
 
         //Update result slot on client
         this.wrapper.getUpgradeManager().getUpgrade(CraftingUpgrade.class).ifPresent(craftingUpgrade -> canCraft(inventory.player.level(), inventory.player));
@@ -231,6 +249,26 @@ public class BackpackBaseMenu extends AbstractBackpackMenu {
         });
     }
 
+    public void updateUpgradeSlotsPosition(int changedSlot) {
+        for(var entry : wrapper.getUpgradeManager().mappedUpgrades.entrySet()) {
+            entry.getValue().ifPresent(upgradeLoaded -> {
+                int x = upgradeSlot.get(wrapper.getUpgradeManager().mappedUpgrades.inverse().get(entry.getValue())).x - 4;
+                int y = upgradeSlot.get(wrapper.getUpgradeManager().mappedUpgrades.inverse().get(entry.getValue())).y - 4;
+                var pos = upgradeLoaded.getUpgradeSlotsPosition(x, y);
+                List<Integer> indexes = this.mappedSlots.get(entry.getValue());
+                for(int i = 0; i < indexes.size(); i++) {
+                    this.slots.get(indexes.get(i)).x = pos.get(i).getFirst();
+                    this.slots.get(indexes.get(i)).y = upgradeLoaded.isTabOpened() ? pos.get(i).getSecond() : this.slots.get(indexes.get(i)).y - 3000;
+                }
+
+                //Update result slot on client
+                if(upgradeLoaded instanceof CraftingUpgrade) {
+                    this.broadcastChanges();
+                }
+            });
+        }
+    }
+
     public void addBackpackUpgradeSlots(BackpackWrapper wrapper) {
         upgradeSlot.clear();
 
@@ -311,12 +349,16 @@ public class BackpackBaseMenu extends AbstractBackpackMenu {
             upgrade.ifPresent(upgradeLoaded -> {
                 int x = upgradeSlot.get(wrapper.getUpgradeManager().mappedUpgrades.inverse().get(upgrade)).x - 4;
                 int y = upgradeSlot.get(wrapper.getUpgradeManager().mappedUpgrades.inverse().get(upgrade)).y - 4;
-                if(upgradeLoaded.isTabOpened()) {
-                    for(var slot : upgradeLoaded.getUpgradeSlots(this, wrapper, x, y)) {
-                        this.addSlot(slot);
+                List<? extends Slot> slots = upgradeLoaded.getUpgradeSlots(this, wrapper, x, y);
+                List<Integer> indexes = new ArrayList<>();
+                for(var slot : slots) {
+                    if(!upgradeLoaded.isTabOpened()) {
+                        slot.y -= 2000; //Move out of the sight
                     }
+                    indexes.add(this.slots.size());
+                    this.addSlot(slot);
                 }
-
+                this.mappedSlots.put(upgrade, indexes);
                 //Update result slot on client
                 if(upgradeLoaded instanceof CraftingUpgrade) {
                     this.broadcastChanges();

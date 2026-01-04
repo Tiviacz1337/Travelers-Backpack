@@ -1,5 +1,6 @@
 package com.tiviacz.travelersbackpack.inventory.upgrades;
 
+import com.mojang.datafixers.util.Pair;
 import com.tiviacz.travelersbackpack.init.ModDataHelper;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.UpgradeManager;
@@ -80,6 +81,23 @@ public abstract class FilterUpgradeBase<T, F extends FilterSettingsBase> extends
         if(!this.changeListeners.contains(listener)) {
             this.changeListeners.add(listener);
         }
+    }
+
+    @Override
+    public List<Pair<Integer, Integer>> getUpgradeSlotsPosition(int x, int y) {
+        List<Pair<Integer, Integer>> positions = new ArrayList<>();
+        if(isTagSelector()) {
+            //Tag Selector
+            positions.add(Pair.of(x + 64, y + 23));
+        } else {
+            //Filter Slots
+            for(int i = 0; i < getRows(); i++) {
+                for(int j = 0; j < getSlotsInRow(i); j++) {
+                    positions.add(Pair.of(x + 7 + j * 18, y + 44 + i * 18));
+                }
+            }
+        }
+        return positions;
     }
 
     @Override
