@@ -2,6 +2,7 @@ package com.tiviacz.travelersbackpack;
 
 import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
 import com.tiviacz.travelersbackpack.compat.accessories.TravelersBackpackAccessory;
+import com.tiviacz.travelersbackpack.compat.common.RecipeViewersNetwork;
 import com.tiviacz.travelersbackpack.compat.craftingtweaks.CraftingTweaksCompat;
 import com.tiviacz.travelersbackpack.compat.pneumonogravestones.PneumonoGravestonesCompat;
 import com.tiviacz.travelersbackpack.compat.trinkets.TravelersBackpackTrinket;
@@ -65,24 +66,30 @@ public class TravelersBackpack implements ModInitializer {
 
         TravelersBackpackItem.registerCauldronInteraction();
 
-        accessoriesLoaded = FabricLoader.getInstance().isModLoaded("accessories");
-        trinketsLoaded = FabricLoader.getInstance().isModLoaded("trinkets");
-        craftingTweaksLoaded = FabricLoader.getInstance().isModLoaded("craftingtweaks");
+        FabricLoader fabricLoader = FabricLoader.getInstance();
+
+        if(fabricLoader.isModLoaded("rei") || fabricLoader.isModLoaded("jei") || fabricLoader.isModLoaded("emi")) {
+            RecipeViewersNetwork.registerPackets();
+        }
+
+        accessoriesLoaded = fabricLoader.isModLoaded("accessories");
+        trinketsLoaded = fabricLoader.isModLoaded("trinkets");
+        craftingTweaksLoaded = fabricLoader.isModLoaded("craftingtweaks");
         if(craftingTweaksLoaded) CraftingTweaksCompat.registerCraftingTweaksAddition();
 
         if(accessoriesLoaded) TravelersBackpackAccessory.init();
         if(trinketsLoaded && !accessoriesLoaded) TravelersBackpackTrinket.init();
 
-        toughasnailsLoaded = FabricLoader.getInstance().isModLoaded("toughasnails");
-        comfortsLoaded = FabricLoader.getInstance().isModLoaded("comforts");
+        toughasnailsLoaded = fabricLoader.isModLoaded("toughasnails");
+        comfortsLoaded = fabricLoader.isModLoaded("comforts");
 
-        universalGravesLoaded = FabricLoader.getInstance().isModLoaded("universal-graves");
+        universalGravesLoaded = fabricLoader.isModLoaded("universal-graves");
         if(universalGravesLoaded) UniversalGravesCompat.register();
 
-        pneumonoGravestonesLoaded = FabricLoader.getInstance().isModLoaded("gravestones");
+        pneumonoGravestonesLoaded = fabricLoader.isModLoaded("gravestones");
         if(pneumonoGravestonesLoaded) PneumonoGravestonesCompat.register();
 
-        polymorphLoaded = FabricLoader.getInstance().isModLoaded("polymorph");
+        polymorphLoaded = fabricLoader.isModLoaded("polymorph");
 
         //Fetch supporters
         Supporters.fetchSupporters();

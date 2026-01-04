@@ -94,7 +94,7 @@ public class CraftingUpgrade extends UpgradeBase<CraftingUpgrade> implements IMo
             }
         }
 
-        slots.add(new ResultSlotExt(wrapper, menu.player, this.craftSlots, this.resultSlots, 0, x + 25, y + 89) {
+        slots.add(new ResultSlotExt(wrapper, menu.player, this.craftSlots, this.resultSlots, menu.CRAFTING_RESULT, x + 25, y + 89) {
             @Override
             public boolean mayPickup(Player player) {
                 return isTabOpened();

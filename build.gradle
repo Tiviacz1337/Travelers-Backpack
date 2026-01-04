@@ -145,7 +145,7 @@ dependencies {
 	modCompileOnly ("maven.modrinth:comforts:vUdakIzK")
 
 	//EMI
-	modCompileOnly("dev.emi:emi-fabric:${project.emi_version}")
+	modCompileOnly("maven.modrinth:emi:mYQ3bJs5")
 
 	//Universal Graves
     modCompileOnly "curse.maven:universal-graves-497175:7054553"
