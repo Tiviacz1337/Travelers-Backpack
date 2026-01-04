@@ -1,5 +1,6 @@
 package com.tiviacz.travelersbackpack.inventory.upgrades.crafting;
 
+import com.mojang.datafixers.util.Pair;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetBase;
@@ -64,6 +65,18 @@ public class CraftingUpgrade extends UpgradeBase<CraftingUpgrade> implements IMo
     }
 
     @Override
+    public List<Pair<Integer, Integer>> getUpgradeSlotsPosition(int x, int y) {
+        List<Pair<Integer, Integer>> positions = new ArrayList<>();
+        for(int i = 0; i < 3; i++) {
+            for(int j = 0; j < 3; j++) {
+                positions.add(Pair.of(x + 7 + j * 18, y + 23 + i * 18));
+            }
+        }
+        positions.add(Pair.of(x + 25, y + 89));
+        return positions;
+    }
+
+    @Override
     public List<Slot> getUpgradeSlots(BackpackBaseMenu menu, BackpackWrapper wrapper, int x, int y) {
         List<Slot> slots = new ArrayList<>();
 
@@ -73,11 +86,6 @@ public class CraftingUpgrade extends UpgradeBase<CraftingUpgrade> implements IMo
         for(int i = 0; i < 3; i++) {
             for(int j = 0; j < 3; j++) {
                 slots.add(new CraftingSlot(this.craftSlots, j + i * 3, x + 7 + j * 18, y + 23 + i * 18) {
-                    @Override
-                    public boolean isActive() {
-                        return isTabOpened();
-                    }
-
                     @Override
                     public boolean mayPlace(ItemStack pStack) {
                         return isTabOpened();
@@ -89,11 +97,6 @@ public class CraftingUpgrade extends UpgradeBase<CraftingUpgrade> implements IMo
         slots.add(new ResultSlotExt(wrapper, menu.player, this.craftSlots, this.resultSlots, 0, x + 25, y + 89) {
             @Override
             public boolean mayPickup(Player player) {
-                return isTabOpened();
-            }
-
-            @Override
-            public boolean isActive() {
                 return isTabOpened();
             }
 
