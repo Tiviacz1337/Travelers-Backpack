@@ -166,8 +166,8 @@ dependencies {
     implementation("maven.modrinth:cloth-config:izKINKFg")
 
     //Crafting Tweaks
-    compileOnly "curse.maven:balm-531761:5485041"
-    compileOnly "curse.maven:craftingtweaks-233071:5426925"
+    implementation("maven.modrinth:crafting-tweaks:StwKB1IQ")
+    implementation("maven.modrinth:balm:rrxxIYvJ")
 
     //Carry On
     //runtimeOnly "curse.maven:carryon-274259:5141764"
@@ -197,7 +197,7 @@ dependencies {
     compileOnly("curse.maven:toughasnails-246391:5715305")
     //runtimeOnly("curse.maven:glitchcore-955399:5645390")
 
-    implementation("curse.maven:twt-679270:6532318")
+    compileOnly("curse.maven:twt-679270:6532318")
 
     //implementation("curse.maven:easyshulkerboxes-594006:5743829")
     //implementation("curse.maven:puzzleslib-495476:6013576")

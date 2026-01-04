@@ -59,6 +59,7 @@ jobs:
           dependencies: |
             curios-api(optional){modrinth:vvuO3ImH}{curseforge:309927}
             accessories(optional){modrinth:jtmvUHXj}{curseforge:938917}
+            crafting-tweaks(optional){modrinth:DMu0oBKf}{curseforge:233071}
             polymorph(optional){modrinth:tagwiZkJ}{curseforge:388800}
             comforts(optional){modrinth:SaCpeal4}{curseforge:276951}
             jei(optional){modrinth:u6dRKJwZ}{curseforge:238222}
