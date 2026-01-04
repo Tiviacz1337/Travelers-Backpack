@@ -64,6 +64,7 @@ jobs:
             cloth-config-api(required){modrinth:9s6osm5g}{curseforge:348521}
             trinkets(optional){modrinth:5aaWibi9}{curseforge:341284}
             accessories(optional){modrinth:jtmvUHXj}{curseforge:938917}
+            crafting-tweaks(optional){modrinth:DMu0oBKf}{curseforge:233071}
             polymorph(optional){modrinth:tagwiZkJ}{curseforge:388800}
             comforts(optional){modrinth:SaCpeal4}{curseforge:276951}
             yigd(optional){modrinth:HnD1GX6e}{curseforge:544912}
