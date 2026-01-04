@@ -71,7 +71,7 @@ public class TravelersBackpack implements ModInitializer {
 
         FabricLoader fabricLoader = FabricLoader.getInstance();
 
-        if(fabricLoader.isModLoaded("rei") || fabricLoader.isModLoaded("jei") || fabricLoader.isModLoaded("emi")) {
+        if(fabricLoader.isModLoaded("roughlyenoughitems") || fabricLoader.isModLoaded("jei") || fabricLoader.isModLoaded("emi")) {
             RecipeViewersNetwork.registerPackets();
         }
 

@@ -168,10 +168,10 @@ dependencies {
     modCompileOnly("maven.modrinth:lithium:ZSNsJrPI")
 
 	//REI
-	modCompileOnly("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}")
+	modImplementation("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}")
 
 	//JEI
-	modImplementation("maven.modrinth:jei:wbPLxn0B")
+	modCompileOnly("maven.modrinth:jei:wbPLxn0B")
 
 	//AudioPlayer
 	modCompileOnly("maven.modrinth:audioplayer:X5VnNQLt")
