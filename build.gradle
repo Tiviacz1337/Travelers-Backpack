@@ -70,6 +70,14 @@ repositories {
 	maven { url = "https://maven.jamieswhiteshirt.com/libs-release" }
 	maven { url = "https://api.modrinth.com/maven/" }
 	maven { url = "https://maven.nucleoid.xyz/" } */
+
+	maven {
+		url "https://maven.twelveiterations.com/repository/maven-public/"
+
+		content {
+			includeGroup "net.blay09.mods"
+		}
+	}
 }
 
 fabricApi {
@@ -106,8 +114,9 @@ dependencies {
 	//OPTIONAL
 
 	//Crafting Tweaks
-	modCompileOnly "curse.maven:balm-fabric-500525:5442090"
-	modCompileOnly "curse.maven:crafting-tweaks-fabric-502516:5426914"
+	modImplementation("maven.modrinth:balm:cU1Vn9qw")
+	modImplementation("maven.modrinth:crafting-tweaks:gog2sFGz")
+	modApi("net.blay09.mods:kuma-api-fabric:21.10.5+1.21.10")
 
 	//ModMenu
 	modImplementation "com.terraformersmc:modmenu:${project.mod_menu_version}"
@@ -117,17 +126,17 @@ dependencies {
 	modCompileOnly "maven.modrinth:trinkets-canary:${trinkets_canary_version}"
 
 	//Accessories
-    modImplementation("io.wispforest:accessories-fabric:${project.accessories_version}")
+	modCompileOnly("io.wispforest:accessories-fabric:${project.accessories_version}")
     //modImplementation("maven.modrinth:owo-lib:dZPuIa4j")
 	//modImplementation("io.wispforest:endec:0.1.8")
 	//modImplementation("io.wispforest.endec:gson:0.1.5")
 	//modImplementation("io.wispforest.endec:netty:0.1.4")
 
 	//REI
-    modCompileOnly("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}")
+	modImplementation("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}")
 
 	//JEI
-    modImplementation ("maven.modrinth:jei:kiHXP4mC")
+	modCompileOnly ("maven.modrinth:jei:kiHXP4mC")
 
 	//Polymorph
 	modCompileOnly("maven.modrinth:polymorph:j4jPy88h")
