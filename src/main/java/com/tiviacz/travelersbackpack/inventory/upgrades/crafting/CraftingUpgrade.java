@@ -88,7 +88,7 @@ public class CraftingUpgrade extends UpgradeBase<CraftingUpgrade> implements IMo
                 slots.add(new CraftingSlot(this.craftSlots, j + i * 3, x + 7 + j * 18, y + 23 + i * 18) {
                     @Override
                     public boolean mayPlace(ItemStack pStack) {
-                        return isTabOpened();
+                        return true; //Jei fix
                     }
                 });
             }

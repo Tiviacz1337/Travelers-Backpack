@@ -133,10 +133,10 @@ dependencies {
 	//modImplementation("io.wispforest.endec:netty:0.1.4")
 
 	//REI
-	modImplementation("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}")
+	modCompileOnly("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}")
 
 	//JEI
-	modCompileOnly ("maven.modrinth:jei:kiHXP4mC")
+	modImplementation ("maven.modrinth:jei:Y0JKqg8L")
 
 	//Polymorph
 	modCompileOnly("maven.modrinth:polymorph:j4jPy88h")
