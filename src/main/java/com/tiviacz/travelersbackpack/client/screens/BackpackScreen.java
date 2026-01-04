@@ -73,7 +73,7 @@ public class BackpackScreen extends AbstractBackpackScreen<BackpackBaseMenu> imp
 
         //Reload screen
         updateScreen(true);
-        getMenu().updateSlots();
+        getMenu().rebuildSlots();
 
         //Update position
         updateBackpackSlotsPosition();
