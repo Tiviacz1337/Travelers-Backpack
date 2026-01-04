@@ -710,7 +710,7 @@ public class BackpackWrapper {
 
     public void requestMenuUpdate() {
         if(!getPlayersUsing().isEmpty()) {
-            getPlayersUsing().stream().filter(player -> player.containerMenu instanceof BackpackBaseMenu).forEach(player -> ((BackpackBaseMenu)player.containerMenu).updateModifiableSlots());
+            getPlayersUsing().stream().filter(player -> player.containerMenu instanceof BackpackBaseMenu).forEach(player -> ((BackpackBaseMenu)player.containerMenu).rebuildModifiableSlots());
         }
     }
 
