@@ -194,17 +194,16 @@ dependencies {
     compileOnly fg.deobf('curse.maven:craftingtweaks-233071:4939240')
     //implementation fg.deobf('curse.maven:trashslot-235577:4753168')
 
-    compileOnly fg.deobf("mezz.jei:${jei_version}")
-    //runtimeOnly fg.deobf("mezz.jei:${jei_version}")
+    //JEI
+    compileOnly fg.deobf("maven.modrinth:jei:p7yZWpEg")
 
     //EMI
-    implementation fg.deobf("dev.emi:emi-forge:${emi_version}")
-    //runtimeOnly fg.deobf("dev.emi:emi-forge:${emi_version}")
+    compileOnly fg.deobf("maven.modrinth:emi:WtJS5tVw")
 
     //REI
-    compileOnly fg.deobf("dev.architectury:architectury-forge:${architectury_version}")
-    compileOnly fg.deobf("me.shedaniel.cloth:cloth-config-forge:${cloth_config_version}")
-    compileOnly fg.deobf("me.shedaniel:RoughlyEnoughItems-forge:${rei_version}")
+    implementation fg.deobf("maven.modrinth:rei:IoS2AjPk")
+    implementation fg.deobf("maven.modrinth:architectury-api:1MKTLiiG")
+    implementation fg.deobf("maven.modrinth:cloth-config:t8TXrZvZ")
 
     //compileOnly fg.deobf('curse.maven:carry-on-274259:4882500')
 

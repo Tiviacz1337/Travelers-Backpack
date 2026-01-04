@@ -59,6 +59,8 @@ public class TravelersBackpackPlugin implements IModPlugin {
                 return ret;
             }
         });
+
+        registration.addGhostIngredientHandler(BackpackScreen.class, new JeiGhostIngredientHandler());
     }
 
     @Override

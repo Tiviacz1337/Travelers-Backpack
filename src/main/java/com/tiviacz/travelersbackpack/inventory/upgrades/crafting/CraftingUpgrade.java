@@ -87,18 +87,13 @@ public class CraftingUpgrade extends UpgradeBase<CraftingUpgrade> implements IMo
                 slots.add(new CraftingSlot(this.craftSlots, j + i * 3, x + 7 + j * 18, y + 23 + i * 18) {
                     @Override
                     public boolean mayPlace(ItemStack pStack) {
-                        return true;
-                    }
-
-                    @Override
-                    public boolean mayPickup(Player pPlayer) {
-                        return true;
+                        return isTabOpened();
                     }
                 });
             }
         }
 
-        slots.add(new ResultSlotExt(wrapper, menu.player, this.craftSlots, this.resultSlots, 0, x + 25, y + 89) {
+        slots.add(new ResultSlotExt(wrapper, menu.player, this.craftSlots, this.resultSlots, menu.CRAFTING_RESULT, x + 25, y + 89) {
             @Override
             public boolean mayPickup(Player player) {
                 return isTabOpened();

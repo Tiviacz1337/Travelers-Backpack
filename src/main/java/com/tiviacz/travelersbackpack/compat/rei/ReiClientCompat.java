@@ -7,6 +7,7 @@ import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetBase;
 import me.shedaniel.math.Rectangle;
 import me.shedaniel.rei.api.client.plugins.REIClientPlugin;
 import me.shedaniel.rei.api.client.registry.screen.ExclusionZones;
+import me.shedaniel.rei.api.client.registry.screen.ScreenRegistry;
 import me.shedaniel.rei.forge.REIPluginClient;
 
 import java.util.ArrayList;
@@ -42,5 +43,10 @@ public class ReiClientCompat implements REIClientPlugin {
             });
             return ret;
         });
+    }
+
+    @Override
+    public void registerScreens(ScreenRegistry registry) {
+        registry.registerDraggableStackVisitor(new ReiGhostIngredientHandler());
     }
 }
