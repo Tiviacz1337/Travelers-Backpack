@@ -119,7 +119,7 @@ public class NeoForgeEventHandler {
 
         //Quick Unequip
         if(TravelersBackpackConfig.SERVER.backpackSettings.rightClickUnequip.get() && !TravelersBackpack.enableIntegration()) {
-            if(CapabilityUtils.isWearingBackpack(player) && !level.isClientSide) {
+            if(CapabilityUtils.isWearingBackpack(player)) {
                 if(player.isShiftKeyDown() && hand == InteractionHand.MAIN_HAND && player.getMainHandItem().isEmpty()) {
                     ItemStack backpackStack = CapabilityUtils.getWearingBackpack(player).copy();
                     UseOnContext context = new UseOnContext(level, player, hand, backpackStack, event.getHitVec());
@@ -128,12 +128,13 @@ public class NeoForgeEventHandler {
                     if(!quickPickupFlag && backpackStack.getItem() instanceof TravelersBackpackItem item) {
                         if(item.place(new BlockPlaceContext(context)) == InteractionResult.sidedSuccess(level.isClientSide)) {
                             player.swing(hand, true);
-                            level.playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER, SoundSource.PLAYERS, 1.05F, (1.0F + (level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.2F) * 0.7F);
-                            CapabilityUtils.getCapability(player).ifPresent(data -> {
-                                data.remove();
-                                data.synchronise();
-                            });
-
+                            //level.playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER, SoundSource.PLAYERS, 1.05F, (1.0F + (level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.2F) * 0.7F);
+                            if(!level.isClientSide) {
+                                CapabilityUtils.getCapability(player).ifPresent(data -> {
+                                    data.remove();
+                                    data.synchronise();
+                                });
+                            }
                             event.setCanceled(true);
                             event.setCancellationResult(InteractionResult.SUCCESS);
                             return;
