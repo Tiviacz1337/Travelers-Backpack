@@ -49,7 +49,7 @@ public class StackModelPart extends BackpackModelPart {
         poseStack.pushPose();
 
         if(!toolUpper.isEmpty()) {
-            BakedModel model = getModel(toolUpper);
+            BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(toolUpper, null, null, 0);
 
             poseStack.pushPose();
             RenderSystem.enableBlend();
@@ -71,7 +71,7 @@ public class StackModelPart extends BackpackModelPart {
         }
 
         if(!toolLower.isEmpty()) {
-            BakedModel model = getModel(toolLower);
+            BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(toolLower, null, null, 0);
 
             poseStack.pushPose();
             RenderSystem.enableBlend();
@@ -96,23 +96,9 @@ public class StackModelPart extends BackpackModelPart {
     }
 
     public ItemDisplayContext getDisplayContext(ItemStack stack) {
-        if(stack.is(Items.TRIDENT)) {
+        if(stack.is(Items.TRIDENT) || stack.is(Items.SPYGLASS)) {
             return ItemDisplayContext.GUI;
         }
         return ItemDisplayContext.NONE;
     }
-
-    public BakedModel getModel(ItemStack stack) {
-        var shaper = Minecraft.getInstance().getItemRenderer().getItemModelShaper();
-        if(stack.is(Items.TRIDENT)) {
-            return shaper.getModelManager().getModel(TRIDENT_MODEL);
-        }
-        if(stack.is(Items.SPYGLASS)) {
-            return shaper.getItemModel(stack);
-        } else {
-            return Minecraft.getInstance().getItemRenderer().getModel(stack, null, null, 0);
-        }
-    }
-
-    public static final ModelResourceLocation TRIDENT_MODEL = ModelResourceLocation.vanilla("trident", "inventory"); //From ItemRenderer
 }
