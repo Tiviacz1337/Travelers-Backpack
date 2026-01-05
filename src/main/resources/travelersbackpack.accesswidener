@@ -1,9 +1,4 @@
 accessWidener	v1	named
-extendable class net/minecraft/client/model/geom/ModelPart
-
-accessible field net/minecraft/client/model/geom/ModelPart cubes Ljava/util/List;
-accessible field net/minecraft/client/model/geom/ModelPart children Ljava/util/Map;
-
 accessible field net/minecraft/world/inventory/ResultSlot craftSlots Lnet/minecraft/world/inventory/CraftingContainer;
 accessible field net/minecraft/world/inventory/ResultSlot player Lnet/minecraft/world/entity/player/Player;
 accessible field net/minecraft/world/inventory/ResultSlot removeCount I
@@ -11,6 +6,7 @@ accessible field net/minecraft/world/inventory/ResultSlot removeCount I
 accessible field net/minecraft/world/item/crafting/ShapedRecipe result Lnet/minecraft/world/item/ItemStack;
 accessible field net/minecraft/world/item/crafting/ShapedRecipe pattern Lnet/minecraft/world/item/crafting/ShapedRecipePattern;
 
+accessible field net/minecraft/world/entity/item/ItemEntity age I
 accessible field net/minecraft/world/entity/item/ItemEntity pickupDelay I
 accessible field net/minecraft/world/entity/item/ItemEntity thrower Ljava/util/UUID;
 
@@ -24,5 +20,3 @@ accessible field net/minecraft/client/gui/screens/Screen renderables Ljava/util/
 accessible method net/minecraft/client/gui/screens/Screen addRenderableWidget (Lnet/minecraft/client/gui/components/events/GuiEventListener;)Lnet/minecraft/client/gui/components/events/GuiEventListener;
 mutable field net/minecraft/world/inventory/Slot x I
 mutable field net/minecraft/world/inventory/Slot y I
-
-accessible field net/minecraft/world/entity/item/ItemEntity age I
