@@ -16,8 +16,6 @@ import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Optional;
-
 public class ItemTransferHandler extends BasicRecipeTransferHandler<BackpackItemMenu, RecipeHolder<CraftingRecipe>> {
     public ItemTransferHandler(IConnectionToServer serverConnection, IStackHelper stackHelper, IRecipeTransferHandlerHelper handlerHelper, IRecipeTransferInfo<BackpackItemMenu, RecipeHolder<CraftingRecipe>> transferInfo) {
         super(serverConnection, stackHelper, handlerHelper, transferInfo);
@@ -26,15 +24,10 @@ public class ItemTransferHandler extends BasicRecipeTransferHandler<BackpackItem
     @Nullable
     @Override
     public IRecipeTransferError transferRecipe(BackpackItemMenu menu, RecipeHolder<CraftingRecipe> recipe, IRecipeSlotsView recipeSlotsView, Player player, boolean maxTransfer, boolean doTransfer) {
-        Optional<CraftingUpgrade> upgrade = menu.getWrapper().getUpgradeManager().getUpgrade(CraftingUpgrade.class);
-        if(upgrade.isPresent()) {
-            if(doTransfer) {
-                if(!upgrade.get().isTabOpened()) {
-                    ServerboundActionTagPacket.create(ServerboundActionTagPacket.UPGRADE_TAB, upgrade.get().getDataHolderSlot(), true, ServerActions.TAB_OPEN);
-                }
-            }
-            if(!upgrade.get().isTabOpened()) {
-                return null;
+        if(doTransfer) {
+            CraftingUpgrade upgrade = menu.getWrapper().getUpgradeManager().getUpgrade(CraftingUpgrade.class).get();
+            if(!upgrade.isTabOpened()) {
+                ServerboundActionTagPacket.create(ServerboundActionTagPacket.UPGRADE_TAB, upgrade.getDataHolderSlot(), true, ServerActions.TAB_OPEN);
             }
         }
         return super.transferRecipe(menu, recipe, recipeSlotsView, player, maxTransfer, doTransfer);
