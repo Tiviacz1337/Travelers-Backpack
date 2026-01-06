@@ -171,7 +171,7 @@ public class NeoForgeClientEventHandler {
             if(TravelersBackpack.enableIntegration()) return;
 
             if(event.getMouseX() >= screen.getGuiLeft() + 77 && event.getMouseX() < screen.getGuiLeft() + 77 + 16 && event.getMouseY() >= screen.getGuiTop() + 62 - 18 && event.getMouseY() < screen.getGuiTop() + 62 - 18 + 16) {
-                if(event.getButton() == GLFW.GLFW_MOUSE_BUTTON_1) {
+                if(event.getButton() == GLFW.GLFW_MOUSE_BUTTON_2) {
                     if(InputConstants.isKeyDown(Minecraft.getInstance().getWindow(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
                         Minecraft.getInstance().gui.getChat().addMessage(Component.translatable("screen.travelersbackpack.hide_icon_info"));
                     } else {
