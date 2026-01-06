@@ -44,6 +44,8 @@ public class TravelersBackpack {
     public static boolean endermanOverhaulLoaded;
 
     public static boolean jeiLoaded;
+    public static boolean reiLoaded;
+    public static boolean emiLoaded;
 
     public TravelersBackpack(IEventBus eventBus, ModContainer modContainer) {
         NeoForgeMod.enableMilkFluid();
@@ -87,6 +89,8 @@ public class TravelersBackpack {
         endermanOverhaulLoaded = ModList.get().isLoaded("endermanoverhaul");
 
         jeiLoaded = ModList.get().isLoaded("jei");
+        reiLoaded = ModList.get().isLoaded("roughlyenoughitems");
+        emiLoaded = ModList.get().isLoaded("emi");
 
         //Fetch supporters
         Supporters.fetchSupporters();
