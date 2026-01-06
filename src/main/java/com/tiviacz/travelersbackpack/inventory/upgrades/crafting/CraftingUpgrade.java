@@ -1,6 +1,7 @@
 package com.tiviacz.travelersbackpack.inventory.upgrades.crafting;
 
 import com.mojang.datafixers.util.Pair;
+import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.components.BackpackContainerContents;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.transfer.BackpackResourceHandler;
@@ -31,7 +32,7 @@ public class CraftingUpgrade extends UpgradeBase<CraftingUpgrade> implements IMo
     public CraftingContainerImproved craftSlots;
 
     public CraftingUpgrade(UpgradeManager manager, int dataHolderSlot, NonNullList<ItemStack> craftingContents) {
-        super(manager, dataHolderSlot, new Point(66, 112));
+        super(manager, dataHolderSlot, new Point(TravelersBackpack.craftingTweaksLoaded ? 83 : 66, 112));
         this.crafting = createHandler(craftingContents);
     }
 

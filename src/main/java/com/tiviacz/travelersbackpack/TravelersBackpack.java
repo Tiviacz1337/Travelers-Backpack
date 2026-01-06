@@ -3,6 +3,7 @@ package com.tiviacz.travelersbackpack;
 import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
 import com.tiviacz.travelersbackpack.compat.accessories.TravelersBackpackAccessory;
 import com.tiviacz.travelersbackpack.compat.accessories.TravelersBackpackAccessoryClient;
+import com.tiviacz.travelersbackpack.compat.craftingtweaks.CraftingTweaksCompat;
 import com.tiviacz.travelersbackpack.compat.curios.TravelersBackpackCurio;
 import com.tiviacz.travelersbackpack.compat.curios.TravelersBackpackCurioClient;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
@@ -95,14 +96,17 @@ public class TravelersBackpack {
         event.enqueueWork(() -> {
             TravelersBackpackBlock.registerDispenserBehaviour();
             EffectFluidRegistry.initEffects();
-            enableCraftingTweaks();
             TravelersBackpackItem.registerCauldronInteraction();
             if(accessoriesLoaded) TravelersBackpackAccessory.init();
+            if(craftingTweaksLoaded) CraftingTweaksCompat.registerCraftingTweaksAddition();
         });
     }
 
     private void doClientStuff(final FMLClientSetupEvent event) {
-        event.enqueueWork(ModClientEventHandler::registerUpgradeWidgets);
+        event.enqueueWork(() -> {
+            ModClientEventHandler.registerUpgradeWidgets();
+            if(craftingTweaksLoaded) CraftingTweaksCompat.registerCraftingTweaksAdditionClient();
+        });
         if(accessoriesLoaded) TravelersBackpackAccessoryClient.init();
         if(curiosLoaded && !accessoriesLoaded) TravelersBackpackCurioClient.registerCurioRenderer();
     }
@@ -124,16 +128,6 @@ public class TravelersBackpack {
 
     public static boolean enableAccessories() {
         return accessoriesLoaded && TravelersBackpackConfig.SERVER.backpackSettings.backSlotIntegration.get();
-    }
-
-    public static void enableCraftingTweaks() {
-        if(craftingTweaksLoaded) {
-            try {
-                Class.forName("com.tiviacz.travelersbackpack.compat.craftingtweaks.TravelersBackpackCraftingGridProvider").getConstructor().newInstance();
-            } catch(Throwable e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     public static boolean isAnyGraveModInstalled() {
