@@ -135,6 +135,9 @@ public class RefillUpgrade extends UpgradeBase<RefillUpgrade> implements IEnable
 
         //Extract the missing count from backpack
         ItemStackHandler backpackStorage = upgradeManager.getWrapper().getStorage();
+        if(backpackStorage == null) {
+            return; //Fix for crash, should never happen but somehow happens lol
+        }
         ItemStack extracted = InventoryHelper.extractFromBackpack(backpackStorage, filterStack, missingCount, true);
 
         if(extracted.isEmpty()) {
