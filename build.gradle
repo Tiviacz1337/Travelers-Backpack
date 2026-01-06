@@ -152,7 +152,7 @@ dependencies {
     implementation "net.neoforged:neoforge:${neo_version}"
 
     //Curios Continuation
-    implementation("top.theillusivec4.curios:curios-neoforge:${curios_version}")
+    compileOnly("top.theillusivec4.curios:curios-neoforge:${curios_version}")
 
     //JEI
     compileOnly("maven.modrinth:jei:KbENlUcA")
@@ -161,9 +161,9 @@ dependencies {
     compileOnly("maven.modrinth:emi:ouSj7NfF")
 
     //REI
-    implementation("maven.modrinth:rei:b8gfS9Je")
-    implementation("maven.modrinth:architectury-api:ZxYGwlk0")
-    implementation("maven.modrinth:cloth-config:izKINKFg")
+    compileOnly("maven.modrinth:rei:b8gfS9Je")
+    compileOnly("maven.modrinth:architectury-api:ZxYGwlk0")
+    compileOnly("maven.modrinth:cloth-config:izKINKFg")
 
     //Crafting Tweaks
     implementation("maven.modrinth:crafting-tweaks:StwKB1IQ")
@@ -185,7 +185,7 @@ dependencies {
     //implementation("curse.maven:mousetweaks-60089:5637846")
 
     //Polymorph
-    implementation("maven.modrinth:polymorph:X9gNJacb")
+    compileOnly("maven.modrinth:polymorph:X9gNJacb")
 
     //Create
     compileOnly("maven.modrinth:create:tS7ygzAE")
