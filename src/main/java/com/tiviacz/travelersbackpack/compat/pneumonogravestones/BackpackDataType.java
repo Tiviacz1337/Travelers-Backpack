@@ -32,13 +32,13 @@ public class BackpackDataType extends GravestoneDataType {
 
     @Override
     public void onBreak(CompoundTag nbt, DynamicOps<Tag> ops, Level world, BlockPos pos, int decay) {
-        Optional<ItemStack> optional = VersionUtil.get(nbt, KEY, ItemStack.OPTIONAL_CODEC);
+        Optional<ItemStack> optional = VersionUtil.get(ops, nbt, KEY, ItemStack.OPTIONAL_CODEC);
         optional.ifPresent(backpack -> this.dropStack(world, pos, backpack));
     }
 
     public void onCollect(CompoundTag nbt, DynamicOps<Tag> ops, Level world, BlockPos pos, Player player, int decay) {
         if(TravelersBackpack.enableIntegration()) return;
-        Optional<ItemStack> optional = VersionUtil.get(nbt, KEY, ItemStack.OPTIONAL_CODEC);
+        Optional<ItemStack> optional = VersionUtil.get(ops, nbt, KEY, ItemStack.OPTIONAL_CODEC);
 
         optional.ifPresent(backpack -> {
             if(!ComponentUtils.isWearingBackpack(player)) {
