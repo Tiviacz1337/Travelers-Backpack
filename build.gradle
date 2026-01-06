@@ -157,19 +157,19 @@ dependencies {
     compileOnly "top.theillusivec4.curios:curios-neoforge:${curios_continuation_version}"
 
     //JEI
-    implementation("mezz.jei:jei-1.21.10-neoforge:${jei_version}")
-
-    //Crafting Tweaks
-    compileOnly "curse.maven:balm-531761:5485041"
-    compileOnly "curse.maven:craftingtweaks-233071:5426925"
+    implementation("maven.modrinth:jei:jIs3DXUN")
 
     //EMI
-    compileOnly "dev.emi:emi-neoforge:${emi_version}"
+    compileOnly("maven.modrinth:emi:ouSj7NfF")
 
     //REI
-    compileOnly "dev.architectury:architectury-neoforge:${architectury_version}"
-    compileOnly "me.shedaniel.cloth:cloth-config-neoforge:${cloth_config_version}"
-    compileOnly "me.shedaniel:RoughlyEnoughItems-neoforge:${rei_version}"
+    compileOnly("maven.modrinth:rei:rCAaJej0")
+    compileOnly("maven.modrinth:architectury-api:Z4ZAg0kG")
+    compileOnly("maven.modrinth:cloth-config:AzRGxC9j")
+
+    //Crafting Tweaks
+    implementation("maven.modrinth:crafting-tweaks:z2v3q7v4")
+    implementation("maven.modrinth:balm:YrIJi2P8")
 
     //Carry On
     //runtimeOnly "curse.maven:carryon-274259:5141764"

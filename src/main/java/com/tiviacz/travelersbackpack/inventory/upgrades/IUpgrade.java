@@ -1,5 +1,6 @@
 package com.tiviacz.travelersbackpack.inventory.upgrades;
 
+import com.mojang.datafixers.util.Pair;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
 import net.minecraft.world.entity.player.Player;
@@ -29,6 +30,8 @@ public interface IUpgrade<T> {
     default void onUpgradeRemoved(ItemStack removedStack, @Nullable Player player) {
         onUpgradeRemoved(removedStack);
     }
+
+    List<Pair<Integer, Integer>> getUpgradeSlotsPosition(int x, int y);
 
     List<? extends Slot> getUpgradeSlots(BackpackBaseMenu menu, BackpackWrapper wrapper, int x, int y);
 

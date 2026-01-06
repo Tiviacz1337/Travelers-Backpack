@@ -76,16 +76,25 @@ public class UpgradeManager {
     }
 
     public void detectedChange(ItemStack previousStack, int slot) {
+        boolean updatePosition = false;
         boolean needsUpdate = applyUpgrade(slot);
 
         //Update if tab changed status
-        if(getTabStatus(previousStack) != getTabStatus(getUpgradesHandler().getStackInSlot(slot)) || isTagSelector(getUpgradesHandler().getStackInSlot(slot), previousStack)) {
+        boolean changedTabStatus = getTabStatus(previousStack) != getTabStatus(getUpgradesHandler().getStackInSlot(slot));
+        boolean isTagSelector = isTagSelector(getUpgradesHandler().getStackInSlot(slot), previousStack);
+
+        //Update if tab changed status
+        if(changedTabStatus || isTagSelector) {
+            if(!needsUpdate && changedTabStatus) {
+                updatePosition = true;
+            }
             needsUpdate = true;
         }
 
         if(mappedUpgrades.containsKey(slot)) {
             if(!(getUpgradesHandler().getStackInSlot(slot).getItem() instanceof UpgradeItem)) {
                 needsUpdate = this.invalidateUpgrade(slot);
+                updatePosition = false;
             }
         }
 
@@ -94,7 +103,11 @@ public class UpgradeManager {
             if(!getWrapper().getPlayersUsing().isEmpty()) {
                 getWrapper().getPlayersUsing().stream().filter(player -> !player.level().isClientSide()).forEach(player -> player.containerMenu.broadcastChanges());
             }
-            getWrapper().requestMenuAndScreenUpdate();
+            if(!updatePosition) {
+                getWrapper().requestMenuAndScreenUpdate();
+            } else {
+                getWrapper().requestMenuAndScreenUpdate(slot);
+            }
         }
     }
 

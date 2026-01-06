@@ -1,5 +1,6 @@
 package com.tiviacz.travelersbackpack.inventory.upgrades.jukebox;
 
+import com.mojang.datafixers.util.Pair;
 import com.tiviacz.travelersbackpack.components.BackpackContainerContents;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.transfer.BackpackResourceHandler;
@@ -30,6 +31,13 @@ public class JukeboxUpgrade extends UpgradeBase<JukeboxUpgrade> {
     @Override
     public void onUpgradeRemoved(ItemStack removedStack) {
         removedStack.set(ModDataComponents.IS_PLAYING, false);
+    }
+
+    @Override
+    public List<Pair<Integer, Integer>> getUpgradeSlotsPosition(int x, int y) {
+        List<Pair<Integer, Integer>> positions = new ArrayList<>();
+        positions.add(Pair.of(x + 7, y + 23));
+        return positions;
     }
 
     @Override

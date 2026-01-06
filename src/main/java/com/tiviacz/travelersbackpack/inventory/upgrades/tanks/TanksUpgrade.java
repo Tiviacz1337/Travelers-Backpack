@@ -1,5 +1,6 @@
 package com.tiviacz.travelersbackpack.inventory.upgrades.tanks;
 
+import com.mojang.datafixers.util.Pair;
 import com.tiviacz.travelersbackpack.components.BackpackContainerContents;
 import com.tiviacz.travelersbackpack.components.Fluids;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
@@ -106,6 +107,16 @@ public class TanksUpgrade extends UpgradeBase<TanksUpgrade> {
     @Override
     public void remove() {
         getUpgradeManager().getWrapper().removeRenderInfo();
+    }
+
+    @Override
+    public List<Pair<Integer, Integer>> getUpgradeSlotsPosition(int x, int y) {
+        List<Pair<Integer, Integer>> positions = new ArrayList<>();
+        positions.add(Pair.of(x + 7, y + 23));
+        positions.add(Pair.of(x + 7, y + 49));
+        positions.add(Pair.of(x + 28, y + 23));
+        positions.add(Pair.of(x + 28, y + 49));
+        return positions;
     }
 
     @Override

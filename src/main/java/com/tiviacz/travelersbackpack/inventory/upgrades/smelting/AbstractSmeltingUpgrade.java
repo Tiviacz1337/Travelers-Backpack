@@ -1,5 +1,6 @@
 package com.tiviacz.travelersbackpack.inventory.upgrades.smelting;
 
+import com.mojang.datafixers.util.Pair;
 import com.tiviacz.travelersbackpack.components.BackpackContainerContents;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.transfer.BackpackResourceHandler;
@@ -59,6 +60,15 @@ public class AbstractSmeltingUpgrade<T> extends UpgradeBase<T> implements IEnabl
         removedStack.remove(ModDataComponents.COOKING_FINISH_TIME);
         removedStack.remove(ModDataComponents.BURN_TOTAL_TIME);
         removedStack.remove(ModDataComponents.BURN_FINISH_TIME);
+    }
+
+    @Override
+    public List<Pair<Integer, Integer>> getUpgradeSlotsPosition(int x, int y) {
+        List<Pair<Integer, Integer>> positions = new ArrayList<>();
+        positions.add(Pair.of(x + 7, y + 23));
+        positions.add(Pair.of(x + 7, y + 23 + 36));
+        positions.add(Pair.of(x + 7 + 18 + 18, y + 23 + 18));
+        return positions;
     }
 
     @Override
