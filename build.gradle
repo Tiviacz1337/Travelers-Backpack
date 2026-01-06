@@ -187,8 +187,7 @@ dependencies {
     // Apply Mixin AP
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 
-    implementation fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
-    //compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}:api")
+    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
 
     implementation fg.deobf("maven.modrinth:crafting-tweaks:umzsWJQd")
     implementation fg.deobf("maven.modrinth:balm:Ue8C6cKq")
@@ -201,9 +200,9 @@ dependencies {
     compileOnly fg.deobf("maven.modrinth:emi:WtJS5tVw")
 
     //REI
-    implementation fg.deobf("maven.modrinth:rei:IoS2AjPk")
-    implementation fg.deobf("maven.modrinth:architectury-api:1MKTLiiG")
-    implementation fg.deobf("maven.modrinth:cloth-config:t8TXrZvZ")
+    compileOnly fg.deobf("maven.modrinth:rei:IoS2AjPk")
+    compileOnly fg.deobf("maven.modrinth:architectury-api:1MKTLiiG")
+    compileOnly fg.deobf("maven.modrinth:cloth-config:t8TXrZvZ")
 
     //compileOnly fg.deobf('curse.maven:carry-on-274259:4882500')
 
@@ -213,7 +212,7 @@ dependencies {
     //MAJRUSZ
     //implementation fg.deobf("maven.modrinth:majruszs-progressive-difficulty:IH8yR3yr")
     //implementation fg.deobf("maven.modrinth:majrusz-library:BZzTRseC")
-    implementation fg.deobf('curse.maven:opac-636608:6858725')
+    compileOnly fg.deobf('curse.maven:opac-636608:6858725')
 
 
     //Comforts
@@ -229,23 +228,23 @@ dependencies {
 
     //Tetra
     compileOnly fg.deobf("curse.maven:tetra-289712:5544287")
-    runtimeOnly fg.deobf("curse.maven:mutil-351914:4824501")
+    compileOnly fg.deobf("curse.maven:mutil-351914:4824501")
 
     //Polymorph
-    implementation fg.deobf("maven.modrinth:polymorph:f95jImsh")
+    compileOnly fg.deobf("maven.modrinth:polymorph:f95jImsh")
 
     //Create
     compileOnly fg.deobf("maven.modrinth:create:6R069CcK")
 
-    runtimeOnly fg.deobf("maven.modrinth:better-advancements:NS5G3ENg")
+    compileOnly fg.deobf("maven.modrinth:better-advancements:NS5G3ENg")
 
     //ForgeConfig
-    runtimeOnly fg.deobf("curse.maven:forgeconfig-544048:4672356")
+    compileOnly fg.deobf("curse.maven:forgeconfig-544048:4672356")
 
-    runtimeOnly fg.deobf("curse.maven:spark-361579:4738952")
+    compileOnly fg.deobf("curse.maven:spark-361579:4738952")
 
-    runtimeOnly fg.deobf("maven.modrinth:amendments:luR9kOmm")
-    runtimeOnly fg.deobf("maven.modrinth:moonlight:62CPFGur")
+    compileOnly fg.deobf("maven.modrinth:amendments:luR9kOmm")
+    compileOnly fg.deobf("maven.modrinth:moonlight:62CPFGur")
 
    // runtimeOnly fg.deobf('curse.maven:terrablender-563928:5068218')
     //runtimeOnly fg.deobf('curse.maven:bop-220318:4764804')
