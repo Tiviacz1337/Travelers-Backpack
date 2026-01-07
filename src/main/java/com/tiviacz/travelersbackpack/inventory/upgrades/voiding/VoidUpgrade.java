@@ -1,5 +1,6 @@
 package com.tiviacz.travelersbackpack.inventory.upgrades.voiding;
 
+import com.mojang.datafixers.util.Pair;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
@@ -17,6 +18,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class VoidUpgrade extends FilterUpgradeBase<VoidUpgrade, VoidFilterSettings> implements IEnable {
@@ -51,6 +53,24 @@ public class VoidUpgrade extends FilterUpgradeBase<VoidUpgrade, VoidFilterSettin
 
     public void voidTrashSlotStack() {
         this.filter.setStackInSlot(0, ItemStack.EMPTY.copy());
+    }
+
+    @Override
+    public List<Pair<Integer, Integer>> getUpgradeSlotsPosition(int x, int y) {
+        List<Pair<Integer, Integer>> positions = new ArrayList<>();
+        if(isTagSelector()) {
+            //Tag Selector
+            positions.add(Pair.of(x + 7, y + 44)); //Trash slot - hidden
+            positions.add(Pair.of(x + 64, y + 23)); //Filter slot
+        } else {
+            //Filter Slots
+            for(int i = 0; i < getRows(); i++) {
+                for(int j = 0; j < getSlotsInRow(i); j++) {
+                    positions.add(Pair.of(x + 7 + j * 18, y + 44 + i * 18));
+                }
+            }
+        }
+        return positions;
     }
 
     @Override
