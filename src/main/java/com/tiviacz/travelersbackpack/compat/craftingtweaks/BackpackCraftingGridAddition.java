@@ -23,7 +23,9 @@ public class BackpackCraftingGridAddition implements ICraftingTweaks {
 
     private void addButton(AbstractWidget widget) {
         widgets.add(widget);
-        screen.addRenderableWidget(widget);
+        screen.renderables.add(widget);
+        screen.children.add(widget);
+        screen.narratables.add(widget);
     }
 
     @Override

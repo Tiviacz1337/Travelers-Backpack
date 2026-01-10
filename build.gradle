@@ -194,7 +194,7 @@ dependencies {
     //implementation fg.deobf('curse.maven:trashslot-235577:4753168')
 
     //JEI
-    compileOnly fg.deobf("maven.modrinth:jei:p7yZWpEg")
+    implementation fg.deobf("maven.modrinth:jei:p7yZWpEg")
 
     //EMI
     compileOnly fg.deobf("maven.modrinth:emi:WtJS5tVw")
