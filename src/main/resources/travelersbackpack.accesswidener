@@ -13,7 +13,5 @@ extendable method net/minecraft/world/inventory/AbstractContainerMenu doClick (I
 accessible field net/minecraft/client/gui/screens/inventory/AbstractContainerScreen hoveredSlot Lnet/minecraft/world/inventory/Slot;
 accessible field net/minecraft/client/gui/screens/inventory/AbstractContainerScreen leftPos I
 accessible field net/minecraft/client/gui/screens/inventory/AbstractContainerScreen topPos I
-accessible field net/minecraft/client/gui/screens/Screen renderables Ljava/util/List;
-accessible method net/minecraft/client/gui/screens/Screen addRenderableWidget (Lnet/minecraft/client/gui/components/events/GuiEventListener;)Lnet/minecraft/client/gui/components/events/GuiEventListener;
 mutable field net/minecraft/world/inventory/Slot x I
 mutable field net/minecraft/world/inventory/Slot y I
