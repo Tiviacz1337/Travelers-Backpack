@@ -6,8 +6,6 @@ import net.blay09.mods.craftingtweaks.CraftingTweaksProviderManager;
 import net.blay09.mods.craftingtweaks.api.CraftingTweaksClientAPI;
 import net.blay09.mods.craftingtweaks.api.TweakType;
 import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.components.Renderable;
-import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.world.inventory.Slot;
 
 import java.util.ArrayList;
@@ -23,9 +21,7 @@ public class BackpackCraftingGridAddition implements ICraftingTweaks {
 
     private void addButton(AbstractWidget widget) {
         widgets.add(widget);
-        screen.renderables.add(widget);
-        screen.children.add(widget);
-        screen.narratables.add(widget);
+        screen.addCompatWidget(widget);
     }
 
     @Override
@@ -34,14 +30,7 @@ public class BackpackCraftingGridAddition implements ICraftingTweaks {
             return;
         }
 
-        List<? extends GuiEventListener> screenChildren = screen.children();
-        List<Renderable> screenRenderables = screen.renderables;
-        if(screenChildren == null || screenRenderables == null) {
-            return;
-        }
-
-        widgets.forEach(screenChildren::remove);
-        widgets.forEach(screenRenderables::remove);
+        widgets.forEach(screen::removeCompatWidget);
         widgets.clear();
     }
 
