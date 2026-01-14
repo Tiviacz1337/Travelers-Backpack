@@ -60,4 +60,13 @@ public class ToolSlotsWidget extends WidgetBase<BackpackScreen> {
         //Bottom bar
         guiGraphics.blit(BackpackScreen.ICONS, x, y + 5 + (size * 18), 0, 90, 23, 5);
     }
+
+    public int[] getAdditionSizeAndPos() {
+        int[] size = new int[4];
+        size[0] = pos.x() - 130 - xPos;
+        size[1] = pos.y() + 16 + 10 - 19;
+        size[2] = 23;
+        size[3] = 5 + (screen.getWrapper().getTools().getSlots() * 18) + 5;
+        return size;
+    }
 }
