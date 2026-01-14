@@ -99,9 +99,9 @@ public class BackpackWrapper {
         if(!isSizeInitialized(stack)) {
             initializeSize(stack);
         }
-        int storageSlots = NbtHelper.get(stack, ModDataHelper.STORAGE_SLOTS);
-        int upgradeSlots = NbtHelper.get(stack, ModDataHelper.UPGRADE_SLOTS);
-        int toolSlots = NbtHelper.get(stack, ModDataHelper.TOOL_SLOTS);
+        int storageSlots = NbtHelper.getOrDefault(stack, ModDataHelper.STORAGE_SLOTS, Tiers.LEATHER.getStorageSlots());
+        int upgradeSlots = NbtHelper.getOrDefault(stack, ModDataHelper.UPGRADE_SLOTS, Tiers.LEATHER.getUpgradeSlots());
+        int toolSlots = NbtHelper.getOrDefault(stack, ModDataHelper.TOOL_SLOTS, Tiers.LEATHER.getToolSlots());
 
         this.screenID = screenID;
         this.level = level;
