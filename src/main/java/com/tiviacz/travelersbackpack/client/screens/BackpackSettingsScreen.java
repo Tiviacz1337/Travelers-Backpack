@@ -268,18 +268,9 @@ public class BackpackSettingsScreen extends AbstractBackpackScreen<BackpackSetti
 
     public boolean selectSlots(Slot slot, int button) {
         if(slot != null && slot.index >= 0 && slot.index < wrapper.getStorage().getSlots()) {
-            if(this.unsortablesWidget.isTabOpened()) {
-                if(button == 0 && !this.unsortableSlots.contains(slot.index)) {
-                    this.unsortableSlots.add(slot.index);
-                    return true;
-                }
-
-                if(button == 1 && this.unsortableSlots.contains(slot.index)) {
-                    this.unsortableSlots.remove((Object)slot.index);
-                    return true;
-                }
+            if(selectSlotsIndex(this.unsortableSlots, this.unsortablesWidget.isTabOpened(), slot, button)) {
+                return true;
             }
-
             if(this.memoryWidget.isTabOpened()) {
                 if(button == 0 && !this.memoryWidget.contains(slot.index, this.memorySlots)) {
                     if(slot.getItem().isEmpty()) {
@@ -293,6 +284,21 @@ public class BackpackSettingsScreen extends AbstractBackpackScreen<BackpackSetti
                     this.memorySlots.removeIf(p -> p.getFirst() == slot.index);
                     return true;
                 }
+            }
+        }
+        return false;
+    }
+
+    public static boolean selectSlotsIndex(List<Integer> list, boolean isTabOpened, Slot slot, int button) {
+        if(isTabOpened) {
+            if(button == 0 && !list.contains(slot.index)) {
+                list.add(slot.index);
+                return true;
+            }
+
+            if(button == 1 && list.contains(slot.index)) {
+                list.remove((Object)slot.index);
+                return true;
             }
         }
         return false;

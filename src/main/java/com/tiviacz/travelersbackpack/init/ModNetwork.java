@@ -1,7 +1,6 @@
 package com.tiviacz.travelersbackpack.init;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
-import com.tiviacz.travelersbackpack.compat.common.RecipeViewersNetwork;
 import com.tiviacz.travelersbackpack.network.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.network.NetworkDirection;
@@ -93,10 +92,6 @@ public class ModNetwork {
                 .encoder(ServerboundFilterTagsPacket::encode)
                 .consumerMainThread(ServerboundFilterTagsPacket::handle)
                 .add();
-
-        if(TravelersBackpack.jeiLoaded || TravelersBackpack.reiLoaded || TravelersBackpack.emiLoaded) {
-            RecipeViewersNetwork.registerPackets(channel, 12);
-        }
 
         return channel;
     }

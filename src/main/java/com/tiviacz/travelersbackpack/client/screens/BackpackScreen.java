@@ -13,6 +13,10 @@ import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
 import com.tiviacz.travelersbackpack.inventory.sorter.ContainerSorter;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
+import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TankWidget;
+import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;
+import com.tiviacz.travelersbackpack.inventory.upgrades.voiding.VoidUpgrade;
+import com.tiviacz.travelersbackpack.inventory.upgrades.voiding.VoidWidget;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.items.upgrades.TanksUpgradeItem;
 import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
@@ -22,7 +26,9 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.RenderType;
@@ -34,13 +40,12 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @OnlyIn(Dist.CLIENT)
 public class BackpackScreen extends AbstractBackpackScreen<BackpackBaseMenu> implements MenuAccess<BackpackBaseMenu> {
     public boolean tanksVisible;
+    public Map<Class<?>, WidgetBase<?>> mappedWidgets = new HashMap<>();
     public List<UpgradeSlot> upgradeSlots = new ArrayList<>();
     public List<IButton> buttons = new ArrayList<>();
     public SortingButtons sortingButtons;
@@ -105,7 +110,7 @@ public class BackpackScreen extends AbstractBackpackScreen<BackpackBaseMenu> imp
         this.visibleRows = (int)Math.ceil((double)this.slotCount / getSlotsInRow());
         int playerInventoryHeight = 96;
         this.imageWidth = wideTexture ? (tanksVisible ? 256 : 212) : (tanksVisible ? 220 : 176);
-        this.imageHeight = TOP_BAR_OFFSET + this.slotsHeight + playerInventoryHeight;
+        this.imageHeight = TOP_BAR_OFFSET + this.slotsHeight + playerInventoryHeight + 1;
 
         updateDimensions();
 
@@ -207,6 +212,15 @@ public class BackpackScreen extends AbstractBackpackScreen<BackpackBaseMenu> imp
         }
     }
 
+    @Override
+    protected <T extends GuiEventListener & Renderable & NarratableEntry> T addRenderableWidget(T widget) {
+        if(widget instanceof UpgradeWidgetBase<?> upgradeWidgetBase) {
+            this.mappedWidgets.put(upgradeWidgetBase.getUpgrade().getClass(), upgradeWidgetBase);
+        }
+        this.renderables.add(widget);
+        return this.addWidget(widget);
+    }
+
     public void initWidgets() {
         this.settingsWidget = new SettingsWidget(this, new Point(this.leftPos + this.imageWidth - 3, this.topPos + 4), false);
         addRenderableWidget(this.settingsWidget);
@@ -289,7 +303,9 @@ public class BackpackScreen extends AbstractBackpackScreen<BackpackBaseMenu> imp
             }
         });
 
+        this.children().stream().filter(w -> w instanceof WidgetBase).forEach(w -> ((WidgetBase)w).renderUnderTooltip(guiGraphics, mouseX, mouseY, partialTicks));
         this.renderTooltip(guiGraphics, mouseX, mouseY);
+        this.children().stream().filter(w -> w instanceof WidgetBase).forEach(w -> ((WidgetBase)w).renderOnTop(guiGraphics, mouseX, mouseY, partialTicks));
     }
 
     @Override

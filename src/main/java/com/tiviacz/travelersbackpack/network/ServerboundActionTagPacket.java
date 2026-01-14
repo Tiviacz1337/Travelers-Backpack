@@ -10,6 +10,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
@@ -41,6 +42,7 @@ public record ServerboundActionTagPacket(CompoundTag actionTag) {
     public static final int TOGGLE_VISIBILITY = 13;
     public static final int ABILITY_SLIDER = 14;
     public static final int EQUIP_BACKPACK = 15;
+    public static final int SET_STACK = 16;
 
     public static void handle(ServerboundActionTagPacket message, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
@@ -110,6 +112,12 @@ public record ServerboundActionTagPacket(CompoundTag actionTag) {
                     boolean equip = actionTag.getBoolean("Arg0");
                     ServerActions.equipBackpack(player, equip);
                 }
+                case SET_STACK -> {
+                    int type = actionTag.getInt("Arg0");
+                    ItemStack stack = ItemStack.of(actionTag.getCompound("Arg1"));
+                    int slot = actionTag.getInt("Arg2");
+                    ServerActions.setStack(player, type, stack, slot);
+                }
             }
         });
 
@@ -135,6 +143,8 @@ public record ServerboundActionTagPacket(CompoundTag actionTag) {
                 tag.putInt(argName, (int)args[i]);
             } else if(args[i] instanceof Double) {
                 tag.putDouble(argName, (double)args[i]);
+            } else if(args[i] instanceof ItemStack itemstack) {
+                tag.put(argName, itemstack.save(new CompoundTag()));
             }
         }
         return tag;

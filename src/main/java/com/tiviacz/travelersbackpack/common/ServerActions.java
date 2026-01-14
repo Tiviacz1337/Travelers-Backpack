@@ -18,6 +18,7 @@ import com.tiviacz.travelersbackpack.inventory.menu.BackpackSettingsMenu;
 import com.tiviacz.travelersbackpack.inventory.sorter.ContainerSorter;
 import com.tiviacz.travelersbackpack.inventory.upgrades.IEnable;
 import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
+import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;
 import com.tiviacz.travelersbackpack.items.HoseItem;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.network.ClientboundSyncItemStackPacket;
@@ -46,6 +47,7 @@ import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BedPart;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.ItemStackHandler;
 
@@ -495,6 +497,34 @@ public class ServerActions {
             return true;
         }
         return false;
+    }
+
+    public static final int SLOT = 0;
+    public static final int TANK = 1;
+
+    public static void setStack(Player player, int type, ItemStack stack, int index) {
+        if(!(player.containerMenu instanceof BackpackBaseMenu menu)) {
+            return;
+        }
+
+        switch(type) {
+            case SLOT: {
+                player.containerMenu.getSlot(index).set(stack);
+                break;
+            }
+            case TANK: {
+                BackpackWrapper wrapper = menu.getWrapper();
+                wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).ifPresent(tanks -> {
+                    if(index == 0) {
+                        tanks.getLeftTank().drain(wrapper.getBackpackTankCapacity(), IFluidHandler.FluidAction.EXECUTE);
+                    }
+                    if(index == 1) {
+                        tanks.getRightTank().drain(wrapper.getBackpackTankCapacity(), IFluidHandler.FluidAction.EXECUTE);
+                    }
+                });
+                break;
+            }
+        }
     }
 
     public static int throwPotion(Level level, Player player, ItemStack potionStack, boolean isSplash) {
