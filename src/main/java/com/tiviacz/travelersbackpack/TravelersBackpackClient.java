@@ -13,6 +13,7 @@ import com.tiviacz.travelersbackpack.commands.BackpackIconCommands;
 import com.tiviacz.travelersbackpack.common.recipes.BackpackDyeRecipe;
 import com.tiviacz.travelersbackpack.compat.craftingtweaks.CraftingTweaksCompat;
 import com.tiviacz.travelersbackpack.compat.polymorph.PolymorphCompat;
+import com.tiviacz.travelersbackpack.compat.trashslot.TrashSlotCompat;
 import com.tiviacz.travelersbackpack.compat.trinkets.TravelersBackpackTrinketIntegration;
 import com.tiviacz.travelersbackpack.fluids.potion.PotionFluidVariantAttributeHandler;
 import com.tiviacz.travelersbackpack.fluids.potion.PotionFluidVariantRenderHandler;
@@ -86,6 +87,7 @@ public class TravelersBackpackClient implements ClientModInitializer {
 
         //Polymorph Integration
         if(TravelersBackpack.polymorphLoaded) PolymorphCompat.registerWidget();
+        if(TravelersBackpack.trashSlotLoaded) TrashSlotCompat.register();
 
         //Backpack model loading plugin
         ModelLoadingPlugin.register(new BackpackModelLoadingPlugin());

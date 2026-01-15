@@ -38,6 +38,7 @@ public class TravelersBackpack implements ModInitializer {
     public static boolean pneumonoGravestonesLoaded;
 
     public static boolean polymorphLoaded;
+    public static boolean trashSlotLoaded;
     public static boolean solValheimLoaded;
 
     @Override
@@ -92,6 +93,7 @@ public class TravelersBackpack implements ModInitializer {
         if(pneumonoGravestonesLoaded) PneumonoGravestonesCompat.register();
 
         polymorphLoaded = fabricLoader.isModLoaded("polymorph");
+        trashSlotLoaded = fabricLoader.isModLoaded("trashslot");
         solValheimLoaded = fabricLoader.isModLoaded("sol_valheim");
 
         EffectFluidRegistry.initEffects();
