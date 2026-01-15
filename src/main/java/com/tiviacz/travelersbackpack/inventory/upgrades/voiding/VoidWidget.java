@@ -255,9 +255,9 @@ public class VoidWidget extends FilterUpgradeWidgetBase<VoidWidget, VoidUpgrade>
 
     public void renderTrashBinAnimation(GuiGraphics guiGraphics, int x, int y) {
         this.tickAnimation();
-        guiGraphics.pose().pushPose();
         float time = (float)(System.currentTimeMillis() % 2000) / 1000.0F;
         float f = (float) (Math.sin(time * Math.PI) * 1.0F + 1.0F);
+        guiGraphics.pose().pushPose();
         if(isHoveringWithTrashBin()) {
             RenderSystem.disableDepthTest();
             guiGraphics.pose().translate(0, 0, 500F);
@@ -265,6 +265,7 @@ public class VoidWidget extends FilterUpgradeWidgetBase<VoidWidget, VoidUpgrade>
             RenderSystem.enableDepthTest();
         }
         renderTrashBin(guiGraphics, x, y, progress);
+        guiGraphics.pose().popPose();
     }
 
     public void renderTrashBin(GuiGraphics guiGraphics, int x, int y, float progress) {
@@ -275,7 +276,6 @@ public class VoidWidget extends FilterUpgradeWidgetBase<VoidWidget, VoidUpgrade>
         guiGraphics.pose().popPose();
         guiGraphics.blit(TRASH_UPGRADE, x - 2, y + 2, 4, 6, 8, 1, 16, 16); //Middle
         guiGraphics.blit(TRASH_UPGRADE, x - 1, y + 3, 5, 7, 6, 5, 16, 16); //Bottom
-        guiGraphics.pose().popPose();
     }
 
     public void tickAnimation() {
