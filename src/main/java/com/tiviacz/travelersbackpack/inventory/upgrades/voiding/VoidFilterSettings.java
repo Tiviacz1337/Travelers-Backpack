@@ -84,10 +84,4 @@ public class VoidFilterSettings extends FilterSettingsBase {
             return ItemStack.isSameItemSameTags(stack, other);
         }
     }
-
-    @Override
-    public void updateFilter(@Nullable List<ItemStack> items) {
-        if(items == null) return;
-        super.updateFilter(items.stream().skip(1).toList());
-    }
 }

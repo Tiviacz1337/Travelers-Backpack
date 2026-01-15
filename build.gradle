@@ -136,7 +136,7 @@ dependencies {
 	modRuntimeOnly("net.blay09.mods:kuma-api-fabric:[20,20.2)")
 
 	//Trash Slot
-	modImplementation "maven.modrinth:trashslot:Ve2pngwH"
+	modCompileOnly "maven.modrinth:trashslot:Ve2pngwH"
 
 	//ModMenu
 	modImplementation "com.terraformersmc:modmenu:${project.mod_menu_version}"

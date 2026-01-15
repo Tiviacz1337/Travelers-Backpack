@@ -365,12 +365,6 @@ public class BackpackBaseMenu extends AbstractBackpackMenu {
 
     @Override
     protected void doClick(int pSlotId, int pButton, ClickType pClickType, Player pPlayer) {
-        //Trash slot logic
-        if(pSlotId >= 0 && pSlotId < this.slots.size() && this.slots.get(pSlotId) instanceof TrashSlot trashSlot) {
-            if(!getCarried().isEmpty() && trashSlot.hasItem() && pClickType == ClickType.PICKUP) {
-                trashSlot.set(ItemStack.EMPTY.copy());
-            }
-        }
         if(pSlotId >= 0 && pSlotId < this.slots.size() && this.slots.get(pSlotId) instanceof FilterSlotItemHandler filterSlot) {
             if(getCarried().isEmpty() && pClickType == ClickType.PICKUP && pButton == 0) { //Remove item from filter slot
                 super.doClick(pSlotId, pButton, pClickType, pPlayer);
@@ -679,7 +673,6 @@ public class BackpackBaseMenu extends AbstractBackpackMenu {
     public void removed(Player player) {
         this.wrapper.getUpgradeManager().getUpgrade(CraftingUpgrade.class).ifPresent(craftingUpgrade -> this.checkHandlerAndPlaySound(craftingUpgrade.crafting, player, craftingUpgrade.crafting.getSlots()));
         this.wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).ifPresent(tanksUpgrade -> this.clearSlotsAndPlaySound(inventory.player, tanksUpgrade.getFluidSlotsHandler(), 4));
-        this.wrapper.getUpgradeManager().getUpgrade(VoidUpgrade.class).ifPresent(this::voidTrashSlot);
         shiftTools(this.wrapper.getTools());
         super.removed(player);
     }
@@ -748,10 +741,6 @@ public class BackpackBaseMenu extends AbstractBackpackMenu {
                 }
             }
         }
-    }
-
-    public void voidTrashSlot(VoidUpgrade upgrade) {
-        upgrade.voidTrashSlotStack();
     }
 
     //Remove forbidden items from handler, if saving enabled

@@ -1,15 +1,10 @@
 package com.tiviacz.travelersbackpack.inventory.upgrades.voiding;
 
-import com.mojang.datafixers.util.Pair;
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetBase;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModDataHelper;
-import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.UpgradeManager;
-import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
-import com.tiviacz.travelersbackpack.inventory.menu.slot.FilterSlotItemHandler;
-import com.tiviacz.travelersbackpack.inventory.menu.slot.TrashSlot;
 import com.tiviacz.travelersbackpack.inventory.upgrades.FilterUpgradeBase;
 import com.tiviacz.travelersbackpack.inventory.upgrades.IEnable;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
@@ -18,10 +13,8 @@ import com.tiviacz.travelersbackpack.util.NbtHelper;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.NonNullList;
-import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class VoidUpgrade extends FilterUpgradeBase<VoidUpgrade, VoidFilterSettings> implements IEnable {
@@ -43,7 +36,7 @@ public class VoidUpgrade extends FilterUpgradeBase<VoidUpgrade, VoidFilterSettin
 
     @Override
     public VoidFilterSettings createFilterSettings(UpgradeManager manager, NonNullList<ItemStack> filter, List<String> filterTags) {
-        return new VoidFilterSettings(manager.getWrapper().getStorage(), filter.stream().skip(1).limit(getFilterSlotCount()).filter(stack -> !stack.isEmpty()).toList(), getFilter(), filterTags);
+        return new VoidFilterSettings(manager.getWrapper().getStorage(), filter.stream().limit(getFilterSlotCount()).filter(stack -> !stack.isEmpty()).toList(), getFilter(), filterTags);
     }
 
     public boolean canVoid(ItemStack stack) {
@@ -51,68 +44,9 @@ public class VoidUpgrade extends FilterUpgradeBase<VoidUpgrade, VoidFilterSettin
     }
 
     @Override
-    public ItemStack getFirstFilterStack() {
-        return this.filter.getStackInSlot(1);
-    }
-
-    public ItemStack getTrashSlotStack() {
-        return this.filter.getStackInSlot(0);
-    }
-
-    public void voidTrashSlotStack() {
-        this.filter.setStackInSlot(0, ItemStack.EMPTY.copy());
-    }
-
-    @Override
     @Environment(EnvType.CLIENT)
     public WidgetBase<BackpackScreen> createWidget(BackpackScreen screen, int x, int y) {
         return new VoidWidget(screen, this, new Point(screen.getGuiLeft() + x, screen.getGuiTop() + y));
-    }
-
-    @Override
-    public List<Pair<Integer, Integer>> getUpgradeSlotsPosition(int x, int y) {
-        List<Pair<Integer, Integer>> positions = new ArrayList<>();
-        if(isTagSelector()) {
-            //Tag Selector
-            positions.add(Pair.of(x + 7, y + 44)); //Trash slot - hidden
-            positions.add(Pair.of(x + 64, y + 23)); //Filter slot
-        } else {
-            //Filter Slots
-            for(int i = 0; i < getRows(); i++) {
-                for(int j = 0; j < getSlotsInRow(i); j++) {
-                    positions.add(Pair.of(x + 7 + j * 18, y + 44 + i * 18));
-                }
-            }
-        }
-        return positions;
-    }
-
-    @Override
-    public List<Slot> getUpgradeSlots(BackpackBaseMenu menu, BackpackWrapper wrapper, int x, int y) {
-        List<Slot> slots = super.getUpgradeSlots(menu, wrapper, x, y);
-        if(!isTagSelector()) {
-            slots.replaceAll(slot -> {
-                if(slot.x == x + 7 && slot.y == y + 44) {
-                    return new TrashSlot(this, this.filter, 0, x + 7, y + 44, 0);
-                }
-                return slot;
-            });
-        } else {
-            slots.clear();
-            slots.add(new TrashSlot(this, this.filter, 0, x + 7, y + 44, 0) {
-                @Override
-                public boolean isActive() {
-                    return false;
-                }
-
-                @Override
-                public boolean mayPlace(ItemStack pStack) {
-                    return false;
-                }
-            });
-            slots.add(new FilterSlotItemHandler(this, this.filter, 1, x + 64, y + 23, 2));
-        }
-        return slots;
     }
 
     @Override
@@ -125,14 +59,6 @@ public class VoidUpgrade extends FilterUpgradeBase<VoidUpgrade, VoidFilterSettin
                 getFilterSettings().updateFilter(NbtHelper.get(getDataHolderStack(), ModDataHelper.BACKPACK_CONTAINER));
                 getFilterSettings().updateFilterTags(NbtHelper.get(getDataHolderStack(), ModDataHelper.FILTER_TAGS));
                 changeListeners.forEach(Runnable::run);
-            }
-
-            @Override
-            public int getSlotLimit(int slot) {
-                if(slot == 0) {
-                    return 64;
-                }
-                return 1;
             }
         };
     }

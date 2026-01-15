@@ -2,10 +2,10 @@ package com.tiviacz.travelersbackpack.compat.emi;
 
 import com.google.common.collect.Maps;
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
-import com.tiviacz.travelersbackpack.compat.common.ServerboundGhostSlotPacket;
+import com.tiviacz.travelersbackpack.common.ServerActions;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.FilterSlotItemHandler;
-import com.tiviacz.travelersbackpack.util.PacketDistributorHelper;
+import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
 import dev.emi.emi.api.EmiDragDropHandler;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
@@ -36,7 +36,7 @@ public class DragDropHandler implements EmiDragDropHandler<BackpackScreen> {
                         return;
                     }
                     if(menu.getSlot(slot) instanceof FilterSlotItemHandler filterSlot && filterSlot.mayPlace(ghostStack)) {
-                        map.put(new Bounds(screen.getGuiLeft() + filterSlot.x, screen.getGuiTop() + filterSlot.y, 16, 16), (i) -> PacketDistributorHelper.sendToServer(new ServerboundGhostSlotPacket(ghostStack, menu.getSlot(slot).index)));
+                        map.put(new Bounds(screen.getGuiLeft() + filterSlot.x, screen.getGuiTop() + filterSlot.y, 16, 16), (i) -> ServerboundActionTagPacket.create(ServerboundActionTagPacket.SET_STACK, ServerActions.SLOT, ghostStack, menu.getSlot(slot).index));
                     }
                 }));
             }

@@ -15,6 +15,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
+import net.minecraft.world.item.ItemStack;
 
 public record ServerboundActionTagPacket(CompoundTag actionTag) implements IPacket<ServerboundActionTagPacket> {
     public static ServerboundActionTagPacket decode(FriendlyByteBuf buffer) {
@@ -42,6 +43,7 @@ public record ServerboundActionTagPacket(CompoundTag actionTag) implements IPack
     public static final int TOGGLE_VISIBILITY = 13;
     public static final int ABILITY_SLIDER = 14;
     public static final int EQUIP_BACKPACK = 15;
+    public static final int SET_STACK = 16;
 
     public static void handle(MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl handler, FriendlyByteBuf buf, PacketSender responseSender) {
         ServerboundActionTagPacket message = decode(buf);
@@ -112,6 +114,12 @@ public record ServerboundActionTagPacket(CompoundTag actionTag) implements IPack
                     boolean equip = actionTag.getBoolean("Arg0");
                     ServerActions.equipBackpack(player, equip);
                 }
+                case SET_STACK -> {
+                    int type = actionTag.getInt("Arg0");
+                    ItemStack stack = ItemStack.of(actionTag.getCompound("Arg1"));
+                    int slot = actionTag.getInt("Arg2");
+                    ServerActions.setStack(player, type, stack, slot);
+                }
             }
         });
     }
@@ -135,6 +143,8 @@ public record ServerboundActionTagPacket(CompoundTag actionTag) implements IPack
                 tag.putInt(argName, (int)args[i]);
             } else if(args[i] instanceof Double) {
                 tag.putDouble(argName, (double)args[i]);
+            } else if(args[i] instanceof ItemStack itemstack) {
+                tag.put(argName, itemstack.save(new CompoundTag()));
             }
         }
         return tag;

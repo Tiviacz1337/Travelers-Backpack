@@ -3,7 +3,6 @@ package com.tiviacz.travelersbackpack;
 import com.mojang.authlib.minecraft.client.ObjectMapper;
 import com.tiviacz.travelersbackpack.advancements.ActionTypeTrigger;
 import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
-import com.tiviacz.travelersbackpack.compat.common.RecipeViewersNetwork;
 import com.tiviacz.travelersbackpack.compat.craftingtweaks.CraftingTweaksCompat;
 import com.tiviacz.travelersbackpack.compat.pneumonogravestones.PneumonoGravestonesCompat;
 import com.tiviacz.travelersbackpack.compat.trinkets.TravelersBackpackTrinketIntegration;
@@ -71,10 +70,6 @@ public class TravelersBackpack implements ModInitializer {
         TravelersBackpackItem.registerCauldronInteraction();
 
         FabricLoader fabricLoader = FabricLoader.getInstance();
-
-        if(fabricLoader.isModLoaded("roughlyenoughitems") || fabricLoader.isModLoaded("jei") || fabricLoader.isModLoaded("emi")) {
-            RecipeViewersNetwork.registerPackets();
-        }
 
         accessoriesLoaded = fabricLoader.isModLoaded("accessories");
         trinketsLoaded = fabricLoader.isModLoaded("trinkets");

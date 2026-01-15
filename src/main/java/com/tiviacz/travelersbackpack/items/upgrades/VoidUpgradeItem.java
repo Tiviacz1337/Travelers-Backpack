@@ -39,7 +39,6 @@ public class VoidUpgradeItem extends UpgradeItem {
     public TriFunction<UpgradeManager, Integer, ItemStack, Optional<? extends UpgradeBase<?>>> getUpgrade() {
         return (upgradeManager, dataHolderSlot, provider) -> {
             NonNullList<ItemStack> filter = NbtHelper.getOrDefault(provider, ModDataHelper.BACKPACK_CONTAINER, NonNullList.withSize(9, ItemStack.EMPTY));
-            filter.set(0, ItemStack.EMPTY); //#TODO TO REMOVE IN THE FUTURE, KEEP IT NOW TO PREVENT DUPLICATION WHILE UPDATING FROM PREV VERSION
             List<String> filterTags = NbtHelper.getOrDefault(provider, ModDataHelper.FILTER_TAGS, new ArrayList<>());
             return Optional.of(new VoidUpgrade(upgradeManager, dataHolderSlot, filter, filterTags));
         };
