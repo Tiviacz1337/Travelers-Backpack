@@ -155,7 +155,7 @@ public class VoidWidget extends FilterUpgradeWidgetBase<VoidWidget, VoidUpgrade>
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if(isTabOpened()) {
-            if(isWithinTrashBinSlot(mouseX, mouseY) && screen.getMenu().getCarried().isEmpty()) {
+            if(isWithinTrashBinSlot(mouseX, mouseY) && screen.getWrapper().isOwner(screen.getScreenPlayer()) && screen.getMenu().getCarried().isEmpty()) {
                 this.hoveringTrashBin = !this.hoveringTrashBin;
                 if(!isHoveringWithTrashBin()) {
                     this.selectedSlots.forEach(index -> ServerboundActionTagPacket.create(ServerboundActionTagPacket.SET_STACK, ServerActions.SLOT, ItemStack.EMPTY, index));
