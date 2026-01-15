@@ -16,7 +16,6 @@ import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.BackpackContainer;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
-import com.tiviacz.travelersbackpack.inventory.handler.StorageAccessWrapper;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.BackpackSlotItemHandler;
 import com.tiviacz.travelersbackpack.util.*;
 import net.fabricmc.api.EnvType;
@@ -260,7 +259,7 @@ public class TravelersBackpackItem extends BlockItem {
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
 
         if(NbtHelper.has(stack, ModDataHelper.TIER)) {
-            tooltipComponents.add(Component.translatable("tier.travelersbackpack." + Tiers.of((int)NbtHelper.get(stack, ModDataHelper.TIER)).getName()));
+            tooltipComponents.add(Component.translatable("tier.travelersbackpack.backpack").append(Tiers.of((int)NbtHelper.get(stack, ModDataHelper.TIER)).getLocalizedName()));
         }
 
         if(NbtHelper.has(stack, ModDataHelper.BACKPACK_CONTAINER) && !KeyHelper.isCtrlPressed()) {

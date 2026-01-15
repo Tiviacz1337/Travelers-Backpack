@@ -2,6 +2,7 @@ package com.tiviacz.travelersbackpack.inventory;
 
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModItems;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 
@@ -29,6 +30,10 @@ public class Tiers {
 
         public String getName() {
             return this.name;
+        }
+
+        public Component getLocalizedName() {
+            return Component.translatable("tier.travelersbackpack." + this.name);
         }
 
         public int getStorageSlots() {
