@@ -1,6 +1,7 @@
 ✨ Improved Void Upgrade - Removed Trash Slot from filter slots and added separate Trash Bin feature for deleting items and draining tanks  
 ✨ Fixed visual compatibility with Trash Slot mod for proper UI display  
 🔧 Changed translation entries for tiers  
+🐛 Fixed wrong boundaries of sorting buttons  
 🐛 Fixed crash with some mods  
 📚 Updated hu_hu - Thanks Gery D.!  
 
