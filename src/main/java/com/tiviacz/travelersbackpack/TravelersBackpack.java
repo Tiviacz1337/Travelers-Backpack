@@ -5,6 +5,7 @@ import com.tiviacz.travelersbackpack.compat.accessories.TravelersBackpackAccesso
 import com.tiviacz.travelersbackpack.compat.craftingtweaks.CraftingTweaksCompat;
 import com.tiviacz.travelersbackpack.compat.curios.TravelersBackpackCurio;
 import com.tiviacz.travelersbackpack.compat.polymorph.PolymorphCompat;
+import com.tiviacz.travelersbackpack.compat.trashslot.TrashSlotCompat;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
 import com.tiviacz.travelersbackpack.handlers.ModClientEventHandler;
@@ -47,6 +48,7 @@ public class TravelersBackpack {
     public static boolean reiLoaded;
     public static boolean emiLoaded;
     public static boolean polymorphLoaded;
+    public static boolean trashSlotLoaded;
 
     public TravelersBackpack(IEventBus eventBus, ModContainer modContainer) {
         NeoForgeMod.enableMilkFluid();
@@ -94,6 +96,7 @@ public class TravelersBackpack {
         reiLoaded = ModList.get().isLoaded("roughlyenoughitems");
         emiLoaded = ModList.get().isLoaded("emi");
         polymorphLoaded = ModList.get().isLoaded("polymorph");
+        trashSlotLoaded = ModList.get().isLoaded("trashslot");
 
         //Fetch supporters
         Supporters.fetchSupporters();
@@ -113,6 +116,7 @@ public class TravelersBackpack {
         event.enqueueWork(() -> {
             ModClientEventHandler.registerItemModelProperties();
             if(craftingTweaksLoaded) CraftingTweaksCompat.registerCraftingTweaksAdditionClient();
+            if(trashSlotLoaded) TrashSlotCompat.register();
         });
         if(accessoriesLoaded) TravelersBackpackAccessory.initClient();
         if(curiosLoaded) TravelersBackpackCurio.registerCurioRenderer();

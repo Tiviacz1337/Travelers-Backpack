@@ -169,6 +169,9 @@ dependencies {
     implementation("maven.modrinth:crafting-tweaks:StwKB1IQ")
     implementation("maven.modrinth:balm:rrxxIYvJ")
 
+    //Trash Slot
+    implementation("maven.modrinth:trashslot:xyqrX19y")
+
     //Carry On
     //runtimeOnly "curse.maven:carryon-274259:5141764"
 
