@@ -27,16 +27,16 @@ public class TierUpgrade extends Item {
                 tooltipComponents.add(Component.translatable("item.travelersbackpack.blank_upgrade_tooltip").withStyle(ChatFormatting.BLUE));
                 break;
             case IRON_TIER_UPGRADE:
-                tooltipComponents.add(Component.translatable("item.travelersbackpack.tier_upgrade_tooltip", Tiers.LEATHER.getName()).withStyle(ChatFormatting.BLUE));
+                tooltipComponents.add(Component.translatable("item.travelersbackpack.tier_upgrade_tooltip", Tiers.LEATHER.getLocalizedName()).withStyle(ChatFormatting.BLUE));
                 break;
             case GOLD_TIER_UPGRADE:
-                tooltipComponents.add(Component.translatable("item.travelersbackpack.tier_upgrade_tooltip", Tiers.IRON.getName()).withStyle(ChatFormatting.BLUE));
+                tooltipComponents.add(Component.translatable("item.travelersbackpack.tier_upgrade_tooltip", Tiers.IRON.getLocalizedName()).withStyle(ChatFormatting.BLUE));
                 break;
             case DIAMOND_TIER_UPGRADE:
-                tooltipComponents.add(Component.translatable("item.travelersbackpack.tier_upgrade_tooltip", Tiers.GOLD.getName()).withStyle(ChatFormatting.BLUE));
+                tooltipComponents.add(Component.translatable("item.travelersbackpack.tier_upgrade_tooltip", Tiers.GOLD.getLocalizedName()).withStyle(ChatFormatting.BLUE));
                 break;
             case NETHERITE_TIER_UPGRADE:
-                tooltipComponents.add(Component.translatable("item.travelersbackpack.tier_upgrade_tooltip", Tiers.DIAMOND.getName()).withStyle(ChatFormatting.BLUE));
+                tooltipComponents.add(Component.translatable("item.travelersbackpack.tier_upgrade_tooltip", Tiers.DIAMOND.getLocalizedName()).withStyle(ChatFormatting.BLUE));
                 break;
         }
     }
