@@ -1,9 +1,10 @@
 package com.tiviacz.travelersbackpack.compat.rei;
 
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
-import com.tiviacz.travelersbackpack.compat.common.ServerboundGhostSlotPacket;
+import com.tiviacz.travelersbackpack.common.ServerActions;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.FilterSlotItemHandler;
+import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
 import me.shedaniel.math.Point;
 import me.shedaniel.math.Rectangle;
 import me.shedaniel.rei.api.client.gui.drag.*;
@@ -12,7 +13,6 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +57,7 @@ public class ReiGhostIngredientHandler implements DraggableStackVisitor<Backpack
 
                             @Override
                             public void accept() {
-                                PacketDistributor.sendToServer(new ServerboundGhostSlotPacket(ghostStack, menu.getSlot(slot).index));
+                                ServerboundActionTagPacket.create(ServerboundActionTagPacket.SET_STACK, ServerActions.SLOT, ghostStack, menu.getSlot(slot).index);
                             }
                         });
                     }

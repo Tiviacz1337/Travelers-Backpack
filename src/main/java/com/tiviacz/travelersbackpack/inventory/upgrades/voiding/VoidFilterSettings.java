@@ -2,8 +2,6 @@ package com.tiviacz.travelersbackpack.inventory.upgrades.voiding;
 
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.upgrades.FilterSettingsBase;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -84,11 +82,5 @@ public class VoidFilterSettings extends FilterSettingsBase {
         } else {
             return ItemStack.isSameItemSameComponents(stack, other);
         }
-    }
-
-    @Override
-    public void updateFilter(@Nullable List<ItemStack> items) {
-        if(items == null) return;
-        super.updateFilter(items.stream().skip(1).toList());
     }
 }

@@ -155,7 +155,7 @@ dependencies {
     compileOnly("top.theillusivec4.curios:curios-neoforge:${curios_version}")
 
     //JEI
-    compileOnly("maven.modrinth:jei:KbENlUcA")
+    implementation("maven.modrinth:jei:KbENlUcA")
 
     //EMI
     compileOnly("maven.modrinth:emi:ouSj7NfF")
