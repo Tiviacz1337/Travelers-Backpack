@@ -133,7 +133,7 @@ dependencies {
 	modCompileOnly("maven.modrinth:architectury-api:Wto0RchG")
 
 	//JEI
-	modCompileOnly("maven.modrinth:jei:P23di0ns")
+	modImplementation("maven.modrinth:jei:P23di0ns")
 
 	//Item scroller
 	modCompileOnly("maven.modrinth:item-scroller:uK5Njuv8")

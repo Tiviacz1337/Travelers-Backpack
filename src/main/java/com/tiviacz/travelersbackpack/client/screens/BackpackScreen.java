@@ -24,7 +24,9 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.RenderType;
@@ -33,13 +35,12 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Environment(EnvType.CLIENT)
 public class BackpackScreen extends AbstractBackpackScreen<BackpackBaseMenu> implements MenuAccess<BackpackBaseMenu> {
     public boolean tanksVisible;
+    public Map<Class<?>, WidgetBase<?>> mappedWidgets = new HashMap<>();
     public List<UpgradeSlot> upgradeSlots = new ArrayList<>();
     public List<IButton> buttons = new ArrayList<>();
     public SortingButtons sortingButtons;
@@ -206,6 +207,14 @@ public class BackpackScreen extends AbstractBackpackScreen<BackpackBaseMenu> imp
         }
     }
 
+    @Override
+    protected <T extends GuiEventListener & Renderable & NarratableEntry> T addRenderableWidget(T widget) {
+        if(widget instanceof UpgradeWidgetBase<?> upgradeWidgetBase) {
+            this.mappedWidgets.put(upgradeWidgetBase.getUpgrade().getClass(), upgradeWidgetBase);
+        }
+        return super.addRenderableWidget(widget);
+    }
+
     public void initWidgets() {
         this.settingsWidget = new SettingsWidget(this, new Point(this.leftPos + this.imageWidth - 3, this.topPos + 4), false);
         addRenderableWidget(this.settingsWidget);
@@ -288,7 +297,9 @@ public class BackpackScreen extends AbstractBackpackScreen<BackpackBaseMenu> imp
             }
         });
 
+        this.children().stream().filter(w -> w instanceof WidgetBase).forEach(w -> ((WidgetBase)w).renderUnderTooltip(guiGraphics, mouseX, mouseY, partialTicks));
         this.renderTooltip(guiGraphics, mouseX, mouseY);
+        this.children().stream().filter(w -> w instanceof WidgetBase).forEach(w -> ((WidgetBase)w).renderOnTop(guiGraphics, mouseX, mouseY, partialTicks));
     }
 
     @Override
