@@ -91,7 +91,9 @@ public class SortingButtons extends WidgetBase<BackpackScreen> {
     }
 
     public boolean isButtonHovered(Point pos, int mouseX, int mouseY, Buttons button) {
-        return (pos.x() + 4 + button.ordinal() * 11) <= mouseX && mouseX <= (pos.x() + 4 + button.ordinal() * 11) + 8 && (pos.y() + 4) <= mouseY && mouseY <= (pos.y() + 4) + 8;
+        int buttonX = pos.x() + 2 + button.ordinal() * 12;
+        int buttonY = pos.y() + 3;
+        return buttonX <= mouseX && mouseX < buttonX + 10 && buttonY <= mouseY && mouseY < buttonY + 10;
     }
 
     public enum Buttons {
