@@ -251,7 +251,7 @@ public class TravelersBackpackItem extends BlockItem {
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
 
         if(stack.has(ModDataComponents.TIER)) {
-            tooltipComponents.add(Component.translatable("tier.travelersbackpack." + Tiers.of(stack.get(ModDataComponents.TIER)).getName()));
+            tooltipComponents.add(Component.translatable("tier.travelersbackpack.backpack").append(Tiers.of(stack.get(ModDataComponents.TIER)).getLocalizedName()));
         }
 
         if(stack.has(ModDataComponents.BACKPACK_CONTAINER) && !KeyHelper.isCtrlPressed()) {
