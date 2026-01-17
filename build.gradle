@@ -116,6 +116,9 @@ dependencies {
 	modImplementation("maven.modrinth:crafting-tweaks:hOCFoQac")
 	modApi("net.blay09.mods:kuma-api-fabric:21.0.7+1.21")
 
+	//Trash Slot
+	modImplementation "curse.maven:trashslot-235577:6319140"
+
 	//ModMenu
 	modImplementation "com.terraformersmc:modmenu:${project.mod_menu_version}"
 
@@ -123,18 +126,18 @@ dependencies {
 	modCompileOnly("dev.emi:trinkets:${trinkets_version}")
 
 	//Accessories
-	modImplementation("io.wispforest:accessories-fabric:${project.accessories_version}")
+	modCompileOnly("io.wispforest:accessories-fabric:${project.accessories_version}")
 
 	//REI
-	modImplementation("maven.modrinth:rei:aWzTESNC")
-	modImplementation("maven.modrinth:architectury-api:Wto0RchG")
+	modCompileOnly("maven.modrinth:rei:aWzTESNC")
+	modCompileOnly("maven.modrinth:architectury-api:Wto0RchG")
 
 	//JEI
 	modCompileOnly("maven.modrinth:jei:P23di0ns")
 
 	//Item scroller
-	modImplementation("maven.modrinth:item-scroller:uK5Njuv8")
-	modImplementation("maven.modrinth:malilib:f8wE52F5")
+	modCompileOnly("maven.modrinth:item-scroller:uK5Njuv8")
+	modCompileOnly("maven.modrinth:malilib:f8wE52F5")
 
 	//Polymorph
 	modCompileOnly("maven.modrinth:polymorph:j4jPy88h")
@@ -156,8 +159,8 @@ dependencies {
 	modCompileOnly("curse.maven:glitchcore-955399:5483774")
 
 	//EMF & ETT
-	modRuntimeOnly("maven.modrinth:entity-model-features:9t01xL7K")
-	modRuntimeOnly("maven.modrinth:entitytexturefeatures:zzyLrMkD")
+	modCompileOnly("maven.modrinth:entity-model-features:9t01xL7K")
+	modCompileOnly("maven.modrinth:entitytexturefeatures:zzyLrMkD")
 
 	//TS
 	modCompileOnly("maven.modrinth:terrastorage:4lI1uVXX")
@@ -165,8 +168,8 @@ dependencies {
     modCompileOnly("maven.modrinth:always-eat:pANmjAAt")
 
 	//Gravestones
-	modImplementation("maven.modrinth:pneumono_gravestones:HO3Zv8HU")
-	modImplementation("maven.modrinth:pneumono_core:QKvgjhTZ")
+	modCompileOnly("maven.modrinth:pneumono_gravestones:HO3Zv8HU")
+	modCompileOnly("maven.modrinth:pneumono_core:QKvgjhTZ")
 
 	//ESB
 	//modImplementation ("maven.modrinth:easy-shulker-boxes:m5lAjDSt")

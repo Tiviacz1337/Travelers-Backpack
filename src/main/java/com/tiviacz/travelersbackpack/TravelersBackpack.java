@@ -36,6 +36,7 @@ public class TravelersBackpack implements ModInitializer {
     public static boolean pneumonoGravestonesLoaded;
 
     public static boolean polymorphLoaded;
+    public static boolean trashSlotLoaded;
 
     @Override
     public void onInitialize() {
@@ -90,6 +91,7 @@ public class TravelersBackpack implements ModInitializer {
         if(pneumonoGravestonesLoaded) PneumonoGravestonesCompat.register();
 
         polymorphLoaded = fabricLoader.isModLoaded("polymorph");
+        trashSlotLoaded = fabricLoader.isModLoaded("trashslot");
 
         //Fetch supporters
         Supporters.fetchSupporters();
