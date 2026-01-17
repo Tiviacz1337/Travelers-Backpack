@@ -28,6 +28,8 @@ public class TravelersBackpackComponent implements ITravelersBackpack {
     public BackpackWrapper backpackWrapper;
     public ItemStack backpack = new ItemStack(Items.AIR, 0);
 
+    public boolean loadFromNbt = false;
+
     public TravelersBackpackComponent(Player player) {
         this.player = player;
     }
@@ -55,7 +57,10 @@ public class TravelersBackpackComponent implements ITravelersBackpack {
         synchronise();
 
         //Data transfer
-        AttachmentUtils.getAttachment(player).ifPresent(itb -> itb.equipBackpack(stack, player));
+        if(!loadFromNbt) {
+            AttachmentUtils.getAttachment(player).ifPresent(itb -> itb.equipBackpack(stack, player));
+        }
+        loadFromNbt = false;
     }
 
     @Override
@@ -157,6 +162,7 @@ public class TravelersBackpackComponent implements ITravelersBackpack {
     @Override
     public void readFromNbt(CompoundTag compoundTag, HolderLookup.Provider registryLookup) {
         ItemStack backpack = ItemStack.parseOptional(registryLookup, compoundTag.getCompound(BACKPACK));
+        loadFromNbt = true;
         equipBackpack(backpack);
     }
 
