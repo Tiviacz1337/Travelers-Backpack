@@ -212,8 +212,7 @@ public class BackpackScreen extends AbstractBackpackScreen<BackpackBaseMenu> imp
         if(widget instanceof UpgradeWidgetBase<?> upgradeWidgetBase) {
             this.mappedWidgets.put(upgradeWidgetBase.getUpgrade().getClass(), upgradeWidgetBase);
         }
-        this.addRenderableOnly(widget);
-        return this.addWidget(widget);
+        return super.addRenderableWidget(widget);
     }
 
     public void initWidgets() {
