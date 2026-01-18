@@ -106,7 +106,7 @@ public class BackpackScreen extends AbstractBackpackScreen<BackpackBaseMenu> imp
         this.visibleRows = (int)Math.ceil((double)this.slotCount / getSlotsInRow());
         int playerInventoryHeight = 96;
         this.imageWidth = wideTexture ? (tanksVisible ? 256 : 212) : (tanksVisible ? 220 : 176);
-        this.imageHeight = TOP_BAR_OFFSET + this.slotsHeight + playerInventoryHeight;
+        this.imageHeight = TOP_BAR_OFFSET + this.slotsHeight + playerInventoryHeight + 1;
 
         updateDimensions();
 

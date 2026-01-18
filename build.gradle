@@ -117,6 +117,9 @@ dependencies {
 	modImplementation("maven.modrinth:crafting-tweaks:gog2sFGz")
 	modApi("net.blay09.mods:kuma-api-fabric:21.10.5+1.21.10")
 
+	//Trash Slot
+	modImplementation "maven.modrinth:trashslot:8pBON0BS"
+
 	//ModMenu
 	modImplementation "com.terraformersmc:modmenu:${project.mod_menu_version}"
 

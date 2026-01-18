@@ -18,6 +18,7 @@ import com.tiviacz.travelersbackpack.commands.BackpackIconCommands;
 import com.tiviacz.travelersbackpack.compat.accessories.TravelersBackpackAccessory;
 import com.tiviacz.travelersbackpack.compat.craftingtweaks.CraftingTweaksCompat;
 import com.tiviacz.travelersbackpack.compat.polymorph.PolymorphCompat;
+import com.tiviacz.travelersbackpack.compat.trashslot.TrashSlotCompat;
 import com.tiviacz.travelersbackpack.compat.trinkets.TravelersBackpackTrinket;
 import com.tiviacz.travelersbackpack.components.RenderInfo;
 import com.tiviacz.travelersbackpack.fluids.potion.PotionFluidVariantAttributeHandler;
@@ -100,6 +101,7 @@ public class TravelersBackpackClient implements ClientModInitializer {
 
         //Polymorph Integration
         if(TravelersBackpack.polymorphLoaded) PolymorphCompat.registerWidget();
+        if(TravelersBackpack.trashSlotLoaded) TrashSlotCompat.register();
 
         //Backpack Model Deserializer
         UnbakedModelDeserializer.register(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "backpack"), BackpackDynamicModel.Loader.INSTANCE);
