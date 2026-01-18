@@ -1,5 +1,6 @@
 package com.tiviacz.travelersbackpack;
 
+import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
 import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
 import com.tiviacz.travelersbackpack.compat.accessories.TravelersBackpackAccessory;
 import com.tiviacz.travelersbackpack.compat.craftingtweaks.CraftingTweaksCompat;
@@ -92,6 +93,9 @@ public class TravelersBackpack implements ModInitializer {
         Supporters.fetchSupporters();
 
         EffectFluidRegistry.initEffects();
+
+        //Data Transfer
+        AttachmentUtils.registerJoinEquip();
     }
 
     public void registerDeathHandler() {

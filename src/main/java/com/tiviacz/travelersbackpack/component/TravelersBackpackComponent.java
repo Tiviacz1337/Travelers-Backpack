@@ -32,6 +32,8 @@ public class TravelersBackpackComponent implements ITravelersBackpack {
     public BackpackWrapper backpackWrapper;
     public ItemStack backpack = new ItemStack(Items.AIR, 0);
 
+    public boolean loadFromNbt = false;
+
     public TravelersBackpackComponent(Player player) {
         this.player = player;
     }
@@ -49,7 +51,10 @@ public class TravelersBackpackComponent implements ITravelersBackpack {
     @Override
     public void equipBackpack(ItemStack stack) {
         this.remove();
-        if(!(stack.getItem() instanceof TravelersBackpackItem)) return;
+        if(!(stack.getItem() instanceof TravelersBackpackItem)) {
+            loadFromNbt = false;
+            return;
+        }
 
         this.backpack = stack;
         this.backpackWrapper = new BackpackWrapper(this.backpack, Reference.WEARABLE_SCREEN_ID, this.player, this.player.level());
@@ -58,8 +63,13 @@ public class TravelersBackpackComponent implements ITravelersBackpack {
         //Update client
         synchronise();
 
-        //Data transfer
-        AttachmentUtils.getAttachment(player).ifPresent(itb -> itb.equipBackpack(stack, player));
+        if(this.player.level() != null && !this.player.level().isClientSide()) {
+            //Data transfer
+            if(!loadFromNbt) {
+                AttachmentUtils.getAttachment(player).ifPresent(itb -> itb.equipBackpack(stack, player));
+            }
+            loadFromNbt = false;
+        }
     }
 
     @Override
@@ -67,9 +77,6 @@ public class TravelersBackpackComponent implements ITravelersBackpack {
         if(this.backpackWrapper != null) {
             this.backpack = stack;
             this.backpackWrapper.setBackpackStack(this.backpack);
-
-            //Data transfer
-            AttachmentUtils.getAttachment(player).ifPresent(itb -> itb.updateBackpack(stack, this.player));
         } else {
             equipBackpack(stack);
         }
@@ -111,10 +118,12 @@ public class TravelersBackpackComponent implements ITravelersBackpack {
                 }
                 ComponentUtils.WEARABLE.syncWith(recipient, (ComponentProvider)this.player, (buf, rec) -> writeSyncPacket(getBackpack(), buf, rec, true), p -> true);
             }
-        }
 
-        //Data transfer
-        AttachmentUtils.getAttachment(player).ifPresent(itb -> itb.remove(player));
+            //Data transfer
+            if(!loadFromNbt) {
+                AttachmentUtils.getAttachment(player).ifPresent(itb -> itb.remove(player));
+            }
+        }
     }
 
     @Override
@@ -160,6 +169,7 @@ public class TravelersBackpackComponent implements ITravelersBackpack {
     @Override
     public void readData(ValueInput valueInput) {
         ItemStack backpack = valueInput.read(BACKPACK, ItemStack.OPTIONAL_CODEC).orElseGet(() -> new ItemStack(Items.AIR, 0));
+        loadFromNbt = true;
         equipBackpack(backpack);
         /*I temStack backpack = ItemStack.parse(registryLookup, compoundTag.getCompoundOrEmpty(BACKPACK)).orElseGet(() -> new ItemStack(Items.AIR, 0));
         equipBackpack(backpack);*/
@@ -168,6 +178,11 @@ public class TravelersBackpackComponent implements ITravelersBackpack {
     @Override
     public void writeData(ValueOutput valueOutput) {
         valueOutput.store(BACKPACK, ItemStack.OPTIONAL_CODEC, this.backpack);
+
+        //Save data
+        if(this.player != null) {
+            AttachmentUtils.getAttachment(player).ifPresent(itb -> itb.equipBackpack(this.backpack, player));
+        }
 
         /*CompoundTag compound = new CompoundTag();
         if(hasBackpack()) {
