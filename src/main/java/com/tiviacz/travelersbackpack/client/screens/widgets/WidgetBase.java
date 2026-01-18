@@ -36,11 +36,19 @@ public class WidgetBase<T extends AbstractBackpackScreen<?>> implements Renderab
 
     }
 
+    public void renderUnderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+
+    }
+
     public void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
 
     }
 
     public void renderAboveBg(GuiGraphics guiGraphics, int xPos, int yPos, int mouseX, int mouseY, float partialTicks) {
+
+    }
+
+    public void renderOnTop(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
 
     }
 

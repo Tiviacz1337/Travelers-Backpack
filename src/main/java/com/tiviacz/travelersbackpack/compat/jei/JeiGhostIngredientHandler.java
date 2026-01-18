@@ -1,14 +1,14 @@
 package com.tiviacz.travelersbackpack.compat.jei;
 
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
-import com.tiviacz.travelersbackpack.compat.common.ServerboundGhostSlotPacket;
+import com.tiviacz.travelersbackpack.common.ServerActions;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.FilterSlotItemHandler;
+import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.handlers.IGhostIngredientHandler;
 import mezz.jei.api.ingredients.ITypedIngredient;
 import net.minecraft.client.renderer.Rect2i;
-import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +33,7 @@ public class JeiGhostIngredientHandler implements IGhostIngredientHandler<Backpa
 
                             @Override
                             public void accept(I i) {
-                                ClientPacketDistributor.sendToServer(new ServerboundGhostSlotPacket(ghostStack, menu.getSlot(slot).index));
+                                ServerboundActionTagPacket.create(ServerboundActionTagPacket.SET_STACK, ServerActions.SLOT, ghostStack, menu.getSlot(slot).index);
                             }
                         });
                     }

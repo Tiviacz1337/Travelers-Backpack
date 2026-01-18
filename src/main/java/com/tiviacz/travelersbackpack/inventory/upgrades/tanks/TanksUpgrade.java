@@ -33,16 +33,11 @@ public class TanksUpgrade extends UpgradeBase<TanksUpgrade> {
     private final BackpackResourceHandler fluidSlotsHandler = createTemporaryHandler();
     protected final FluidTank leftTank = createFluidHandler(1000);
     protected final FluidTank rightTank = createFluidHandler(1000);
-    public final Point leftTankPos;
-    public final Point rightTankPos;
 
     public TanksUpgrade(UpgradeManager manager, int dataHolderSlot, Fluids fluids) {
         super(manager, dataHolderSlot, new Point(51, 72));
         this.setTanksCapacity();
         this.setFluids(fluids);
-
-        this.leftTankPos = new Point(7, 15);
-        this.rightTankPos = new Point(195 + (manager.getWrapper().isExtended() ? 36 : 0), 15);
 
         //Update Render data
         getUpgradeManager().getWrapper().setRenderInfo(writeToRenderData());

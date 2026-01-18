@@ -15,6 +15,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
@@ -41,6 +42,7 @@ public record ServerboundActionTagPacket(CompoundTag actionTag) implements Custo
     public static final int TOGGLE_VISIBILITY = 13;
     public static final int ABILITY_SLIDER = 14;
     public static final int EQUIP_BACKPACK = 15;
+    public static final int SET_STACK = 16;
 
     public static void handle(ServerboundActionTagPacket message, IPayloadContext ctx) {
         ctx.enqueueWork(() -> {
@@ -112,6 +114,12 @@ public record ServerboundActionTagPacket(CompoundTag actionTag) implements Custo
                     boolean equip = actionTag.getBooleanOr("Arg0", false);
                     ServerActions.equipBackpack(player, equip);
                 }
+                case SET_STACK -> {
+                    int type = actionTag.getIntOr("Arg0", 0);
+                    ItemStack stack = ItemStack.OPTIONAL_CODEC.parse(NbtOps.INSTANCE, actionTag.getCompoundOrEmpty("Arg1")).getOrThrow();
+                    int slot = actionTag.getIntOr("Arg2", -1);
+                    ServerActions.setStack(player, type, stack, slot);
+                }
             }
         });
     }
@@ -135,6 +143,8 @@ public record ServerboundActionTagPacket(CompoundTag actionTag) implements Custo
                 tag.putInt(argName, (int)args[i]);
             } else if(args[i] instanceof Double) {
                 tag.putDouble(argName, (double)args[i]);
+            } else if(args[i] instanceof ItemStack itemstack) {
+                tag.put(argName, ItemStack.OPTIONAL_CODEC.encodeStart(NbtOps.INSTANCE, itemstack).getOrThrow());
             }
         }
         return tag;
