@@ -159,10 +159,10 @@ public class UpgradeWidgetBase<U extends UpgradeBase> extends WidgetBase<Backpac
     }
 
     public void renderMatchContentsSlotOverlay(GuiGraphics guiGraphics, List<Integer> filter, int settingType, int settingValue, int activeSlots) {
-        if(isTabOpened()) {
+        if(isTabOpened() && getUpgrade() instanceof IFilterSlots filterSlots) {
             if(filter.get(settingType) == settingValue) {
-                for(int i = 0; i < 3; i++) {
-                    for(int j = 0; j < 3; j++) {
+                for(int i = 0; i < filterSlots.getRows(); i++) {
+                    for(int j = 0; j < filterSlots.getSlotsInRow(i); j++) {
                         if(j + i * 3 < activeSlots) {
                             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BackpackScreen.ICONS, pos.x() + 6 + 18 * j, pos.y() + 43 + 18 * i, 24, 36, 18, 18, 256, 256);
                         }
