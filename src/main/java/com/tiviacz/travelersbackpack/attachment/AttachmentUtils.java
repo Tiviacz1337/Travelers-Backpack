@@ -1,6 +1,7 @@
 package com.tiviacz.travelersbackpack.attachment;
 
 import com.tiviacz.travelersbackpack.init.ModAttachmentTypes;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.Optional;
@@ -17,6 +18,14 @@ public class AttachmentUtils {
             return Optional.empty();
         }
         return Optional.of(player.getAttachedOrCreate(ModAttachmentTypes.TRAVELERS_BACKPACK));
+    }
+
+    public static void registerJoinEquip() {
+        ServerPlayConnectionEvents.JOIN.register((listener, sender, server) -> {
+            AttachmentUtils.getAttachment(listener.getPlayer()).ifPresent(attachment -> {
+                attachment.equipBackpack(attachment.getBackpack(), listener.getPlayer());
+            });
+        });
     }
 
  /*   public static void synchronise(Player player) {
