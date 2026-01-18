@@ -23,6 +23,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.client.input.KeyEvent;
@@ -379,6 +380,14 @@ public class BackpackScreen extends AbstractBackpackScreen<BackpackBaseMenu> imp
             return true;
         }
         return super.keyPressed(event);
+    }
+
+    public void addCompatWidget(AbstractWidget widget) {
+        this.addRenderableWidget(widget);
+    }
+
+    public void removeCompatWidget(AbstractWidget widget) {
+        this.removeWidget(widget);
     }
 
     public static void displayTanksUpgradeWarning(Player player) {
