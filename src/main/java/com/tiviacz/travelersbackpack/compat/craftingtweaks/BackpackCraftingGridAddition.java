@@ -23,10 +23,7 @@ public class BackpackCraftingGridAddition implements ICraftingTweaks {
 
     private void addButton(AbstractWidget widget) {
         widgets.add(widget);
-        screen.renderables.add(widget);
-        screen.children.add(widget);
-        screen.narratables.add(widget);
-        //screen.addRenderableWidget(widget); // Somehow can't AT addRenderableWidget idk why
+        screen.addCompatWidget(widget);
     }
 
     @Override
@@ -34,15 +31,7 @@ public class BackpackCraftingGridAddition implements ICraftingTweaks {
         if(widgets.isEmpty()) {
             return;
         }
-
-        List<? extends GuiEventListener> screenChildren = screen.children();
-        List<Renderable> screenRenderables = screen.renderables;
-        if(screenChildren == null || screenRenderables == null) {
-            return;
-        }
-
-        widgets.forEach(screenChildren::remove);
-        widgets.forEach(screenRenderables::remove);
+        widgets.forEach(screen::removeCompatWidget);
         widgets.clear();
     }
 
