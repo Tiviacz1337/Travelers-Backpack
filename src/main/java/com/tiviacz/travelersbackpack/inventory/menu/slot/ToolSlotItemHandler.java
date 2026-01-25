@@ -51,7 +51,8 @@ public class ToolSlotItemHandler extends SlotItemHandler {
                 stack.getItem() instanceof ProjectileWeaponItem ||
                 stack.getItem() instanceof BrushItem ||
                 stack.getItem() instanceof TridentItem ||
-                stack.getItem() instanceof SpyglassItem;
+                stack.getItem() instanceof SpyglassItem ||
+                stack.getItem() instanceof ShieldItem;
     }
 
     @Override
