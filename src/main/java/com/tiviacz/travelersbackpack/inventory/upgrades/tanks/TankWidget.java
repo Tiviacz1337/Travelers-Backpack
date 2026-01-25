@@ -119,7 +119,7 @@ public class TankWidget extends UpgradeWidgetBase<TanksUpgrade> {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public List<Component> getTankTooltip(FluidTank tank) {
+    public static List<Component> getTankTooltip(FluidTank tank) {
         FluidStack fluidStack = tank.getFluid();
         List<Component> tankTips = new ArrayList<>();
         String fluidName = !fluidStack.isEmpty() ? fluidStack.getFluid().getFluidType().getDescription().getString() : I18n.get("screen.travelersbackpack.none");

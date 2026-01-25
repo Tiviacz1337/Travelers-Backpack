@@ -4,33 +4,36 @@ import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
+import com.tiviacz.travelersbackpack.client.screens.ToolsScreen;
 import com.tiviacz.travelersbackpack.client.screens.tooltip.BackpackTooltipComponent;
 import com.tiviacz.travelersbackpack.commands.BackpackIconCommands;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
-import com.tiviacz.travelersbackpack.init.ModDataHelper;
+import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.BackpackSlotItemHandler;
-import com.tiviacz.travelersbackpack.inventory.menu.slot.ToolSlotItemHandler;
-import com.tiviacz.travelersbackpack.items.HoseItem;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
 import com.tiviacz.travelersbackpack.network.ServerboundRetrieveBackpackPacket;
-import com.tiviacz.travelersbackpack.util.NbtHelper;
 import com.tiviacz.travelersbackpack.util.PacketDistributorHelper;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.Options;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.client.player.Input;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.GameType;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.InputEvent;
+import net.minecraftforge.client.event.MovementInputUpdateEvent;
 import net.minecraftforge.client.event.RegisterClientCommandsEvent;
 import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.event.TickEvent;
@@ -186,30 +189,13 @@ public class NeoForgeClientEventHandler {
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public static void clientTickEvent(final TickEvent.ClientTickEvent event) {
+    public static void clientTickEvent(TickEvent.ClientTickEvent event) {
         if(event.phase != TickEvent.Phase.START) return;
 
-        Player player = Minecraft.getInstance().player;
+        Minecraft mc = Minecraft.getInstance();
+        Player player = mc.player;
         if(player == null) return;
-        //Change Hose Tank Assignment
-        if(player.getMainHandItem().getItem() instanceof HoseItem && NbtHelper.has(player.getMainHandItem(), ModDataHelper.HOSE_MODES)) {
-            while(ModClientEventHandler.TOGGLE_TANK.consumeClick()) {
-                ServerboundActionTagPacket.create(ServerboundActionTagPacket.SWITCH_HOSE_TANK);
-            }
-        }
-        //Change Hose modes
-        if(TravelersBackpackConfig.CLIENT.disableScrollWheel.get()) {
-            ItemStack heldItem = player.getMainHandItem();
-            if(!ToolSlotItemHandler.isValid(heldItem)) {
-                while(ModClientEventHandler.SWAP_TOOL.consumeClick()) {
-                    if(!heldItem.isEmpty()) {
-                        if(heldItem.getItem() instanceof HoseItem && NbtHelper.has(heldItem, ModDataHelper.HOSE_MODES)) {
-                            ServerboundActionTagPacket.create(ServerboundActionTagPacket.SWITCH_HOSE_MODE, 1.0D);
-                        }
-                    }
-                }
-            }
-        }
+
         if(CapabilityUtils.isWearingBackpack(player)) {
             while(ModClientEventHandler.OPEN_BACKPACK.consumeClick()) {
                 ServerboundActionTagPacket.create(ServerboundActionTagPacket.OPEN_SCREEN);
@@ -221,16 +207,12 @@ public class NeoForgeClientEventHandler {
                     player.displayClientMessage(Component.translatable(ability ? "screen.travelersbackpack.ability_disabled" : "screen.travelersbackpack.ability_enabled"), true);
                 }
             }
-            if(TravelersBackpackConfig.CLIENT.disableScrollWheel.get()) {
-                ItemStack heldItem = player.getMainHandItem();
-                while(ModClientEventHandler.SWAP_TOOL.consumeClick()) {
-                    if(!heldItem.isEmpty()) {
-                        if(TravelersBackpackConfig.CLIENT.enableToolCycling.get()) {
-                            if(ToolSlotItemHandler.isValid(heldItem)) {
-                                ServerboundActionTagPacket.create(ServerboundActionTagPacket.SWAP_TOOL, 1.0D);
-                            }
-                        }
+            while(ModClientEventHandler.SWAP_TOOL.consumeClick()) {
+                if(mc.screen == null && !mc.options.hideGui && mc.gameMode.getPlayerMode() != GameType.SPECTATOR) {
+                    if(!TravelersBackpackConfig.SERVER.backpackSettings.allowToolSwapping.get() && mc.player.getItemInHand(InteractionHand.MAIN_HAND).getItem() != ModItems.HOSE.get()) {
+                        return;
                     }
+                    mc.setScreen(new ToolsScreen());
                 }
             }
         } else {
@@ -247,31 +229,41 @@ public class NeoForgeClientEventHandler {
     }
 
     @SubscribeEvent
-    public static void registerCommands(final RegisterClientCommandsEvent event) {
-        new BackpackIconCommands(event.getDispatcher());
-    }
+    public static void updateInputEvent(MovementInputUpdateEvent event) {
+        if(Minecraft.getInstance().screen instanceof ToolsScreen) {
+            Options settings = Minecraft.getInstance().options;
+            Input eInput = event.getInput();
+            eInput.up = isKeyDown(settings.keyUp);
+            eInput.down = isKeyDown(settings.keyDown);
+            eInput.left = isKeyDown(settings.keyLeft);
+            eInput.right = isKeyDown(settings.keyRight);
 
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public static void mouseWheelDetect(InputEvent.MouseScrollingEvent event) {
-        Minecraft mc = Minecraft.getInstance();
-        double scrollDelta = event.getScrollDelta();
-        if(!TravelersBackpackConfig.CLIENT.disableScrollWheel.get() && scrollDelta != 0.0) {
-            Player player = mc.player;
-            if(player != null && player.isAlive() && ModClientEventHandler.SWAP_TOOL.isDown()) {
-                ItemStack heldItem = player.getMainHandItem();
-                if(!heldItem.isEmpty()) {
-                    if(heldItem.getItem() instanceof HoseItem && NbtHelper.has(heldItem, ModDataHelper.HOSE_MODES)) {
-                        ServerboundActionTagPacket.create(ServerboundActionTagPacket.SWITCH_HOSE_MODE, scrollDelta);
-                        event.setCanceled(true);
-                    }
-                    if(CapabilityUtils.isWearingBackpack(player) && TravelersBackpackConfig.CLIENT.enableToolCycling.get()) {
-                        if(ToolSlotItemHandler.isValid(heldItem)) {
-                            ServerboundActionTagPacket.create(ServerboundActionTagPacket.SWAP_TOOL, scrollDelta);
-                            event.setCanceled(true);
-                        }
-                    }
-                }
+            eInput.forwardImpulse = eInput.up == eInput.down ? 0.0F : (eInput.up ? 1.0F : -1.0F);
+            eInput.leftImpulse = eInput.left == eInput.right ? 0.0F : (eInput.left ? 1.0F : -1.0F);
+            eInput.jumping = isKeyDown(settings.keyJump);
+            eInput.shiftKeyDown = isKeyDown(settings.keyShift);
+            if(Minecraft.getInstance().player.isMovingSlowly()) {
+                eInput.leftImpulse = (float)((double)eInput.leftImpulse * 0.3D);
+                eInput.forwardImpulse = (float)((double)eInput.forwardImpulse * 0.3D);
             }
         }
+    }
+
+    public static boolean isKeyDown(KeyMapping keybind) {
+        if(keybind.isUnbound()) {
+            return false;
+        }
+        return switch(keybind.getKey().getType()) {
+            case KEYSYM ->
+                    InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), keybind.getKey().getValue());
+            case MOUSE ->
+                    GLFW.glfwGetMouseButton(Minecraft.getInstance().getWindow().getWindow(), keybind.getKey().getValue()) == GLFW.GLFW_PRESS;
+            default -> keybind.isDown();
+        };
+    }
+
+    @SubscribeEvent
+    public static void registerCommands(final RegisterClientCommandsEvent event) {
+        new BackpackIconCommands(event.getDispatcher());
     }
 }
