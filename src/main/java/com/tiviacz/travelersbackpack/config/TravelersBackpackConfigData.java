@@ -508,10 +508,10 @@ public class TravelersBackpackConfigData implements ConfigData {
         @Comment("Sends a message to the player on death with backpack coordinates")
         public boolean sendBackpackCoordinatesMessage = true;
 
-        @Comment("Enables tool cycling via keybind (Default Z) + scroll combination, while backpack is worn")
+        @Comment("Depreciated - see allowToolSwapping instead")
         public boolean enableToolCycling = true;
 
-        @Comment("Allows tool cycling using keybinding only (Default Z)")
+        @Comment("Depreciated")
         public boolean disableScrollWheel = false;
 
         @Comment("Enables tip, how to obtain a backpack, if there's no crafting recipe for it")
