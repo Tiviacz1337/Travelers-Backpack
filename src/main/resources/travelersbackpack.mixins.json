@@ -19,8 +19,8 @@
   ],
   "client": [
     "AbstractContainerScreenMixin",
-    "ModelBakeryMixin",
-    "MouseHandlerMixin"
+    "LocalPlayerMixin",
+    "ModelBakeryMixin"
   ],
   "injectors": {
     "defaultRequire": 1

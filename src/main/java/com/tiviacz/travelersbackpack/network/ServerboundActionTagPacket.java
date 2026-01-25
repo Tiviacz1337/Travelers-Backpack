@@ -83,8 +83,8 @@ public record ServerboundActionTagPacket(CompoundTag actionTag) implements IPack
                     TankActions.fillTank(player, leftTank);
                 }
                 case SWAP_TOOL -> {
-                    double scrollDelta = actionTag.getDouble("Arg0");
-                    ServerActions.swapTool(player, scrollDelta);
+                    int slot = actionTag.getInt("Arg0");
+                    ServerActions.swapTool(player, slot);
                 }
                 case TOGGLE_BUTTONS_VISIBILITY -> ServerActions.toggleButtonsVisibility(player);
                 case SHOW_TOOL_SLOTS -> {
@@ -101,10 +101,13 @@ public record ServerboundActionTagPacket(CompoundTag actionTag) implements IPack
                     ServerActions.openBackpackSettings(player, entityId, open);
                 }
                 case SWITCH_HOSE_MODE -> {
-                    double scrollDelta = actionTag.getDouble("Arg0");
-                    ServerActions.switchHoseMode(player, scrollDelta);
+                    int mode = actionTag.getInt("Arg0");
+                    ServerActions.switchHoseMode(player, mode);
                 }
-                case SWITCH_HOSE_TANK -> ServerActions.toggleHoseTank(player);
+                case SWITCH_HOSE_TANK -> {
+                    int tank = actionTag.getInt("Arg0");
+                    ServerActions.toggleHoseTank(player, tank);
+                }
                 case TOGGLE_VISIBILITY -> ServerActions.toggleVisibility(player);
                 case ABILITY_SLIDER -> {
                     boolean sliderValue = actionTag.getBoolean("Arg0");

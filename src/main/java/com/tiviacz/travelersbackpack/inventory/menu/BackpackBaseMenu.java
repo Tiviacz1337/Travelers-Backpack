@@ -11,13 +11,11 @@ import com.tiviacz.travelersbackpack.inventory.upgrades.IUpgrade;
 import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
 import com.tiviacz.travelersbackpack.inventory.upgrades.crafting.CraftingUpgrade;
 import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;
-import com.tiviacz.travelersbackpack.inventory.upgrades.voiding.VoidUpgrade;
 import com.tiviacz.travelersbackpack.items.upgrades.UpgradeItem;
 import com.tiviacz.travelersbackpack.network.ClientboundUpdateRecipePacket;
 import com.tiviacz.travelersbackpack.util.ItemStackUtils;
 import com.tiviacz.travelersbackpack.util.NbtHelper;
 import com.tiviacz.travelersbackpack.util.PacketDistributorHelper;
-import net.minecraft.core.NonNullList;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -34,7 +32,6 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class BackpackBaseMenu extends AbstractBackpackMenu {
@@ -673,7 +670,6 @@ public class BackpackBaseMenu extends AbstractBackpackMenu {
     public void removed(Player player) {
         this.wrapper.getUpgradeManager().getUpgrade(CraftingUpgrade.class).ifPresent(craftingUpgrade -> this.checkHandlerAndPlaySound(craftingUpgrade.crafting, player, craftingUpgrade.crafting.getSlots()));
         this.wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).ifPresent(tanksUpgrade -> this.clearSlotsAndPlaySound(inventory.player, tanksUpgrade.getFluidSlotsHandler(), 4));
-        shiftTools(this.wrapper.getTools());
         super.removed(player);
     }
 
@@ -708,39 +704,6 @@ public class BackpackBaseMenu extends AbstractBackpackMenu {
 
     public static void playSound(Player player) {
         player.level().playSound(player, player.blockPosition(), SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 1.0F, (1.0F + (player.level().getRandom().nextFloat() - player.level().getRandom().nextFloat()) * 0.2F) * 0.7F);
-    }
-
-    public void shiftTools(ItemStackHandler toolSlotsHandler) {
-        boolean foundEmptySlot = false;
-        boolean needsShifting = false;
-        for(int i = 0; i < toolSlotsHandler.getSlots(); i++) {
-            if(foundEmptySlot) {
-                if(!toolSlotsHandler.getStackInSlot(i).isEmpty()) {
-                    needsShifting = true;
-                }
-            }
-            if(toolSlotsHandler.getStackInSlot(i).isEmpty() && !foundEmptySlot) {
-                foundEmptySlot = true;
-            }
-        }
-
-        if(needsShifting) {
-            NonNullList<ItemStack> tools = NonNullList.withSize(toolSlotsHandler.getSlots(), ItemStack.EMPTY);
-            int j = 0;
-            for(int i = 0; i < toolSlotsHandler.getSlots(); i++) {
-                if(!toolSlotsHandler.getStackInSlot(i).isEmpty()) {
-                    tools.set(j, toolSlotsHandler.getStackInSlot(i));
-                    j++;
-                }
-            }
-            j = 0;
-            for(int i = 0; i < toolSlotsHandler.getSlots(); i++) {
-                if(!tools.isEmpty()) {
-                    toolSlotsHandler.setStackInSlot(i, tools.get(j));
-                    j++;
-                }
-            }
-        }
     }
 
     //Remove forbidden items from handler, if saving enabled

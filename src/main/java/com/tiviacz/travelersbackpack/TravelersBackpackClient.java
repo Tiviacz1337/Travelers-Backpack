@@ -164,7 +164,7 @@ public class TravelersBackpackClient implements ClientModInitializer {
     }
 
     public static void registerHudOverlay() {
-        HudRenderCallback.EVENT.register(HudOverlay::render);
+        HudRenderCallback.EVENT.register(HudOverlay::renderOverlay);
     }
 
     public static void setupFluidRendering() {
