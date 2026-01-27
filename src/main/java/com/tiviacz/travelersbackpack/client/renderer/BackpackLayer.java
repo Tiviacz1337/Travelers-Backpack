@@ -8,20 +8,20 @@ import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.Supporters;
 import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.model.PlayerModel;
+import net.minecraft.client.model.player.PlayerModel;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.context.ContextKey;
 import net.minecraft.world.item.ItemStack;
 
 public class BackpackLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
-    public static final ContextKey<ItemStack> BACKPACK_KEY = new ContextKey<ItemStack>(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "backpack"));
-    public static final ContextKey<String> NAME_KEY = new ContextKey<String>(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "name"));
+    public static final ContextKey<ItemStack> BACKPACK_KEY = new ContextKey<ItemStack>(Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "backpack"));
+    public static final ContextKey<String> NAME_KEY = new ContextKey<String>(Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "name"));
     private static final BackpackModel BACKPACK_MODEL = new BackpackModel();
 
     //RenderStates

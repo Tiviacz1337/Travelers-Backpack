@@ -10,7 +10,7 @@ import io.wispforest.accessories.api.client.AccessoriesRendererRegistry;
 import io.wispforest.accessories.api.client.AccessoryRenderState;
 import io.wispforest.accessories.api.client.renderers.SimpleAccessoryRenderer;
 import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.model.PlayerModel;
+import net.minecraft.client.model.player.PlayerModel;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
@@ -18,9 +18,9 @@ import net.minecraft.client.renderer.item.ItemStackRenderState;
 
 public class TravelersBackpackAccessoryClient {
     public static void init() {
-        ModItems.ITEMS.getEntries().stream()
+        /*ModItems.ITEMS.getEntries().stream()
                 .filter(holder -> holder.get() instanceof TravelersBackpackItem)
-                .forEach(holder -> AccessoriesRendererRegistry.registerRenderer(holder.get(), TravelersBackpackAccessoryClient.Renderer::new));
+                .forEach(holder -> AccessoriesRendererRegistry.registerRenderer(holder.get(), TravelersBackpackAccessoryClient.Renderer::new));*/
     }
 
     public static class Renderer implements SimpleAccessoryRenderer {

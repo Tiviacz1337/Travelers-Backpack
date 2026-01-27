@@ -9,11 +9,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public record ClientboundSendMessagePacket(boolean drop, BlockPos pos) implements CustomPacketPayload {
-    public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "send_message");
+    public static final Identifier ID = Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "send_message");
     public static final Type<ClientboundSendMessagePacket> TYPE = new Type<>(ID);
 
     public static final StreamCodec<RegistryFriendlyByteBuf, ClientboundSendMessagePacket> STREAM_CODEC = StreamCodec.composite(

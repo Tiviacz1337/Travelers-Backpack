@@ -204,7 +204,9 @@ public class InventoryActions {
                 menu.player.level().playSound(null, backpackPos.x(), backpackPos.y() + 0.5, backpackPos.z(), soundEvent, SoundSource.BLOCKS, 1.0F, 1.0F);
             }
             if(user.containerMenu instanceof BackpackItemMenu menu && menu.getWrapper().getScreenID() == Reference.ITEM_SCREEN_ID && !menu.player.level().isClientSide()) {
-                menu.player.playNotifySound(soundEvent, SoundSource.BLOCKS, 1.0F, 1.0F);
+                var vec3 = menu.player.blockPosition().getCenter();
+                menu.player.level().playSound(null, vec3.x(), vec3.y(), vec3.z(), soundEvent, SoundSource.BLOCKS, 1.0F, 1.0F);
+                //menu.player.playNotifySound(soundEvent, SoundSource.BLOCKS, 1.0F, 1.0F);
                 //menu.player.level().playLocalSound(menu.player.position().x(), menu.player.position().y() + 0.5, menu.player.position().z(), soundEvent, SoundSource.BLOCKS, 1.0F, 1.0F, false);
             }
         }

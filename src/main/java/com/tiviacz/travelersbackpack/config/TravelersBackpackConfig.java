@@ -7,7 +7,7 @@ import com.tiviacz.travelersbackpack.inventory.menu.slot.BackpackSlotItemHandler
 import com.tiviacz.travelersbackpack.inventory.menu.slot.ToolSlotItemHandler;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.common.ModConfigSpec;
@@ -550,7 +550,7 @@ public class TravelersBackpackConfig {
 
         public void loadItemsFromConfig(List<? extends String> configList, List<Item> targetList) {
             for(String registryName : configList) {
-                ResourceLocation res = ResourceLocation.tryParse(registryName);
+                Identifier res = Identifier.tryParse(registryName);
 
                 if(BuiltInRegistries.ITEM.containsKey(res)) {
                     targetList.add(BuiltInRegistries.ITEM.getValue(res));
@@ -560,7 +560,7 @@ public class TravelersBackpackConfig {
 
         public void loadEntityTypesFromConfig(List<? extends String> configList, List<EntityType> targetList) {
             for(String registryName : configList) {
-                ResourceLocation res = ResourceLocation.tryParse(registryName);
+                Identifier res = Identifier.tryParse(registryName);
 
                 if(BuiltInRegistries.ENTITY_TYPE.containsKey(res)) {
                     targetList.add(BuiltInRegistries.ENTITY_TYPE.getValue(res));
@@ -573,8 +573,8 @@ public class TravelersBackpackConfig {
                 for(String entry : configList) {
                     String[] parts = entry.replace(" ", "").split(",");
                     if(parts.length == 5) {
-                        ResourceLocation backpackRes = ResourceLocation.tryParse(parts[0]);
-                        ResourceLocation effectRes = ResourceLocation.tryParse(parts[1]);
+                        Identifier backpackRes = Identifier.tryParse(parts[0]);
+                        Identifier effectRes = Identifier.tryParse(parts[1]);
 
                         if(BuiltInRegistries.ITEM.containsKey(backpackRes) && BuiltInRegistries.MOB_EFFECT.get(effectRes).isPresent() && BuiltInRegistries.ITEM.get(backpackRes).isPresent()) {
                             Item backpack = BuiltInRegistries.ITEM.get(backpackRes).get().value();
@@ -604,7 +604,7 @@ public class TravelersBackpackConfig {
                 for(String entry : config) {
                     String[] parts = entry.replace(" ", "").split(",");
                     if(parts.length == 3) {
-                        ResourceLocation backpackRes = ResourceLocation.tryParse(parts[0]);
+                        Identifier backpackRes = Identifier.tryParse(parts[0]);
                         if(BuiltInRegistries.ITEM.get(backpackRes).isEmpty()) {
                             continue;
                         }

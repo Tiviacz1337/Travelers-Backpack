@@ -22,7 +22,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -44,7 +44,7 @@ import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.monster.Ghast;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.SmallFireball;
+import net.minecraft.world.entity.projectile.hurtingprojectile.SmallFireball;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -289,14 +289,14 @@ public class BackpackAbilities {
         }
     }
 
-    public final AttributeModifier NETHERITE_ARMOR_MODIFIER = new AttributeModifier(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "netherite_backpack_armor"), 4.0D, AttributeModifier.Operation.ADD_VALUE);
-    public final AttributeModifier DIAMOND_ARMOR_MODIFIER = new AttributeModifier(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "diamond_backpack_armor"), 3.0D, AttributeModifier.Operation.ADD_VALUE);
-    public final AttributeModifier IRON_ARMOR_MODIFIER = new AttributeModifier(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "iron_backpack_armor"), 2.0D, AttributeModifier.Operation.ADD_VALUE);
-    public final AttributeModifier GOLD_ARMOR_MODIFIER = new AttributeModifier(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "gold_backpack_armor"), 2.0D, AttributeModifier.Operation.ADD_VALUE);
-    public final AttributeModifier ENDERMAN_REACH_DISTANCE_MODIFIER = new AttributeModifier(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "enderman_backpack_reach"), 1.0D, AttributeModifier.Operation.ADD_VALUE);
-    public final AttributeModifier WARDEN_MAX_HEALTH_MODIFIER = new AttributeModifier(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "warden_backpack_max_health"), 4.0D, AttributeModifier.Operation.ADD_VALUE);
-    public final AttributeModifier FOX_MOVEMENT_SPEED_MODIFIER = new AttributeModifier(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "fox_movement_speed"), 0.1D, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
-    public final AttributeModifier LUCK_MODIFIER = new AttributeModifier(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "emerald_backpack_luck"), 1.0D, AttributeModifier.Operation.ADD_VALUE);
+    public final AttributeModifier NETHERITE_ARMOR_MODIFIER = new AttributeModifier(Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "netherite_backpack_armor"), 4.0D, AttributeModifier.Operation.ADD_VALUE);
+    public final AttributeModifier DIAMOND_ARMOR_MODIFIER = new AttributeModifier(Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "diamond_backpack_armor"), 3.0D, AttributeModifier.Operation.ADD_VALUE);
+    public final AttributeModifier IRON_ARMOR_MODIFIER = new AttributeModifier(Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "iron_backpack_armor"), 2.0D, AttributeModifier.Operation.ADD_VALUE);
+    public final AttributeModifier GOLD_ARMOR_MODIFIER = new AttributeModifier(Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "gold_backpack_armor"), 2.0D, AttributeModifier.Operation.ADD_VALUE);
+    public final AttributeModifier ENDERMAN_REACH_DISTANCE_MODIFIER = new AttributeModifier(Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "enderman_backpack_reach"), 1.0D, AttributeModifier.Operation.ADD_VALUE);
+    public final AttributeModifier WARDEN_MAX_HEALTH_MODIFIER = new AttributeModifier(Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "warden_backpack_max_health"), 4.0D, AttributeModifier.Operation.ADD_VALUE);
+    public final AttributeModifier FOX_MOVEMENT_SPEED_MODIFIER = new AttributeModifier(Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "fox_movement_speed"), 0.1D, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+    public final AttributeModifier LUCK_MODIFIER = new AttributeModifier(Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "emerald_backpack_luck"), 1.0D, AttributeModifier.Operation.ADD_VALUE);
 
     public Multimap<Holder<Attribute>, AttributeModifier> getAttributeAbilityMultimap(ItemStack backpack) {
         Multimap<Holder<Attribute>, AttributeModifier> multimap = ArrayListMultimap.create();
@@ -601,7 +601,7 @@ public class BackpackAbilities {
                 player.setDeltaMovement(player.getDeltaMovement().x, 0.20D, player.getDeltaMovement().z);
                 Level level = player.level();
                 BlockState state = level.getBlockState(player.blockPosition().relative(player.getDirection()));
-                if(state.getBlockHolder().getKey() != null && state.getBlockHolder().getKey().location().getNamespace().equals("create")) {
+                if(state.getBlockHolder().getKey() != null && state.getBlockHolder().getKey().identifier().getNamespace().equals("create")) {
                     return;
                 }
                 player.level().addParticle(new BlockParticleOption(ParticleTypes.BLOCK, state),

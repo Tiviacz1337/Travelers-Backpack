@@ -11,7 +11,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
@@ -22,7 +22,7 @@ import java.util.Optional;
 
 public record ClientboundSyncAttachmentPacket(int entityID, ItemStack backpack,
                                               boolean removeData) implements CustomPacketPayload {
-    public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "sync_attachment");
+    public static final Identifier ID = Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "sync_attachment");
     public static final Type<ClientboundSyncAttachmentPacket> TYPE = new Type<>(ID);
 
     public static final StreamCodec<RegistryFriendlyByteBuf, ClientboundSyncAttachmentPacket> STREAM_CODEC = StreamCodec.composite(

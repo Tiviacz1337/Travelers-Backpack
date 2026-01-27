@@ -21,16 +21,17 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class VoidWidget extends FilterUpgradeWidgetBase<VoidWidget, VoidUpgrade> {
-    private static final ResourceLocation TRASH_UPGRADE = ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "textures/item/void_upgrade.png");
+    private static final Identifier TRASH_UPGRADE = Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "textures/item/void_upgrade.png");
     private static final int RED_HIGHLIGHT_COLOR = 2143884822;
     private static final int RED_ARROW_COLOR = 0xBFAA0000;
     private static final int HIGHLIGHT_TANK_COLOR = -2130706433;

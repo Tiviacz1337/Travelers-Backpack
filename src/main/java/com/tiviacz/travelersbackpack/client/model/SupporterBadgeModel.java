@@ -7,9 +7,10 @@ import com.tiviacz.travelersbackpack.handlers.ModClientEventHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.BlockModelPart;
 import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.util.RandomSource;
@@ -57,7 +58,7 @@ public class SupporterBadgeModel {
     public void render(PoseStack poseStack, int packedLightIn) {
         poseStack.pushPose();
         translateAndRotate(poseStack);
-        SimpleModelWrapper starModel = Minecraft.getInstance().getModelManager().getStandaloneModel(ModClientEventHandler.STAR_MODEL);
+        BlockModelPart starModel = Minecraft.getInstance().getModelManager().getStandaloneModel(ModClientEventHandler.STAR_MODEL);
 
         //Y - Front/Back
         //X - Left/Right
@@ -72,12 +73,12 @@ public class SupporterBadgeModel {
 
     //Forge
 
-    private void renderModel(PoseStack matrixStack, SimpleModelWrapper model, int packedLightIn) {
+    private void renderModel(PoseStack matrixStack, BlockModelPart model, int packedLightIn) {
         MultiBufferSource.BufferSource src = Minecraft.getInstance().renderBuffers().bufferSource();
-        VertexConsumer worldrenderer = src.getBuffer(RenderType.entityCutout(TextureAtlas.LOCATION_BLOCKS));
+        VertexConsumer worldrenderer = src.getBuffer(RenderTypes.entityCutout(TextureAtlas.LOCATION_BLOCKS));
         List<BakedQuad> quads = model.getQuads(null);
         for(BakedQuad quad : quads) {
-            worldrenderer.putBulkData(matrixStack.last(), quad, 1.0f, 1.0f, 1.0f, 1.0f, packedLightIn, OverlayTexture.NO_OVERLAY, true);
+            worldrenderer.putBulkData(matrixStack.last(), quad, 1.0f, 1.0f, 1.0f, 1.0f, packedLightIn, OverlayTexture.NO_OVERLAY);
         }
         src.endBatch();
     }

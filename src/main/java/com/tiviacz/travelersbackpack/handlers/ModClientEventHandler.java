@@ -50,12 +50,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.item.ItemTintSource;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.block.model.BlockModelPart;
 import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
 import net.minecraft.client.renderer.entity.*;
 import net.minecraft.client.renderer.entity.player.AvatarRenderer;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.entity.EntityType;
@@ -84,14 +85,14 @@ import org.jetbrains.annotations.Nullable;
 
 @EventBusSubscriber(modid = TravelersBackpack.MODID, value = Dist.CLIENT)
 public class ModClientEventHandler {
-    public static final KeyMapping.Category CATEGORY = new KeyMapping.Category(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "controls"));
+    public static final KeyMapping.Category CATEGORY = new KeyMapping.Category(Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "controls"));
     public static final KeyMapping OPEN_BACKPACK = new KeyMapping("key.travelersbackpack.inventory", GLFW.GLFW_KEY_B, CATEGORY);
     public static final KeyMapping SORT_BACKPACK = new KeyMapping("key.travelersbackpack.sort", GLFW.GLFW_KEY_UNKNOWN, CATEGORY);
     public static final KeyMapping ABILITY = new KeyMapping("key.travelersbackpack.ability", GLFW.GLFW_KEY_UNKNOWN, CATEGORY);
     public static final KeyMapping SWAP_TOOL = new KeyMapping("key.travelersbackpack.cycle_tool", GLFW.GLFW_KEY_Z, CATEGORY);
     public static final KeyMapping TOGGLE_TANK = new KeyMapping("key.travelersbackpack.toggle_tank", GLFW.GLFW_KEY_N, CATEGORY);
-    public static final ResourceLocation STAR_MODEL_LOCATION = ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "item/supporter_star");
-    public static final StandaloneModelKey<SimpleModelWrapper> STAR_MODEL = new StandaloneModelKey<>(STAR_MODEL_LOCATION::toString);
+    public static final Identifier STAR_MODEL_LOCATION = Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "item/supporter_star");
+    public static final StandaloneModelKey<BlockModelPart> STAR_MODEL = new StandaloneModelKey<>(STAR_MODEL_LOCATION::toString);
 
     @SubscribeEvent
     public static void registerKeys(final RegisterKeyMappingsEvent event) {
@@ -109,12 +110,12 @@ public class ModClientEventHandler {
 
     @SubscribeEvent
     public static void onLoaderRegistry(ModelEvent.RegisterLoaders event) {
-        event.register(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "backpack"), BackpackDynamicModel.Loader.INSTANCE);
+        event.register(Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "backpack"), BackpackDynamicModel.Loader.INSTANCE);
     }
 
     @SubscribeEvent
     public static void registerItemModel(RegisterItemModelsEvent event) {
-        event.register(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "backpack"), BackpackItemModel.Unbaked.MAP_CODEC);
+        event.register(Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "backpack"), BackpackItemModel.Unbaked.MAP_CODEC);
     }
 
     @SubscribeEvent
@@ -124,7 +125,7 @@ public class ModClientEventHandler {
 
     @SubscribeEvent
     public static void registerSpecialModelRenderer(RegisterSelectItemModelPropertyEvent event) {
-        event.register(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "hose_modes"), HoseSpecialRenderer.TYPE);
+        event.register(Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "hose_modes"), HoseSpecialRenderer.TYPE);
     }
 
     @SubscribeEvent
@@ -149,7 +150,7 @@ public class ModClientEventHandler {
 
     @SubscribeEvent
     public static void registerItemColorHandlers(RegisterColorHandlersEvent.ItemTintSources event) {
-        event.register(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "backpack_dye"), BackpackTintSource.MAP_CODEC);
+        event.register(Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "backpack_dye"), BackpackTintSource.MAP_CODEC);
     }
 
     public record BackpackTintSource(int defaultColor) implements ItemTintSource {
@@ -188,12 +189,12 @@ public class ModClientEventHandler {
             }
 
             @Override
-            public ResourceLocation getStillTexture() {
+            public Identifier getStillTexture() {
                 return PotionFluidType.POTION_STILL_RL;
             }
 
             @Override
-            public ResourceLocation getFlowingTexture() {
+            public Identifier getFlowingTexture() {
                 return PotionFluidType.POTION_FLOW_RL;
             }
         }, ModFluids.POTION_FLUID_TYPE);
@@ -208,7 +209,7 @@ public class ModClientEventHandler {
 
     @SubscribeEvent
     public static void registerOverlay(final RegisterGuiLayersEvent evt) {
-        evt.registerBelow(VanillaGuiLayers.HOTBAR, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "overlay"), (pGuiGraphics, pPartialTick) -> {
+        evt.registerBelow(VanillaGuiLayers.HOTBAR, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "overlay"), (pGuiGraphics, pPartialTick) -> {
             Minecraft mc = Minecraft.getInstance();
             if(TravelersBackpackConfig.CLIENT.overlay.enableOverlay.get() && !mc.options.hideGui && AttachmentUtils.isWearingBackpack(mc.player) && mc.gameMode.getPlayerMode() != GameType.SPECTATOR) {
                 HudOverlay.renderOverlay(AttachmentUtils.getWearingBackpack(mc.player), mc, pGuiGraphics);

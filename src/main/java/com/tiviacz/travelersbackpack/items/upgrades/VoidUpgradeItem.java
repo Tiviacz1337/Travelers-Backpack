@@ -40,7 +40,6 @@ public class VoidUpgradeItem extends UpgradeItem {
     @Override
     public TriFunction<UpgradeManager, Integer, ItemStack, Optional<? extends UpgradeBase<?>>> getUpgrade() {
         return (upgradeManager, dataHolderSlot, provider) -> {
-
             BackpackContainerContents filter = provider.getOrDefault(ModDataComponents.BACKPACK_CONTAINER, new BackpackContainerContents(9));
             List<String> filterTags = new ArrayList<>(provider.getOrDefault(ModDataComponents.FILTER_TAGS, new ArrayList<>()));
             return Optional.of(new VoidUpgrade(upgradeManager, dataHolderSlot, filter.getItems(), filterTags));

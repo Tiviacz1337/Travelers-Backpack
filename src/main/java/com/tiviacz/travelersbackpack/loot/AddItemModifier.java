@@ -41,7 +41,7 @@ public class AddItemModifier extends LootModifier {
     protected @NotNull ObjectArrayList<ItemStack> doApply(ObjectArrayList<ItemStack> generatedLoot, LootContext context) {
         if(!TravelersBackpackConfig.COMMON.enableLoot.get()) return generatedLoot;
 
-        if(context.getQueriedLootTableId().equals(BuiltInLootTables.ABANDONED_MINESHAFT.location())) {
+        if(context.getQueriedLootTableId().equals(BuiltInLootTables.ABANDONED_MINESHAFT.identifier())) {
             if(this.item == ModItems.BAT_TRAVELERS_BACKPACK.get() && context.getRandom().nextFloat() <= this.weight) {
                 generatedLoot.add(withTanksUpgrade(item));
             }
@@ -59,13 +59,13 @@ public class AddItemModifier extends LootModifier {
             }
         }
 
-        if(context.getQueriedLootTableId().equals(BuiltInLootTables.VILLAGE_ARMORER.location())) {
+        if(context.getQueriedLootTableId().equals(BuiltInLootTables.VILLAGE_ARMORER.identifier())) {
             if(item == ModItems.IRON_GOLEM_TRAVELERS_BACKPACK.get() && context.getRandom().nextFloat() <= this.weight) {
                 generatedLoot.add(withTanksUpgrade(item));
             }
         }
 
-        if(context.getQueriedLootTableId().equals(BuiltInLootTables.SIMPLE_DUNGEON.location())) {
+        if(context.getQueriedLootTableId().equals(BuiltInLootTables.SIMPLE_DUNGEON.identifier())) {
             if(item == ModItems.STANDARD_TRAVELERS_BACKPACK.get() && context.getRandom().nextFloat() <= this.weight) {
                 generatedLoot.add(withTanksUpgrade(item));
             }
@@ -75,7 +75,7 @@ public class AddItemModifier extends LootModifier {
             }
         }
 
-        if(context.getQueriedLootTableId().equals(BuiltInLootTables.DESERT_PYRAMID.location())) {
+        if(context.getQueriedLootTableId().equals(BuiltInLootTables.DESERT_PYRAMID.identifier())) {
             if(item == ModItems.STANDARD_TRAVELERS_BACKPACK.get() && context.getRandom().nextFloat() <= this.weight) {
                 generatedLoot.add(withTanksUpgrade(item));
             }
@@ -89,7 +89,7 @@ public class AddItemModifier extends LootModifier {
             }
         }
 
-        if(context.getQueriedLootTableId().equals(BuiltInLootTables.SHIPWRECK_TREASURE.location())) {
+        if(context.getQueriedLootTableId().equals(BuiltInLootTables.SHIPWRECK_TREASURE.identifier())) {
             if(this.item == ModItems.IRON_TIER_UPGRADE.get() && context.getRandom().nextFloat() <= this.weight) {
                 generatedLoot.add(new ItemStack(item));
             }
@@ -99,7 +99,7 @@ public class AddItemModifier extends LootModifier {
             }
         }
 
-        if(context.getQueriedLootTableId().equals(BuiltInLootTables.WOODLAND_MANSION.location())) {
+        if(context.getQueriedLootTableId().equals(BuiltInLootTables.WOODLAND_MANSION.identifier())) {
             if(this.item == ModItems.IRON_TIER_UPGRADE.get() && context.getRandom().nextFloat() <= this.weight) {
                 generatedLoot.add(new ItemStack(item));
             }
@@ -109,7 +109,7 @@ public class AddItemModifier extends LootModifier {
             }
         }
 
-        if(context.getQueriedLootTableId().equals(BuiltInLootTables.NETHER_BRIDGE.location())) {
+        if(context.getQueriedLootTableId().equals(BuiltInLootTables.NETHER_BRIDGE.identifier())) {
             if(this.item == ModItems.IRON_TIER_UPGRADE.get() && context.getRandom().nextFloat() <= this.weight) {
                 generatedLoot.add(new ItemStack(item));
             }
@@ -119,7 +119,7 @@ public class AddItemModifier extends LootModifier {
             }
         }
 
-        if(context.getQueriedLootTableId().equals(BuiltInLootTables.BASTION_TREASURE.location())) {
+        if(context.getQueriedLootTableId().equals(BuiltInLootTables.BASTION_TREASURE.identifier())) {
             if(this.item == ModItems.IRON_TIER_UPGRADE.get() && context.getRandom().nextFloat() <= this.weight) {
                 generatedLoot.add(new ItemStack(item));
             }
@@ -129,7 +129,7 @@ public class AddItemModifier extends LootModifier {
             }
         }
 
-        if(context.getQueriedLootTableId().equals(BuiltInLootTables.END_CITY_TREASURE.location())) {
+        if(context.getQueriedLootTableId().equals(BuiltInLootTables.END_CITY_TREASURE.identifier())) {
             if(this.item == ModItems.GOLD_TIER_UPGRADE.get() && context.getRandom().nextFloat() <= this.weight) {
                 generatedLoot.add(new ItemStack(item));
             }

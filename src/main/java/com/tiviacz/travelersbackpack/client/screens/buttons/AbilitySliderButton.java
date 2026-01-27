@@ -9,7 +9,7 @@ import com.tiviacz.travelersbackpack.util.TextUtils;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +34,7 @@ public class AbilitySliderButton extends Button {
         }
     }
 
-    public void drawButton(GuiGraphics guiGraphics, int mouseX, int mouseY, ResourceLocation texture) {
+    public void drawButton(GuiGraphics guiGraphics, int mouseX, int mouseY, Identifier texture) {
         if(screen.getWrapper().isAbilityEnabled()) {
             this.drawButton(guiGraphics, mouseX, mouseY, texture, 44, 56, 78, 82);
         } else {

@@ -7,12 +7,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public record ClientboundUpdateRecipePacket(ItemStack output) implements CustomPacketPayload {
-    public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "update_recipe");
+    public static final Identifier ID = Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "update_recipe");
     public static final Type<ClientboundUpdateRecipePacket> TYPE = new Type<>(ID);
 
     public static final StreamCodec<RegistryFriendlyByteBuf, ClientboundUpdateRecipePacket> STREAM_CODEC = StreamCodec.composite(
@@ -21,7 +21,7 @@ public record ClientboundUpdateRecipePacket(ItemStack output) implements CustomP
             ClientboundUpdateRecipePacket::new
     );
 
-    //public static final ResourceLocation NULL = ResourceLocation.fromNamespaceAndPath("null", "null");
+    //public static final Identifier NULL = Identifier.fromNamespaceAndPath("null", "null");
 
     //public ClientboundUpdateRecipePacket(@Nullable RecipeHolder<CraftingRecipe> recipe, ItemStack output) {
     //     this(recipe == null ? NULL : recipe.id().location(), output);

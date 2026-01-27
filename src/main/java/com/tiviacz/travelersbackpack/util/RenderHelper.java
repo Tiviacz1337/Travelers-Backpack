@@ -7,7 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -111,7 +111,7 @@ public class RenderHelper {
 
         for(Direction direction : Direction.values()) {
             TextureAtlasSprite icon = getFluidIcon(fluid, direction);
-            VertexConsumer renderer = buffer.getBuffer(RenderType.text(icon.atlasLocation()));
+            VertexConsumer renderer = buffer.getBuffer(RenderTypes.text(icon.atlasLocation()));
 
             float[][] c = coordinates[direction.ordinal()];
             float replacedMaxV = (direction == Direction.UP || direction == Direction.DOWN) ? icon.getV(4F / 16) : ((icon.getV1() - icon.getV0()) * height + icon.getV0());

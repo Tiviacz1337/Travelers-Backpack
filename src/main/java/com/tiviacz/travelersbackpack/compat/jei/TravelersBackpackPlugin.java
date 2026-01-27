@@ -16,7 +16,7 @@ import mezz.jei.api.registration.IRecipeTransferRegistration;
 import mezz.jei.api.registration.IVanillaCategoryExtensionRegistration;
 import mezz.jei.common.Internal;
 import net.minecraft.client.renderer.Rect2i;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,7 +73,7 @@ public class TravelersBackpackPlugin implements IModPlugin {
     }
 
     @Override
-    public ResourceLocation getPluginUid() {
-        return ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "travelersbackpack");
+    public Identifier getPluginUid() {
+        return Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "travelersbackpack");
     }
 }

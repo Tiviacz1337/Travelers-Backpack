@@ -11,7 +11,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -72,7 +72,7 @@ public class ModRecipeProvider extends RecipeProvider {
         SmithingTransformRecipeBuilder.smithing(Ingredient.of(Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE), Ingredient.of(ModItems.BLANK_UPGRADE.get()),
                         ofTag(Tags.Items.INGOTS_NETHERITE), RecipeCategory.MISC, ModItems.NETHERITE_TIER_UPGRADE.get())
                 .unlocks(getHasName(Items.NETHERITE_INGOT), has(Tags.Items.INGOTS_NETHERITE))
-                .save(output, ResourceKey.create(Registries.RECIPE, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "netherite_tier_upgrade")));
+                .save(output, ResourceKey.create(Registries.RECIPE, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "netherite_tier_upgrade")));
 
         ShapedRecipeBuilder.shaped(registries.lookupOrThrow(Registries.ITEM), RecipeCategory.MISC, ModItems.TANKS_UPGRADE.get()).define('A', ModItems.BACKPACK_TANK)
                 .define('B', ModItems.BLANK_UPGRADE.get()).pattern("ABA")
@@ -145,13 +145,13 @@ public class ModRecipeProvider extends RecipeProvider {
                 .define('X', Tags.Items.LEATHERS).define('B', Tags.Items.STRINGS)
                 .define('D', Tags.Items.CHESTS_WOODEN).define('S', ModTags.SLEEPING_BAGS)
                 .pattern("XBX").pattern(" D ").pattern("XSX")
-                .unlockedBy("has_chest", has(Tags.Items.CHESTS_WOODEN)).save(output, ResourceKey.create(Registries.RECIPE, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "standard_no_tanks")));
+                .unlockedBy("has_chest", has(Tags.Items.CHESTS_WOODEN)).save(output, ResourceKey.create(Registries.RECIPE, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "standard_no_tanks")));
 
         //Netherite backpack
         SmithingTransformRecipeBuilder.smithing(Ingredient.of(Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE),
                         Ingredient.of(ModItems.DIAMOND_TRAVELERS_BACKPACK.get()), ofTag(Tags.Items.INGOTS_NETHERITE),
                         RecipeCategory.MISC, ModItems.NETHERITE_TRAVELERS_BACKPACK.get())
-                .unlocks(getHasName(Items.NETHERITE_INGOT), has(Tags.Items.INGOTS_NETHERITE)).save(output, ResourceKey.create(Registries.RECIPE, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "netherite")));
+                .unlocks(getHasName(Items.NETHERITE_INGOT), has(Tags.Items.INGOTS_NETHERITE)).save(output, ResourceKey.create(Registries.RECIPE, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "netherite")));
 
         //Bee
         ShapedBackpackRecipeBuilder.shaped(registries.lookupOrThrow(Registries.ITEM), RecipeCategory.MISC, ModItems.BEE_TRAVELERS_BACKPACK.get())
@@ -383,7 +383,7 @@ public class ModRecipeProvider extends RecipeProvider {
                     .requires(Ingredient.of(stream))
                     .group(group)
                     .unlockedBy("has_needed_dye", this.has(item))
-                    .save(output, ResourceKey.create(Registries.RECIPE, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "dye_" + getItemName(item1))));
+                    .save(output, ResourceKey.create(Registries.RECIPE, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "dye_" + getItemName(item1))));
         }
     }
 

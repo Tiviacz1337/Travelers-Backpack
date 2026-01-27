@@ -18,7 +18,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -28,8 +28,9 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.animal.Cow;
+import net.minecraft.world.entity.animal.cow.Cow;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.CustomData;
@@ -317,7 +318,8 @@ public class HoseItem extends Item {
                     FluidStack fluidStack = tank.getFluid();
                     if(level.getBlockState(newPos).canBeReplaced(fluid) && fluid.getFluidType().canBePlacedInLevel(level, newPos, fluidStack)) {
                         boolean flag = !level.getBlockState(newPos).isSolid();
-                        if(level.dimensionType().ultraWarm() && fluidStack.getFluid().is(FluidTags.WATER)) {
+                        boolean ultraWarm = level.dimensionType().attributes().contains(EnvironmentAttributes.WATER_EVAPORATES) ? (boolean)level.dimensionType().attributes().get(EnvironmentAttributes.WATER_EVAPORATES).argument() : false;
+                        if(ultraWarm && fluidStack.getFluid().is(FluidTags.WATER)) {
                             tank.drain(Reference.BUCKET, IFluidHandler.FluidAction.EXECUTE);
                             level.playSound(null, newPos, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 0.5F, 2.6F + (level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.8F);
                             for(int i = 0; i < 3; ++i) {
@@ -398,7 +400,7 @@ public class HoseItem extends Item {
                 return InteractionResult.PASS;
             }
             FluidTank tank = this.getSelectedFluidTank(stack, wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).get());
-            Optional<Fluid> milk = BuiltInRegistries.FLUID.getOptional(ResourceLocation.fromNamespaceAndPath("minecraft", "milk"));
+            Optional<Fluid> milk = BuiltInRegistries.FLUID.getOptional(Identifier.fromNamespaceAndPath("minecraft", "milk"));
             if(milk.isPresent()) {
                 if(entity instanceof Cow) {
                     int tankAmount = tank.isEmpty() ? 0 : tank.getFluidAmount();

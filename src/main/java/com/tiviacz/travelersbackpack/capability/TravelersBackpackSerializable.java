@@ -10,7 +10,7 @@ import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -128,7 +128,7 @@ public class TravelersBackpackSerializable implements ITravelersBackpack, ValueI
         String id = valueInput.getStringOr("id", "null");
         if(compound.isPresent() && count == 1 && !id.equals("null")) {
             DataComponentPatch map = DataComponentPatch.CODEC.parse(valueInput.lookup().createSerializationContext(NbtOps.INSTANCE), compound.get()).result().orElse(DataComponentPatch.EMPTY);
-            Item backpack = BuiltInRegistries.ITEM.getValue(ResourceLocation.parse(id)).asItem();
+            Item backpack = BuiltInRegistries.ITEM.getValue(Identifier.parse(id)).asItem();
             if(backpack instanceof TravelersBackpackItem) {
                 ItemStack backpackStack = new ItemStack(backpack, count);
                 backpackStack.applyComponents(map);

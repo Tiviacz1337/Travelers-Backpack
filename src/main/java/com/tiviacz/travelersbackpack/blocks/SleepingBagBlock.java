@@ -9,9 +9,11 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.attribute.BedRule;
+import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.npc.Villager;
+import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
@@ -102,7 +104,8 @@ public class SleepingBagBlock extends BedBlock {
                 }
             }
 
-            if(!canSetSpawn(pLevel)) {
+            BedRule bedRule = pLevel.environmentAttributes().getValue(EnvironmentAttributes.BED_RULE, pPos);
+            if(bedRule.explodes()) {
                 pLevel.removeBlock(pPos, false);
                 BlockPos blockpos = pPos.relative(pState.getValue(FACING).getOpposite());
                 if(pLevel.getBlockState(blockpos).is(this)) {
@@ -129,8 +132,8 @@ public class SleepingBagBlock extends BedBlock {
                     }
                 }
                 pPlayer.startSleepInBed(pPos).ifLeft(p_49477_ -> {
-                    if(p_49477_.getMessage() != null) {
-                        pPlayer.displayClientMessage(p_49477_.getMessage(), true);
+                    if(p_49477_.message() != null) {
+                        pPlayer.displayClientMessage(p_49477_.message(), true);
                     }
                 });
                 return InteractionResult.SUCCESS;

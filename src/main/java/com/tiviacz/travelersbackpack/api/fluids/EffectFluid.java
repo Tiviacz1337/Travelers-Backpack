@@ -1,7 +1,7 @@
 package com.tiviacz.travelersbackpack.api.fluids;
 
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
@@ -29,7 +29,7 @@ public abstract class EffectFluid {
     }
 
     public EffectFluid(String uniqueId, String modid, String fluidName, int amountRequired) {
-        Fluid fluid = BuiltInRegistries.FLUID.getValue(ResourceLocation.fromNamespaceAndPath(modid, fluidName));
+        Fluid fluid = BuiltInRegistries.FLUID.getValue(Identifier.fromNamespaceAndPath(modid, fluidName));
         this.uniqueId = uniqueId;
         this.fluid = fluid;
         this.effectID = 0;

@@ -8,7 +8,7 @@ import com.tiviacz.travelersbackpack.inventory.upgrades.crafting.CraftingUpgrade
 import net.blay09.mods.craftingtweaks.api.*;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Player;
@@ -185,7 +185,7 @@ public class BackpackCraftingGridProvider implements CraftingGridProvider {
                     int slotIndex = menu.slots.get(i).getContainerSlot();
                     ItemStack itemStack = craftMatrix.getItem(slotIndex);
                     if(!itemStack.isEmpty() && itemStack.getMaxStackSize() > 1) {
-                        ResourceLocation registryName = BuiltInRegistries.ITEM.getKey(itemStack.getItem());
+                        Identifier registryName = BuiltInRegistries.ITEM.getKey(itemStack.getItem());
                         String key = Objects.toString(registryName);
                         DataComponentPatch componentsPatch = itemStack.getComponentsPatch();
                         if(!componentsPatch.isEmpty()) {

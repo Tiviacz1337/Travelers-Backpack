@@ -157,25 +157,25 @@ dependencies {
     compileOnly "top.theillusivec4.curios:curios-neoforge:${curios_continuation_version}"
 
     //JEI
-    implementation("maven.modrinth:jei:jIs3DXUN")
+    implementation("maven.modrinth:jei:5VCxZEmH")
 
     //EMI
     compileOnly("maven.modrinth:emi:ouSj7NfF")
 
     //REI
     compileOnly("maven.modrinth:rei:rCAaJej0")
-    compileOnly("maven.modrinth:architectury-api:Z4ZAg0kG")
-    compileOnly("maven.modrinth:cloth-config:AzRGxC9j")
+    compileOnly("maven.modrinth:architectury-api:EvL9NK2R")
+    compileOnly("maven.modrinth:cloth-config:Wsus0EWg")
 
     //Crafting Tweaks
-    implementation("maven.modrinth:crafting-tweaks:z2v3q7v4")
-    implementation("maven.modrinth:balm:YrIJi2P8")
+    implementation("maven.modrinth:crafting-tweaks:UG4VEpsU")
+    implementation("maven.modrinth:balm:mZ461M3N")
 
     //Carry On
     //runtimeOnly "curse.maven:carryon-274259:5141764"
 
     //Trash Slot
-    implementation("maven.modrinth:trashslot:t5hSMYp6")
+    implementation("maven.modrinth:trashslot:Kq3z6gII")
 
     //Comforts
     compileOnly("maven.modrinth:comforts:CZFrqdSy")
@@ -184,7 +184,7 @@ dependencies {
     compileOnly("maven.modrinth:accessories:Lp7d65h7")
     compileOnly("maven.modrinth:owo-lib:U1h2fIEv")
 
-    implementation("maven.modrinth:advanced-shulkerboxes:qaUdZd7o")
+    compileOnly("maven.modrinth:advanced-shulkerboxes:qaUdZd7o")
 
     //Mouse Tweaks
     //implementation("curse.maven:mousetweaks-60089:5637846")

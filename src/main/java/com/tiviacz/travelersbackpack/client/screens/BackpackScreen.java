@@ -69,8 +69,8 @@ public class BackpackScreen extends AbstractBackpackScreen<BackpackBaseMenu> imp
     }
 
     @Override
-    public void resize(Minecraft minecraft, int width, int height) {
-        super.resize(minecraft, width, height);
+    public void resize(int width, int height) {
+        super.resize(width, height);
 
         //Reload screen
         updateScreen(true);

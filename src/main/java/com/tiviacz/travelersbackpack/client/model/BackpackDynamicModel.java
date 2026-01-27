@@ -10,6 +10,7 @@ import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
 import com.tiviacz.travelersbackpack.components.RenderInfo;
 import com.tiviacz.travelersbackpack.init.ModBlocks;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.geom.builders.UVPair;
 import net.minecraft.client.renderer.block.model.*;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
@@ -20,7 +21,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.data.AtlasIds;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.DyeColor;
@@ -61,7 +62,7 @@ public class BackpackDynamicModel implements UnbakedModel {
     private TextureSlots getTextureSlots(ModelBaker baker, UnbakedModel partModel, ModelDebugName debugName) {
         TextureSlots.Resolver resolver = new TextureSlots.Resolver();
         resolver.addLast(partModel.textureSlots());
-        ResourceLocation parent = partModel.parent();
+        Identifier parent = partModel.parent();
         if(parent != null) {
             ResolvedModel resolvedParent = baker.getModel(parent);
             while(resolvedParent != null) {
@@ -75,7 +76,7 @@ public class BackpackDynamicModel implements UnbakedModel {
     @Override
     public void resolveDependencies(Resolver resolver) {
         modelParts.values().forEach(model -> {
-            ResourceLocation parent = model.parent();
+            Identifier parent = model.parent();
             if(parent != null) {
                 resolver.markDependency(parent);
             }
@@ -179,33 +180,54 @@ public class BackpackDynamicModel implements UnbakedModel {
 
             builder.addAll(models.get(ModelParts.SLEEPING_BAG_EXTRAS));
 
-            TextureAtlasSprite sprite = Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.BLOCKS).getSprite(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "block/bag/" + DyeColor.byId(sleepingBagColor).getName().toLowerCase(Locale.ENGLISH) + "_sleeping_bag"));
+            TextureAtlasSprite sprite = Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.BLOCKS).getSprite(Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "block/bag/" + DyeColor.byId(sleepingBagColor).getName().toLowerCase(Locale.ENGLISH) + "_sleeping_bag"));
             rebakeSleepingBag(builder, sprite);
         }
 
         private void rebakeSleepingBag(QuadCollection.Builder builder, TextureAtlasSprite sprite) {
             models.get(ModelParts.SLEEPING_BAG).getAll().forEach(quad -> {
                 TextureAtlasSprite oldSprite = quad.sprite();
-                int[] oldData = quad.vertices();
-                int[] newData = Arrays.copyOf(oldData, oldData.length);
+
+                long[] oldUVs = {quad.packedUV0(), quad.packedUV1(), quad.packedUV2(), quad.packedUV3()};
+                long[] newUVs = new long[4];
 
                 for(int i = 0; i < 4; i++) {
-                    int index = i * 8;
+                    // Unpack using UVPair format: U in upper 32 bits, V in lower 32 bits
+                    float oldU = UVPair.unpackU(oldUVs[i]);
+                    float oldV = UVPair.unpackV(oldUVs[i]);
 
-                    float oldU = Float.intBitsToFloat(oldData[index + 4]);
-                    float oldV = Float.intBitsToFloat(oldData[index + 5]);
+                    // Convert from old sprite's atlas space to normalized 0-1 range
+                    float uNormalized = (oldU - oldSprite.getU0()) / (oldSprite.getU1() - oldSprite.getU0());
+                    float vNormalized = (oldV - oldSprite.getV0()) / (oldSprite.getV1() - oldSprite.getV0());
 
-                    float uUn = oldSprite.getUOffset(oldU);
-                    float vUn = oldSprite.getVOffset(oldV);
+                    // Convert to new sprite's atlas space
+                    float newU = sprite.getU(uNormalized);
+                    float newV = sprite.getV(vNormalized);
 
-                    float newU = sprite.getU(uUn);
-                    float newV = sprite.getV(vUn);
-
-                    newData[index + 4] = Float.floatToRawIntBits(newU);
-                    newData[index + 5] = Float.floatToRawIntBits(newV);
-
-                    builder.addUnculledFace(new BakedQuad(newData, quad.tintIndex(), quad.direction(), sprite, quad.shade(), quad.lightEmission()));
+                    // Pack using UVPair format
+                    newUVs[i] = UVPair.pack(newU, newV);
                 }
+
+                BakedQuad newQuad = new BakedQuad(
+                        quad.position0(),
+                        quad.position1(),
+                        quad.position2(),
+                        quad.position3(),
+                        newUVs[0],
+                        newUVs[1],
+                        newUVs[2],
+                        newUVs[3],
+                        quad.tintIndex(),
+                        quad.direction(),
+                        sprite,
+                        quad.shade(),
+                        quad.lightEmission(),
+                        quad.bakedNormals(),
+                        quad.bakedColors(),
+                        quad.hasAmbientOcclusion()
+                );
+
+                builder.addUnculledFace(newQuad);
             });
         }
 
@@ -247,7 +269,7 @@ public class BackpackDynamicModel implements UnbakedModel {
             AABB bounds = new AABB(xMin, yMin, 6.3D / 16D, xMin + 1.5D / 16D, yMax, 7.8D / 16D);
 
             IClientFluidTypeExtensions renderProperties = IClientFluidTypeExtensions.of(fluidStack.getFluid());
-            ResourceLocation stillTexture = renderProperties.getStillTexture(fluidStack);
+            Identifier stillTexture = renderProperties.getStillTexture(fluidStack);
             int color = renderProperties.getTintColor(fluidStack) | -16777216;
             TextureAtlasSprite still = Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.BLOCKS).getSprite(stillTexture);
             float x1 = 0F;
@@ -306,7 +328,7 @@ public class BackpackDynamicModel implements UnbakedModel {
     public record UnbakedBlockStateModel(Variant variant) implements CustomUnbakedBlockStateModel {
         public static final MapCodec<UnbakedBlockStateModel> CODEC = RecordCodecBuilder.mapCodec(instance ->
                 instance.group(Variant.MAP_CODEC.forGetter(UnbakedBlockStateModel::variant)).apply(instance, UnbakedBlockStateModel::new));
-        public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "backpack_loader");
+        public static final Identifier ID = Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "backpack_loader");
 
         @Override
         public BlockStateModel bake(ModelBaker modelBaker) {
@@ -336,13 +358,13 @@ public class BackpackDynamicModel implements UnbakedModel {
             ImmutableMap.Builder<ModelParts, UnbakedModel> builder = ImmutableMap.builder();
             TextureSlots.Data.Builder texturesBuilder = new TextureSlots.Data.Builder();
             if(modelContents.has("backpackTexture")) {
-                ResourceLocation backpackTexture = ResourceLocation.tryParse(modelContents.get("backpackTexture").getAsString());
+                Identifier backpackTexture = Identifier.tryParse(modelContents.get("backpackTexture").getAsString());
                 if(backpackTexture != null) {
                     texturesBuilder.addTexture("0", new Material(TextureAtlas.LOCATION_BLOCKS, backpackTexture));
                 }
             }
             if(modelContents.has("particle")) {
-                ResourceLocation particleTexture = ResourceLocation.tryParse(modelContents.get("particle").getAsString());
+                Identifier particleTexture = Identifier.tryParse(modelContents.get("particle").getAsString());
                 if(particleTexture != null) {
                     texturesBuilder.addTexture("particle", new Material(TextureAtlas.LOCATION_BLOCKS, particleTexture));
                 }
@@ -357,7 +379,7 @@ public class BackpackDynamicModel implements UnbakedModel {
         }
 
         private void addPartModel(ImmutableMap.Builder<ModelParts, UnbakedModel> builder, ModelParts modelPart, TextureSlots.Data textures) {
-            builder.put(modelPart, new BlockModel(null, null, true, ItemTransforms.NO_TRANSFORMS, textures, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "block/backpack_" + modelPart.name().toLowerCase(Locale.ENGLISH))));
+            builder.put(modelPart, new BlockModel(null, null, true, ItemTransforms.NO_TRANSFORMS, textures, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "block/backpack_" + modelPart.name().toLowerCase(Locale.ENGLISH))));
         }
     }
 

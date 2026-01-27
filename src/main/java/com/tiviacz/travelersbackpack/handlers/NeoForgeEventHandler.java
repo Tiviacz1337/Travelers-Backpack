@@ -52,7 +52,7 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.entity.npc.VillagerProfession;
+import net.minecraft.world.entity.npc.villager.VillagerProfession;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.DyedItemColor;
@@ -61,13 +61,13 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.trading.ItemCost;
 import net.minecraft.world.item.trading.MerchantOffer;
-import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.gamerules.GameRules;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -385,7 +385,7 @@ public class NeoForgeEventHandler {
                 //Continue if no integration detected
                 //Keep backpack on with Keep Inventory game rule
                 if(player.level() instanceof ServerLevel serverLevel) {
-                    if(serverLevel.getGameRules().getBoolean(GameRules.RULE_KEEPINVENTORY)) return;
+                    if(serverLevel.getGameRules().get(GameRules.KEEP_INVENTORY)) return;
                 }
 
                 ItemStack stack = AttachmentUtils.getWearingBackpack(player);
@@ -567,7 +567,7 @@ public class NeoForgeEventHandler {
     @SubscribeEvent
     public static void addVillagerTrade(final VillagerTradesEvent event) {
         if(TravelersBackpackConfig.COMMON.enableVillagerTrade.get() && event.getType() == VillagerProfession.LIBRARIAN) {
-            event.getTrades().get(3).add((trader, random) -> new MerchantOffer(new ItemCost(Items.EMERALD, random.nextInt(64) + 48),
+            event.getTrades().get(3).add((trader, entity, random) -> new MerchantOffer(new ItemCost(Items.EMERALD, random.nextInt(64) + 48),
                     new ItemStack(ModItems.VILLAGER_TRAVELERS_BACKPACK.get().asItem(), 1), 1, 50, 0.5F));
         }
     }

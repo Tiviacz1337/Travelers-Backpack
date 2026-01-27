@@ -5,12 +5,12 @@ import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRequirements;
 import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.Criterion;
-import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
+import net.minecraft.advancements.criterion.RecipeUnlockedTrigger;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
@@ -46,7 +46,7 @@ public class BackpackUpgradeRecipeBuilder {
     }
 
     public void save(RecipeOutput recipeOutput, String recipeId) {
-        this.save(recipeOutput, ResourceKey.create(Registries.RECIPE, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, recipeId)));
+        this.save(recipeOutput, ResourceKey.create(Registries.RECIPE, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, recipeId)));
     }
 
     public void save(RecipeOutput output, ResourceKey<Recipe<?>> resourceKey) {
@@ -60,13 +60,13 @@ public class BackpackUpgradeRecipeBuilder {
                 Optional.of(this.template), this.base, Optional.of(this.addition), new TransmuteResult(this.result)
         );
         output.accept(
-                resourceKey, backpackUpgradeRecipe, advancement$builder.build(resourceKey.location().withPrefix("recipes/" + this.category.getFolderName() + "/"))
+                resourceKey, backpackUpgradeRecipe, advancement$builder.build(resourceKey.identifier().withPrefix("recipes/" + this.category.getFolderName() + "/"))
         );
     }
 
     private void ensureValid(ResourceKey<Recipe<?>> recipe) {
         if(this.criteria.isEmpty()) {
-            throw new IllegalStateException("No way of obtaining recipe " + recipe.location());
+            throw new IllegalStateException("No way of obtaining recipe " + recipe.identifier());
         }
     }
 }

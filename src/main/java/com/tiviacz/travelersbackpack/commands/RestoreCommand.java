@@ -12,6 +12,7 @@ import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.permissions.Permissions;
 import net.minecraft.world.item.ItemStack;
 
 import java.io.File;
@@ -35,7 +36,7 @@ public class RestoreCommand {
     };
 
     public RestoreCommand(CommandDispatcher<CommandSourceStack> dispatcher) {
-        LiteralArgumentBuilder<CommandSourceStack> tbCommand = Commands.literal("tb").requires(player -> player.hasPermission(2));
+        LiteralArgumentBuilder<CommandSourceStack> tbCommand = Commands.literal("tb").requires(player -> player.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER));
 
         tbCommand.then(Commands.literal("restore")
                 .then(Commands.argument("target", EntityArgument.player())

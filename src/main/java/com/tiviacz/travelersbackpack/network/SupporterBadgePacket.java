@@ -6,14 +6,14 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public class SupporterBadgePacket {
     public record Serverbound(boolean isEnabledForPlayer) implements CustomPacketPayload {
-        public static final Type<Serverbound> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "supporter_badge_serverbound"));
+        public static final Type<Serverbound> TYPE = new Type<>(Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "supporter_badge_serverbound"));
         public static final StreamCodec<FriendlyByteBuf, Serverbound> STREAM_CODEC = StreamCodec.composite(
                 ByteBufCodecs.BOOL, Serverbound::isEnabledForPlayer,
                 Serverbound::new
@@ -41,7 +41,7 @@ public class SupporterBadgePacket {
     }
 
     public record Clientbound(boolean isEnabledForPlayer, String playerName) implements CustomPacketPayload {
-        public static final Type<Clientbound> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "supporter_badge_clientbound"));
+        public static final Type<Clientbound> TYPE = new Type<>(Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "supporter_badge_clientbound"));
         public static final StreamCodec<FriendlyByteBuf, Clientbound> STREAM_CODEC = StreamCodec.composite(
                 ByteBufCodecs.BOOL, Clientbound::isEnabledForPlayer,
                 ByteBufCodecs.STRING_UTF8, Clientbound::playerName,

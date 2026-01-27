@@ -139,7 +139,7 @@ public class BackpackSettingsMenu extends AbstractBackpackMenu {
     @Override
     public boolean stillValid(Player player) {
         if(getWrapper().getScreenID() == Reference.BLOCK_ENTITY_SCREEN_ID) {
-            return this.access.evaluate((level, blockPos) -> level.getBlockState(blockPos).is(this.backpackBlock) && player.canInteractWithBlock(blockPos, 4.0), true);
+            return this.access.evaluate((level, blockPos) -> level.getBlockState(blockPos).is(this.backpackBlock) && player.isWithinBlockInteractionRange(blockPos, 4.0), true);
         } else {
             if(getWrapper().getBackpackOwner() != null) {
                 return getWrapper().getBackpackOwner().isAlive() && AttachmentUtils.isWearingBackpack(getWrapper().getBackpackOwner());

@@ -90,6 +90,7 @@ public class CraftingUpgrade extends UpgradeBase<CraftingUpgrade> implements IMo
             public boolean mayPickup(Player player) {
                 return isTabOpened();
             }
+
         });
         return slots;
     }

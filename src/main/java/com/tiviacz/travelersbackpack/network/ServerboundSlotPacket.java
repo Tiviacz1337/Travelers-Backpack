@@ -9,7 +9,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -20,7 +20,7 @@ import java.util.List;
 
 public record ServerboundSlotPacket(int selectType, List<Integer> unsortables,
                                     List<Pair<Integer, Boolean>> memorizedSlots) implements CustomPacketPayload {
-    public static final Type<ServerboundSlotPacket> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "slots"));
+    public static final Type<ServerboundSlotPacket> TYPE = new Type<>(Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "slots"));
     public static final StreamCodec<RegistryFriendlyByteBuf, ServerboundSlotPacket> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.INT, ServerboundSlotPacket::selectType,
             ByteBufCodecs.INT.apply(ByteBufCodecs.list()), ServerboundSlotPacket::unsortables,

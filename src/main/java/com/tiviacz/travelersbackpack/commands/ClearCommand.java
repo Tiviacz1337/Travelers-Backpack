@@ -10,11 +10,12 @@ import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.permissions.Permissions;
 import net.minecraft.world.item.ItemStack;
 
 public class ClearCommand {
     public ClearCommand(CommandDispatcher<CommandSourceStack> dispatcher) {
-        LiteralArgumentBuilder<CommandSourceStack> tbCommand = Commands.literal("tb").requires(player -> player.hasPermission(2));
+        LiteralArgumentBuilder<CommandSourceStack> tbCommand = Commands.literal("tb").requires(player -> player.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER));
 
         tbCommand.then(Commands.literal("remove")
                 .executes(source -> removeBackpack(source.getSource(), source.getSource().getPlayerOrException()))
