@@ -143,11 +143,13 @@ public class ScreenRenderHandler {
                         if(TravelersBackpack.enableIntegration()) return false;
 
                         if(mouseButtonEvent.x() >= screen.leftPos + 77 && mouseButtonEvent.x() < screen.leftPos + 77 + 16 && mouseButtonEvent.y() >= screen.topPos + 62 - 18 && mouseButtonEvent.y() < screen.topPos + 62 - 18 + 16) {
+                            if(mouseButtonEvent.button() == GLFW.GLFW_MOUSE_BUTTON_1) {
+                                ServerboundActionTagPacket.create(ServerboundActionTagPacket.OPEN_SCREEN);
+                                return true;
+                            }
                             if(mouseButtonEvent.button() == GLFW.GLFW_MOUSE_BUTTON_2) {
                                 if(InputConstants.isKeyDown(Minecraft.getInstance().getWindow(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
                                     Minecraft.getInstance().gui.getChat().addMessage(Component.translatable("screen.travelersbackpack.hide_icon_info"));
-                                } else {
-                                    ServerboundActionTagPacket.create(ServerboundActionTagPacket.OPEN_SCREEN);
                                 }
                                 return true;
                             }
