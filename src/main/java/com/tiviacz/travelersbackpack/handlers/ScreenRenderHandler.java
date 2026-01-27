@@ -132,11 +132,12 @@ public class ScreenRenderHandler {
                         if(TravelersBackpack.enableIntegration()) return;
 
                         if(mouseX >= screen.leftPos + 77 && mouseX < screen.leftPos + 77 + 16 && mouseY >= screen.topPos + 62 - 18 && mouseY < screen.topPos + 62 - 18 + 16) {
+                            if(button == GLFW.GLFW_MOUSE_BUTTON_1) {
+                                ServerboundActionTagPacket.create(ServerboundActionTagPacket.OPEN_SCREEN);
+                            }
                             if(button == GLFW.GLFW_MOUSE_BUTTON_2) {
                                 if(InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
                                     player.sendSystemMessage(Component.translatable("screen.travelersbackpack.hide_icon_info"));
-                                } else {
-                                    ServerboundActionTagPacket.create(ServerboundActionTagPacket.OPEN_SCREEN);
                                 }
                             }
                         }
