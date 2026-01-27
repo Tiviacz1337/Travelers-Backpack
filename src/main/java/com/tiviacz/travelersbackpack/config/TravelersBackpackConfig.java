@@ -207,6 +207,7 @@ public class TravelersBackpackConfig {
             public final ModConfigSpec.BooleanValue allowOpeningFromSlot;
             public final ModConfigSpec.BooleanValue preventMultiplePlayersAccess;
             public final ModConfigSpec.BooleanValue invulnerableBackpack;
+            public final ModConfigSpec.BooleanValue allowToolSwapping;
             public final ModConfigSpec.BooleanValue toolSlotsAcceptEverything;
             public final ModConfigSpec.ConfigValue<List<? extends String>> toolSlotsAcceptableItems;
             public final ModConfigSpec.ConfigValue<List<? extends String>> blacklistedItems;
@@ -251,6 +252,10 @@ public class TravelersBackpackConfig {
                 invulnerableBackpack = builder
                         .comment("Backpack immune to any damage source (lava, fire), can't be destroyed, never disappears as floating item")
                         .define("invulnerableBackpack", true);
+
+                allowToolSwapping = builder
+                        .comment("Allows swapping tools between tool slots and the player’s inventory via a quick-swap menu")
+                        .define("allowToolSwapping", true);
 
                 toolSlotsAcceptEverything = builder
                         .comment("Tool slots accept any item")
@@ -692,11 +697,10 @@ public class TravelersBackpackConfig {
     public static class Client {
         public final ModConfigSpec.BooleanValue showBackpackIconInInventory;
         public final ModConfigSpec.BooleanValue sendBackpackCoordinatesMessage;
-        public final ModConfigSpec.BooleanValue enableToolCycling;
-        public final ModConfigSpec.BooleanValue disableScrollWheel;
         public final ModConfigSpec.BooleanValue obtainTips;
         public final ModConfigSpec.BooleanValue renderTools;
         public final ModConfigSpec.BooleanValue showSupporterBadge;
+        public final ToolsOverlay toolsOverlay;
         public final Overlay overlay;
 
         Client(final ModConfigSpec.Builder builder) {
@@ -711,14 +715,6 @@ public class TravelersBackpackConfig {
                     .comment("Sends a message to the player on death with backpack coordinates")
                     .define("sendBackpackCoordinatesMessage", true);
 
-            enableToolCycling = builder
-                    .comment("Enables tool cycling via keybind (Default Z) + scroll combination, while backpack is worn")
-                    .define("enableToolCycling", true);
-
-            disableScrollWheel = builder
-                    .comment("Allows tool cycling using keybinding only (Default Z)")
-                    .define("disableScrollWheel", false);
-
             obtainTips = builder
                     .comment("Enables tip, how to obtain a backpack, if there's no crafting recipe for it")
                     .define("obtainTips", true);
@@ -731,6 +727,8 @@ public class TravelersBackpackConfig {
                     .comment("Only for supporters, option to show/hide the Supporter Star Badge. If you want to receive the Supporter Star Badge, visit my Ko-fi page :)! - https://ko-fi.com/tiviacz1337")
                     .define("showSupporterBadge", true);
 
+            toolsOverlay = new ToolsOverlay(builder, "The position of the Tools Overlay on the screen", "toolsOverlay");
+
             overlay = new Overlay(
                     builder,
                     "The position of the Overlay on the screen",
@@ -739,6 +737,25 @@ public class TravelersBackpackConfig {
             );
 
             builder.pop();
+        }
+
+        public static class ToolsOverlay {
+            public final ModConfigSpec.IntValue offsetX;
+            public final ModConfigSpec.IntValue offsetY;
+
+            ToolsOverlay(final ModConfigSpec.Builder builder, final String comment, final String path) {
+                builder.comment(comment)
+                        .push(path);
+                offsetX = builder
+                        .comment("X offset")
+                        .defineInRange("offsetX", 0, Integer.MIN_VALUE, Integer.MAX_VALUE);
+
+                offsetY = builder
+                        .comment("Y offset")
+                        .defineInRange("offsetY", 0, Integer.MIN_VALUE, Integer.MAX_VALUE);
+
+                builder.pop();
+            }
         }
 
         public static class Overlay {

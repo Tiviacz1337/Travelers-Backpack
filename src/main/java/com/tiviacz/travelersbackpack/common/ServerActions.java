@@ -16,6 +16,7 @@ import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackItemMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackSettingsMenu;
+import com.tiviacz.travelersbackpack.inventory.menu.slot.ToolSlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.sorter.ContainerSorter;
 import com.tiviacz.travelersbackpack.inventory.upgrades.IEnable;
 import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
@@ -52,73 +53,42 @@ import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public class ServerActions {
-    public static void swapTool(Player player, double scrollDelta) {
+    public static void swapTool(Player player, int slot) {
+        if(!TravelersBackpackConfig.SERVER.backpackSettings.allowToolSwapping.get()) {
+            return;
+        }
         if(AttachmentUtils.isWearingBackpack(player)) {
             BackpackWrapper wrapper = AttachmentUtils.getBackpackWrapper(player, AttachmentUtils.TOOLS_ONLY);
             ItemStackHandler inv = wrapper.getTools();
-            if(InventoryHelper.isEmpty(inv)) return;
+            ItemStack handStack = player.getMainHandItem().copy();
 
-            int toolSlots = inv.getSlots();
-            int lastSlot = toolSlots - 1;
-            int j = 0;
+            if(!ToolSlotItemHandler.isValid(handStack) && !handStack.isEmpty()) {
+                return;
+            }
 
-            for(int i = 0; i <= lastSlot; i++) {
-                if(!inv.getStackInSlot(i).isEmpty()) {
-                    j++;
+            if(slot == -999) {
+                ItemStack stack = InventoryHelper.addItemStackToHandler(inv, handStack, false);
+                if(stack.isEmpty()) {
+                    player.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
                 }
-            }
+            } else {
+                ItemStack currentTool = inv.getStackInSlot(slot).copy();
 
-            ItemStack[] tools = new ItemStack[j];
-            int slot = 0;
-
-            for(int i = 0; i <= j - 1; i++) {
-                tools[slot] = inv.getStackInSlot(i).copy();
-                slot++;
-            }
-
-            swapTool(scrollDelta, tools, player);
-            slot = 0;
-
-            for(int i = 0; i <= j - 1; i++) {
-                inv.setStackInSlot(i, tools[slot]);
-                slot++;
+                //Swap
+                player.setItemInHand(InteractionHand.MAIN_HAND, currentTool);
+                inv.setStackInSlot(slot, handStack);
             }
 
             if(player instanceof ServerPlayer serverPlayer) {
                 ModAdvancements.ACTION_TRIGGER.get().trigger(serverPlayer, ActionTypeTrigger.SWAP_TOOLS);
             }
+            player.level().playSound(null, player.position().x(), player.position().y() + 0.5, player.position().z(), SoundEvents.ARMOR_EQUIP_LEATHER, SoundSource.BLOCKS, 1.0F, 1.0F);
             wrapper.sendDataToClients(ModDataComponents.TOOLS_CONTAINER.get());
-        }
-    }
-
-    public static void swapTool(double delta, ItemStack[] tools, Player player) {
-        if(delta > 0) {
-            ItemStack tempStack = tools[0];
-
-            for(int i = 0; i <= tools.length - 1; i++) {
-                if(i + 1 > tools.length - 1) {
-                    tools[tools.length - 1] = player.getMainHandItem();
-                    player.setItemInHand(InteractionHand.MAIN_HAND, tempStack);
-                } else {
-                    tools[i] = tools[i + 1];
-                }
-            }
-        }
-        if(delta < 0) {
-            ItemStack tempStack = tools[tools.length - 1];
-
-            for(int i = tools.length - 1; i >= 0; i--) {
-                if(i - 1 < 0) {
-                    tools[0] = player.getMainHandItem();
-                    player.setItemInHand(InteractionHand.MAIN_HAND, tempStack);
-                } else {
-                    tools[i] = tools[i - 1];
-                }
-            }
         }
     }
 
@@ -585,37 +555,23 @@ public class ServerActions {
         return done;
     }
 
-    public static void switchHoseMode(Player player, double scrollDelta) {
+    public static void switchHoseMode(Player player, int mode) {
         ItemStack hose = player.getMainHandItem();
         if(hose.getItem() instanceof HoseItem) {
             List<Integer> settings = hose.getOrDefault(ModDataComponents.HOSE_MODES, List.of(1, 1));
-            if(scrollDelta > 0) {
-                int nextMode = settings.get(0) + 1;
-                hose.set(ModDataComponents.HOSE_MODES, List.of(nextMode == 4 ? 1 : nextMode, settings.get(1)));
-            } else if(scrollDelta < 0) {
-                int nextMode = settings.get(0) - 1;
-                hose.set(ModDataComponents.HOSE_MODES, List.of(nextMode == 0 ? 3 : nextMode, settings.get(1)));
-            }
+            hose.set(ModDataComponents.HOSE_MODES.get(), List.of(mode, settings.get(1)));
         }
 
-        if(!player.level().isClientSide) {
-            PacketDistributor.sendToPlayer((ServerPlayer)player, new ClientboundSyncItemStackPacket(player.getId(), player.getInventory().selected, hose, ItemStackUtils.createDataComponentMap(hose, ModDataComponents.HOSE_MODES.get())));
-        }
+        player.level().playSound(null, player.position().x(), player.position().y() + 0.5, player.position().z(), SoundEvents.COPPER_BULB_HIT, SoundSource.BLOCKS, 1.0F, 1.0F);
     }
 
-    public static void toggleHoseTank(Player player) {
+    public static void toggleHoseTank(Player player, int tank) {
         ItemStack hose = player.getMainHandItem();
         if(hose.getItem() instanceof HoseItem) {
             List<Integer> settings = hose.getOrDefault(ModDataComponents.HOSE_MODES, List.of(1, 1));
-            if(settings.get(1) == 1) {
-                hose.set(ModDataComponents.HOSE_MODES, List.of(settings.get(0), 2));
-            } else {
-                hose.set(ModDataComponents.HOSE_MODES, List.of(settings.get(0), 1));
-            }
+            hose.set(ModDataComponents.HOSE_MODES.get(), List.of(settings.get(0), tank));
         }
 
-        if(!player.level().isClientSide) {
-            PacketDistributor.sendToPlayer((ServerPlayer)player, new ClientboundSyncItemStackPacket(player.getId(), player.getInventory().selected, hose, ItemStackUtils.createDataComponentMap(hose, ModDataComponents.HOSE_MODES.get())));
-        }
+        player.level().playSound(null, player.position().x(), player.position().y() + 0.5, player.position().z(), SoundEvents.BOTTLE_FILL, SoundSource.BLOCKS, 1.0F, 1.0F);
     }
 }
