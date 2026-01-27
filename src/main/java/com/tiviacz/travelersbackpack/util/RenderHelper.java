@@ -10,10 +10,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
 import org.apache.commons.lang3.tuple.Triple;
 import org.joml.Matrix4f;
@@ -108,7 +108,7 @@ public class RenderHelper {
         Matrix4f matrix4f = poseStack.last().pose();
 
         TextureAtlasSprite icon = FluidVariantRendering.getSprite(fluid.fluidVariant());//getFluidIcon(fluid, direction);
-        VertexConsumer renderer = buffer.getBuffer(RenderType.text(icon.atlasLocation()));
+        VertexConsumer renderer = buffer.getBuffer(RenderTypes.text(icon.atlasLocation()));
 
         for(Direction direction : Direction.values()) {
             float[][] c = coordinates[direction.ordinal()];
@@ -186,8 +186,8 @@ public class RenderHelper {
         return Triple.of(red, green, blue);
     }
 
-    private static final ResourceLocation SLOT_HIGHLIGHT_BACK_SPRITE = ResourceLocation.withDefaultNamespace("container/slot_highlight_back");
-    private static final ResourceLocation SLOT_HIGHLIGHT_FRONT_SPRITE = ResourceLocation.withDefaultNamespace("container/slot_highlight_front");
+    private static final Identifier SLOT_HIGHLIGHT_BACK_SPRITE = Identifier.withDefaultNamespace("container/slot_highlight_back");
+    private static final Identifier SLOT_HIGHLIGHT_FRONT_SPRITE = Identifier.withDefaultNamespace("container/slot_highlight_front");
 
     public static void renderSlotHighlightBack(GuiGraphics guiGraphics, int x, int y) {
         guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, SLOT_HIGHLIGHT_BACK_SPRITE, x - 4, y - 4, 24, 24);

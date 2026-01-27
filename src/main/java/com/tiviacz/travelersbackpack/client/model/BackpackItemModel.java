@@ -24,7 +24,7 @@ import net.minecraft.client.renderer.special.NoDataSpecialModelRenderer;
 import net.minecraft.client.resources.model.BlockModelRotation;
 import net.minecraft.client.resources.model.ResolvedModel;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.ItemOwner;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.DyeColor;
@@ -33,9 +33,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
+import org.joml.Vector3fc;
 
 import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
 
 public class BackpackItemModel implements ItemModel {
     private static final ItemTransforms ITEM_TRANSFORMS = createItemTransforms();
@@ -92,7 +94,7 @@ public class BackpackItemModel implements ItemModel {
 
     private final BackpackDynamicModel.DynamicBlockStateModel baseModel;
     private final List<ItemTintSource> tintSources;
-    private final Supplier<Vector3f[]> extents;
+    private final Supplier<Vector3fc[]> extents;
 
     public BackpackItemModel(BackpackDynamicModel.DynamicBlockStateModel baseModel, List<ItemTintSource> tintSources) {
         this.baseModel = baseModel;
@@ -163,9 +165,9 @@ public class BackpackItemModel implements ItemModel {
         }
     }
 
-    public record Unbaked(ResourceLocation base, List<ItemTintSource> tintSources) implements ItemModel.Unbaked {
+    public record Unbaked(Identifier base, List<ItemTintSource> tintSources) implements ItemModel.Unbaked {
         public static final MapCodec<Unbaked> MAP_CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
-                ResourceLocation.CODEC.fieldOf("base").forGetter(Unbaked::base),
+                Identifier.CODEC.fieldOf("base").forGetter(Unbaked::base),
                 ItemTintSources.CODEC.listOf().optionalFieldOf("tintSources", List.of()).forGetter(Unbaked::tintSources)
         ).apply(builder, Unbaked::new));
 
@@ -178,7 +180,7 @@ public class BackpackItemModel implements ItemModel {
         public ItemModel bake(BakingContext context) {
             ResolvedModel resolved = context.blockModelBaker().getModel(base);
             if(resolved.wrapped() instanceof BackpackDynamicModel baseModel) {
-                return new BackpackItemModel(baseModel.bakeBlockStateModel(context.blockModelBaker(), resolved, BlockModelRotation.X0_Y0), tintSources);
+                return new BackpackItemModel(baseModel.bakeBlockStateModel(context.blockModelBaker(), resolved, BlockModelRotation.IDENTITY), tintSources);
             }
             throw new IllegalStateException("Expected BackpackDynamicModel, instead received " + resolved.getClass().getName());
         }
@@ -200,7 +202,7 @@ public class BackpackItemModel implements ItemModel {
 
         @Override
         public void submit(ItemDisplayContext displayContext, PoseStack poseStack, SubmitNodeCollector collector, int combinedLight, int packedOverlay, boolean hasFoil, int outlineColor) {
-            collector.submitItem(poseStack, displayContext, combinedLight, packedOverlay, outlineColor, tintLayers, baseModel, Sheets.translucentItemSheet(), hasFoil ? ItemStackRenderState.FoilType.STANDARD : ItemStackRenderState.FoilType.NONE);
+            collector.submitItem(poseStack, displayContext, combinedLight, packedOverlay, outlineColor, tintLayers, baseModel, Sheets.translucentBlockItemSheet(), hasFoil ? ItemStackRenderState.FoilType.STANDARD : ItemStackRenderState.FoilType.NONE);
         }
 
         public void setModelRenderParameters(int[] tintLayers, List<BakedQuad> baseModel) {
@@ -209,7 +211,7 @@ public class BackpackItemModel implements ItemModel {
         }
 
         @Override
-        public void getExtents(Set<Vector3f> set) {
+        public void getExtents(Consumer<Vector3fc> consumer) {
 
         }
     }

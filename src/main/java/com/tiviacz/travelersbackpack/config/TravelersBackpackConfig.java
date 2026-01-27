@@ -8,7 +8,7 @@ import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -94,14 +94,14 @@ public class TravelersBackpackConfig {
         String[] backpacks = getConfig().world.overworldBackpacks;
         String selectedBackpack = backpacks[random.nextInt(backpacks.length)];
 
-        return BuiltInRegistries.ITEM.getOptional(ResourceLocation.tryParse(selectedBackpack)).orElseThrow(() -> new NoSuchElementException("Wrong backpack registry name specified in the config!"));
+        return BuiltInRegistries.ITEM.getOptional(Identifier.tryParse(selectedBackpack)).orElseThrow(() -> new NoSuchElementException("Wrong backpack registry name specified in the config!"));
     }
 
     public static Item getRandomCompatibleNetherBackpackEntry(RandomSource random) {
         String[] backpacks = getConfig().world.netherBackpacks;
         String selectedBackpack = backpacks[random.nextInt(backpacks.length)];
 
-        return BuiltInRegistries.ITEM.getOptional(ResourceLocation.tryParse(selectedBackpack)).orElseThrow(() -> new NoSuchElementException("Wrong backpack registry name specified in the config!"));
+        return BuiltInRegistries.ITEM.getOptional(Identifier.tryParse(selectedBackpack)).orElseThrow(() -> new NoSuchElementException("Wrong backpack registry name specified in the config!"));
     }
 
     public static CompoundTag writeToNbt() {
@@ -333,7 +333,7 @@ public class TravelersBackpackConfig {
 
     public static void loadItemsFromConfig(String[] configList, List<Item> targetList) {
         for(String registryName : configList) {
-            ResourceLocation res = ResourceLocation.tryParse(registryName);
+            Identifier res = Identifier.tryParse(registryName);
 
             if(BuiltInRegistries.ITEM.get(res).isPresent()) {
                 targetList.add(BuiltInRegistries.ITEM.getValue(res));
@@ -346,8 +346,8 @@ public class TravelersBackpackConfig {
             for(String entry : configList) {
                 String[] parts = entry.replace(" ", "").split(";");
                 if(parts.length == 5) {
-                    ResourceLocation backpackRes = ResourceLocation.tryParse(parts[0]);
-                    ResourceLocation effectRes = ResourceLocation.tryParse(parts[1]);
+                    Identifier backpackRes = Identifier.tryParse(parts[0]);
+                    Identifier effectRes = Identifier.tryParse(parts[1]);
 
                     if(BuiltInRegistries.ITEM.containsKey(backpackRes) && BuiltInRegistries.MOB_EFFECT.get(effectRes).isPresent() && BuiltInRegistries.ITEM.get(backpackRes).isPresent()) {
                         Item backpack = BuiltInRegistries.ITEM.getValue(backpackRes);
@@ -377,7 +377,7 @@ public class TravelersBackpackConfig {
             for(String entry : config) {
                 String[] parts = entry.replace(" ", "").split(";");
                 if(parts.length == 3) {
-                    ResourceLocation backpackRes = ResourceLocation.tryParse(parts[0]);
+                    Identifier backpackRes = Identifier.tryParse(parts[0]);
                     if(BuiltInRegistries.ITEM.get(backpackRes).isEmpty()) {
                         continue;
                     }

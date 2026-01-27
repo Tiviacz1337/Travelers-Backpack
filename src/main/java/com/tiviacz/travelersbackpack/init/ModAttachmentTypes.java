@@ -4,7 +4,7 @@ import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.attachment.TravelersBackpackAttachment;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 /**
  * Preparation for removal of the required Cardinal Components dependency.
@@ -13,7 +13,7 @@ import net.minecraft.resources.ResourceLocation;
  * Currently, this class is only used for data transfer purposes.
  */
 public class ModAttachmentTypes {
-    public static final AttachmentType<TravelersBackpackAttachment> TRAVELERS_BACKPACK = AttachmentRegistry.create(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "travelers_backpack"), builder -> builder
+    public static final AttachmentType<TravelersBackpackAttachment> TRAVELERS_BACKPACK = AttachmentRegistry.create(Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "travelers_backpack"), builder -> builder
             .initializer(() -> TravelersBackpackAttachment.DEFAULT)
             .persistent(TravelersBackpackAttachment.CODEC));
 

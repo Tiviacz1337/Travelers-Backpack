@@ -19,7 +19,7 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
@@ -27,8 +27,8 @@ import net.minecraft.world.item.ItemStack;
 import org.lwjgl.glfw.GLFW;
 
 public class KeybindHandler {
-    public static final ResourceLocation TRAVELERS_BACKPACK_PHASE = ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "phase");
-    public static final KeyMapping.Category CATEGORY = new KeyMapping.Category(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "controls"));
+    public static final Identifier TRAVELERS_BACKPACK_PHASE = Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "phase");
+    public static final KeyMapping.Category CATEGORY = new KeyMapping.Category(Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "controls"));
    // private static final String CATEGORY = "key.travelersbackpack.category";
     public static final KeyMapping OPEN_BACKPACK = new KeyMapping("key.travelersbackpack.inventory", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_B, CATEGORY);
     public static final KeyMapping SORT_BACKPACK = new KeyMapping("key.travelersbackpack.sort", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN, CATEGORY);

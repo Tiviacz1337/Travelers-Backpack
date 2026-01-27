@@ -7,7 +7,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.component.ItemContainerContents;
 
 import java.util.List;
@@ -47,36 +47,36 @@ public class ModDataComponents {
     public static final DataComponentType<Integer> COOKING_TOTAL_TIME = DataComponentType.<Integer>builder().persistent(Codec.INT).networkSynchronized(ByteBufCodecs.INT).build();
 
     public static void init() {
-        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "tier"), TIER);
-        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "storage_slots"), STORAGE_SLOTS);
-        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "upgrade_slots"), UPGRADE_SLOTS);
-        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "tool_slots"), TOOL_SLOTS);
-        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "fluids"), FLUIDS);
-        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "tab_open"), TAB_OPEN);
-        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "filter_settings"), FILTER_SETTINGS);
-        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "filter_tags"), FILTER_TAGS);
-        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "upgrade_enabled"), UPGRADE_ENABLED);
-        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "shift_click_to_backpack"), SHIFT_CLICK_TO_BACKPACK);
-        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "show_tool_slots"), SHOW_TOOL_SLOTS);
-        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "show_more_buttons"), SHOW_MORE_BUTTONS);
-        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "is_playing"), IS_PLAYING);
-        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "cooldown"), COOLDOWN);
-        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "starter_upgrades"), STARTER_UPGRADES);
-        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "render_info"), RENDER_INFO);
-        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "backpack_container"), BACKPACK_CONTAINER);
-        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "upgrades"), UPGRADES);
-        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "tools_container"), TOOLS_CONTAINER);
-        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "sleeping_bag_color"), SLEEPING_BAG_COLOR);
-        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "sort_type"), SORT_TYPE);
-        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "ability_enabled"), ABILITY_ENABLED);
-        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "is_visible"), IS_VISIBLE);
-        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "slots"), SLOTS);
-        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "upgrade_tick_interval"), UPGRADE_TICK_INTERVAL);
-        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "hose_modes"), HOSE_MODES);
+        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "tier"), TIER);
+        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "storage_slots"), STORAGE_SLOTS);
+        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "upgrade_slots"), UPGRADE_SLOTS);
+        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "tool_slots"), TOOL_SLOTS);
+        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "fluids"), FLUIDS);
+        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "tab_open"), TAB_OPEN);
+        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "filter_settings"), FILTER_SETTINGS);
+        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "filter_tags"), FILTER_TAGS);
+        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "upgrade_enabled"), UPGRADE_ENABLED);
+        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "shift_click_to_backpack"), SHIFT_CLICK_TO_BACKPACK);
+        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "show_tool_slots"), SHOW_TOOL_SLOTS);
+        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "show_more_buttons"), SHOW_MORE_BUTTONS);
+        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "is_playing"), IS_PLAYING);
+        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "cooldown"), COOLDOWN);
+        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "starter_upgrades"), STARTER_UPGRADES);
+        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "render_info"), RENDER_INFO);
+        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "backpack_container"), BACKPACK_CONTAINER);
+        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "upgrades"), UPGRADES);
+        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "tools_container"), TOOLS_CONTAINER);
+        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "sleeping_bag_color"), SLEEPING_BAG_COLOR);
+        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "sort_type"), SORT_TYPE);
+        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "ability_enabled"), ABILITY_ENABLED);
+        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "is_visible"), IS_VISIBLE);
+        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "slots"), SLOTS);
+        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "upgrade_tick_interval"), UPGRADE_TICK_INTERVAL);
+        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "hose_modes"), HOSE_MODES);
 
-        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "burn_finish_time"), BURN_FINISH_TIME);
-        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "cooking_finish_time"), COOKING_FINISH_TIME);
-        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "burn_total_time"), BURN_TOTAL_TIME);
-        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "cooking_total_time"), COOKING_TOTAL_TIME);
+        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "burn_finish_time"), BURN_FINISH_TIME);
+        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "cooking_finish_time"), COOKING_FINISH_TIME);
+        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "burn_total_time"), BURN_TOTAL_TIME);
+        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "cooking_total_time"), COOKING_TOTAL_TIME);
     }
 }

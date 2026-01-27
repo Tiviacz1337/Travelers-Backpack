@@ -6,7 +6,7 @@ import com.tiviacz.travelersbackpack.component.ITravelersBackpack;
 import eu.pb4.graves.GravesApi;
 import eu.pb4.graves.grave.GraveInventoryMask;
 import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -17,7 +17,7 @@ public class UniversalGravesCompat implements GraveInventoryMask {
     public static final GraveInventoryMask INSTANCE = new UniversalGravesCompat();
 
     public static void register() {
-        GravesApi.registerInventoryMask(ResourceLocation.fromNamespaceAndPath("universal_graves", "travelers_backpack"), INSTANCE);
+        GravesApi.registerInventoryMask(Identifier.fromNamespaceAndPath("universal_graves", "travelers_backpack"), INSTANCE);
     }
 
     @Override

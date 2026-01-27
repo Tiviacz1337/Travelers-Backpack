@@ -16,7 +16,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.NonNullList;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
@@ -24,7 +24,7 @@ import net.minecraft.world.level.GameType;
 import java.util.Collections;
 
 public class HudOverlay {
-    public static final ResourceLocation OVERLAY = ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "textures/gui/overlay.png");
+    public static final Identifier OVERLAY = Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "textures/gui/overlay.png");
     private static float animationProgress = 0.0F;
 
     public static void renderOverlay(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {

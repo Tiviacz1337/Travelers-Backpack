@@ -9,7 +9,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.item.properties.select.SelectItemModelProperties;
 import net.minecraft.client.renderer.item.properties.select.SelectItemModelProperty;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -19,7 +19,7 @@ import org.jetbrains.annotations.Nullable;
 public record HoseSpecialRenderer() implements SelectItemModelProperty<Integer> {
 
     public static void register() {
-        SelectItemModelProperties.ID_MAPPER.put(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "hose_modes"), HoseSpecialRenderer.TYPE);
+        SelectItemModelProperties.ID_MAPPER.put(Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "hose_modes"), HoseSpecialRenderer.TYPE);
     }
 
     public static final SelectItemModelProperty.Type<HoseSpecialRenderer, Integer> TYPE = SelectItemModelProperty.Type.create(

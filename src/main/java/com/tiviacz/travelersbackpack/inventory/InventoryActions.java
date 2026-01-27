@@ -23,6 +23,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.PotionItem;
+import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
@@ -229,7 +230,9 @@ public class InventoryActions {
                 menu.player.level().playSound(null, backpackPos.x(), backpackPos.y() + 0.5, backpackPos.z(), soundEvent, SoundSource.BLOCKS, 1.0F, 1.0F);
             }
             if(user.containerMenu instanceof BackpackItemMenu menu && menu.getWrapper().getScreenID() == Reference.ITEM_SCREEN_ID && !menu.player.level().isClientSide()) {
-                menu.player.playNotifySound(soundEvent, SoundSource.BLOCKS, 1.0F, 1.0F);
+                var vec3 = menu.player.blockPosition().getCenter();
+                menu.player.level().playSound(null, vec3.x(), vec3.y(), vec3.z(), soundEvent, SoundSource.BLOCKS, 1.0F, 1.0F);
+                //menu.player.getSoundSource().playSound().playNotifySound(soundEvent, SoundSource.BLOCKS, 1.0F, 1.0F);
                 //menu.player.level().playLocalSound(menu.player.position().x(), menu.player.position().y() + 0.5, menu.player.position().z(), soundEvent, SoundSource.BLOCKS, 1.0F, 1.0F, false);
             }
         }

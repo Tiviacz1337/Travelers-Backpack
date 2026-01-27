@@ -231,7 +231,7 @@
   "block.travelersbackpack.squid": "鱿鱼旅行者背包",
   "block.travelersbackpack.villager": "村民旅行者背包",
   "block.travelersbackpack.iron_golem": "铁傀儡旅行者背包",
-  "text.autoconfig.travelersbackpack.option.backpackSettings.leather.tankCapacityPerRow": "储罐容量",
+ "text.autoconfig.travelersbackpack.option.backpackSettings.leather.tankCapacityPerRow": "储罐容量",
   "text.autoconfig.travelersbackpack.option.backpackSettings.netherite.upgradeSlotCount": "升级栏位数量",
   "text.autoconfig.travelersbackpack.option.backpackUpgrades.voidUpgradeSettings.filterSlotCount": "过滤栏位数量",
   "text.autoconfig.travelersbackpack.option.backpackSettings.gold": "金等级",

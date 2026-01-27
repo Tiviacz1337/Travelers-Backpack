@@ -16,6 +16,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.permissions.Permissions;
 import net.minecraft.world.Containers;
 import net.minecraft.world.item.ItemStack;
 
@@ -23,7 +24,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class UnpackCommand {
     public UnpackCommand(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext commandBuildContext, Commands.CommandSelection commandSelection) {
-        LiteralArgumentBuilder<CommandSourceStack> tbCommand = Commands.literal("tb").requires(player -> player.hasPermission(2));
+        LiteralArgumentBuilder<CommandSourceStack> tbCommand = Commands.literal("tb").requires(player -> player.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER));
 
         tbCommand.then(Commands.literal("unpack")
                 .then(Commands.argument("pos", BlockPosArgument.blockPos())

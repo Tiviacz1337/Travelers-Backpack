@@ -6,8 +6,8 @@ import net.fabricmc.fabric.api.renderer.v1.render.FabricBlockModelRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.EmptyBlockAndTintGetter;
@@ -75,6 +75,6 @@ public class SupporterBadgeModel {
         model.emitQuads(emitter, EmptyBlockAndTintGetter.INSTANCE, BlockPos.ZERO, Blocks.AIR.defaultBlockState(), RandomSource.create(42L), (d) -> {
             return false;
         });*/
-        FabricBlockModelRenderer.render(matrixStack.last(), (chunkSectionLayer) -> buffer.getBuffer(RenderType.solid()), model, 1, 1, 1, packedLightIn, OverlayTexture.NO_OVERLAY, EmptyBlockAndTintGetter.INSTANCE, BlockPos.ZERO, Blocks.AIR.defaultBlockState());
+        FabricBlockModelRenderer.render(matrixStack.last(), (chunkSectionLayer) -> buffer.getBuffer(RenderTypes.solidMovingBlock()), model, 1, 1, 1, packedLightIn, OverlayTexture.NO_OVERLAY, EmptyBlockAndTintGetter.INSTANCE, BlockPos.ZERO, Blocks.AIR.defaultBlockState());
     }
 }

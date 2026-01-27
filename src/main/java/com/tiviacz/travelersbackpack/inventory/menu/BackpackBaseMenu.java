@@ -88,7 +88,6 @@ public class BackpackBaseMenu extends AbstractBackpackMenu {
         this.addUpgradeSlots(wrapper);
     }
 
-    //Rebuild whole menu - used when resizing the window
     public void rebuildSlots() {
         this.extendedScreenOffset = 0;
 

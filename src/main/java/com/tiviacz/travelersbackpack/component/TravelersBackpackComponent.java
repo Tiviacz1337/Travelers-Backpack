@@ -118,11 +118,11 @@ public class TravelersBackpackComponent implements ITravelersBackpack {
                 }
                 ComponentUtils.WEARABLE.syncWith(recipient, (ComponentProvider)this.player, (buf, rec) -> writeSyncPacket(getBackpack(), buf, rec, true), p -> true);
             }
+        }
 
-            //Data transfer
-            if(!loadFromNbt) {
-                AttachmentUtils.getAttachment(player).ifPresent(itb -> itb.remove(player));
-            }
+        //Data transfer
+        if(!loadFromNbt) {
+            AttachmentUtils.getAttachment(player).ifPresent(itb -> itb.remove(player));
         }
     }
 

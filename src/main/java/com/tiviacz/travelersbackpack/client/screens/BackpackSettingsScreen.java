@@ -73,8 +73,8 @@ public class BackpackSettingsScreen extends AbstractBackpackScreen<BackpackSetti
     }
 
     @Override
-    public void resize(Minecraft minecraft, int width, int height) {
-        super.resize(minecraft, width, height);
+    public void resize(int width, int height) {
+        super.resize(width, height);
 
         this.isScrollable = false;
         recalculate();

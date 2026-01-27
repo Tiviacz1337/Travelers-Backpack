@@ -9,7 +9,7 @@ accessible field net/minecraft/world/item/crafting/ShapedRecipe pattern Lnet/min
 accessible field net/minecraft/world/entity/item/ItemEntity age I
 accessible field net/minecraft/world/entity/item/ItemEntity pickupDelay I
 
-accessible method net/minecraft/client/gui/GuiGraphics innerBlit (Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/resources/ResourceLocation;IIIIFFFFI)V
+accessible method net/minecraft/client/gui/GuiGraphics innerBlit (Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIIIFFFFI)V
 
 accessible field net/minecraft/world/inventory/AbstractContainerMenu lastSlots Lnet/minecraft/core/NonNullList;
 accessible field net/minecraft/world/inventory/AbstractContainerMenu remoteSlots Lnet/minecraft/core/NonNullList;

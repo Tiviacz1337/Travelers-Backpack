@@ -3,6 +3,7 @@ package com.tiviacz.travelersbackpack;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
+import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
 import com.tiviacz.travelersbackpack.client.model.BackpackDynamicModel;
 import com.tiviacz.travelersbackpack.client.model.BackpackItemModel;
 import com.tiviacz.travelersbackpack.client.model.StarModelReloadListener;
@@ -50,14 +51,18 @@ import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.player.AvatarRenderer;
 import net.minecraft.client.renderer.item.ItemModels;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.DyedItemColor;
+import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.stream.Collectors;
 
 @Environment(EnvType.CLIENT)
 public class TravelersBackpackClient implements ClientModInitializer {
@@ -104,7 +109,7 @@ public class TravelersBackpackClient implements ClientModInitializer {
         if(TravelersBackpack.trashSlotLoaded) TrashSlotCompat.register();
 
         //Backpack Model Deserializer
-        UnbakedModelDeserializer.register(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "backpack"), BackpackDynamicModel.Loader.INSTANCE);
+        UnbakedModelDeserializer.register(Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "backpack"), BackpackDynamicModel.Loader.INSTANCE);
         CustomUnbakedBlockStateModel.register(BackpackDynamicModel.UnbakedBlockStateModel.ID, BackpackDynamicModel.UnbakedBlockStateModel.CODEC);
         registerCustomModels();
 
@@ -129,32 +134,32 @@ public class TravelersBackpackClient implements ClientModInitializer {
             TravelersBackpackTrinket.initClient();
     }
 
-    public static final ResourceLocation STAR_MODEL = ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "item/supporter_star");
+    public static final Identifier STAR_MODEL = Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "item/supporter_star");
     public static final ExtraModelKey<BlockStateModel> STAR_MODEL_KEY = ExtraModelKey.create(STAR_MODEL::toString);
 
-    public static final ResourceLocation BACKPACK_BASE = ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "block/backpack_base");
+    public static final Identifier BACKPACK_BASE = Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "block/backpack_base");
     public static final ExtraModelKey<BlockStateModel> BACKPACK_BASE_KEY = ExtraModelKey.create(BACKPACK_BASE::toString);
-    public static final ResourceLocation BACKPACK_BASE_DYED = ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "block/backpack_base_dyed");
+    public static final Identifier BACKPACK_BASE_DYED = Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "block/backpack_base_dyed");
     public static final ExtraModelKey<BlockStateModel> BACKPACK_BASE_DYED_KEY = ExtraModelKey.create(BACKPACK_BASE_DYED::toString);
-    public static final ResourceLocation BACKPACK_EXTRAS = ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "block/backpack_extras");
+    public static final Identifier BACKPACK_EXTRAS = Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "block/backpack_extras");
     public static final ExtraModelKey<BlockStateModel> BACKPACK_EXTRAS_KEY = ExtraModelKey.create(BACKPACK_EXTRAS::toString);
-    public static final ResourceLocation BACKPACK_FOX_NOSE = ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "block/backpack_fox_nose");
+    public static final Identifier BACKPACK_FOX_NOSE = Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "block/backpack_fox_nose");
     public static final ExtraModelKey<BlockStateModel> BACKPACK_FOX_NOSE_KEY = ExtraModelKey.create(BACKPACK_FOX_NOSE::toString);
-    public static final ResourceLocation BACKPACK_OCELOT_NOSE = ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "block/backpack_ocelot_nose");
+    public static final Identifier BACKPACK_OCELOT_NOSE = Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "block/backpack_ocelot_nose");
     public static final ExtraModelKey<BlockStateModel> BACKPACK_OCELOT_NOSE_KEY = ExtraModelKey.create(BACKPACK_OCELOT_NOSE::toString);
-    public static final ResourceLocation BACKPACK_PIG_NOSE = ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "block/backpack_pig_nose");
+    public static final Identifier BACKPACK_PIG_NOSE = Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "block/backpack_pig_nose");
     public static final ExtraModelKey<BlockStateModel> BACKPACK_PIG_NOSE_KEY = ExtraModelKey.create(BACKPACK_PIG_NOSE::toString);
-    public static final ResourceLocation BACKPACK_SLEEPING_BAG = ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "block/backpack_sleeping_bag");
+    public static final Identifier BACKPACK_SLEEPING_BAG = Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "block/backpack_sleeping_bag");
     public static final ExtraModelKey<BlockStateModel> BACKPACK_SLEEPING_BAG_KEY = ExtraModelKey.create(BACKPACK_SLEEPING_BAG::toString);
-    public static final ResourceLocation BACKPACK_SLEEPING_BAG_EXTRAS = ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "block/backpack_sleeping_bag_extras");
+    public static final Identifier BACKPACK_SLEEPING_BAG_EXTRAS = Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "block/backpack_sleeping_bag_extras");
     public static final ExtraModelKey<BlockStateModel> BACKPACK_SLEEPING_BAG_EXTRAS_KEY = ExtraModelKey.create(BACKPACK_SLEEPING_BAG_EXTRAS::toString);
-    public static final ResourceLocation BACKPACK_TANKS = ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "block/backpack_tanks");
+    public static final Identifier BACKPACK_TANKS = Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "block/backpack_tanks");
     public static final ExtraModelKey<BlockStateModel> BACKPACK_TANKS_KEY = ExtraModelKey.create(BACKPACK_TANKS::toString);
-    public static final ResourceLocation BACKPACK_VILLAGER_NOSE = ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "block/backpack_villager_nose");
+    public static final Identifier BACKPACK_VILLAGER_NOSE = Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "block/backpack_villager_nose");
     public static final ExtraModelKey<BlockStateModel> BACKPACK_VILLAGER_NOSE_KEY = ExtraModelKey.create(BACKPACK_VILLAGER_NOSE::toString);
-    public static final ResourceLocation BACKPACK_WARDEN_HORNS = ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "block/backpack_warden_horns");
+    public static final Identifier BACKPACK_WARDEN_HORNS = Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "block/backpack_warden_horns");
     public static final ExtraModelKey<BlockStateModel> BACKPACK_WARDEN_HORNS_KEY = ExtraModelKey.create(BACKPACK_WARDEN_HORNS::toString);
-    public static final ResourceLocation BACKPACK_WOLF_NOSE = ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "block/backpack_wolf_nose");
+    public static final Identifier BACKPACK_WOLF_NOSE = Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "block/backpack_wolf_nose");
     public static final ExtraModelKey<BlockStateModel> BACKPACK_WOLF_NOSE_KEY = ExtraModelKey.create(BACKPACK_WOLF_NOSE::toString);
 
     public static void registerCustomModels() {
@@ -175,27 +180,99 @@ public class TravelersBackpackClient implements ClientModInitializer {
             pluginContext.addModel(BACKPACK_WOLF_NOSE_KEY, SimpleUnbakedExtraModel.blockStateModel(BACKPACK_WOLF_NOSE));
         });
 
-        ItemModels.ID_MAPPER.put(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "backpack"), BackpackItemModel.Unbaked.MAP_CODEC);
+        ItemModels.ID_MAPPER.put(Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "backpack"), BackpackItemModel.Unbaked.MAP_CODEC);
     }
 
     public static void registerBlockColorProvider() {
         ColorProviderRegistry.BLOCK.register((state, level, pos, tintIndex) -> {
-            if(tintIndex != 2 || pos == null) {
+            if(pos == null) {
                 return -1;
             }
             if(level.getBlockEntity(pos) instanceof BackpackBlockEntity backpack) {
-                if(backpack.getWrapper().getBackpackStack().has(DataComponents.DYED_COLOR)) {
+                if(tintIndex == 0) {
+                    RenderInfo info = backpack.getWrapper().getRenderInfo();
+                    return FluidVariantRendering.getColor(info.getLeftFluidStack().fluidVariant()) | -16777216;
+                }
+                if(tintIndex == 1) {
+                    RenderInfo info = backpack.getWrapper().getRenderInfo();
+                    return FluidVariantRendering.getColor(info.getRightFluidStack().fluidVariant()) | -16777216;
+                }
+                if(tintIndex == 2 && backpack.getWrapper().getBackpackStack().has(DataComponents.DYED_COLOR)) {
                     return ARGB.opaque(backpack.getWrapper().getBackpackStack().get(DataComponents.DYED_COLOR).rgb());
                 }
             }
             return -1;
         }, ModBlocks.STANDARD_TRAVELERS_BACKPACK);
+
+        ColorProviderRegistry.BLOCK.register((state, level, pos, tintIndex) -> {
+            if(pos == null) {
+                return -1;
+            }
+            if(level.getBlockEntity(pos) instanceof BackpackBlockEntity backpack) {
+                if(tintIndex == 0) {
+                    RenderInfo info = backpack.getWrapper().getRenderInfo();
+                    return FluidVariantRendering.getColor(info.getLeftFluidStack().fluidVariant()) | -16777216;
+                }
+                if(tintIndex == 1) {
+                    RenderInfo info = backpack.getWrapper().getRenderInfo();
+                    return FluidVariantRendering.getColor(info.getRightFluidStack().fluidVariant()) | -16777216;
+                }
+            }
+            return -1;
+        }, ModBlocks.NETHERITE_TRAVELERS_BACKPACK,
+                ModBlocks.DIAMOND_TRAVELERS_BACKPACK,
+                ModBlocks.GOLD_TRAVELERS_BACKPACK,
+                ModBlocks.EMERALD_TRAVELERS_BACKPACK,
+                ModBlocks.IRON_TRAVELERS_BACKPACK,
+                ModBlocks.LAPIS_TRAVELERS_BACKPACK,
+                ModBlocks.REDSTONE_TRAVELERS_BACKPACK,
+                ModBlocks.COAL_TRAVELERS_BACKPACK,
+
+                ModBlocks.QUARTZ_TRAVELERS_BACKPACK,
+                ModBlocks.BOOKSHELF_TRAVELERS_BACKPACK,
+                ModBlocks.END_TRAVELERS_BACKPACK,
+                ModBlocks.NETHER_TRAVELERS_BACKPACK,
+                ModBlocks.SANDSTONE_TRAVELERS_BACKPACK,
+                ModBlocks.SNOW_TRAVELERS_BACKPACK,
+                ModBlocks.SPONGE_TRAVELERS_BACKPACK,
+
+                ModBlocks.CAKE_TRAVELERS_BACKPACK,
+
+                ModBlocks.CACTUS_TRAVELERS_BACKPACK,
+                ModBlocks.HAY_TRAVELERS_BACKPACK,
+                ModBlocks.MELON_TRAVELERS_BACKPACK,
+                ModBlocks.PUMPKIN_TRAVELERS_BACKPACK,
+
+                ModBlocks.CREEPER_TRAVELERS_BACKPACK,
+                ModBlocks.DRAGON_TRAVELERS_BACKPACK,
+                ModBlocks.ENDERMAN_TRAVELERS_BACKPACK,
+                ModBlocks.BLAZE_TRAVELERS_BACKPACK,
+                ModBlocks.GHAST_TRAVELERS_BACKPACK,
+                ModBlocks.MAGMA_CUBE_TRAVELERS_BACKPACK,
+                ModBlocks.SKELETON_TRAVELERS_BACKPACK,
+                ModBlocks.SPIDER_TRAVELERS_BACKPACK,
+                ModBlocks.WITHER_TRAVELERS_BACKPACK,
+                ModBlocks.WARDEN_TRAVELERS_BACKPACK,
+
+                ModBlocks.BAT_TRAVELERS_BACKPACK,
+                ModBlocks.BEE_TRAVELERS_BACKPACK,
+                ModBlocks.WOLF_TRAVELERS_BACKPACK,
+                ModBlocks.FOX_TRAVELERS_BACKPACK,
+                ModBlocks.OCELOT_TRAVELERS_BACKPACK,
+                ModBlocks.HORSE_TRAVELERS_BACKPACK,
+                ModBlocks.COW_TRAVELERS_BACKPACK,
+                ModBlocks.PIG_TRAVELERS_BACKPACK,
+                ModBlocks.SHEEP_TRAVELERS_BACKPACK,
+                ModBlocks.CHICKEN_TRAVELERS_BACKPACK,
+                ModBlocks.SQUID_TRAVELERS_BACKPACK,
+                ModBlocks.VILLAGER_TRAVELERS_BACKPACK,
+                ModBlocks.IRON_GOLEM_TRAVELERS_BACKPACK);
     }
 
     public static void registerItemColorProvider() {
-        ItemTintSources.ID_MAPPER.put(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "backpack_dye"), BackpackTintSource.MAP_CODEC);
-        ItemTintSources.ID_MAPPER.put(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "left_fluid"), LeftFluidTintSource.MAP_CODEC);
-        ItemTintSources.ID_MAPPER.put(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "right_fluid"), RightFluidTintSource.MAP_CODEC);
+        ItemTintSources.ID_MAPPER.put(Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "backpack_dye"), BackpackTintSource.MAP_CODEC);
+        ItemTintSources.ID_MAPPER.put(Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "left_fluid"), LeftFluidTintSource.MAP_CODEC);
+        ItemTintSources.ID_MAPPER.put(Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "right_fluid"), RightFluidTintSource.MAP_CODEC);
     }
 
     public static void registerBackpackItemEntityRenderer() {
@@ -225,8 +302,8 @@ public class TravelersBackpackClient implements ClientModInitializer {
 
     public static void setupFluidRendering() {
         FluidRenderHandlerRegistry.INSTANCE.register(ModFluids.POTION_STILL, ModFluids.POTION_FLOWING, new SimpleFluidRenderHandler(
-                ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "block/potion_still"),
-                ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "block/potion_flow"),
+                Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "block/potion_still"),
+                Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "block/potion_flow"),
                 13458603
         ));
 

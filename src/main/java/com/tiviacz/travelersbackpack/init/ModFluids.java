@@ -4,7 +4,7 @@ import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.fluids.PotionFluid;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.material.FlowingFluid;
 
 public class ModFluids {
@@ -14,6 +14,6 @@ public class ModFluids {
     //public static final FlowingFluid MILK_FLOWING = register("milk_flowing", new MilkFluid.Flowing());
 
     private static FlowingFluid register(String name, FlowingFluid flowableFluid) {
-        return Registry.register(BuiltInRegistries.FLUID, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, name), flowableFluid);
+        return Registry.register(BuiltInRegistries.FLUID, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, name), flowableFluid);
     }
 }

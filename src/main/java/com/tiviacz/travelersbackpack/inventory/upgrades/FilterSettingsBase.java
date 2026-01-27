@@ -3,7 +3,7 @@ package com.tiviacz.travelersbackpack.inventory.upgrades;
 import com.tiviacz.travelersbackpack.inventory.handler.ItemStackHandler;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -64,7 +64,7 @@ public abstract class FilterSettingsBase {
         this.tags.clear();
         if(this.filterTags != null) {
             this.filterTags.forEach(string -> {
-                TagKey<Item> tagKey = TagKey.create(Registries.ITEM, ResourceLocation.parse(string));
+                TagKey<Item> tagKey = TagKey.create(Registries.ITEM, Identifier.parse(string));
                 if(!tags.contains(tagKey)) {
                     tags.add(tagKey);
                 }

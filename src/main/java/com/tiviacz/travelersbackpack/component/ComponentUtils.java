@@ -5,7 +5,7 @@ import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
 import dev.emi.trinkets.api.TrinketsApi;
 import io.wispforest.accessories.api.AccessoriesCapability;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -21,7 +21,7 @@ import org.ladysnake.cca.api.v3.entity.RespawnCopyStrategy;
 import java.util.Optional;
 
 public class ComponentUtils implements EntityComponentInitializer {
-    public static final ComponentKey<ITravelersBackpack> WEARABLE = ComponentRegistry.getOrCreate(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "travelersbackpack"), ITravelersBackpack.class);
+    public static final ComponentKey<ITravelersBackpack> WEARABLE = ComponentRegistry.getOrCreate(Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "travelersbackpack"), ITravelersBackpack.class);
 
     @Override
     public void registerEntityComponentFactories(EntityComponentFactoryRegistry registry) {

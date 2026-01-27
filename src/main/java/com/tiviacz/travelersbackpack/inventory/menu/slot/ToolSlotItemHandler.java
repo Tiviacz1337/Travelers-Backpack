@@ -55,7 +55,7 @@ public class ToolSlotItemHandler extends SlotItemHandler {
                 stack.getItem() instanceof SpyglassItem) {
             return true;
         }
-        return stack.has(DataComponents.TOOL);
+        return stack.has(DataComponents.TOOL) || stack.has(DataComponents.WEAPON);
     }
 
     @Override

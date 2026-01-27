@@ -37,6 +37,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -332,7 +333,8 @@ public class HoseItem extends Item {
                     FluidVariantWrapper fluidStack = tank.getFluid();
                     if(level.getBlockState(newPos).canBeReplaced(fluid)) {
                         boolean flag = !level.getBlockState(newPos).isSolid();
-                        if(level.dimensionType().ultraWarm() && fluidStack.fluidVariant().getFluid().is(FluidTags.WATER)) {
+                        boolean ultraWarm = level.dimensionType().attributes().contains(EnvironmentAttributes.WATER_EVAPORATES) ? (boolean)level.dimensionType().attributes().get(EnvironmentAttributes.WATER_EVAPORATES).argument() : false;
+                        if(ultraWarm && fluidStack.fluidVariant().getFluid().is(FluidTags.WATER)) {
                             tank.drain(FluidConstants.BUCKET, false);
                             level.playSound(null, newPos, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 0.5F, 2.6F + (level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.8F);
                             for(int i = 0; i < 3; ++i) {

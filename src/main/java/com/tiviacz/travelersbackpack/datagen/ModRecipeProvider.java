@@ -13,7 +13,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.*;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -56,7 +56,7 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                 SmithingTransformRecipeBuilder.smithing(Ingredient.of(Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE), Ingredient.of(ModItems.BLANK_UPGRADE),
                                 ofTag(ConventionalItemTags.NETHERITE_INGOTS), RecipeCategory.MISC, ModItems.NETHERITE_TIER_UPGRADE)
                         .unlocks(getHasName(Items.NETHERITE_INGOT), has(ConventionalItemTags.NETHERITE_INGOTS))
-                        .save(writer, ResourceKey.create(Registries.RECIPE, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "netherite_tier_upgrade")));
+                        .save(writer, ResourceKey.create(Registries.RECIPE, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "netherite_tier_upgrade")));
 
                 ShapedRecipeBuilder.shaped(registries.lookupOrThrow(Registries.ITEM), RecipeCategory.MISC, ModItems.TANKS_UPGRADE).define('A', ModItems.BACKPACK_TANK)
                         .define('B', ModItems.BLANK_UPGRADE).pattern("ABA")
@@ -129,13 +129,13 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                         .define('X', ConventionalItemTags.LEATHERS).define('B', ConventionalItemTags.STRINGS)
                         .define('D', ConventionalItemTags.WOODEN_CHESTS).define('S', ModTags.SLEEPING_BAGS)
                         .pattern("XBX").pattern(" D ").pattern("XSX")
-                        .unlockedBy("has_chest", has(ConventionalItemTags.WOODEN_CHESTS)).save(writer, ResourceKey.create(Registries.RECIPE, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "standard_no_tanks")));
+                        .unlockedBy("has_chest", has(ConventionalItemTags.WOODEN_CHESTS)).save(writer, ResourceKey.create(Registries.RECIPE, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "standard_no_tanks")));
 
                 //Netherite backpack
                 SmithingTransformRecipeBuilder.smithing(Ingredient.of(Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE),
                                 Ingredient.of(ModItems.DIAMOND_TRAVELERS_BACKPACK), ofTag(ConventionalItemTags.NETHERITE_INGOTS),
                                 RecipeCategory.MISC, ModItems.NETHERITE_TRAVELERS_BACKPACK)
-                        .unlocks(getHasName(Items.NETHERITE_INGOT), has(ConventionalItemTags.NETHERITE_INGOTS)).save(writer, ResourceKey.create(Registries.RECIPE, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "netherite")));
+                        .unlocks(getHasName(Items.NETHERITE_INGOT), has(ConventionalItemTags.NETHERITE_INGOTS)).save(writer, ResourceKey.create(Registries.RECIPE, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "netherite")));
 
                 createBackpackSmallGrid(ModItems.DIAMOND_TRAVELERS_BACKPACK, ofTag(ConventionalItemTags.DIAMOND_GEMS), getHasName(Items.DIAMOND), has(ConventionalItemTags.DIAMOND_GEMS)).save(writer);
                 createBackpackSmallGrid(ModItems.GOLD_TRAVELERS_BACKPACK, ofTag(ConventionalItemTags.GOLD_INGOTS), getHasName(Items.GOLD_INGOT), has(ConventionalItemTags.GOLD_INGOTS)).save(writer);
@@ -347,8 +347,8 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                 return Ingredient.of(registries.lookupOrThrow(Registries.ITEM).getOrThrow(tag));
             }
 
-            public static ResourceLocation id(String name) {
-                return ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, name);
+            public static Identifier id(String name) {
+                return Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, name);
             }
 
             private void sleepingBagFromWool(RecipeOutput recipeOutput, ItemLike sleepingBag, ItemLike pWool) {
@@ -369,7 +369,7 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                             .requires(Ingredient.of(stream))
                             .group(group)
                             .unlockedBy("has_needed_dye", this.has(item))
-                            .save(output, ResourceKey.create(Registries.RECIPE, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "dye_" + getItemName(item1))));
+                            .save(output, ResourceKey.create(Registries.RECIPE, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "dye_" + getItemName(item1))));
                 }
             }
 

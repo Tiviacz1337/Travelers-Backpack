@@ -11,7 +11,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class ModScreenHandlerTypes {
     public static ExtendedScreenHandlerType<BackpackItemMenu, ItemScreenData> BACKPACK_MENU = new ExtendedScreenHandlerType<>(BackpackItemMenu::new, ItemScreenData.PACKET_CODEC);
@@ -19,9 +19,9 @@ public class ModScreenHandlerTypes {
     public static ExtendedScreenHandlerType<BackpackSettingsMenu, SettingsScreenData> BACKPACK_SETTINGS_MENU = new ExtendedScreenHandlerType<>(BackpackSettingsMenu::new, SettingsScreenData.PACKET_CODEC);
 
     public static void init() {
-        Registry.register(BuiltInRegistries.MENU, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "backpack_item"), BACKPACK_MENU);
-        Registry.register(BuiltInRegistries.MENU, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "backpack_block"), BACKPACK_BLOCK_MENU);
-        Registry.register(BuiltInRegistries.MENU, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "backpack_settings"), BACKPACK_SETTINGS_MENU);
+        Registry.register(BuiltInRegistries.MENU, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "backpack_item"), BACKPACK_MENU);
+        Registry.register(BuiltInRegistries.MENU, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "backpack_block"), BACKPACK_BLOCK_MENU);
+        Registry.register(BuiltInRegistries.MENU, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "backpack_settings"), BACKPACK_SETTINGS_MENU);
     }
 
     public record ItemScreenData(int screenID, int entityID) {

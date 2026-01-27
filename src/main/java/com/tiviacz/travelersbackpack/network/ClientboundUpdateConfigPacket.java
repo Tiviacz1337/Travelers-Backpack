@@ -11,14 +11,14 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public record ClientboundUpdateConfigPacket(CompoundTag compound) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<ClientboundUpdateConfigPacket> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "update_config"));
+    public static final CustomPacketPayload.Type<ClientboundUpdateConfigPacket> TYPE = new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "update_config"));
     public static final StreamCodec<RegistryFriendlyByteBuf, ClientboundUpdateConfigPacket> STREAM_CODEC = StreamCodec.composite(ByteBufCodecs.COMPOUND_TAG, ClientboundUpdateConfigPacket::compound, ClientboundUpdateConfigPacket::new);
 
     public static void handle(ClientboundUpdateConfigPacket message, ClientPlayNetworking.Context context) {

@@ -6,7 +6,7 @@ import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public abstract class Button implements IButton {
     protected final BackpackScreen screen;
@@ -23,7 +23,7 @@ public abstract class Button implements IButton {
         this.height = height;
     }
 
-    public void drawButton(GuiGraphics guiGraphics, int mouseX, int mouseY, ResourceLocation texture, int u1, int v1, int u2, int v2) {
+    public void drawButton(GuiGraphics guiGraphics, int mouseX, int mouseY, Identifier texture, int u1, int v1, int u2, int v2) {
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, texture, screen.getGuiLeft() + x + 1, screen.getGuiTop() + y + 1, u1, v1, width - 2, height - 2, 256, 256);
         if(this.inButton(mouseX, mouseY)) {
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, texture, screen.getGuiLeft() + x, screen.getGuiTop() + y, u2, v2, width, height, 256, 256);

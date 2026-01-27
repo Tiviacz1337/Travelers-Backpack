@@ -17,7 +17,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.gamerules.GameRules;
 
 public class DeathHandler {
     public static void registerListeners() {
@@ -40,7 +40,7 @@ public class DeathHandler {
 
                     //Keep backpack on with Keep Inventory game rule
                     if(player.level() instanceof ServerLevel serverLevel) {
-                        if(serverLevel.getGameRules().getBoolean(GameRules.RULE_KEEPINVENTORY)) return;
+                        if(serverLevel.getGameRules().get(GameRules.KEEP_INVENTORY)) return;
                     }
 
                     ItemStack stack = ComponentUtils.getWearingBackpack(player);

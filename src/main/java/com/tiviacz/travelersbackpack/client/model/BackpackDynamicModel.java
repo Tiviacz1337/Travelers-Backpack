@@ -14,7 +14,9 @@ import net.fabricmc.fabric.api.client.model.loading.v1.CustomUnbakedBlockStateMo
 import net.fabricmc.fabric.api.client.model.loading.v1.UnbakedModelDeserializer;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
+import net.fabricmc.fabric.impl.renderer.QuadSpriteBaker;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.geom.builders.UVPair;
 import net.minecraft.client.renderer.block.model.*;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
@@ -25,7 +27,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.data.AtlasIds;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.DyeColor;
@@ -36,6 +38,7 @@ import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4fc;
 import org.joml.Vector3f;
+import org.joml.Vector3fc;
 import org.joml.Vector4f;
 
 import java.util.*;
@@ -61,7 +64,7 @@ public class BackpackDynamicModel implements UnbakedModel, ResolvableModel {
     private TextureSlots getTextureSlots(ModelBaker baker, UnbakedModel partModel, ModelDebugName debugName) {
         TextureSlots.Resolver resolver = new TextureSlots.Resolver();
         resolver.addLast(partModel.textureSlots());
-        ResourceLocation parent = partModel.parent();
+        Identifier parent = partModel.parent();
         if(parent != null) {
             ResolvedModel resolvedParent = baker.getModel(parent);
             while(resolvedParent != null) {
@@ -75,7 +78,7 @@ public class BackpackDynamicModel implements UnbakedModel, ResolvableModel {
     @Override
     public void resolveDependencies(ResolvableModel.Resolver resolver) {
         modelParts.values().forEach(model -> {
-            ResourceLocation parent = model.parent();
+            Identifier parent = model.parent();
             if(parent != null) {
                 resolver.markDependency(parent);
             }
@@ -126,26 +129,43 @@ public class BackpackDynamicModel implements UnbakedModel, ResolvableModel {
         private void rebakeSleepingBag(QuadCollection.Builder builder, TextureAtlasSprite sprite) {
             models.get(ModelParts.SLEEPING_BAG).getAll().forEach(quad -> {
                 TextureAtlasSprite oldSprite = quad.sprite();
-                int[] oldData = quad.vertices();
-                int[] newData = Arrays.copyOf(oldData, oldData.length);
+
+                long[] oldUVs = {quad.packedUV0(), quad.packedUV1(), quad.packedUV2(), quad.packedUV3()};
+                long[] newUVs = new long[4];
 
                 for(int i = 0; i < 4; i++) {
-                    int index = i * 8;
+                    // Unpack using UVPair format: U in upper 32 bits, V in lower 32 bits
+                    float oldU = UVPair.unpackU(oldUVs[i]);
+                    float oldV = UVPair.unpackV(oldUVs[i]);
 
-                    float oldU = Float.intBitsToFloat(oldData[index + 4]);
-                    float oldV = Float.intBitsToFloat(oldData[index + 5]);
+                    // Convert from old sprite's atlas space to normalized 0-1 range
+                    float uNormalized = (oldU - oldSprite.getU0()) / (oldSprite.getU1() - oldSprite.getU0());
+                    float vNormalized = (oldV - oldSprite.getV0()) / (oldSprite.getV1() - oldSprite.getV0());
 
-                    float uUn = oldSprite.getUOffset(oldU);
-                    float vUn = oldSprite.getVOffset(oldV);
+                    // Convert to new sprite's atlas space
+                    float newU = sprite.getU(uNormalized);
+                    float newV = sprite.getV(vNormalized);
 
-                    float newU = sprite.getU(uUn);
-                    float newV = sprite.getV(vUn);
-
-                    newData[index + 4] = Float.floatToRawIntBits(newU);
-                    newData[index + 5] = Float.floatToRawIntBits(newV);
-
-                    builder.addUnculledFace(new BakedQuad(newData, quad.tintIndex(), quad.direction(), sprite, quad.shade(), quad.lightEmission()));
+                    // Pack using UVPair format
+                    newUVs[i] = UVPair.pack(newU, newV);
                 }
+
+                BakedQuad newQuad = new BakedQuad(
+                        quad.position0(),
+                        quad.position1(),
+                        quad.position2(),
+                        quad.position3(),
+                        newUVs[0],
+                        newUVs[1],
+                        newUVs[2],
+                        newUVs[3],
+                        quad.tintIndex(),
+                        quad.direction(),
+                        sprite,
+                        quad.shade(),
+                        quad.lightEmission()
+                );
+                builder.addUnculledFace(newQuad);
             });
         }
 
@@ -182,60 +202,40 @@ public class BackpackDynamicModel implements UnbakedModel, ResolvableModel {
             posIn.set(vector4f.x() + originIn.x(), vector4f.y() + originIn.y(), vector4f.z() + originIn.z());
         }
 
-        private int convertColorARGBtoABGR(int color) {
-            int a = (color >> 24) & 0xFF;
-            int r = (color >> 16) & 0xFF;
-            int g = (color >> 8) & 0xFF;
-            int b = color & 0xFF;
-
-            return (a << 24) | (b << 16) | (g << 8) | r;
-        }
-
-        private BakedQuad createQuad(List<Vector3f> vectors, TextureAtlasSprite sprite, Direction face, boolean hasAmbientOcclusion, int color, float u1x, float u2x, float v1x, float v2x, int tintIndex) {
+        private BakedQuad createQuad(List<Vector3f> vectors, TextureAtlasSprite sprite, Direction face,
+                                     boolean hasAmbientOcclusion, int color, float u1x, float u2x,
+                                     float v1x, float v2x, int tintIndex) {
             u1x = u1x / 16F;
             u2x = u2x / 16F;
             v1x = v1x / 16F;
             v2x = v2x / 16F;
 
-            float u1 = sprite.getU(u1x);
-            float u2 = sprite.getU(u2x);
-            float v1 = sprite.getV(v1x);
-            float v2 = sprite.getV(v2x);
+            float u0 = sprite.getU(u1x);
+            float u1 = sprite.getU(u2x);
+            float v0 = sprite.getV(v1x);
+            float v1 = sprite.getV(v2x);
 
-            Vec3i normal = face.getUnitVec3i();
-            int[] vertexData = new int[4 * 8]; // 4 vertices, 8 ints per vertex
+            // Vector3f from your list IS Vector3fc (JOML implements the interface)
+            Vector3fc pos0 = vectors.get(0);
+            Vector3fc pos1 = vectors.get(1);
+            Vector3fc pos2 = vectors.get(2);
+            Vector3fc pos3 = vectors.get(3);
 
-            int packedColor = convertColorARGBtoABGR(color);
+            // Pack UVs: lower 32 bits = U float bits, upper 32 bits = V float bits
+            long packedUV0 = UVPair.pack(u0, v0);
+            long packedUV1 = UVPair.pack(u0, v1);
+            long packedUV2 = UVPair.pack(u1, v1);
+            long packedUV3 = UVPair.pack(u1, v0);
 
-            // Helper to encode vertex data at given vertex index (0-3)
-            for(int i = 0; i < 4; i++) {
-                int base = i * 8;
-                Vector3f vec = vectors.get(i);
-
-                vertexData[base] = Float.floatToRawIntBits(vec.x());
-                vertexData[base + 1] = Float.floatToRawIntBits(vec.y());
-                vertexData[base + 2] = Float.floatToRawIntBits(vec.z());
-
-                vertexData[base + 3] = packedColor;
-
-                // UV coords in correct order depending on vertex
-                float u = (i == 0 || i == 1) ? u1 : u2;
-                float v = (i == 0 || i == 3) ? v1 : v2;
-
-                vertexData[base + 4] = Float.floatToRawIntBits(u);
-                vertexData[base + 5] = Float.floatToRawIntBits(v);
-
-                vertexData[base + 6] = normal.getX();
-                vertexData[base + 7] = normal.getY();
-                // Usually normal.Z should also be stored or the light coordinate -> but Minecraft uses signed byte packed into an int or ignores?
-                // Here store normal Z too in base + 7 by shifting or leave 0?
-                // For simplicity, store normal Z in the higher bits of base + 7
-            }
-
-            // Minecraft BakedQuad constructor parameters:
-            // vertexData, tintIndex, face, sprite, shade, lightCoord
-            // Use tintIndex = -1 (no tint), shade = true, and lightCoord = 0 for default lighting
-            return new BakedQuad(vertexData, tintIndex, face, sprite, hasAmbientOcclusion, 0);
+            return new BakedQuad(
+                    pos0, pos1, pos2, pos3,
+                    packedUV0, packedUV1, packedUV2, packedUV3,
+                    tintIndex,
+                    face,
+                    sprite,
+                    hasAmbientOcclusion,
+                    0  // lightEmission
+            );
         }
 
         @Override
@@ -309,7 +309,7 @@ public class BackpackDynamicModel implements UnbakedModel, ResolvableModel {
                 return;
             }
             addAll(builder, models.get(ModelParts.SLEEPING_BAG_EXTRAS));
-            TextureAtlasSprite sprite = Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.BLOCKS).getSprite(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "block/bag/" + DyeColor.byId(sleepingBagColor).getName().toLowerCase(Locale.ENGLISH) + "_sleeping_bag"));
+            TextureAtlasSprite sprite = Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.BLOCKS).getSprite(Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "block/bag/" + DyeColor.byId(sleepingBagColor).getName().toLowerCase(Locale.ENGLISH) + "_sleeping_bag"));
             rebakeSleepingBag(builder, sprite);
         }
 
@@ -352,7 +352,7 @@ public class BackpackDynamicModel implements UnbakedModel, ResolvableModel {
     public record UnbakedBlockStateModel(Variant variant) implements CustomUnbakedBlockStateModel {
         public static final MapCodec<UnbakedBlockStateModel> CODEC = RecordCodecBuilder.mapCodec(instance ->
                 instance.group(Variant.MAP_CODEC.forGetter(UnbakedBlockStateModel::variant)).apply(instance, UnbakedBlockStateModel::new));
-        public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "backpack_loader");
+        public static final Identifier ID = Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "backpack_loader");
 
         @Override
         public BlockStateModel bake(ModelBaker modelBaker) {
@@ -382,13 +382,13 @@ public class BackpackDynamicModel implements UnbakedModel, ResolvableModel {
             ImmutableMap.Builder<ModelParts, BlockModel> builder = ImmutableMap.builder();
             TextureSlots.Data.Builder texturesBuilder = new TextureSlots.Data.Builder();
             if(modelContents.has("backpackTexture")) {
-                ResourceLocation backpackTexture = ResourceLocation.tryParse(modelContents.get("backpackTexture").getAsString());
+                Identifier backpackTexture = Identifier.tryParse(modelContents.get("backpackTexture").getAsString());
                 if(backpackTexture != null) {
                     texturesBuilder.addTexture("0", new Material(TextureAtlas.LOCATION_BLOCKS, backpackTexture));
                 }
             }
             if(modelContents.has("particle")) {
-                ResourceLocation particleTexture = ResourceLocation.tryParse(modelContents.get("particle").getAsString());
+                Identifier particleTexture = Identifier.tryParse(modelContents.get("particle").getAsString());
                 if(particleTexture != null) {
                     texturesBuilder.addTexture("particle", new Material(TextureAtlas.LOCATION_BLOCKS, particleTexture));
                 }
@@ -403,28 +403,28 @@ public class BackpackDynamicModel implements UnbakedModel, ResolvableModel {
         }
 
         private void addPartModel(ImmutableMap.Builder<ModelParts, BlockModel> builder, ModelParts modelPart, TextureSlots.Data textures) {
-            builder.put(modelPart, new BlockModel(null, null, true, ItemTransforms.NO_TRANSFORMS, textures, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "block/backpack_" + modelPart.name().toLowerCase(Locale.ENGLISH))));
+            builder.put(modelPart, new BlockModel(null, null, true, ItemTransforms.NO_TRANSFORMS, textures, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "block/backpack_" + modelPart.name().toLowerCase(Locale.ENGLISH))));
         }
 
-        private static Map<ResourceLocation, ChunkSectionLayer> RENDER_TYPES;
+        private static Map<Identifier, ChunkSectionLayer> RENDER_TYPES;
 
         public static ChunkSectionLayer deserializeRenderType(JsonObject jsonObject) {
             if(jsonObject.has("render_type")) {
                 String renderTypeHintName = GsonHelper.getAsString(jsonObject, "render_type");
-                return RENDER_TYPES.get(ResourceLocation.parse(renderTypeHintName));
+                return RENDER_TYPES.get(Identifier.parse(renderTypeHintName));
             }
             return ChunkSectionLayer.SOLID;
         }
 
         public static void loadVanillaRenderTypes() {
             RENDER_TYPES = new HashMap<>();
-            RENDER_TYPES.put(ResourceLocation.withDefaultNamespace("solid"), ChunkSectionLayer.SOLID);
-            RENDER_TYPES.put(ResourceLocation.withDefaultNamespace("cutout"), ChunkSectionLayer.CUTOUT);
+            RENDER_TYPES.put(Identifier.withDefaultNamespace("solid"), ChunkSectionLayer.SOLID);
+            RENDER_TYPES.put(Identifier.withDefaultNamespace("cutout"), ChunkSectionLayer.CUTOUT);
             // Generally entity/item rendering shouldn't use mipmaps, so cutout_mipped has them off by default. To enforce them, use cutout_mipped_all.
-            RENDER_TYPES.put(ResourceLocation.withDefaultNamespace("cutout_mipped"), ChunkSectionLayer.CUTOUT_MIPPED);
-            RENDER_TYPES.put(ResourceLocation.withDefaultNamespace("cutout_mipped_all"), ChunkSectionLayer.CUTOUT_MIPPED);
-            RENDER_TYPES.put(ResourceLocation.withDefaultNamespace("translucent"), ChunkSectionLayer.TRANSLUCENT);
-            RENDER_TYPES.put(ResourceLocation.withDefaultNamespace("tripwire"), ChunkSectionLayer.TRIPWIRE);
+            RENDER_TYPES.put(Identifier.withDefaultNamespace("cutout_mipped"), ChunkSectionLayer.CUTOUT);
+            RENDER_TYPES.put(Identifier.withDefaultNamespace("cutout_mipped_all"), ChunkSectionLayer.CUTOUT);
+            RENDER_TYPES.put(Identifier.withDefaultNamespace("translucent"), ChunkSectionLayer.TRANSLUCENT);
+            RENDER_TYPES.put(Identifier.withDefaultNamespace("tripwire"), ChunkSectionLayer.TRIPWIRE);
         }
     }
 

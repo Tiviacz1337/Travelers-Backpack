@@ -108,17 +108,18 @@ dependencies {
 	modCompileOnly "dev.onyxstudios.cardinal-components-api:cardinal-components-block:${project.cca_version}"
 
 	//Cloth Config
+    modCompileOnly("dev.architectury:architectury-fabric:${project.architectury_version}")
 	modImplementation "me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}"
 
 	//OPTIONAL
 
 	//Crafting Tweaks
-	modImplementation("maven.modrinth:balm:cU1Vn9qw")
-	modImplementation("maven.modrinth:crafting-tweaks:gog2sFGz")
+	modImplementation("maven.modrinth:balm:RNhvPwjz")
+	modImplementation("maven.modrinth:crafting-tweaks:FRbpgdVD")
 	modApi("net.blay09.mods:kuma-api-fabric:21.10.5+1.21.10")
 
 	//Trash Slot
-	modImplementation "maven.modrinth:trashslot:8pBON0BS"
+	modCompileOnly "maven.modrinth:trashslot:h27RWnjv"
 
 	//ModMenu
 	modImplementation "com.terraformersmc:modmenu:${project.mod_menu_version}"
@@ -135,11 +136,10 @@ dependencies {
 	//modImplementation("io.wispforest.endec:netty:0.1.4")
 
 	//REI
-	modCompileOnly "maven.modrinth:rei:CkkZK8ao"
-	modRuntimeOnly("maven.modrinth:architectury-api:9eRDsZKH")
+    modCompileOnly("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}")
 
 	//JEI
-	modImplementation("maven.modrinth:jei:Y0JKqg8L")
+	modImplementation ("maven.modrinth:jei:9i2DXscL")
 
 	//Polymorph
 	modCompileOnly("maven.modrinth:polymorph:j4jPy88h")
@@ -148,7 +148,7 @@ dependencies {
 	modCompileOnly ("maven.modrinth:comforts:vUdakIzK")
 
 	//EMI
-	modCompileOnly("maven.modrinth:emi:mYQ3bJs5")
+	modCompileOnly("dev.emi:emi-fabric:${project.emi_version}")
 
 	//Universal Graves
     modCompileOnly "curse.maven:universal-graves-497175:7054553"
@@ -161,8 +161,8 @@ dependencies {
 	modCompileOnly("curse.maven:glitchcore-955399:5483774")
 
 	//Gravestones
-	modImplementation("maven.modrinth:pneumono_gravestones:K2Vh98mw")
-	modImplementation("maven.modrinth:pneumono_core:JnJkluZn")
+	modImplementation("maven.modrinth:pneumono_gravestones:gB1im2Nk")
+	modImplementation("maven.modrinth:pneumono_core:Y03YVYzM")
 
 	//ESB
 	//modImplementation ("maven.modrinth:easy-shulker-boxes:fDksdgiC")

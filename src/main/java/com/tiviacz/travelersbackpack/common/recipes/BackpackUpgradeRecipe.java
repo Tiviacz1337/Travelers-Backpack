@@ -115,13 +115,13 @@ public class BackpackUpgradeRecipe implements SmithingRecipe {
 
     public static class Serializer implements RecipeSerializer<BackpackUpgradeRecipe> {
         private static final MapCodec<BackpackUpgradeRecipe> CODEC = RecordCodecBuilder.mapCodec(
-                p_340782_ -> p_340782_.group(
-                                Ingredient.CODEC.optionalFieldOf("template").forGetter(p_301310_ -> p_301310_.template),
-                                Ingredient.CODEC.fieldOf("base").forGetter(p_300938_ -> p_300938_.base),
-                                Ingredient.CODEC.optionalFieldOf("addition").forGetter(p_301153_ -> p_301153_.addition),
-                                TransmuteResult.CODEC.fieldOf("result").forGetter(p_300935_ -> p_300935_.result)
+                instance -> instance.group(
+                                Ingredient.CODEC.optionalFieldOf("template").forGetter(smithingTransformRecipe -> smithingTransformRecipe.template),
+                                Ingredient.CODEC.fieldOf("base").forGetter(smithingTransformRecipe -> smithingTransformRecipe.base),
+                                Ingredient.CODEC.optionalFieldOf("addition").forGetter(smithingTransformRecipe -> smithingTransformRecipe.addition),
+                                TransmuteResult.CODEC.fieldOf("result").forGetter(smithingTransformRecipe -> smithingTransformRecipe.result)
                         )
-                        .apply(p_340782_, BackpackUpgradeRecipe::new)
+                        .apply(instance, BackpackUpgradeRecipe::new)
         );
         public static final StreamCodec<RegistryFriendlyByteBuf, BackpackUpgradeRecipe> STREAM_CODEC = StreamCodec.composite(
                 Ingredient.OPTIONAL_CONTENTS_STREAM_CODEC,

@@ -35,10 +35,11 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
-import net.minecraft.world.entity.projectile.ThrownLingeringPotion;
-import net.minecraft.world.entity.projectile.ThrownSplashPotion;
+import net.minecraft.world.entity.projectile.throwableitemprojectile.ThrownLingeringPotion;
+import net.minecraft.world.entity.projectile.throwableitemprojectile.ThrownSplashPotion;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -422,8 +423,8 @@ public class ServerActions {
             if(!level.isClientSide()) {
                 if(player instanceof ServerPlayer serverPlayer) {
                     player.startSleepInBed(pos.relative(player.getDirection()).relative(player.getDirection())).ifLeft(bedSleepingProblem -> {
-                        if(bedSleepingProblem.getMessage() != null) {
-                            player.displayClientMessage(bedSleepingProblem.getMessage(), true);
+                        if(bedSleepingProblem.message() != null) {
+                            player.displayClientMessage(bedSleepingProblem.message(), true);
                             if(level.getBlockState(sleepingBagPos1).getBlock() instanceof SleepingBagBlock) {
                                 level.setBlockAndUpdate(sleepingBagPos1, Blocks.AIR.defaultBlockState());
                             }
@@ -455,7 +456,7 @@ public class ServerActions {
     }
 
     public static boolean placeAndUseSleepingBag(Player player, BlockPos sleepingBagPos1, BlockPos sleepingBagPos2, BlockPos pos, Level level, Direction direction) {
-        if(!player.onGround() || level.getBlockState(sleepingBagPos1.below()).isAir() || level.getBlockState(sleepingBagPos1.below()).getBlock() instanceof LiquidBlock || !BedBlock.canSetSpawn(level)) {
+        if(!player.onGround() || level.getBlockState(sleepingBagPos1.below()).isAir() || level.getBlockState(sleepingBagPos1.below()).getBlock() instanceof LiquidBlock || level.environmentAttributes().getValue(EnvironmentAttributes.BED_RULE, pos).explodes()) {
             return false;
         }
         ItemStack backpack = ComponentUtils.getWearingBackpack(player);

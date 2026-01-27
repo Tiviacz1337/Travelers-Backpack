@@ -10,7 +10,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemContainerContents;
@@ -19,7 +19,7 @@ import net.minecraft.world.level.block.Block;
 import java.util.List;
 
 public class ModItemGroups {
-    public static final ResourceKey<CreativeModeTab> TRAVELERS_BACKPACK = ResourceKey.create(Registries.CREATIVE_MODE_TAB, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "travelers_backpack"));
+    public static final ResourceKey<CreativeModeTab> TRAVELERS_BACKPACK = ResourceKey.create(Registries.CREATIVE_MODE_TAB, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "travelers_backpack"));
 
     public static void registerItemGroup() {
         Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, TRAVELERS_BACKPACK, FabricItemGroup.builder()

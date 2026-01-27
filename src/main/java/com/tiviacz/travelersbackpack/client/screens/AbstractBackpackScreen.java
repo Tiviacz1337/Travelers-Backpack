@@ -14,7 +14,7 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Inventory;
@@ -22,12 +22,12 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 
 public abstract class AbstractBackpackScreen<T extends AbstractBackpackMenu> extends AbstractContainerScreen<T> {
-    public static final ResourceLocation BACKGROUND_11 = ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "textures/gui/background_11.png");
-    public static final ResourceLocation BACKGROUND_9 = ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "textures/gui/background_9.png");
-    public static final ResourceLocation SLOTS = ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "textures/gui/slots.png");
-    public static final ResourceLocation TANKS = ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "textures/gui/tanks.png");
-    public static final ResourceLocation ICONS = ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "textures/gui/icons.png");
-    public static final ResourceLocation TABS = ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "textures/gui/tabs.png");
+    public static final Identifier BACKGROUND_11 = Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "textures/gui/background_11.png");
+    public static final Identifier BACKGROUND_9 = Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "textures/gui/background_9.png");
+    public static final Identifier SLOTS = Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "textures/gui/slots.png");
+    public static final Identifier TANKS = Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "textures/gui/tanks.png");
+    public static final Identifier ICONS = Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "textures/gui/icons.png");
+    public static final Identifier TABS = Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "textures/gui/tabs.png");
     public static final int TOP_BAR_OFFSET = 17;
     public int slotCount;
     public boolean wider = false;
@@ -155,7 +155,7 @@ public abstract class AbstractBackpackScreen<T extends AbstractBackpackMenu> ext
         return (int)Math.ceil((double)this.slotCount / getSlotsInRow()) - (int)Math.ceil((double)this.visibleSlots / getSlotsInRow());
     }
 
-    public void renderInventoryBackground(GuiGraphics guiGraphics, int x, int y, ResourceLocation texture, int xSize, int slotsHeight) {
+    public void renderInventoryBackground(GuiGraphics guiGraphics, int x, int y, Identifier texture, int xSize, int slotsHeight) {
         int halfSlotHeight = slotsHeight / 2;
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, texture, x, y, 0, 0, xSize, TOP_BAR_OFFSET + halfSlotHeight, 256, 256);
         int playerInventoryHeight = 98;

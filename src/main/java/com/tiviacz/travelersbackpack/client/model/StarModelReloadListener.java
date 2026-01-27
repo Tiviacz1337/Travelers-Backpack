@@ -6,7 +6,7 @@ import net.fabricmc.fabric.api.resource.ResourceReloadListenerKeys;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 
 import java.util.Collection;
@@ -14,7 +14,7 @@ import java.util.List;
 
 public class StarModelReloadListener implements SimpleSynchronousResourceReloadListener {
     public static final StarModelReloadListener INSTANCE = new StarModelReloadListener();
-    public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "star_model");
+    public static final Identifier ID = Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "star_model");
 
     private BlockStateModel starModel;
 
@@ -28,12 +28,12 @@ public class StarModelReloadListener implements SimpleSynchronousResourceReloadL
     }
 
     @Override
-    public ResourceLocation getFabricId() {
+    public Identifier getFabricId() {
         return ID;
     }
 
     @Override
-    public Collection<ResourceLocation> getFabricDependencies() {
+    public Collection<Identifier> getFabricDependencies() {
         return List.of(ResourceReloadListenerKeys.MODELS);
     }
 }
