@@ -183,6 +183,10 @@ public class TravelersBackpackConfigData implements ConfigData {
         public boolean invulnerableBackpack = true;
 
         @ConfigEntry.Gui.RequiresRestart
+        @Comment("Allows swapping tools between tool slots and the player’s inventory via a quick-swap menu")
+        public boolean allowToolSwapping = true;
+
+        @ConfigEntry.Gui.RequiresRestart
         @Comment("List of items that can be put in tool slots (Use registry names, for example: minecraft:apple, minecraft:flint)")
         public String[] toolSlotsAcceptableItems = {};
 
@@ -489,6 +493,9 @@ public class TravelersBackpackConfigData implements ConfigData {
 
     public static class Client {
         @ConfigEntry.Gui.CollapsibleObject
+        public ToolsOverlay toolsOverlay = new ToolsOverlay();
+
+        @ConfigEntry.Gui.CollapsibleObject
         public Overlay overlay = new Overlay();
 
         @Comment("Whether the backpack icon should be visible in player's inventory")
@@ -497,10 +504,10 @@ public class TravelersBackpackConfigData implements ConfigData {
         @Comment("Sends a message to the player on death with backpack coordinates")
         public boolean sendBackpackCoordinatesMessage = true;
 
-        @Comment("Enables tool cycling via keybind (Default Z) + scroll combination, while backpack is worn")
+        @Comment("Depreciated - see allowToolSwapping instead")
         public boolean enableToolCycling = true;
 
-        @Comment("Allows tool cycling using keybinding only (Default Z)")
+        @Comment("Depreciated")
         public boolean disableScrollWheel = false;
 
         @Comment("Enables tip, how to obtain a backpack, if there's no crafting recipe for it")
@@ -511,6 +518,14 @@ public class TravelersBackpackConfigData implements ConfigData {
 
         @Comment("Only for supporters, option to show/hide the Supporter Star Badge. If you want to receive the Supporter Star Badge, visit my Ko-fi page :)! - https://ko-fi.com/tiviacz1337")
         public boolean showSupporterBadge = true;
+
+        public static class ToolsOverlay {
+            @Comment("X offset")
+            public int offsetX = 0;
+
+            @Comment("Y offset")
+            public int offsetY = 0;
+        }
 
         public static class Overlay {
             @Comment("Enables tanks and tool slots overlay, while backpack is worn")

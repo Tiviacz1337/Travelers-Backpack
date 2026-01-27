@@ -112,7 +112,7 @@ public class TankWidget extends UpgradeWidgetBase<TanksUpgrade> {
     }
 
     @Environment(EnvType.CLIENT)
-    public List<Component> getTankTooltip(FluidTank tank) {
+    public static List<Component> getTankTooltip(FluidTank tank) {
         FluidVariantWrapper fluidStack = tank.getFluid();
         List<Component> tankTips = new ArrayList<>();
         String fluidName = !fluidStack.isEmpty() ? FluidTypeHelper.getFluidVariantName(fluidStack.fluidVariant()).getString() : I18n.get("screen.travelersbackpack.none");

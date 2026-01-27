@@ -2,12 +2,11 @@ package com.tiviacz.travelersbackpack.handlers;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
+import com.tiviacz.travelersbackpack.client.screens.ToolsScreen;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
-import com.tiviacz.travelersbackpack.init.ModDataComponents;
-import com.tiviacz.travelersbackpack.inventory.menu.slot.ToolSlotItemHandler;
-import com.tiviacz.travelersbackpack.item.HoseItem;
+import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -20,10 +19,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.GameType;
 import org.lwjgl.glfw.GLFW;
 
 public class KeybindHandler {
@@ -32,42 +33,23 @@ public class KeybindHandler {
     public static final KeyMapping OPEN_BACKPACK = new KeyMapping("key.travelersbackpack.inventory", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_B, CATEGORY);
     public static final KeyMapping SORT_BACKPACK = new KeyMapping("key.travelersbackpack.sort", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN, CATEGORY);
     public static final KeyMapping ABILITY = new KeyMapping("key.travelersbackpack.ability", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN, CATEGORY);
-    public static final KeyMapping SWITCH_TOOL = new KeyMapping("key.travelersbackpack.cycle_tool", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_Z, CATEGORY);
-    public static final KeyMapping TOGGLE_TANK = new KeyMapping("key.travelersbackpack.toggle_tank", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_N, CATEGORY);
+    public static final KeyMapping SWAP_TOOL = new KeyMapping("key.travelersbackpack.cycle_tool", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_Z, CATEGORY);
 
     public static void initKeybinds() {
         KeyBindingHelper.registerKeyBinding(OPEN_BACKPACK);
         KeyBindingHelper.registerKeyBinding(SORT_BACKPACK);
         KeyBindingHelper.registerKeyBinding(ABILITY);
-        KeyBindingHelper.registerKeyBinding(SWITCH_TOOL);
-        KeyBindingHelper.registerKeyBinding(TOGGLE_TANK);
+        KeyBindingHelper.registerKeyBinding(SWAP_TOOL);
     }
 
     public static void registerListener() {
         ClientTickEvents.START_CLIENT_TICK.addPhaseOrdering(TRAVELERS_BACKPACK_PHASE, Event.DEFAULT_PHASE);
 
         ClientTickEvents.START_CLIENT_TICK.register(TRAVELERS_BACKPACK_PHASE, evt -> {
-            Player player = Minecraft.getInstance().player;
+            Minecraft mc = Minecraft.getInstance();
+            Player player = mc.player;
             if(player == null) return;
-            //Change Hose Tank Assignment
-            if(player.getMainHandItem().getItem() instanceof HoseItem && player.getMainHandItem().has(ModDataComponents.HOSE_MODES)) {
-                while(KeybindHandler.TOGGLE_TANK.consumeClick()) {
-                    ServerboundActionTagPacket.create(ServerboundActionTagPacket.SWITCH_HOSE_TANK);
-                }
-            }
-            //Change Hose modes
-            if(TravelersBackpackConfig.getConfig().client.disableScrollWheel) {
-                ItemStack heldItem = player.getMainHandItem();
-                if(!ToolSlotItemHandler.isValid(heldItem)) {
-                    while(KeybindHandler.SWITCH_TOOL.consumeClick()) {
-                        if(!heldItem.isEmpty()) {
-                            if(heldItem.getItem() instanceof HoseItem && heldItem.has(ModDataComponents.HOSE_MODES)) {
-                                ServerboundActionTagPacket.create(ServerboundActionTagPacket.SWITCH_HOSE_MODE, 1.0D);
-                            }
-                        }
-                    }
-                }
-            }
+
             if(ComponentUtils.isWearingBackpack(player)) {
                 while(KeybindHandler.OPEN_BACKPACK.consumeClick()) {
                     ServerboundActionTagPacket.create(ServerboundActionTagPacket.OPEN_SCREEN);
@@ -79,16 +61,12 @@ public class KeybindHandler {
                         player.displayClientMessage(Component.translatable(ability ? "screen.travelersbackpack.ability_disabled" : "screen.travelersbackpack.ability_enabled"), true);
                     }
                 }
-                if(TravelersBackpackConfig.getConfig().client.disableScrollWheel) {
-                    ItemStack heldItem = player.getMainHandItem();
-                    while(KeybindHandler.SWITCH_TOOL.consumeClick()) {
-                        if(!heldItem.isEmpty()) {
-                            if(TravelersBackpackConfig.getConfig().client.enableToolCycling) {
-                                if(ToolSlotItemHandler.isValid(heldItem)) {
-                                    ServerboundActionTagPacket.create(ServerboundActionTagPacket.SWAP_TOOL, 1.0D);
-                                }
-                            }
+                while(KeybindHandler.SWAP_TOOL.consumeClick()) {
+                    if(mc.screen == null && !mc.options.hideGui && mc.gameMode.getPlayerMode() != GameType.SPECTATOR) {
+                        if(!TravelersBackpackConfig.getConfig().backpackSettings.allowToolSwapping && mc.player.getItemInHand(InteractionHand.MAIN_HAND).getItem() != ModItems.HOSE) {
+                            return;
                         }
+                        mc.setScreen(new ToolsScreen());
                     }
                 }
             } else {
@@ -121,29 +99,16 @@ public class KeybindHandler {
         }));
     }
 
-    public static boolean mouseWheelDetect(double mouseX, double mouseY) {
-        Minecraft mc = Minecraft.getInstance();
-        double scrollDelta = mouseY;
-        if(!TravelersBackpackConfig.getConfig().client.disableScrollWheel && scrollDelta != 0.0) {
-            Player player = mc.player;
-            if(player != null && player.isAlive() && KeybindHandler.SWITCH_TOOL.isDown()) {
-                ItemStack heldItem = player.getMainHandItem();
-                if(!heldItem.isEmpty()) {
-                    if(heldItem.getItem() instanceof HoseItem && heldItem.has(ModDataComponents.HOSE_MODES)) {
-                        ServerboundActionTagPacket.create(ServerboundActionTagPacket.SWITCH_HOSE_MODE, scrollDelta);
-                        return true;
-                        // event.setCanceled(true);
-                    }
-                    if(ComponentUtils.isWearingBackpack(player) && TravelersBackpackConfig.getConfig().client.enableToolCycling) {
-                        if(ToolSlotItemHandler.isValid(heldItem)) {
-                            ServerboundActionTagPacket.create(ServerboundActionTagPacket.SWAP_TOOL, scrollDelta);
-                            return true;
-                            // event.setCanceled(true);
-                        }
-                    }
-                }
-            }
+    public static boolean isKeyDown(KeyMapping keybind) {
+        if(keybind.isUnbound()) {
+            return false;
         }
-        return false;
+        return switch(keybind.key.getType()) {
+            case KEYSYM ->
+                    InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), keybind.key.getValue());
+            case MOUSE ->
+                    GLFW.glfwGetMouseButton(Minecraft.getInstance().getWindow().getWindow(), keybind.key.getValue()) == GLFW.GLFW_PRESS;
+            default -> keybind.isDown();
+        };
     }
 }
