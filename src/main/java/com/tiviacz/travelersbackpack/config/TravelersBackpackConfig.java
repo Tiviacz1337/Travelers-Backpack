@@ -174,6 +174,7 @@ public class TravelersBackpackConfig {
         nbt.putBoolean("backpackSettings.allowOpeningFromSlot", data.backpackSettings.allowOpeningFromSlot);
         nbt.putBoolean("backpackSettings.preventMultiplePlayersAccess", data.backpackSettings.preventMultiplePlayersAccess);
         nbt.putBoolean("backpackSettings.invulnerableBackpack", data.backpackSettings.invulnerableBackpack);
+        nbt.putBoolean("backpackSettings.allowToolSwapping", data.backpackSettings.allowToolSwapping);
         nbt.putString("backpackSettings.toolSlotsAcceptableItems", String.join(",", data.backpackSettings.toolSlotsAcceptableItems));
         nbt.putString("backpackSettings.blacklistedItems", String.join(",", data.backpackSettings.blacklistedItems));
         nbt.putBoolean("backpackSettings.toolSlotsAcceptEverything", data.backpackSettings.toolSlotsAcceptEverything);
@@ -215,6 +216,10 @@ public class TravelersBackpackConfig {
         TravelersBackpackConfigData data = new TravelersBackpackConfigData();
 
         //Client
+
+        //Tools Overlay
+        data.client.toolsOverlay.offsetX = client.client.toolsOverlay.offsetX;
+        data.client.toolsOverlay.offsetY = client.client.toolsOverlay.offsetY;
 
         //Overlay
         data.client.overlay.enableOverlay = client.client.overlay.enableOverlay;
@@ -296,6 +301,7 @@ public class TravelersBackpackConfig {
         data.backpackSettings.allowOpeningFromSlot = nbt.getBoolean("backpackSettings.allowOpeningFromSlot").get();
         data.backpackSettings.preventMultiplePlayersAccess = nbt.getBoolean("backpackSettings.preventMultiplePlayersAccess").get();
         data.backpackSettings.invulnerableBackpack = nbt.getBoolean("backpackSettings.invulnerableBackpack").get();
+        data.backpackSettings.allowToolSwapping = nbt.getBoolean("backpackSettings.allowToolSwapping").get();
         data.backpackSettings.toolSlotsAcceptableItems = nbt.getString("backpackSettings.toolSlotsAcceptableItems").get().split(",");
         data.backpackSettings.blacklistedItems = nbt.getString("backpackSettings.blacklistedItems").get().split(",");
         data.backpackSettings.toolSlotsAcceptEverything = nbt.getBoolean("backpackSettings.toolSlotsAcceptEverything").get();

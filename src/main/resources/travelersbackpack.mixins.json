@@ -23,7 +23,7 @@
     "AbstractContainerScreenMixin",
     "HumanoidRenderStateMixin",
     "HumoanoidMobRenderer",
-    "MouseHandlerMixin"
+    "LocalPlayerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
