@@ -16,7 +16,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -32,7 +31,7 @@ public final class RadialToolsOverlay {
 
     public static final int ADD_NEW = -999;
 
-    public static void blitCentered(GuiGraphics g, Identifier texture, int centerX, int centerY, int size, float openProgress) {
+    public static void blitCentered(GuiGraphics guiGraphics, Identifier texture, int centerX, int centerY, int size, float openProgress) {
         int x = centerX - size / 2;
         int y = centerY - size / 2;
 
@@ -42,26 +41,19 @@ public final class RadialToolsOverlay {
         float opacity = t;
 
         int i = ARGB.white(opacity);
-        g.blit(RenderPipelines.GUI_TEXTURED, texture, x, y, 0, 0, size, size, size, size, 256, 256, i);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, texture, x, y, 0, 0, size, size, size, size, 256, 256, i);
     }
 
-    private static void beginRadialTransform(GuiGraphics g, int centerX, int centerY, float openProgress) {
+    private static void beginRadialTransform(GuiGraphics guiGraphics, int centerX, int centerY, float openProgress) {
         openProgress = Mth.clamp(openProgress, 0.0F, 1.0F);
         float t = openProgress;
         t = t * t * (3.0F - 2.0F * t);
         float scale = t;
-        float opacity = t;
 
-        g.pose().pushMatrix();
-        g.pose().translate(centerX, centerY);
-        //RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, opacity); #TODO
-        g.pose().scale(scale, scale);
-        g.pose().translate(-centerX, -centerY);
-    }
-
-    private static void endRadialTransform(GuiGraphics g) {
-        g.pose().popMatrix();
-       // RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F); #TODO
+        guiGraphics.pose().pushMatrix();
+        guiGraphics.pose().translate(centerX, centerY);
+        guiGraphics.pose().scale(scale, scale);
+        guiGraphics.pose().translate(-centerX, -centerY);
     }
 
     private static ArrayList<Integer> buildSegToSlot(NonNullList<ItemStack> tools, boolean canAdd, int[] outPlusSlot) {
@@ -91,11 +83,7 @@ public final class RadialToolsOverlay {
         return segToSlot;
     }
 
-    public static void renderRadialBackground(GuiGraphics g, int centerX, int centerY, float openProgress) {
-        blitCentered(g, TOOLS_OVERLAY, centerX, centerY, 256, openProgress);
-    }
-
-    public static int renderRadialItems(GuiGraphics g, ItemStack backpack, NonNullList<ItemStack> tools, boolean canAdd, ArrayList<Integer> segToSlot, int plusSlot, int centerX, int centerY, int mouseX, int mouseY) {
+    public static int renderRadialItems(GuiGraphics guiGraphics, ItemStack backpack, NonNullList<ItemStack> tools, boolean canAdd, ArrayList<Integer> segToSlot, int plusSlot, int centerX, int centerY, int mouseX, int mouseY) {
         Minecraft mc = Minecraft.getInstance();
         Font font = mc.font;
 
@@ -111,7 +99,7 @@ public final class RadialToolsOverlay {
             hoveredResult = hoveredIsPlus ? ADD_NEW : slot;
         }
 
-        renderCenteredItem(g, font, backpack, centerX, centerY, 1.25F);
+        renderCenteredItem(guiGraphics, font, backpack, centerX, centerY, 1.25F);
 
         if(segments == 0 && hoveredSeg == -1) {
             return -1;
@@ -128,23 +116,23 @@ public final class RadialToolsOverlay {
 
             boolean isHovered = (seg == hoveredSeg);
             if(isHovered) {
-                g.fill(x - 2, y - 2, x + ICON_SIZE + 2, y + ICON_SIZE + 2, 0x80FFFFFF);
+                guiGraphics.fill(x - 2, y - 2, x + ICON_SIZE + 2, y + ICON_SIZE + 2, 0x80FFFFFF);
             }
 
             int slot = segToSlot.get(seg);
             boolean isPlusHere = (canAdd && plusSlot != -1 && slot == plusSlot && tools.get(slot).isEmpty());
 
             if(isPlusHere) {
-                renderPlusButton(g, font, x, y);
+                renderPlusButton(guiGraphics, font, x, y);
             } else {
                 ItemStack stack = tools.get(slot);
-                g.renderItem(stack, x, y);
-                g.renderItemDecorations(font, stack, x, y);
+                guiGraphics.renderItem(stack, x, y);
+                guiGraphics.renderItemDecorations(font, stack, x, y);
             }
         }
 
         if(hoveredIsPlus) {
-            g.setTooltipForNextFrame(font, Component.translatable("screen.travelersbackpack.add_to_tools"), mouseX, mouseY);
+            guiGraphics.setTooltipForNextFrame(font, Component.translatable("screen.travelersbackpack.add_to_tools"), mouseX, mouseY);
         } else if(hoveredResult >= 0) {
             ItemStack hoveredStack = tools.get(hoveredResult);
             if(!hoveredStack.isEmpty()) {
@@ -165,7 +153,7 @@ public final class RadialToolsOverlay {
                         }
                     }
                 }
-                g.setTooltipForNextFrame(font, tooltip, hoveredStack.getTooltipImage(), mouseX, mouseY);
+                guiGraphics.setTooltipForNextFrame(font, tooltip, hoveredStack.getTooltipImage(), mouseX, mouseY);
             }
         }
 
@@ -176,27 +164,26 @@ public final class RadialToolsOverlay {
         return item.getTooltipLines(Item.TooltipContext.of(minecraft.level), minecraft.player, TooltipFlag.Default.NORMAL);
     }
 
-    public static int renderRadial(GuiGraphics g, ItemStack backpack, ItemStack heldItem, NonNullList<ItemStack> tools, boolean canAdd, int centerX, int centerY, int mouseX, int mouseY, float partialTick, float openProgress) {
+    public static int renderRadial(GuiGraphics guiGraphics, ItemStack backpack, ItemStack heldItem, NonNullList<ItemStack> tools, boolean canAdd, int centerX, int centerY, int mouseX, int mouseY, float partialTick, float openProgress) {
         if(tools == null) return -1;
 
-        beginRadialTransform(g, centerX, centerY, openProgress);
+        beginRadialTransform(guiGraphics, centerX, centerY, openProgress);
 
         int[] plusSlotRef = new int[1];
         ArrayList<Integer> segToSlot = buildSegToSlot(tools, canAdd, plusSlotRef);
         int plusSlot = plusSlotRef[0];
 
-        // pass 1: background
-        renderRadialBackground(g, centerX, centerY, openProgress);
+        blitCentered(guiGraphics, TOOLS_OVERLAY, centerX, centerY, 256, openProgress);
 
         int result;
 
         if(heldItem.getItem() instanceof HoseItem) {
-            result = renderRadialItems(g, backpack, tools, false, segToSlot, plusSlot, centerX, centerY, mouseX, mouseY);
+            result = renderRadialItems(guiGraphics, backpack, tools, false, segToSlot, plusSlot, centerX, centerY, mouseX, mouseY);
         } else {
-            result = renderRadialItems(g, backpack, tools, canAdd, segToSlot, plusSlot, centerX, centerY, mouseX, mouseY);
+            result = renderRadialItems(guiGraphics, backpack, tools, canAdd, segToSlot, plusSlot, centerX, centerY, mouseX, mouseY);
         }
 
-        endRadialTransform(g);
+        guiGraphics.pose().popMatrix();
         return result;
     }
 
@@ -224,7 +211,7 @@ public final class RadialToolsOverlay {
         return idx;
     }
 
-    private static void renderPlusButton(GuiGraphics g, Font font, int x, int y) {
+    private static void renderPlusButton(GuiGraphics guiGraphics, Font font, int x, int y) {
         String plus = "+";
         float s = 1.25F;
 
@@ -234,29 +221,29 @@ public final class RadialToolsOverlay {
         float cx = x + ICON_SIZE / 2f;
         float cy = y + ICON_SIZE / 2f;
 
-        g.pose().pushMatrix();
+        guiGraphics.pose().pushMatrix();
 
-        g.pose().translate(cx, cy);
-        g.pose().scale(s, s);
-        g.pose().translate(-cx, -cy);
+        guiGraphics.pose().translate(cx, cy);
+        guiGraphics.pose().scale(s, s);
+        guiGraphics.pose().translate(-cx, -cy);
 
-        g.pose().pushMatrix();
-        g.pose().translate(0.5F, 1.5F);
-        g.enableScissor(px, py, px + 8, py + 8);
-        g.drawString(font, plus, px, py, 0xFFFFFFFF, false);
-        g.disableScissor();
-        g.pose().popMatrix();
+        guiGraphics.pose().pushMatrix();
+        guiGraphics.pose().translate(0.5F, 1.5F);
+        guiGraphics.enableScissor(px, py, px + 8, py + 8);
+        guiGraphics.drawString(font, plus, px, py, 0xFFFFFFFF, false);
+        guiGraphics.disableScissor();
+        guiGraphics.pose().popMatrix();
 
-        g.pose().popMatrix();
+        guiGraphics.pose().popMatrix();
     }
 
-    private static void renderCenteredItem(GuiGraphics g, Font font, ItemStack stack, int centerX, int centerY, float scale) {
-        g.pose().pushMatrix();
-        g.pose().translate(centerX, centerY);
-        g.pose().scale(scale, scale);
-        g.renderItem(stack, -8, -8);
-        g.renderItemDecorations(font, stack, -8, -8);
-        g.pose().popMatrix();
+    private static void renderCenteredItem(GuiGraphics guiGraphics, Font font, ItemStack stack, int centerX, int centerY, float scale) {
+        guiGraphics.pose().pushMatrix();
+        guiGraphics.pose().translate(centerX, centerY);
+        guiGraphics.pose().scale(scale, scale);
+        guiGraphics.renderItem(stack, -8, -8);
+        guiGraphics.renderItemDecorations(font, stack, -8, -8);
+        guiGraphics.pose().popMatrix();
     }
 
     private static double normalize0To2Pi(double a) {
