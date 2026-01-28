@@ -11,6 +11,7 @@ import com.tiviacz.travelersbackpack.init.ModAdvancements;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.BackpackContainer;
+import com.tiviacz.travelersbackpack.inventory.menu.slot.ToolSlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.transfer.BackpackResourceHandler;
 import com.tiviacz.travelersbackpack.inventory.BackpackSettingsContainer;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
@@ -23,9 +24,6 @@ import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
 import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;
 import com.tiviacz.travelersbackpack.items.HoseItem;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
-import com.tiviacz.travelersbackpack.network.ClientboundSyncItemStackPacket;
-import com.tiviacz.travelersbackpack.util.InventoryHelper;
-import com.tiviacz.travelersbackpack.util.ItemStackUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -46,7 +44,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ThrowablePotionItem;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.BedBlock;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -54,76 +51,49 @@ import net.minecraft.world.level.block.state.properties.BedPart;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
-import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 
 import java.util.List;
 import java.util.Optional;
 
 public class ServerActions {
-    public static void swapTool(Player player, double scrollDelta) {
+    public static void swapTool(Player player, int slot) {
+        if(!TravelersBackpackConfig.SERVER.backpackSettings.allowToolSwapping.get()) {
+            return;
+        }
         if(AttachmentUtils.isWearingBackpack(player)) {
             BackpackWrapper wrapper = AttachmentUtils.getBackpackWrapper(player, AttachmentUtils.TOOLS_ONLY);
             BackpackResourceHandler inv = wrapper.getTools();
-            if(InventoryHelper.isEmpty(inv)) return;
+            ItemStack handStack = player.getMainHandItem().copy();
 
-            int toolSlots = inv.getSlots();
-            int lastSlot = toolSlots - 1;
-            int j = 0;
+            if(!ToolSlotItemHandler.isValid(handStack) && !handStack.isEmpty()) {
+                return;
+            }
 
-            for(int i = 0; i <= lastSlot; i++) {
-                if(!inv.getStackInSlot(i).isEmpty()) {
-                    j++;
+            if(slot == -999) {
+                int insert = ResourceHandlerUtil.insertStacking(inv, ItemResource.of(handStack), handStack.getCount(), null);
+                if(insert != 0) {
+                    player.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
                 }
-            }
+                /*ItemStack stack = InventoryHelper.addItemStackToHandler(inv, handStack, false);
+                if(stack.isEmpty()) {
+                    player.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+                }*/
+            } else {
+                ItemStack currentTool = inv.getStackInSlot(slot).copy();
 
-            ItemStack[] tools = new ItemStack[j];
-            int slot = 0;
-
-            for(int i = 0; i <= j - 1; i++) {
-                tools[slot] = inv.getStackInSlot(i).copy();
-                slot++;
-            }
-
-            swapTool(scrollDelta, tools, player);
-            slot = 0;
-
-            for(int i = 0; i <= j - 1; i++) {
-                inv.setStackInSlot(i, tools[slot]);
-                slot++;
+                //Swap
+                player.setItemInHand(InteractionHand.MAIN_HAND, currentTool);
+                inv.setStackInSlot(slot, handStack);
             }
 
             if(player instanceof ServerPlayer serverPlayer) {
                 ModAdvancements.ACTION_TRIGGER.get().trigger(serverPlayer, ActionTypeTrigger.SWAP_TOOLS);
             }
+            player.level().playSound(null, player.position().x(), player.position().y() + 0.5, player.position().z(), SoundEvents.ARMOR_EQUIP_LEATHER, SoundSource.BLOCKS, 1.0F, 1.0F);
             wrapper.sendDataToClients(ModDataComponents.TOOLS_CONTAINER.get());
-        }
-    }
-
-    public static void swapTool(double delta, ItemStack[] tools, Player player) {
-        if(delta > 0) {
-            ItemStack tempStack = tools[0];
-
-            for(int i = 0; i <= tools.length - 1; i++) {
-                if(i + 1 > tools.length - 1) {
-                    tools[tools.length - 1] = player.getMainHandItem();
-                    player.setItemInHand(InteractionHand.MAIN_HAND, tempStack);
-                } else {
-                    tools[i] = tools[i + 1];
-                }
-            }
-        }
-        if(delta < 0) {
-            ItemStack tempStack = tools[tools.length - 1];
-
-            for(int i = tools.length - 1; i >= 0; i--) {
-                if(i - 1 < 0) {
-                    tools[0] = player.getMainHandItem();
-                    player.setItemInHand(InteractionHand.MAIN_HAND, tempStack);
-                } else {
-                    tools[i] = tools[i - 1];
-                }
-            }
         }
     }
 
@@ -598,37 +568,21 @@ public class ServerActions {
         return done;
     }
 
-    public static void switchHoseMode(Player player, double scrollDelta) {
+    public static void switchHoseMode(Player player, int mode) {
         ItemStack hose = player.getMainHandItem();
         if(hose.getItem() instanceof HoseItem) {
             List<Integer> settings = hose.getOrDefault(ModDataComponents.HOSE_MODES, List.of(1, 1));
-            if(scrollDelta > 0) {
-                int nextMode = settings.get(0) + 1;
-                hose.set(ModDataComponents.HOSE_MODES, List.of(nextMode == 4 ? 1 : nextMode, settings.get(1)));
-            } else if(scrollDelta < 0) {
-                int nextMode = settings.get(0) - 1;
-                hose.set(ModDataComponents.HOSE_MODES, List.of(nextMode == 0 ? 3 : nextMode, settings.get(1)));
-            }
+            hose.set(ModDataComponents.HOSE_MODES, List.of(mode, settings.get(1)));
         }
-
-        if(!player.level().isClientSide()) {
-            PacketDistributor.sendToPlayer((ServerPlayer)player, new ClientboundSyncItemStackPacket(player.getId(), player.getInventory().getSelectedSlot(), hose, ItemStackUtils.createDataComponentMap(hose, ModDataComponents.HOSE_MODES.get())));
-        }
+        player.level().playSound(null, player.position().x(), player.position().y() + 0.5, player.position().z(), SoundEvents.COPPER_BULB_HIT, SoundSource.BLOCKS, 1.0F, 1.0F);
     }
 
-    public static void toggleHoseTank(Player player) {
+    public static void toggleHoseTank(Player player, int tank) {
         ItemStack hose = player.getMainHandItem();
         if(hose.getItem() instanceof HoseItem) {
             List<Integer> settings = hose.getOrDefault(ModDataComponents.HOSE_MODES, List.of(1, 1));
-            if(settings.get(1) == 1) {
-                hose.set(ModDataComponents.HOSE_MODES, List.of(settings.get(0), 2));
-            } else {
-                hose.set(ModDataComponents.HOSE_MODES, List.of(settings.get(0), 1));
-            }
+            hose.set(ModDataComponents.HOSE_MODES, List.of(settings.get(0), tank));
         }
-
-        if(!player.level().isClientSide()) {
-            PacketDistributor.sendToPlayer((ServerPlayer)player, new ClientboundSyncItemStackPacket(player.getId(), player.getInventory().getSelectedSlot(), hose, ItemStackUtils.createDataComponentMap(hose, ModDataComponents.HOSE_MODES.get())));
-        }
+        player.level().playSound(null, player.position().x(), player.position().y() + 0.5, player.position().z(), SoundEvents.BOTTLE_FILL, SoundSource.BLOCKS, 1.0F, 1.0F);
     }
 }

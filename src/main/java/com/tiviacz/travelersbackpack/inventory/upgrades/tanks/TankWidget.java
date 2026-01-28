@@ -118,7 +118,7 @@ public class TankWidget extends UpgradeWidgetBase<TanksUpgrade> {
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BackpackScreen.ICONS, x, y + (18 * ((screen.isScrollable ? screen.visibleRows : rows) - 1)), 0, 131, 18, 18, 256, 256);
     }
 
-    public List<Component> getTankTooltip(FluidTank tank) {
+    public static List<Component> getTankTooltip(FluidTank tank) {
         FluidStack fluidStack = tank.getFluid();
         List<Component> tankTips = new ArrayList<>();
         String fluidName = !fluidStack.isEmpty() ? fluidStack.getHoverName().getString() : I18n.get("screen.travelersbackpack.none");

@@ -83,8 +83,8 @@ public record ServerboundActionTagPacket(CompoundTag actionTag) implements Custo
                     TankActions.fillTank(player, leftTank);
                 }
                 case SWAP_TOOL -> {
-                    double scrollDelta = actionTag.getDoubleOr("Arg0", 0.0);
-                    ServerActions.swapTool(player, scrollDelta);
+                    int slot = actionTag.getIntOr("Arg0", -1);
+                    ServerActions.swapTool(player, slot);
                 }
                 case TOGGLE_BUTTONS_VISIBILITY -> ServerActions.toggleButtonsVisibility(player);
                 case SHOW_TOOL_SLOTS -> {
@@ -101,10 +101,13 @@ public record ServerboundActionTagPacket(CompoundTag actionTag) implements Custo
                     ServerActions.openBackpackSettings(player, entityId, open);
                 }
                 case SWITCH_HOSE_MODE -> {
-                    double scrollDelta = actionTag.getDoubleOr("Arg0", 0.0);
-                    ServerActions.switchHoseMode(player, scrollDelta);
+                    int mode = actionTag.getIntOr("Arg0", -1);
+                    ServerActions.switchHoseMode(player, mode);
                 }
-                case SWITCH_HOSE_TANK -> ServerActions.toggleHoseTank(player);
+                case SWITCH_HOSE_TANK -> {
+                    int tank = actionTag.getIntOr("Arg0", -1);
+                    ServerActions.toggleHoseTank(player, tank);
+                }
                 case TOGGLE_VISIBILITY -> ServerActions.toggleVisibility(player);
                 case ABILITY_SLIDER -> {
                     boolean sliderValue = actionTag.getBooleanOr("Arg0", false);
