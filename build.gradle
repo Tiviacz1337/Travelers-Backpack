@@ -211,6 +211,9 @@ dependencies {
 	modCompileOnly("maven.modrinth:pneumono_gravestones:PqDpF1hy")
 	modCompileOnly("maven.modrinth:pneumono_core:MtM4xjYo")
 
+	//Ae2
+	modCompileOnly("maven.modrinth:ae2:kA3rm9EP")
+
 	//Create
 	//modRuntimeOnly "maven.modrinth:create-fabric:h2HgGyvA"
 	//modRuntimeOnly "maven.modrinth:fxnt-create-storage:H3voyod7"

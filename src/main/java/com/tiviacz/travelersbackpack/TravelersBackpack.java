@@ -11,6 +11,7 @@ import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
 import com.tiviacz.travelersbackpack.handlers.*;
 import com.tiviacz.travelersbackpack.init.*;
+import com.tiviacz.travelersbackpack.inventory.menu.slot.BackpackSlotItemHandler;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.Supporters;
 import net.fabricmc.api.ModInitializer;
@@ -39,6 +40,7 @@ public class TravelersBackpack implements ModInitializer {
     public static boolean polymorphLoaded;
     public static boolean trashSlotLoaded;
     public static boolean solValheimLoaded;
+    public static boolean ae2Loaded;
 
     @Override
     public void onInitialize() {
@@ -90,6 +92,9 @@ public class TravelersBackpack implements ModInitializer {
         polymorphLoaded = fabricLoader.isModLoaded("polymorph");
         trashSlotLoaded = fabricLoader.isModLoaded("trashslot");
         solValheimLoaded = fabricLoader.isModLoaded("sol_valheim");
+
+        //Fix for duplication issue
+        ae2Loaded = fabricLoader.isModLoaded("ae2");
 
         EffectFluidRegistry.initEffects();
 
