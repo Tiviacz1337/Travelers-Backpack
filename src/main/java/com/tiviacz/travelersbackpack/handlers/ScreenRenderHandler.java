@@ -150,8 +150,8 @@ public class ScreenRenderHandler {
                             if(mouseButtonEvent.button() == GLFW.GLFW_MOUSE_BUTTON_2) {
                                 if(InputConstants.isKeyDown(Minecraft.getInstance().getWindow(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
                                     Minecraft.getInstance().gui.getChat().addMessage(Component.translatable("screen.travelersbackpack.hide_icon_info"));
+                                    return true;
                                 }
-                                return true;
                             }
                         }
                     }
