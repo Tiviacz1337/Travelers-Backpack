@@ -121,7 +121,7 @@ dependencies {
 	modImplementation "maven.modrinth:trashslot:8pBON0BS"
 
 	//ModMenu
-	modImplementation "com.terraformersmc:modmenu:${project.mod_menu_version}"
+	modImplementation "curse.maven:modmenu-308702:7444262"
 
 	//Trinkets
 	//modCompileOnly("dev.emi:trinkets:${trinkets_version}")
