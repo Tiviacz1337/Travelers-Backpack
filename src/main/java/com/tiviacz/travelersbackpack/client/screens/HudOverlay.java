@@ -15,7 +15,7 @@ import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 public class HudOverlay {
     public static final ResourceLocation OVERLAY = ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "textures/gui/overlay.png");
 
-    public static void renderOverlay(ItemStack stack, Minecraft mc, GuiGraphics g) {
+    public static void renderOverlay(ItemStack stack, Minecraft mc, GuiGraphics guiGraphics) {
         if(mc == null) return;
 
         var player = mc.player;
@@ -31,13 +31,13 @@ public class HudOverlay {
         if(!info.getRightFluidStack().isEmpty()) {
             FluidTank right = new FluidTank(info.getCapacity());
             right.setFluid(info.getRightFluidStack());
-            drawGuiTank(g, right, x + 1, y, 21, 8);
+            drawGuiTank(guiGraphics, right, x + 1, y, 21, 8);
         }
 
         if(!info.getLeftFluidStack().isEmpty()) {
             FluidTank left = new FluidTank(info.getCapacity());
             left.setFluid(info.getLeftFluidStack());
-            drawGuiTank(g, left, x - 11, y, 21, 8);
+            drawGuiTank(guiGraphics, left, x - 11, y, 21, 8);
         }
 
         int tankSel = 0;
@@ -45,8 +45,8 @@ public class HudOverlay {
             tankSel = HoseItem.getHoseTank(player.getMainHandItem());
         }
 
-        g.blit(OVERLAY, x, y, (tankSel == 2) ? 0 : 10, 0, 10, 23);
-        g.blit(OVERLAY, x - 12, y, (tankSel == 1) ? 0 : 10, 0, 10, 23);
+        guiGraphics.blit(OVERLAY, x, y, (tankSel == 2) ? 0 : 10, 0, 10, 23);
+        guiGraphics.blit(OVERLAY, x - 12, y, (tankSel == 1) ? 0 : 10, 0, 10, 23);
     }
 
     public static void drawGuiTank(GuiGraphics guiGraphics, FluidTank tank, int startX, int startY, int height, int width) {

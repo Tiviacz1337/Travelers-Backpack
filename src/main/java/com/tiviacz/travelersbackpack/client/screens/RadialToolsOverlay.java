@@ -31,32 +31,32 @@ public final class RadialToolsOverlay {
 
     public static final int ADD_NEW = -999;
 
-    public static void blitCentered(GuiGraphics g, ResourceLocation texture, int centerX, int centerY, int size) {
+    public static void blitCentered(GuiGraphics guiGraphics, ResourceLocation texture, int centerX, int centerY, int size) {
         int x = centerX - size / 2;
         int y = centerY - size / 2;
 
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
-        g.blit(texture, x, y, 0, 0, size, size, size, size);
+        guiGraphics.blit(texture, x, y, 0, 0, size, size, size, size);
         RenderSystem.disableBlend();
     }
 
-    private static void beginRadialTransform(GuiGraphics g, int centerX, int centerY, float openProgress) {
+    private static void beginRadialTransform(GuiGraphics guiGraphics, int centerX, int centerY, float openProgress) {
         openProgress = Mth.clamp(openProgress, 0.0F, 1.0F);
         float t = openProgress;
         t = t * t * (3.0F - 2.0F * t);
         float scale = t;
         float opacity = t;
 
-        g.pose().pushPose();
-        g.pose().translate(centerX, centerY, 0);
+        guiGraphics.pose().pushPose();
+        guiGraphics.pose().translate(centerX, centerY, 0);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, opacity);
-        g.pose().scale(scale, scale, 1.0F);
-        g.pose().translate(-centerX, -centerY, 0);
+        guiGraphics.pose().scale(scale, scale, 1.0F);
+        guiGraphics.pose().translate(-centerX, -centerY, 0);
     }
 
-    private static void endRadialTransform(GuiGraphics g) {
-        g.pose().popPose();
+    private static void endRadialTransform(GuiGraphics guiGraphics) {
+        guiGraphics.pose().popPose();
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
     }
 
@@ -87,11 +87,7 @@ public final class RadialToolsOverlay {
         return segToSlot;
     }
 
-    public static void renderRadialBackground(GuiGraphics g, int centerX, int centerY) {
-        blitCentered(g, TOOLS_OVERLAY, centerX, centerY, 256);
-    }
-
-    public static int renderRadialItems(GuiGraphics g, ItemStack backpack, NonNullList<ItemStack> tools, boolean canAdd, ArrayList<Integer> segToSlot, int plusSlot, int centerX, int centerY, int mouseX, int mouseY) {
+    public static int renderRadialItems(GuiGraphics guiGraphics, ItemStack backpack, NonNullList<ItemStack> tools, boolean canAdd, ArrayList<Integer> segToSlot, int plusSlot, int centerX, int centerY, int mouseX, int mouseY) {
         Minecraft mc = Minecraft.getInstance();
         Font font = mc.font;
 
@@ -107,7 +103,7 @@ public final class RadialToolsOverlay {
             hoveredResult = hoveredIsPlus ? ADD_NEW : slot;
         }
 
-        renderCenteredItem(g, font, backpack, centerX, centerY, 1.25F);
+        renderCenteredItem(guiGraphics, font, backpack, centerX, centerY, 1.25F);
 
         if(segments == 0 && hoveredSeg == -1) {
             return -1;
@@ -124,23 +120,23 @@ public final class RadialToolsOverlay {
 
             boolean isHovered = (seg == hoveredSeg);
             if(isHovered) {
-                g.fill(x - 2, y - 2, x + ICON_SIZE + 2, y + ICON_SIZE + 2, 0x80FFFFFF);
+                guiGraphics.fill(x - 2, y - 2, x + ICON_SIZE + 2, y + ICON_SIZE + 2, 0x80FFFFFF);
             }
 
             int slot = segToSlot.get(seg);
             boolean isPlusHere = (canAdd && plusSlot != -1 && slot == plusSlot && tools.get(slot).isEmpty());
 
             if(isPlusHere) {
-                renderPlusButton(g, font, x, y);
+                renderPlusButton(guiGraphics, font, x, y);
             } else {
                 ItemStack stack = tools.get(slot);
-                g.renderItem(stack, x, y);
-                g.renderItemDecorations(font, stack, x, y);
+                guiGraphics.renderItem(stack, x, y);
+                guiGraphics.renderItemDecorations(font, stack, x, y);
             }
         }
 
         if(hoveredIsPlus) {
-            g.renderTooltip(font, Component.translatable("screen.travelersbackpack.add_to_tools"), mouseX, mouseY);
+            guiGraphics.renderTooltip(font, Component.translatable("screen.travelersbackpack.add_to_tools"), mouseX, mouseY);
         } else if(hoveredResult >= 0) {
             ItemStack hoveredStack = tools.get(hoveredResult);
             if(!hoveredStack.isEmpty()) {
@@ -161,7 +157,7 @@ public final class RadialToolsOverlay {
                         }
                     }
                 }
-                g.renderTooltip(font, tooltip, hoveredStack.getTooltipImage(), hoveredStack, mouseX, mouseY);
+                guiGraphics.renderTooltip(font, tooltip, hoveredStack.getTooltipImage(), hoveredStack, mouseX, mouseY);
             }
         }
 
@@ -172,27 +168,26 @@ public final class RadialToolsOverlay {
         return item.getTooltipLines(Item.TooltipContext.of(minecraft.level), minecraft.player, ClientTooltipFlag.of(TooltipFlag.Default.NORMAL));
     }
 
-    public static int renderRadial(GuiGraphics g, ItemStack backpack, ItemStack heldItem, NonNullList<ItemStack> tools, boolean canAdd, int centerX, int centerY, int mouseX, int mouseY, float partialTick, float openProgress) {
+    public static int renderRadial(GuiGraphics guiGraphics, ItemStack backpack, ItemStack heldItem, NonNullList<ItemStack> tools, boolean canAdd, int centerX, int centerY, int mouseX, int mouseY, float partialTick, float openProgress) {
         if(tools == null) return -1;
 
-        beginRadialTransform(g, centerX, centerY, openProgress);
+        beginRadialTransform(guiGraphics, centerX, centerY, openProgress);
 
         int[] plusSlotRef = new int[1];
         ArrayList<Integer> segToSlot = buildSegToSlot(tools, canAdd, plusSlotRef);
         int plusSlot = plusSlotRef[0];
 
-        // pass 1: background
-        renderRadialBackground(g, centerX, centerY);
+        blitCentered(guiGraphics, TOOLS_OVERLAY, centerX, centerY, 256);
 
         int result;
 
         if(heldItem.getItem() instanceof HoseItem) {
-            result = renderRadialItems(g, backpack, tools, false, segToSlot, plusSlot, centerX, centerY, mouseX, mouseY);
+            result = renderRadialItems(guiGraphics, backpack, tools, false, segToSlot, plusSlot, centerX, centerY, mouseX, mouseY);
         } else {
-            result = renderRadialItems(g, backpack, tools, canAdd, segToSlot, plusSlot, centerX, centerY, mouseX, mouseY);
+            result = renderRadialItems(guiGraphics, backpack, tools, canAdd, segToSlot, plusSlot, centerX, centerY, mouseX, mouseY);
         }
 
-        endRadialTransform(g);
+        endRadialTransform(guiGraphics);
         return result;
     }
 
@@ -220,7 +215,7 @@ public final class RadialToolsOverlay {
         return idx;
     }
 
-    private static void renderPlusButton(GuiGraphics g, Font font, int x, int y) {
+    private static void renderPlusButton(GuiGraphics guiGraphics, Font font, int x, int y) {
         String plus = "+";
         float s = 1.25F;
 
@@ -230,24 +225,24 @@ public final class RadialToolsOverlay {
         float cx = x + ICON_SIZE / 2f;
         float cy = y + ICON_SIZE / 2f;
 
-        g.pose().pushPose();
+        guiGraphics.pose().pushPose();
 
-        g.pose().translate(cx, cy, 0);
-        g.pose().scale(s, s, 1.0F);
-        g.pose().translate(-cx, -cy, 0);
+        guiGraphics.pose().translate(cx, cy, 0);
+        guiGraphics.pose().scale(s, s, 1.0F);
+        guiGraphics.pose().translate(-cx, -cy, 0);
 
-        g.drawString(font, plus, px + 0.5F, py + 1F, 0xFFFFFF, false);
+        guiGraphics.drawString(font, plus, px + 0.5F, py + 1F, 0xFFFFFF, false);
 
-        g.pose().popPose();
+        guiGraphics.pose().popPose();
     }
 
-    private static void renderCenteredItem(GuiGraphics g, Font font, ItemStack stack, int centerX, int centerY, float scale) {
-        g.pose().pushPose();
-        g.pose().translate(centerX, centerY, 0);
-        g.pose().scale(scale, scale, 1.0f);
-        g.renderItem(stack, -8, -8);
-        g.renderItemDecorations(font, stack, -8, -8);
-        g.pose().popPose();
+    private static void renderCenteredItem(GuiGraphics guiGraphics, Font font, ItemStack stack, int centerX, int centerY, float scale) {
+        guiGraphics.pose().pushPose();
+        guiGraphics.pose().translate(centerX, centerY, 0);
+        guiGraphics.pose().scale(scale, scale, 1.0f);
+        guiGraphics.renderItem(stack, -8, -8);
+        guiGraphics.renderItemDecorations(font, stack, -8, -8);
+        guiGraphics.pose().popPose();
     }
 
     private static double normalize0To2Pi(double a) {
