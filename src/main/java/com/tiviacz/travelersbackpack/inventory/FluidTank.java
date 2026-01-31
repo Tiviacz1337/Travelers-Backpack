@@ -54,6 +54,10 @@ public class FluidTank extends SingleVariantStorage<FluidVariant> {
         return capacity;
     }
 
+    public long getViewCapacity() {
+        return capacity / 81;
+    }
+
     public FluidVariantWrapper getFluid() {
         return fluidVariant;
     }

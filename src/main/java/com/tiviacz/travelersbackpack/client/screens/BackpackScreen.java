@@ -439,6 +439,6 @@ public class BackpackScreen extends AbstractBackpackScreen<BackpackBaseMenu> imp
     }
 
     public Component crateFluidWarning(FluidVariantWrapper fluidStack, long backpackCapacity) {
-        return Component.literal(CommonFluid.getFluidName(fluidStack).getString() + " " + fluidStack.getAmount() + "/" + backpackCapacity + "mB").withStyle(ChatFormatting.RED);
+        return Component.literal(CommonFluid.getFluidName(fluidStack).getString() + " " + fluidStack.getViewAmount() + "/" + (backpackCapacity / 81) + "mB").withStyle(ChatFormatting.RED);
     }
 }

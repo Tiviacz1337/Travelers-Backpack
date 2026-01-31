@@ -78,10 +78,10 @@ public class TanksUpgradeItem extends UpgradeItem {
             FluidVariantWrapper rightFluidStack = fluidTanks.rightFluidStack();
 
             if(!leftFluidStack.isEmpty()) {
-                tooltipComponents.add(Component.literal(FluidTypeHelper.getFluidVariantName(leftFluidStack.fluidVariant()).getString() + ": " + leftFluidStack.getAmount() + "mB").withStyle(ChatFormatting.BLUE));
+                tooltipComponents.add(Component.literal(FluidTypeHelper.getFluidVariantName(leftFluidStack.fluidVariant()).getString() + ": " + leftFluidStack.getViewAmount() + "mB").withStyle(ChatFormatting.BLUE));
             }
             if(!rightFluidStack.isEmpty()) {
-                tooltipComponents.add(Component.literal(FluidTypeHelper.getFluidVariantName(rightFluidStack.fluidVariant()).getString() + ": " + rightFluidStack.getAmount() + "mB").withStyle(ChatFormatting.BLUE));
+                tooltipComponents.add(Component.literal(FluidTypeHelper.getFluidVariantName(rightFluidStack.fluidVariant()).getString() + ": " + rightFluidStack.getViewAmount() + "mB").withStyle(ChatFormatting.BLUE));
             }
         }
     }

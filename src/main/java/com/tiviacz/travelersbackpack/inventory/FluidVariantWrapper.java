@@ -38,6 +38,10 @@ public record FluidVariantWrapper(FluidVariant fluidVariant, long amount) {
         return amount;
     }
 
+    public long getViewAmount() {
+        return amount / 81;
+    }
+
     public static FluidVariantWrapper blank() {
         return new FluidVariantWrapper(FluidVariant.blank(), 0);
     }

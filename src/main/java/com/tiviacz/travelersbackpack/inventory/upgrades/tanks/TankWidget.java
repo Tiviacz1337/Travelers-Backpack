@@ -136,7 +136,7 @@ public class TankWidget extends UpgradeWidgetBase<TanksUpgrade> {
         FluidVariantWrapper fluidStack = tank.getFluid();
         List<Component> tankTips = new ArrayList<>();
         String fluidName = !fluidStack.isEmpty() ? FluidTypeHelper.getFluidVariantName(fluidStack.fluidVariant()).getString() : I18n.get("screen.travelersbackpack.none");
-        String fluidAmount = !fluidStack.isEmpty() ? fluidStack.getAmount() + "/" + tank.getCapacity() : I18n.get("screen.travelersbackpack.empty");
+        String fluidAmount = !fluidStack.isEmpty() ? (fluidStack.getViewAmount()) + "/" + (tank.getViewCapacity()) : I18n.get("screen.travelersbackpack.empty");
 
         if(!fluidStack.isEmpty()) {
             if(fluidStack.fluidVariant().getNbt() != null) {
