@@ -6,6 +6,7 @@ import com.tiviacz.travelersbackpack.components.Slots;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
+import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.minecraft.core.component.DataComponentMap;
@@ -247,21 +248,55 @@ public class TravelersBackpackComponent implements ITravelersBackpack {
 
     @Override
     public void applySyncPacket(RegistryFriendlyByteBuf buf) {
+        // Defensive check: ensure buffer has readable bytes before attempting to read
+        if (!buf.isReadable()) {
+            TravelersBackpack.LOGGER.warn("Received empty sync packet for Traveler's Backpack component. Buffer is empty (readableBytes: {}, readerIndex: {}, writerIndex: {})",
+                    buf.readableBytes(), buf.readerIndex(), buf.writerIndex());
+            return;
+        }
+
+        // Check if we have at least 4 bytes to read the type integer
+        if (buf.readableBytes() < 4) {
+            TravelersBackpack.LOGGER.warn("Received incomplete sync packet for Traveler's Backpack component. Expected at least 4 bytes for type, but only {} bytes available (readerIndex: {}, writerIndex: {})",
+                    buf.readableBytes(), buf.readerIndex(), buf.writerIndex());
+            return;
+        }
+
         int type = buf.readInt();
-        if(type == 0) {
-            boolean removeData = buf.readBoolean();
-            ItemStack backpackStack = ItemStack.OPTIONAL_STREAM_CODEC.decode(buf);
-            if(removeData) {
-                remove();
-            } else {
-                updateBackpack(backpackStack);
+        if (type == 0) {
+            // Check if we have at least 1 byte for the boolean
+            if (buf.readableBytes() < 1) {
+                TravelersBackpack.LOGGER.warn("Received incomplete sync packet for Traveler's Backpack component (type 0). Expected at least 1 byte for removeData boolean, but only {} bytes available",
+                        buf.readableBytes());
+                return;
             }
 
-        } else {
-            DataComponentMap map = ByteBufCodecs.fromCodecWithRegistries(DataComponentMap.CODEC).decode(buf);
-            if(map != null) {
-                applyComponents(map);
+            boolean removeData = buf.readBoolean();
+
+            try {
+                ItemStack backpackStack = ItemStack.OPTIONAL_STREAM_CODEC.decode(buf);
+                if (removeData) {
+                    remove();
+                } else {
+                    updateBackpack(backpackStack);
+                }
+            } catch (Exception e) {
+                TravelersBackpack.LOGGER.error("Failed to decode backpack ItemStack from sync packet (type 0, removeData={}). Buffer state: readableBytes={}, readerIndex={}, writerIndex={}",
+                        removeData, buf.readableBytes(), buf.readerIndex(), buf.writerIndex(), e);
             }
+        } else if (type == 1) {
+            try {
+                DataComponentMap map = ByteBufCodecs.fromCodecWithRegistries(DataComponentMap.CODEC).decode(buf);
+                if (map != null) {
+                    applyComponents(map);
+                }
+            } catch (Exception e) {
+                TravelersBackpack.LOGGER.error("Failed to decode DataComponentMap from sync packet (type 1). Buffer state: readableBytes={}, readerIndex={}, writerIndex={}",
+                        buf.readableBytes(), buf.readerIndex(), buf.writerIndex(), e);
+            }
+        } else {
+            TravelersBackpack.LOGGER.warn("Received sync packet with unknown type: {}. Buffer state: readableBytes={}, readerIndex={}, writerIndex={}",
+                    type, buf.readableBytes(), buf.readerIndex(), buf.writerIndex());
         }
     }
 }
