@@ -241,7 +241,7 @@ public class TravelersBackpackItem extends BlockItem {
     private static int add(Player player, ItemStack backpackStack, ItemStack insertedStack, boolean simulate) {
         int k = insertedStack.getCount();
         if(!insertedStack.isEmpty() && BackpackSlotItemHandler.isItemValid(insertedStack)) {
-            BackpackWrapper wrapper = new BackpackWrapper(backpackStack, Reference.ITEM_SCREEN_ID, player, player.level(), ComponentUtils.STORAGE_ONLY);
+            BackpackWrapper wrapper = new BackpackWrapper(backpackStack, Reference.ITEM_SCREEN_ID, player, player.level(), ComponentUtils.storageOnly());
             ItemStack result = InventoryHelper.addItemStackToHandler(wrapper.getStorageForInputOutput(), insertedStack, simulate);
             return k - result.getCount();
         } else {

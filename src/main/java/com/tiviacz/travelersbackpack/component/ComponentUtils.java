@@ -81,7 +81,7 @@ public class ComponentUtils implements EntityComponentInitializer {
 
     @Nullable
     public static BackpackWrapper getBackpackWrapper(Player player, ItemStack stack) {
-        return getBackpackWrapper(player, stack, LOAD_ALL);
+        return getBackpackWrapper(player, stack, loadAll());
     }
 
     @Nullable
@@ -101,13 +101,13 @@ public class ComponentUtils implements EntityComponentInitializer {
     //Artificial wrapper for actions that do not require loading items
     @Nullable
     public static BackpackWrapper getBackpackWrapperArtificial(Player player) {
-        return getBackpackWrapper(player, NO_ITEMS);
+        return getBackpackWrapper(player, noItems());
     }
 
     //Fully loaded wrapper
     @Nullable
     public static BackpackWrapper getBackpackWrapper(Player player) {
-        return getBackpackWrapper(player, LOAD_ALL);
+        return getBackpackWrapper(player, loadAll());
     }
 
     public static final int[] LOAD_ALL = new int[]{1, 1, 1};
@@ -128,5 +128,25 @@ public class ComponentUtils implements EntityComponentInitializer {
             return ComponentUtils.getComponentOptional(player).map(ITravelersBackpack::getWrapper).orElse(null);
         }
         return null;
+    }
+
+    public static int[] loadAll() {
+        return new int[] {1, 1, 1};
+    }
+
+    public static int[] noItems() {
+        return new int[] {0, 0, 0};
+    }
+
+    public static int[] storageOnly() {
+        return new int[] {1, 0, 0};
+    }
+
+    public static int[] upgradesOnly() {
+        return new int[] {0, 1, 0};
+    }
+
+    public static int[] toolsOnly() {
+        return new int[] {0, 0, 1};
     }
 }

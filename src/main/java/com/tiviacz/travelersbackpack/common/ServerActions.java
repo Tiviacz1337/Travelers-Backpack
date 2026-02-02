@@ -51,7 +51,7 @@ public class ServerActions {
             return;
         }
         if(ComponentUtils.isWearingBackpack(player)) {
-            BackpackWrapper wrapper = ComponentUtils.getBackpackWrapper(player, ComponentUtils.TOOLS_ONLY);
+            BackpackWrapper wrapper = ComponentUtils.getBackpackWrapper(player, ComponentUtils.toolsOnly());
             ItemStackHandler inv = wrapper.getTools();
             ItemStack handStack = player.getMainHandItem().copy();
 

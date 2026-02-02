@@ -17,6 +17,8 @@ import net.minecraft.world.level.Level;
 public class FeedingUpgradeCompat {
     public static boolean tryFeedingFoodFromStorage(BackpackWrapper wrapper, Level level, int hungerLevel, Player player, FeedingFilterSettings filterSettings) {
         if(level.isClientSide()) return false;
+        //Load storage if not loaded in artificial wrapper
+        wrapper.loadAdditionally(BackpackWrapper.STORAGE_ID);
         ItemStackHandler storage = wrapper.getStorageForInputOutput();
         return InventoryHelper.iterate(storage, (slot, stack) -> tryFeedingStack(level, hungerLevel, player, slot, stack, storage, filterSettings));
     }

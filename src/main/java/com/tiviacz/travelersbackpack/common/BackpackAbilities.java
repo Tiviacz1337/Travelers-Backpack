@@ -20,6 +20,7 @@ import com.tiviacz.travelersbackpack.util.BackpackDeathHelper;
 import com.tiviacz.travelersbackpack.util.CooldownHelper;
 import com.tiviacz.travelersbackpack.util.NbtHelper;
 import dev.architectury.event.events.common.TickEvent;
+import net.blay09.mods.balm.api.event.LivingDeathEvent;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.core.BlockPos;
@@ -449,7 +450,7 @@ public class BackpackAbilities {
         BackpackWrapper wrapper;
         int cooldown = NbtHelper.getOrDefault(backpack, ModDataHelper.COOLDOWN, 0);
         if(cooldown >= 1000) {
-            wrapper = ComponentUtils.getBackpackWrapper(player, ComponentUtils.UPGRADES_ONLY);
+            wrapper = ComponentUtils.getBackpackWrapper(player, ComponentUtils.upgradesOnly());
             if(wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).isPresent()) {
                 TanksUpgrade upgrade = wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).get();
                 FluidTank leftTank = upgrade.getLeftTank();

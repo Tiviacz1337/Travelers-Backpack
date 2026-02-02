@@ -131,9 +131,9 @@ dependencies {
 	//OPTIONAL
 
 	//Crafting Tweaks
-	modImplementation "curse.maven:balm-fabric-500525:7087238"
-	modImplementation "curse.maven:crafting-tweaks-fabric-233071:6784524"
-	modRuntimeOnly("net.blay09.mods:kuma-api-fabric:[20,20.2)")
+	modCompileOnly "curse.maven:balm-fabric-500525:7087238"
+	modCompileOnly "curse.maven:crafting-tweaks-fabric-233071:6784524"
+	modCompileOnly("net.blay09.mods:kuma-api-fabric:[20,20.2)")
 
 	//Trash Slot
 	modCompileOnly "maven.modrinth:trashslot:Ve2pngwH"
@@ -158,7 +158,7 @@ dependencies {
 	//modImplementation("maven.modrinth:stack-size-edit:Fml5ea8S")
 
 	//Trinkets
-	modCompileOnly("dev.emi:trinkets:${trinkets_version}")
+	modImplementation("maven.modrinth:trinkets:AHxQGtuC")
 
 	//Accessories
     modCompileOnly("maven.modrinth:accessories:A7wwzJ0e")

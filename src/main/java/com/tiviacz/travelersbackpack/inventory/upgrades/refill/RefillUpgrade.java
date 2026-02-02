@@ -97,9 +97,6 @@ public class RefillUpgrade extends UpgradeBase<RefillUpgrade> implements IEnable
             return;
         }
 
-        //Load storage if not loaded in artificial wrapper
-        getUpgradeManager().getWrapper().loadAdditionally(BackpackWrapper.STORAGE_ID);
-
         if(getUpgradeManager().getWrapper().getScreenID() == Reference.BLOCK_ENTITY_SCREEN_ID) {
             level.getEntities(EntityType.PLAYER, new AABB(pos).inflate(REFILL_RANGE), p -> true).forEach(this::tryRefillItems);
         } else {
@@ -136,6 +133,9 @@ public class RefillUpgrade extends UpgradeBase<RefillUpgrade> implements IEnable
         if(pair.getSecond() == -1) {
             return;
         }
+
+        //Load storage if not loaded in artificial wrapper
+        getUpgradeManager().getWrapper().loadAdditionally(BackpackWrapper.STORAGE_ID);
 
         //Extract the missing count from backpack
         ItemStackHandler backpackStorage = upgradeManager.getWrapper().getStorage();

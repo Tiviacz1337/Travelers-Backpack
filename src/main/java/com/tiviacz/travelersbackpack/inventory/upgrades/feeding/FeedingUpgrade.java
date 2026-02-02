@@ -115,9 +115,6 @@ public class FeedingUpgrade extends FilterUpgradeBase<FeedingUpgrade, FeedingFil
             return;
         }
 
-        //Load storage if not loaded in artificial wrapper
-        getUpgradeManager().getWrapper().loadAdditionally(BackpackWrapper.STORAGE_ID);
-
         boolean stillHungry = false;
         if(getUpgradeManager().getWrapper().getScreenID() == Reference.BLOCK_ENTITY_SCREEN_ID) {
             AtomicBoolean stillHungryPlayer = new AtomicBoolean(false);
@@ -150,6 +147,10 @@ public class FeedingUpgrade extends FilterUpgradeBase<FeedingUpgrade, FeedingFil
         if(hungerLevel == 0 || level.isClientSide) {
             return false;
         }
+
+        //Load storage if not loaded in artificial wrapper
+        getUpgradeManager().getWrapper().loadAdditionally(BackpackWrapper.STORAGE_ID);
+
         return tryFeedingFoodFromStorage(level, hungerLevel, player) && player.getFoodData().getFoodLevel() < 20;
     }
 
