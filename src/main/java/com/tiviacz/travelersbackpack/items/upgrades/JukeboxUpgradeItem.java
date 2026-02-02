@@ -29,6 +29,11 @@ public class JukeboxUpgradeItem extends UpgradeItem {
     }
 
     @Override
+    public boolean hasBlockFunctionality() {
+        return false;
+    }
+
+    @Override
     public TriFunction<UpgradeManager, Integer, ItemStack, Optional<? extends UpgradeBase<?>>> getUpgrade() {
         return (upgradeManager, dataHolderSlot, provider) -> {
             NonNullList<ItemStack> musicDisk = NbtHelper.getOrDefault(provider, ModDataHelper.BACKPACK_CONTAINER, NonNullList.withSize(1, ItemStack.EMPTY));
