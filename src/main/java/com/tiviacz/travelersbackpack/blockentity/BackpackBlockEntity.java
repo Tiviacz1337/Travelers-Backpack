@@ -48,6 +48,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Nameable, RenderDataBlockEntity {
     private BackpackWrapper wrapper = BackpackWrapper.DUMMY;
@@ -125,6 +126,14 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Na
 
     private void setBackpackFromNbt(CompoundTag nbt) {
         setBackpack(ItemStack.of(nbt.getCompound(BACKPACK)));
+    }
+
+    @Override
+    public void setLevel(Level level) {
+        super.setLevel(level);
+        if(this.wrapper != BackpackWrapper.DUMMY) {
+            this.wrapper.setLevel(level);
+        }
     }
 
     private void writeBackpack(CompoundTag ret) {

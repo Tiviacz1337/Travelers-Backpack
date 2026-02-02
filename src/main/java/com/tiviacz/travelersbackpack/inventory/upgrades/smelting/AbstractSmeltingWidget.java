@@ -27,7 +27,7 @@ public class AbstractSmeltingWidget<T> extends UpgradeWidgetBase<AbstractSmeltin
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
 
-        if(isTabOpened() && screen.getWrapper().getScreenID() == Reference.WEARABLE_SCREEN_ID) {
+        if(isTabOpened() && screen.getWrapper().getScreenID() != Reference.ITEM_SCREEN_ID) {
             long gameTime = upgrade.getUpgradeManager().getWrapper().getLevel().getGameTime();
 
             if(upgrade.isBurning()) {

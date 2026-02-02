@@ -33,12 +33,13 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 public class AbstractSmeltingUpgrade<T> extends UpgradeBase<T> implements IEnable, ITickableUpgrade, IMoveSelector {
     protected static final int SLOT_INPUT = 0;
     protected static final int SLOT_FUEL = 1;
     protected static final int SLOT_RESULT = 2;
-    private final Level level;
+    private final Supplier<Level> level;
     protected ItemStackHandler items;
     private AbstractCookingRecipe cachedRecipe = null;
     private boolean recipeFetched = false;
@@ -48,7 +49,7 @@ public class AbstractSmeltingUpgrade<T> extends UpgradeBase<T> implements IEnabl
 
     public AbstractSmeltingUpgrade(UpgradeManager manager, int dataHolderSlot, NonNullList<ItemStack> furnaceContents, RecipeType<? extends AbstractCookingRecipe> recipeType, String upgradeName) {
         super(manager, dataHolderSlot, new Point(66, 82));
-        this.level = manager.getWrapper().getLevel();
+        this.level = () -> manager.getWrapper().getLevel();
         this.items = createHandler(furnaceContents);
         this.recipeType = recipeType;
         this.quickCheck = RecipeManager.createCheck(this.recipeType);
@@ -92,25 +93,26 @@ public class AbstractSmeltingUpgrade<T> extends UpgradeBase<T> implements IEnabl
         if(!enabled) {
             stopCooking();
             stopBurning();
-            /*if(isCooking()) {
-                long remainingTime = getCookingFinishTime() - this.level.getGameTime();
-                setCookingTotalTime((int)remainingTime);
-                setCookingFinishTime(0);
-            }
-            if(isBurning()) {
-                long remainingTime = getBurnFinishTime() - this.level.getGameTime();
-                setBurnTotalTime((int)remainingTime);
-                setBurnFinishTime(0);
-            }*/
         } else {
-            /*if(getCookingTotalTime() > 0) {
-                setCookingFinishTime(this.level.getGameTime() + getCookingTotalTime());
-            }
-            if(getBurnTotalTime() > 0) {
-                setBurnFinishTime(this.level.getGameTime() + getBurnTotalTime());
-            }*/
-            checkCooking(this.level, false);
+            checkCooking(this.level.get(), false);
         }
+    }
+
+    public void syncClient(ItemStack backpack) {
+        int slot = getDataHolderSlot();
+        NonNullList<ItemStack> contents = NbtHelper.get(backpack, ModDataHelper.UPGRADES);
+        if(contents == null) return;
+        if(slot >= contents.size()) return;
+        ItemStack stack = contents.get(slot);
+
+        long finishTime = NbtHelper.getOrDefault(stack, ModDataHelper.BURN_FINISH_TIME, (long)0);
+        int total = NbtHelper.getOrDefault(stack, ModDataHelper.BURN_TOTAL_TIME, 0);
+        setBurnTotalTime(total);
+        setBurnFinishTime(finishTime);
+        long cookingTime = NbtHelper.getOrDefault(stack, ModDataHelper.COOKING_FINISH_TIME, (long)0);
+        int cookingTotal = NbtHelper.getOrDefault(stack, ModDataHelper.COOKING_TOTAL_TIME, 0);
+        setCookingFinishTime(cookingTime);
+        setCookingTotalTime(cookingTotal);
     }
 
     @Override
@@ -132,7 +134,7 @@ public class AbstractSmeltingUpgrade<T> extends UpgradeBase<T> implements IEnabl
             }
         }
 
-        if(player != null && player.containerMenu instanceof BackpackBaseMenu) {
+        if((player != null && player.containerMenu instanceof BackpackBaseMenu) || getUpgradeManager().getWrapper().getScreenID() == Reference.BLOCK_ENTITY_SCREEN_ID) {
             tickSmelting(level);
         }
 
@@ -209,20 +211,20 @@ public class AbstractSmeltingUpgrade<T> extends UpgradeBase<T> implements IEnabl
 
     public void startCooking(AbstractCookingRecipe recipe) {
         int cookingDuration = recipe.getCookingTime();
-        setCookingFinishTime(this.level.getGameTime() + cookingDuration);
+        setCookingFinishTime(this.level.get().getGameTime() + cookingDuration);
         setCookingTotalTime(cookingDuration);
     }
 
     public void startBurning() {
         int litDuration = getBurnDuration(getStack(SLOT_FUEL));
-        setBurnFinishTime(this.level.getGameTime() + litDuration);
+        setBurnFinishTime(this.level.get().getGameTime() + litDuration);
         setBurnTotalTime(litDuration);
         shrinkFuelSlot();
     }
 
     private boolean canBurn(@Nullable AbstractCookingRecipe recipe) {
         if(!getStack(SLOT_INPUT).isEmpty() && recipe != null && hasFuel()) {
-            ItemStack cookingResult = recipe.assemble(this.items, this.level.registryAccess());
+            ItemStack cookingResult = recipe.assemble(this.items, this.level.get().registryAccess());
             if(cookingResult.isEmpty()) {
                 return false;
             } else {
@@ -244,10 +246,10 @@ public class AbstractSmeltingUpgrade<T> extends UpgradeBase<T> implements IEnabl
 
     public void finishCooking() {
         if(this.cachedRecipe == null) {
-            this.cachedRecipe = this.quickCheck.getRecipeFor(this.items, level).orElse(null);
+            this.cachedRecipe = this.quickCheck.getRecipeFor(this.items, level.get()).orElse(null);
         }
         if(this.cachedRecipe != null) {
-            ItemStack result = this.cachedRecipe.assemble(this.items, level.registryAccess());
+            ItemStack result = this.cachedRecipe.assemble(this.items, level.get().registryAccess());
 
             //Reduce input slot count
             ItemStack input = getStack(SLOT_INPUT).copy();
@@ -269,7 +271,7 @@ public class AbstractSmeltingUpgrade<T> extends UpgradeBase<T> implements IEnabl
         }
 
         if(canBurn(this.cachedRecipe)) {
-            checkCooking(this.level, true);
+            checkCooking(this.level.get(), true);
         } else {
             stopCooking();
         }
@@ -382,8 +384,8 @@ public class AbstractSmeltingUpgrade<T> extends UpgradeBase<T> implements IEnabl
             protected void onContentsChanged(int slot) {
                 updateDataHolderUnchecked(dataHolderStack -> setSlotChanged(dataHolderStack, slot, getStackInSlot(slot)));
 
-                if(getUpgradeManager().getWrapper().getScreenID() == Reference.WEARABLE_SCREEN_ID) {
-                    checkCooking(AbstractSmeltingUpgrade.this.level, false);
+                if(getUpgradeManager().getWrapper().getScreenID() != Reference.ITEM_SCREEN_ID) {
+                    checkCooking(AbstractSmeltingUpgrade.this.level.get(), false);
                 }
             }
 
