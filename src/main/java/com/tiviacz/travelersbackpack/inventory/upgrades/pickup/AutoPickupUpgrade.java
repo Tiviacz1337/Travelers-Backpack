@@ -78,6 +78,7 @@ public class AutoPickupUpgrade extends FilterUpgradeBase<AutoPickupUpgrade, Auto
         }
     }
 
+    //Always check canPickup before
     public boolean tryPickup(ItemEntity itemEntity, Level level, BlockPos pos) {
         ItemStack stack = itemEntity.getItem().copy();
         stack = InventoryHelper.insertItemStacked(getUpgradeManager().getWrapper().getStorageForInputOutput(), stack, false);

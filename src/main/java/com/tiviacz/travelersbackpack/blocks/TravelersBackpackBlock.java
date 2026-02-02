@@ -138,7 +138,11 @@ public class TravelersBackpackBlock extends Block implements EntityBlock {
         super.entityInside(state, level, pos, entity);
         if(!level.isClientSide && entity instanceof ItemEntity itemEntity) {
             if(level.getBlockEntity(pos) instanceof BackpackBlockEntity backpack) {
-                backpack.getWrapper().getUpgradeManager().getUpgrade(AutoPickupUpgrade.class).ifPresent(pickupUpgrade -> pickupUpgrade.tryPickup(itemEntity, level, pos));
+                backpack.getWrapper().getUpgradeManager().getUpgrade(AutoPickupUpgrade.class).ifPresent(pickupUpgrade -> {
+                    if(pickupUpgrade.canPickup(itemEntity.getItem())) {
+                        pickupUpgrade.tryPickup(itemEntity, level, pos);
+                    }
+                });
             }
         }
     }

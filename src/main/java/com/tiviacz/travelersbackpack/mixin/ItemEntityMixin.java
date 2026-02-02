@@ -32,7 +32,7 @@ public abstract class ItemEntityMixin {
         if(ComponentUtils.isWearingBackpack(player)) {
             BackpackWrapper wrapper = ComponentUtils.getBackpackWrapper(player);
             wrapper.getUpgradeManager().getUpgrade(AutoPickupUpgrade.class).ifPresent(pickupUpgrade -> {
-                if(pickupUpgrade.tryPickup((ItemEntity)(Object)this, level, player.blockPosition())) {
+                if(pickupUpgrade.canPickup(getItem()) && pickupUpgrade.tryPickup((ItemEntity)(Object)this, level, player.blockPosition())) {
                     ci.cancel();
                 }
             });
