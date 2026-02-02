@@ -20,6 +20,7 @@ import com.tiviacz.travelersbackpack.inventory.menu.slot.ToolSlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.sorter.SortSelector;
 import com.tiviacz.travelersbackpack.inventory.upgrades.IEnable;
 import com.tiviacz.travelersbackpack.inventory.upgrades.ITickableUpgrade;
+import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
 import com.tiviacz.travelersbackpack.inventory.upgrades.smelting.FurnaceUpgrade;
 import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;
 import com.tiviacz.travelersbackpack.items.upgrades.TanksUpgradeItem;
@@ -294,6 +295,10 @@ public class BackpackWrapper {
 
     public UpgradeManager getUpgradeManager() {
         return this.upgradeManager;
+    }
+
+    public <T extends UpgradeBase<T>> Optional<T> getUpgrade(Class<T> upgradeClass) {
+        return this.getUpgradeManager().getUpgrade(upgradeClass);
     }
 
     public List<Integer> getUnsortableSlots() {
