@@ -85,7 +85,7 @@ public class BackpackWrapper {
     }
 
     public BackpackWrapper(ItemStack stack, int screenID, @Nullable Player player, @Nullable Level level) {
-        this(stack, screenID, player, level, CapabilityUtils.LOAD_ALL);
+        this(stack, screenID, player, level, CapabilityUtils.LOAD_ALL.get());
     }
 
     public BackpackWrapper(ItemStack stack, int screenID, @Nullable Player player, @Nullable Level level, int[] dataLoad) {
@@ -377,7 +377,9 @@ public class BackpackWrapper {
     }
 
     public void setRenderInfo(CompoundTag compound) {
-        setDataAndSync(ModDataHelper.RENDER_INFO, new RenderInfo(compound));
+        if(!getRenderInfo().compoundTag().equals(compound)) {
+            setDataAndSync(ModDataHelper.RENDER_INFO, new RenderInfo(compound));
+        }
     }
 
     public void removeRenderInfo() {
@@ -793,7 +795,7 @@ public class BackpackWrapper {
                             BackpackWrapper wrapper;
                             if(ticks % 100 == 0) {
                                 if(decreaseCooldown) {
-                                    wrapper = CapabilityUtils.getBackpackWrapper(player, stack, CapabilityUtils.NO_ITEMS);
+                                    wrapper = CapabilityUtils.getBackpackWrapper(player, stack, CapabilityUtils.NO_ITEMS.get());
                                     int cooldown = wrapper.getCooldown();
                                     if(player.level().isClientSide) return;
                                     if(cooldown - 100 < 0) {
@@ -808,7 +810,7 @@ public class BackpackWrapper {
                         if(NbtHelper.getOrDefault(stack, ModDataHelper.COOLDOWN, 0) > 0) {
                             BackpackWrapper wrapper;
                             if(ticks % 100 == 0) {
-                                wrapper = CapabilityUtils.getBackpackWrapper(player, stack, CapabilityUtils.NO_ITEMS);
+                                wrapper = CapabilityUtils.getBackpackWrapper(player, stack, CapabilityUtils.NO_ITEMS.get());
                                 int cooldown = wrapper.getCooldown();
                                 if(player.level().isClientSide) return;
                                 if(cooldown - 100 < 0) {
@@ -828,7 +830,7 @@ public class BackpackWrapper {
                 if(upgradeTicks == 0) return;
                 BackpackWrapper wrapper;
                 if(ticks % upgradeTicks == 0) {
-                    wrapper = CapabilityUtils.getBackpackWrapper(player, stack, CapabilityUtils.UPGRADES_ONLY);
+                    wrapper = CapabilityUtils.getBackpackWrapper(player, stack, CapabilityUtils.UPGRADES_ONLY.get());
                     wrapper.getUpgradeManager().upgrades.forEach(upgradeBase -> {
                         if(upgradeBase instanceof ITickableUpgrade tickable) {
                             boolean tick = true;

@@ -4,6 +4,7 @@ import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetBase;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModDataHelper;
+import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.UpgradeManager;
 import com.tiviacz.travelersbackpack.inventory.upgrades.FilterUpgradeBase;
 import com.tiviacz.travelersbackpack.inventory.upgrades.IEnable;
@@ -142,6 +143,8 @@ public class FeedingUpgrade extends FilterUpgradeBase<FeedingUpgrade, FeedingFil
         if(hungerLevel == 0 || level.isClientSide) {
             return false;
         }
+        //Load storage if not loaded in artificial wrapper
+        getUpgradeManager().getWrapper().loadAdditionally(BackpackWrapper.STORAGE_ID);
         return tryFeedingFoodFromStorage(level, hungerLevel, player) && player.getFoodData().getFoodLevel() < 20;
     }
 

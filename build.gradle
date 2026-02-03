@@ -187,7 +187,7 @@ dependencies {
     // Apply Mixin AP
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 
-    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
+    implementation fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
 
     implementation fg.deobf("maven.modrinth:crafting-tweaks:umzsWJQd")
     implementation fg.deobf("maven.modrinth:balm:Ue8C6cKq")
