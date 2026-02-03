@@ -1,6 +1,7 @@
 package com.tiviacz.travelersbackpack.network;
 
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
+import com.tiviacz.travelersbackpack.inventory.menu.BackpackItemMenu;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -48,7 +49,7 @@ public class ClientboundSyncItemStackPacket {
 
             //Sync clientside wrapper if integration enabled (Wrapper created on the fly)
             if(player != null && message.slot == -1) {
-                if(player.containerMenu instanceof BackpackBaseMenu menu) {
+                if(player.containerMenu instanceof BackpackItemMenu menu) {
                     ItemStack oldStack = menu.getWrapper().getBackpackStack().copy();
                     for(String key : message.map.getAllKeys()) {
                         oldStack.getOrCreateTag().put(key, message.map.get(key));
