@@ -138,6 +138,14 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Na
         setBackpack(ItemStack.of(nbt.getCompound(BACKPACK)));
     }
 
+    @Override
+    public void setLevel(Level level) {
+        super.setLevel(level);
+        if(this.wrapper != BackpackWrapper.DUMMY) {
+            this.wrapper.setLevel(level);
+        }
+    }
+
     private void writeBackpack(CompoundTag ret) {
         ItemStack backpackCopy = wrapper.getBackpackStack().copy();
         if(backpackCopy.getItem() instanceof TravelersBackpackItem) {

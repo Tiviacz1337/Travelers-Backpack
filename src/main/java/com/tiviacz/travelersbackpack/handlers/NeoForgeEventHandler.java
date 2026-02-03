@@ -567,14 +567,18 @@ public class NeoForgeEventHandler {
 
         if(CapabilityUtils.isWearingBackpack(player)) {
             BackpackWrapper wrapper = CapabilityUtils.getBackpackWrapper(player);
-            if(wrapper.getUpgradeManager().getUpgrade(AutoPickupUpgrade.class).isPresent() && wrapper.getUpgradeManager().getUpgrade(AutoPickupUpgrade.class).get().canPickup(itemEntity.getItem())) {
+            wrapper.getUpgradeManager().getUpgrade(AutoPickupUpgrade.class).ifPresent(pickupUpgrade -> {
+                if(pickupUpgrade.canPickup(itemEntity.getItem()) && pickupUpgrade.tryPickup(itemEntity, level, player.blockPosition())) {
+                    event.setResult(Event.Result.ALLOW);
+                }});
+            /*if(wrapper.getUpgradeManager().getUpgrade(AutoPickupUpgrade.class).isPresent() && wrapper.getUpgradeManager().getUpgrade(AutoPickupUpgrade.class).get().canPickup(itemEntity.getItem())) {
                 ItemStack remainingStack = ItemHandlerHelper.insertItemStacked(wrapper.getStorageForInputOutput(), itemEntity.getItem(), false);
                 if(remainingStack != itemEntity.getItem()) {
                     level.playSound(null, player.blockPosition(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 0.2F, (level.random.nextFloat() - level.random.nextFloat()) * 1.4F + 2.0F);
                     itemEntity.setItem(remainingStack);
                     event.setResult(Event.Result.ALLOW);
                 }
-            }
+            }*/
         }
     }
 }
