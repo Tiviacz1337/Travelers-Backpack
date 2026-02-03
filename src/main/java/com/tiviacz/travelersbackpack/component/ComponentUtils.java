@@ -18,6 +18,7 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
 public class ComponentUtils implements EntityComponentInitializer {
     public static final ComponentKey<ITravelersBackpack> WEARABLE = ComponentRegistry.getOrCreate(new ResourceLocation(TravelersBackpack.MODID, "travelersbackpack"), ITravelersBackpack.class);
@@ -81,7 +82,7 @@ public class ComponentUtils implements EntityComponentInitializer {
 
     @Nullable
     public static BackpackWrapper getBackpackWrapper(Player player, ItemStack stack) {
-        return getBackpackWrapper(player, stack, loadAll());
+        return getBackpackWrapper(player, stack, LOAD_ALL.get());
     }
 
     @Nullable
@@ -101,20 +102,20 @@ public class ComponentUtils implements EntityComponentInitializer {
     //Artificial wrapper for actions that do not require loading items
     @Nullable
     public static BackpackWrapper getBackpackWrapperArtificial(Player player) {
-        return getBackpackWrapper(player, noItems());
+        return getBackpackWrapper(player, NO_ITEMS.get());
     }
 
     //Fully loaded wrapper
     @Nullable
     public static BackpackWrapper getBackpackWrapper(Player player) {
-        return getBackpackWrapper(player, loadAll());
+        return getBackpackWrapper(player, LOAD_ALL.get());
     }
 
-    public static final int[] LOAD_ALL = new int[]{1, 1, 1};
-    public static final int[] NO_ITEMS = new int[]{0, 0, 0};
-    public static final int[] STORAGE_ONLY = new int[]{1, 0, 0};
-    public static final int[] UPGRADES_ONLY = new int[]{0, 1, 0};
-    public static final int[] TOOLS_ONLY = new int[]{0, 0, 1};
+    public static final Supplier<int[]> LOAD_ALL = () -> new int[]{1, 1, 1};
+    public static final Supplier<int[]> NO_ITEMS = () -> new int[]{0, 0, 0};
+    public static final Supplier<int[]> STORAGE_ONLY = () -> new int[]{1, 0, 0};
+    public static final Supplier<int[]> UPGRADES_ONLY = () -> new int[]{0, 1, 0};
+    public static final Supplier<int[]> TOOLS_ONLY = () -> new int[]{0, 0, 1};
 
     @Nullable
     public static BackpackWrapper getBackpackWrapper(Player player, int[] dataLoad) {
@@ -128,25 +129,5 @@ public class ComponentUtils implements EntityComponentInitializer {
             return ComponentUtils.getComponentOptional(player).map(ITravelersBackpack::getWrapper).orElse(null);
         }
         return null;
-    }
-
-    public static int[] loadAll() {
-        return new int[] {1, 1, 1};
-    }
-
-    public static int[] noItems() {
-        return new int[] {0, 0, 0};
-    }
-
-    public static int[] storageOnly() {
-        return new int[] {1, 0, 0};
-    }
-
-    public static int[] upgradesOnly() {
-        return new int[] {0, 1, 0};
-    }
-
-    public static int[] toolsOnly() {
-        return new int[] {0, 0, 1};
     }
 }
