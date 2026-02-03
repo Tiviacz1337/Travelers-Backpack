@@ -44,6 +44,8 @@ public class FeedingUpgrade extends FilterUpgradeBase<FeedingUpgrade, FeedingFil
     private static final int STILL_HUNGRY_COOLDOWN = 10;
     private static final double FEEDING_RANGE = 3.0D;
 
+    public BlockPos particlePos = null;
+
     public FeedingUpgrade(UpgradeManager manager, int dataHolderSlot, NonNullList<ItemStack> filter) {
         super(manager, dataHolderSlot, new Point(66, 49),
                 TravelersBackpackConfig.getConfig().backpackUpgrades.feedingUpgradeSettings.filterSlotCount,
@@ -118,11 +120,10 @@ public class FeedingUpgrade extends FilterUpgradeBase<FeedingUpgrade, FeedingFil
         boolean stillHungry = false;
         if(getUpgradeManager().getWrapper().getScreenID() == Reference.BLOCK_ENTITY_SCREEN_ID) {
             AtomicBoolean stillHungryPlayer = new AtomicBoolean(false);
+            this.particlePos = pos;
             level.getEntities(EntityType.PLAYER, new AABB(pos).inflate(FEEDING_RANGE), p -> true).forEach(p -> stillHungryPlayer.set(stillHungryPlayer.get() || feedPlayerAndGetHungry(p, level)));
             stillHungry = stillHungryPlayer.get();
-            if(stillHungry) {
-                this.spawnHeartParticles(level, pos);
-            }
+            this.particlePos = null;
         } else {
             if(feedPlayerAndGetHungry(player, level)) {
                 stillHungry = true;
@@ -184,6 +185,9 @@ public class FeedingUpgrade extends FilterUpgradeBase<FeedingUpgrade, FeedingFil
                     }
                 }
                 player.setItemInHand(InteractionHand.MAIN_HAND, mainHandItem);
+                if(this.particlePos != null) {
+                    this.spawnHeartParticles(level, this.particlePos);
+                }
                 return true;
             }
             player.setItemInHand(InteractionHand.MAIN_HAND, mainHandItem);
