@@ -2,6 +2,7 @@ package com.tiviacz.travelersbackpack.entity;
 
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
@@ -14,8 +15,12 @@ public class BackpackItemEntity extends ItemEntity {
     public boolean wasFloatingUp = false;
     public boolean isInvulnerable;
 
+    //Fix for item entity floating
+    public int backpackAge;
+
     public BackpackItemEntity(EntityType<? extends ItemEntity> entityType, Level level) {
         super(entityType, level);
+        this.backpackAge = 0;
         this.age = Integer.MAX_VALUE;
         this.isInvulnerable = TravelersBackpackConfig.getConfig().backpackSettings.invulnerableBackpack;
     }
@@ -43,6 +48,7 @@ public class BackpackItemEntity extends ItemEntity {
                 }
             }
         }
+        this.backpackAge++;
         super.tick();
     }
 
@@ -74,5 +80,22 @@ public class BackpackItemEntity extends ItemEntity {
         if(!TravelersBackpackConfig.getConfig().backpackSettings.voidProtection) {
             this.discard();
         }
+    }
+
+    @Override
+    public int getAge() {
+        return this.backpackAge;
+    }
+
+    @Override
+    public void addAdditionalSaveData(CompoundTag compound) {
+        super.addAdditionalSaveData(compound);
+        compound.putInt("BackpackAge", this.backpackAge);
+    }
+
+    @Override
+    public void readAdditionalSaveData(CompoundTag compound) {
+        super.readAdditionalSaveData(compound);
+        this.backpackAge = compound.getInt("BackpackAge");
     }
 }
