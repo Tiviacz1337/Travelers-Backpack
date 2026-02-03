@@ -6,6 +6,7 @@
 ✨ Furnace, Smoker and Blast Furnace Upgrades - can be used when backpack is placed on the ground  
 🔧 Performance improvements  
 🐛 Fixed bug with the Settings screen "back" button not working in block-form backpack  
+📚 Updated de_de - Thanks 1IntereJurry!
 
 ⭐ Want to receive **Supporter Star Badge** for a **lifetime**? - [visit my Ko-Fi page](https://ko-fi.com/tiviacz1337)!  
 ![Banner](https://i.imgur.com/SSrFv58.png)
