@@ -144,6 +144,8 @@ public class BackpackWrapper {
         //Update client tanks if present
         getUpgradeManager().getUpgrade(TanksUpgrade.class).ifPresent(tanksUpgrade -> tanksUpgrade.syncClients(backpack));
         getUpgradeManager().getUpgrade(FurnaceUpgrade.class).ifPresent(furnaceUpgrade -> furnaceUpgrade.syncClient(backpack));
+
+        //How can I check if upgrade manager needs sync? #TODO
     }
 
     public ItemStack getBackpackStack() {
