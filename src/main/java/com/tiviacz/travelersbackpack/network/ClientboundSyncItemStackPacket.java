@@ -2,6 +2,7 @@ package com.tiviacz.travelersbackpack.network;
 
 import com.tiviacz.travelersbackpack.init.ModNetwork;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
+import com.tiviacz.travelersbackpack.inventory.menu.BackpackItemMenu;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
@@ -53,7 +54,7 @@ public class ClientboundSyncItemStackPacket implements IPacket<ClientboundSyncIt
 
             //Sync clientside wrapper if integration enabled (Wrapper created on the fly)
             if(player != null && message.slot == -1) {
-                if(player.containerMenu instanceof BackpackBaseMenu menu) {
+                if(player.containerMenu instanceof BackpackItemMenu menu) {
                     ItemStack oldStack = menu.getWrapper().getBackpackStack().copy();
                     for(String key : message.map.getAllKeys()) {
                         oldStack.getOrCreateTag().put(key, message.map.get(key));
