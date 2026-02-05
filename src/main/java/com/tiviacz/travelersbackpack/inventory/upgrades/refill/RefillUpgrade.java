@@ -17,12 +17,15 @@ import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
 import com.tiviacz.travelersbackpack.inventory.upgrades.filter.FilterHandler;
 import com.tiviacz.travelersbackpack.inventory.upgrades.filter.IFilterSlots;
 import com.tiviacz.travelersbackpack.util.InventoryHelper;
+import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.capabilities.Capabilities;
@@ -35,6 +38,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class RefillUpgrade extends UpgradeBase<RefillUpgrade> implements IEnable, ITickableUpgrade, IFilterSlots {
+    public static final double REFILL_RANGE = 3.0D;
     private final FilterHandler filter;
 
     public RefillUpgrade(UpgradeManager manager, int dataHolderSlot, NonNullList<ItemStack> filter) {
@@ -96,10 +100,18 @@ public class RefillUpgrade extends UpgradeBase<RefillUpgrade> implements IEnable
 
         //Load storage if not loaded in artificial wrapper
         getUpgradeManager().getWrapper().loadAdditionally(BackpackWrapper.STORAGE_ID);
-
-        var cap = player.getCapability(Capabilities.ItemHandler.ENTITY);
-        if(cap != null) {
-            tryRefillItems(cap, player);
+        if(getUpgradeManager().getWrapper().getScreenID() == Reference.BLOCK_ENTITY_SCREEN_ID) {
+            level.getEntities(EntityType.PLAYER, new AABB(pos).inflate(REFILL_RANGE), p -> true).forEach(p -> {
+                var cap = p.getCapability(Capabilities.ItemHandler.ENTITY);
+                if(cap != null) {
+                    tryRefillItems(cap, p);
+                }
+            });
+        } else {
+            var cap = player.getCapability(Capabilities.ItemHandler.ENTITY);
+            if(cap != null) {
+                tryRefillItems(cap, player);
+            }
         }
 
         if(!hasCooldown() || getCooldown() != getTickRate()) {

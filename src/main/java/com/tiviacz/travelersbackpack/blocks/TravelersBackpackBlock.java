@@ -3,10 +3,11 @@ package com.tiviacz.travelersbackpack.blocks;
 import com.google.common.collect.Lists;
 import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
-import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModBlockEntityTypes;
 import com.tiviacz.travelersbackpack.init.ModBlocks;
 import com.tiviacz.travelersbackpack.init.ModItems;
+import com.tiviacz.travelersbackpack.inventory.upgrades.pickup.AutoPickupUpgrade;
+import com.tiviacz.travelersbackpack.inventory.upgrades.smelting.AbstractSmeltingUpgrade;
 import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.BackpackDeathHelper;
@@ -14,6 +15,9 @@ import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.dispenser.ShulkerBoxDispenseBehavior;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -136,6 +140,20 @@ public class TravelersBackpackBlock extends Block implements EntityBlock {
     }
 
     @Override
+    public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
+        super.entityInside(state, level, pos, entity);
+        if(!level.isClientSide && entity instanceof ItemEntity itemEntity) {
+            if(level.getBlockEntity(pos) instanceof BackpackBlockEntity backpack) {
+                backpack.getWrapper().getUpgradeManager().getUpgrade(AutoPickupUpgrade.class).ifPresent(pickupUpgrade -> {
+                    if(pickupUpgrade.canPickup(itemEntity.getItem())) {
+                        pickupUpgrade.tryPickup(itemEntity, level, pos);
+                    }
+                });
+            }
+        }
+    }
+
+    @Override
     protected boolean hasAnalogOutputSignal(BlockState state) {
         return true;
     }
@@ -169,7 +187,7 @@ public class TravelersBackpackBlock extends Block implements EntityBlock {
     @Override
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
-        return level.isClientSide || !TravelersBackpackConfig.SERVER.backpackAbilities.enableBackpackAbilities.get() || !BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, state.getBlock().asItem().getDefaultInstance()) ? null : BackpackDeathHelper.getTicker(blockEntityType, ModBlockEntityTypes.BACKPACK.get(), BackpackBlockEntity::tick);
+        return level.isClientSide() ? null : BackpackDeathHelper.getTicker(blockEntityType, ModBlockEntityTypes.BACKPACK.get(), BackpackBlockEntity::tick);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -177,6 +195,30 @@ public class TravelersBackpackBlock extends Block implements EntityBlock {
     public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource rand) {
         super.animateTick(state, level, pos, rand);
         if(level.getBlockEntity(pos) instanceof BackpackBlockEntity backpackBlockEntity) {
+            backpackBlockEntity.getWrapper().getUpgradeManager().upgrades.stream()
+                    .filter(upgrade -> upgrade instanceof AbstractSmeltingUpgrade<?>)
+                    .map(upgrade -> (AbstractSmeltingUpgrade<?>)upgrade)
+                    .findFirst()
+                    .ifPresent(upgrade -> {
+                        if(!upgrade.isBurning()) {
+                            return;
+                        }
+                        double d = pos.getX() + 0.5;
+                        double e = pos.getY();
+                        double f = pos.getZ() + 0.5;
+                        if(rand.nextDouble() < 0.1) {
+                            level.playLocalSound(d, e, f, SoundEvents.FURNACE_FIRE_CRACKLE, SoundSource.BLOCKS, 1.0F, 1.0F, false);
+                        }
+                        Direction direction = state.getValue(FACING);
+                        Direction.Axis axis = direction.getAxis();
+                        double h = rand.nextDouble() * 0.6 - 0.3;
+                        double i = axis == Direction.Axis.X ? (direction.getStepX() * 0.5) * 0.52 : h;
+                        double j = rand.nextDouble() * 6.0 / 16.0;
+                        double k = axis == Direction.Axis.Z ? (direction.getStepZ() * 0.5) * 0.52 : h;
+                        level.addParticle(ParticleTypes.SMOKE, d + i, e + j, f + k, 0.0, 0.0, 0.0);
+                        level.addParticle(ParticleTypes.FLAME, d + i, e + j, f + k, 0.0, 0.0, 0.0);
+                    });
+
             BackpackAbilities.ABILITIES.animateTick(backpackBlockEntity, state, level, pos, rand);
         }
     }
