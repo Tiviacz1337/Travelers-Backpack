@@ -400,7 +400,9 @@ public class BackpackWrapper {
     }
 
     public void setRenderInfo(CompoundTag compound) {
-        setDataAndSync(ModDataComponents.RENDER_INFO.get(), new RenderInfo(compound));
+        if(!getRenderInfo().compoundTag().equals(compound)) {
+            setDataAndSync(ModDataComponents.RENDER_INFO.get(), new RenderInfo(compound));
+        }
     }
 
     public void removeRenderInfo() {
@@ -808,7 +810,7 @@ public class BackpackWrapper {
                             BackpackWrapper wrapper;
                             if(ticks % 100 == 0) {
                                 if(decreaseCooldown) {
-                                    wrapper = AttachmentUtils.getBackpackWrapper(player, stack, AttachmentUtils.NO_ITEMS);
+                                    wrapper = AttachmentUtils.getBackpackWrapper(player, stack, AttachmentUtils.NO_ITEMS.get());
                                     int cooldown = wrapper.getCooldown();
                                     if(player.level().isClientSide) return;
                                     if(cooldown - 100 < 0) {
@@ -823,7 +825,7 @@ public class BackpackWrapper {
                         if(stack.getOrDefault(ModDataComponents.COOLDOWN.get(), 0) > 0) {
                             BackpackWrapper wrapper;
                             if(ticks % 100 == 0) {
-                                wrapper = AttachmentUtils.getBackpackWrapper(player, stack, AttachmentUtils.NO_ITEMS);
+                                wrapper = AttachmentUtils.getBackpackWrapper(player, stack, AttachmentUtils.NO_ITEMS.get());
                                 int cooldown = wrapper.getCooldown();
                                 if(player.level().isClientSide) return;
                                 if(cooldown - 100 < 0) {
@@ -843,7 +845,7 @@ public class BackpackWrapper {
                 if(upgradeTicks == 0) return;
                 BackpackWrapper wrapper;
                 if(ticks % upgradeTicks == 0) {
-                    wrapper = AttachmentUtils.getBackpackWrapper(player, stack, AttachmentUtils.UPGRADES_ONLY);
+                    wrapper = AttachmentUtils.getBackpackWrapper(player, stack, AttachmentUtils.UPGRADES_ONLY.get());
                     wrapper.getUpgradeManager().upgrades.forEach(upgradeBase -> {
                         if(upgradeBase instanceof ITickableUpgrade tickable) {
                             boolean tick = true;

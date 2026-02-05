@@ -152,7 +152,7 @@ dependencies {
     implementation "net.neoforged:neoforge:${neo_version}"
 
     //Curios Continuation
-    compileOnly("top.theillusivec4.curios:curios-neoforge:${curios_version}")
+    implementation("top.theillusivec4.curios:curios-neoforge:${curios_version}")
 
     //JEI
     implementation("maven.modrinth:jei:KbENlUcA")
