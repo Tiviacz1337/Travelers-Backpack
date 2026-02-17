@@ -34,6 +34,7 @@ public class TravelersBackpack implements ModInitializer {
     public static boolean comfortsLoaded;
     public static boolean universalGravesLoaded;
     public static boolean pneumonoGravestonesLoaded;
+    public static boolean vinurlLoaded;
 
     public static boolean polymorphLoaded;
     public static boolean trashSlotLoaded;
@@ -89,6 +90,7 @@ public class TravelersBackpack implements ModInitializer {
         polymorphLoaded = fabricLoader.isModLoaded("polymorph");
         trashSlotLoaded = fabricLoader.isModLoaded("trashslot");
 
+        vinurlLoaded = fabricLoader.isModLoaded("vinurl");
         //Fetch supporters
         Supporters.fetchSupporters();
 

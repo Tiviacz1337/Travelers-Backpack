@@ -1,6 +1,8 @@
 package com.tiviacz.travelersbackpack.init;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
+import com.tiviacz.travelersbackpack.compat.vinurl.ServerBoundVinURLStartPacket;
+import com.tiviacz.travelersbackpack.compat.vinurl.ServerBoundVinURLStopPacket;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfigData;
 import com.tiviacz.travelersbackpack.network.*;
@@ -40,6 +42,8 @@ public class ModNetwork {
         PayloadTypeRegistry.playC2S().register(SupporterBadgePacket.Serverbound.TYPE, SupporterBadgePacket.Serverbound.STREAM_CODEC);
         PayloadTypeRegistry.playC2S().register(ServerboundRetrieveBackpackPacket.TYPE, ServerboundRetrieveBackpackPacket.STREAM_CODEC);
         PayloadTypeRegistry.playC2S().register(ServerboundActionTagPacket.TYPE, ServerboundActionTagPacket.STREAM_CODEC);
+        PayloadTypeRegistry.playC2S().register(ServerBoundVinURLStartPacket.TYPE, ServerBoundVinURLStartPacket.STREAM_CODEC);
+        PayloadTypeRegistry.playC2S().register(ServerBoundVinURLStopPacket.TYPE, ServerBoundVinURLStopPacket.STREAM_CODEC);
 
         ServerPlayNetworking.registerGlobalReceiver(ServerboundFilterSettingsPacket.TYPE, ServerboundFilterSettingsPacket::handle);
         ServerPlayNetworking.registerGlobalReceiver(ServerboundFilterTagsPacket.TYPE, ServerboundFilterTagsPacket::handle);
@@ -47,6 +51,8 @@ public class ModNetwork {
         ServerPlayNetworking.registerGlobalReceiver(SupporterBadgePacket.Serverbound.TYPE, SupporterBadgePacket.Serverbound::handle);
         ServerPlayNetworking.registerGlobalReceiver(ServerboundRetrieveBackpackPacket.TYPE, ServerboundRetrieveBackpackPacket::handle);
         ServerPlayNetworking.registerGlobalReceiver(ServerboundActionTagPacket.TYPE, ServerboundActionTagPacket::handle);
+        ServerPlayNetworking.registerGlobalReceiver(ServerBoundVinURLStartPacket.TYPE, ServerBoundVinURLStartPacket::handle);
+        ServerPlayNetworking.registerGlobalReceiver(ServerBoundVinURLStopPacket.TYPE, ServerBoundVinURLStopPacket::handle);
 
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             //Load default config from file

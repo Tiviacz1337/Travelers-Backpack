@@ -4,12 +4,15 @@ import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.client.screens.widgets.UpgradeWidgetBase;
 import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetElement;
 import com.tiviacz.travelersbackpack.common.ServerActions;
+import com.tiviacz.travelersbackpack.compat.vinurl.ServerBoundVinURLStopPacket;
+import com.tiviacz.travelersbackpack.compat.vinurl.ServerBoundVinURLStartPacket;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
@@ -62,6 +65,8 @@ public class JukeboxWidget extends UpgradeWidgetBase<JukeboxUpgrade> {
             if(isMouseOverPlayButton(pMouseX, pMouseY) && isBackpackOwner()) {
                 if(isTabOpened() && this.upgrade.canPlayRecord()) {
                     ServerboundActionTagPacket.create(ServerboundActionTagPacket.UPGRADE_TAB, this.dataHolderSlot, true, ServerActions.PLAY_RECORD);
+                    ServerBoundVinURLStartPacket Packet = new ServerBoundVinURLStartPacket(upgrade.diskHandler.getStackInSlot(0));
+                    ClientPlayNetworking.send(Packet);
                     playDiscToPlayer(screen.getMenu().getPlayerInventory().player.getId(), getFromDisk(upgrade.diskHandler.getStackInSlot(0)));
                     this.screen.playUIClickSound();
                     return true;
@@ -73,6 +78,8 @@ public class JukeboxWidget extends UpgradeWidgetBase<JukeboxUpgrade> {
             if(isTabOpened() && this.upgrade.isPlayingRecord()) {
                 ServerboundActionTagPacket.create(ServerboundActionTagPacket.UPGRADE_TAB, this.dataHolderSlot, false, ServerActions.PLAY_RECORD);
                 if(this.upgrade.getUpgradeManager().getWrapper().getScreenID() == Reference.WEARABLE_SCREEN_ID) {
+                    ServerBoundVinURLStopPacket Packet = new ServerBoundVinURLStopPacket(upgrade.diskHandler.getStackInSlot(0), true);
+                    ClientPlayNetworking.send(Packet);
                     stopDisc(getFromDisk(upgrade.diskHandler.getStackInSlot(0)));
                 }
                 this.screen.playUIClickSound();

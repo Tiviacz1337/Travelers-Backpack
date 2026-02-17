@@ -171,6 +171,9 @@ dependencies {
 	modCompileOnly("maven.modrinth:pneumono_gravestones:HO3Zv8HU")
 	modCompileOnly("maven.modrinth:pneumono_core:QKvgjhTZ")
 
+	//VinURL
+	modCompileOnly("maven.modrinth:vinurl:${project.vinurl_version}")
+
 	//ESB
 	//modImplementation ("maven.modrinth:easy-shulker-boxes:m5lAjDSt")
 	//modImplementation ("maven.modrinth:puzzles-lib:E8hn913v")
