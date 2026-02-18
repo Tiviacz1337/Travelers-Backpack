@@ -13,7 +13,7 @@ import net.minecraft.world.item.ItemStack;
 import static com.tiviacz.travelersbackpack.TravelersBackpack.vinurlLoaded;
 
 public record ServerBoundVinURLStopPacket(ItemStack stack, boolean cancelable) implements CustomPacketPayload {
-	public static final Type<ServerBoundVinURLStopPacket> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "play_vinurl"));
+	public static final Type<ServerBoundVinURLStopPacket> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "stop_vinurl"));
 
 	public static final StreamCodec<RegistryFriendlyByteBuf, ServerBoundVinURLStopPacket> STREAM_CODEC =
 		StreamCodec.composite(
