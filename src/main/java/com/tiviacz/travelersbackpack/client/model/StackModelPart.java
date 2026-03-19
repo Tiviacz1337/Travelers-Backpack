@@ -3,6 +3,7 @@ package com.tiviacz.travelersbackpack.client.model;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModDataHelper;
 import com.tiviacz.travelersbackpack.util.NbtHelper;
 import net.minecraft.client.Minecraft;
@@ -29,7 +30,7 @@ public class StackModelPart extends BackpackModelPart {
     }
 
     public void render(ItemStack backpack, MultiBufferSource buffer, PoseStack poseStack, int light, int overlay) {
-        if(buffer == null) {
+        if(buffer == null || !TravelersBackpackConfig.CLIENT.renderTools.get()) {
             return;
         }
         render(prepare(backpack), poseStack, buffer, light, overlay);
