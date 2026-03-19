@@ -188,6 +188,7 @@ dependencies {
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 
     implementation fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
+    implementation fg.deobf("maven.modrinth:forge-config-screens:YUDLu26S")
 
     implementation fg.deobf("maven.modrinth:crafting-tweaks:umzsWJQd")
     implementation fg.deobf("maven.modrinth:balm:Ue8C6cKq")

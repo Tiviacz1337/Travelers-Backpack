@@ -83,7 +83,8 @@ public record ServerboundActionTagPacket(CompoundTag actionTag) {
                 }
                 case SWAP_TOOL -> {
                     int slot = actionTag.getInt("Arg0");
-                    ServerActions.swapTool(player, slot);
+                    int button = actionTag.getInt("Arg1");
+                    ServerActions.swapTool(player, slot, button);
                 }
                 case TOGGLE_BUTTONS_VISIBILITY -> ServerActions.toggleButtonsVisibility(player);
                 case SHOW_TOOL_SLOTS -> {
