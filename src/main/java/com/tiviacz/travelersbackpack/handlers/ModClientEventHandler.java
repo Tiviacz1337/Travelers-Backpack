@@ -1,5 +1,6 @@
 package com.tiviacz.travelersbackpack.handlers;
 
+import com.google.common.collect.ImmutableList;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
 import com.tiviacz.travelersbackpack.capability.AttachmentUtils;
@@ -45,6 +46,7 @@ import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.lwjgl.glfw.GLFW;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 @EventBusSubscriber(modid = TravelersBackpack.MODID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
@@ -54,14 +56,23 @@ public class ModClientEventHandler {
     public static final KeyMapping SORT_BACKPACK = new KeyMapping("key.travelersbackpack.sort", GLFW.GLFW_KEY_UNKNOWN, CATEGORY);
     public static final KeyMapping ABILITY = new KeyMapping("key.travelersbackpack.ability", GLFW.GLFW_KEY_UNKNOWN, CATEGORY);
     public static final KeyMapping SWAP_TOOL = new KeyMapping("key.travelersbackpack.cycle_tool", GLFW.GLFW_KEY_Z, CATEGORY);
+    public static final KeyMapping TOGGLE_UPGRADE_0 = new KeyMapping("key.travelersbackpack.toggle_upgrade_0", GLFW.GLFW_KEY_UNKNOWN, CATEGORY);
+    public static final KeyMapping TOGGLE_UPGRADE_1 = new KeyMapping("key.travelersbackpack.toggle_upgrade_1", GLFW.GLFW_KEY_UNKNOWN, CATEGORY);
+    public static final KeyMapping TOGGLE_UPGRADE_2 = new KeyMapping("key.travelersbackpack.toggle_upgrade_2", GLFW.GLFW_KEY_UNKNOWN, CATEGORY);
+    public static final KeyMapping TOGGLE_UPGRADE_3 = new KeyMapping("key.travelersbackpack.toggle_upgrade_3", GLFW.GLFW_KEY_UNKNOWN, CATEGORY);
+    public static final List<KeyMapping> TOGGLE_UPGRADE_KEYS = ImmutableList.of(TOGGLE_UPGRADE_0, TOGGLE_UPGRADE_1, TOGGLE_UPGRADE_2, TOGGLE_UPGRADE_3);
     public static final ModelResourceLocation STAR_MODEL = ModelResourceLocation.standalone(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "item/supporter_star"));
 
     @SubscribeEvent
-    public static void registerKeys(final RegisterKeyMappingsEvent event) {
+    public static void registerKeys(RegisterKeyMappingsEvent event) {
         event.register(OPEN_BACKPACK);
         event.register(SORT_BACKPACK);
         event.register(ABILITY);
         event.register(SWAP_TOOL);
+        event.register(TOGGLE_UPGRADE_0);
+        event.register(TOGGLE_UPGRADE_1);
+        event.register(TOGGLE_UPGRADE_2);
+        event.register(TOGGLE_UPGRADE_3);
     }
 
     @SubscribeEvent

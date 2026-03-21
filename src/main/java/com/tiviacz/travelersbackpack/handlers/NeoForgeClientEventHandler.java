@@ -8,6 +8,7 @@ import com.tiviacz.travelersbackpack.client.screens.ToolsScreen;
 import com.tiviacz.travelersbackpack.client.screens.tooltip.BackpackTooltipComponent;
 import com.tiviacz.travelersbackpack.commands.BackpackIconCommands;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
+import com.tiviacz.travelersbackpack.common.ServerActions;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.BackpackSlotItemHandler;
@@ -214,6 +215,12 @@ public class NeoForgeClientEventHandler {
                         return;
                     }
                     mc.setScreen(new ToolsScreen());
+                }
+            }
+            for(int i = 0; i < ModClientEventHandler.TOGGLE_UPGRADE_KEYS.size(); i++) {
+                KeyMapping key = ModClientEventHandler.TOGGLE_UPGRADE_KEYS.get(i);
+                while(key.consumeClick()) {
+                    ServerboundActionTagPacket.create(ServerboundActionTagPacket.UPGRADE_TAB, i, false, ServerActions.UPGRADE_ENABLED, false); //Upgrade status read on server
                 }
             }
         } else {
