@@ -2,6 +2,7 @@ package com.tiviacz.travelersbackpack.network;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
+import com.tiviacz.travelersbackpack.inventory.menu.BackpackItemMenu;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -32,7 +33,7 @@ public record ClientboundSyncItemStackPacket(int entityId, int slot, ItemStack i
 
                 //Sync clientside wrapper if integration enabled (Wrapper created on the fly)
                 if(player != null && message.slot() == -1) {
-                    if(player.containerMenu instanceof BackpackBaseMenu menu) {
+                    if(player.containerMenu instanceof BackpackItemMenu menu) {
                         ItemStack oldStack = menu.getWrapper().getBackpackStack().copy();
                         oldStack.applyComponents(message.map());
                         menu.getWrapper().setBackpackStack(oldStack);
