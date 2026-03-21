@@ -5,6 +5,7 @@
 ✨ Refill Upgrade - refills items from backpack to players around backpack within refill radius (3 blocks)  
 ✨ Furnace, Smoker and Blast Furnace Upgrades - can be used when backpack is placed on the ground  
 🔧 Performance improvements  
+🔧 Fixed duplication issue with Pickup Upgrade  
 🐛 Fixed bug with the Settings screen "back" button not working in block-form backpack  
 📚 Updated de_de - Thanks 1IntereJurry!  
 📚 Updated es_mx - Thanks BrambilaPro!  

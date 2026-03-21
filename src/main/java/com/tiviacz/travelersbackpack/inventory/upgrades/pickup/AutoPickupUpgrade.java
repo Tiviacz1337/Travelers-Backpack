@@ -80,9 +80,10 @@ public class AutoPickupUpgrade extends FilterUpgradeBase<AutoPickupUpgrade, Auto
 
     //Always check canPickup before
     public boolean tryPickup(ItemEntity itemEntity, Level level, BlockPos pos) {
-        ItemStack stack = itemEntity.getItem().copy();
+        ItemStack stack = itemEntity.getItem();
+        int originalCount = stack.getCount();
         stack = ItemHandlerHelper.insertItemStacked(getUpgradeManager().getWrapper().getStorageForInputOutput(), stack, false);
-        if(stack != itemEntity.getItem()) {
+        if(originalCount != stack.getCount()) {
             level.playSound(null, pos, SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 0.2F, (level.random.nextFloat() - level.random.nextFloat()) * 1.4F + 2.0F);
             itemEntity.setItem(stack);
             return true;
