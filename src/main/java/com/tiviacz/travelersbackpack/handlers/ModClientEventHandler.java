@@ -1,5 +1,6 @@
 package com.tiviacz.travelersbackpack.handlers;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.reflect.TypeToken;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -51,7 +52,6 @@ import net.minecraft.client.color.item.ItemTintSource;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.block.model.BlockModelPart;
-import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
 import net.minecraft.client.renderer.entity.*;
 import net.minecraft.client.renderer.entity.player.AvatarRenderer;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
@@ -83,6 +83,8 @@ import org.lwjgl.glfw.GLFW;
 
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
+
 @EventBusSubscriber(modid = TravelersBackpack.MODID, value = Dist.CLIENT)
 public class ModClientEventHandler {
     public static final KeyMapping.Category CATEGORY = new KeyMapping.Category(Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "controls"));
@@ -90,15 +92,24 @@ public class ModClientEventHandler {
     public static final KeyMapping SORT_BACKPACK = new KeyMapping("key.travelersbackpack.sort", GLFW.GLFW_KEY_UNKNOWN, CATEGORY);
     public static final KeyMapping ABILITY = new KeyMapping("key.travelersbackpack.ability", GLFW.GLFW_KEY_UNKNOWN, CATEGORY);
     public static final KeyMapping SWAP_TOOL = new KeyMapping("key.travelersbackpack.cycle_tool", GLFW.GLFW_KEY_Z, CATEGORY);
+    public static final KeyMapping TOGGLE_UPGRADE_0 = new KeyMapping("key.travelersbackpack.toggle_upgrade_0", GLFW.GLFW_KEY_UNKNOWN, CATEGORY);
+    public static final KeyMapping TOGGLE_UPGRADE_1 = new KeyMapping("key.travelersbackpack.toggle_upgrade_1", GLFW.GLFW_KEY_UNKNOWN, CATEGORY);
+    public static final KeyMapping TOGGLE_UPGRADE_2 = new KeyMapping("key.travelersbackpack.toggle_upgrade_2", GLFW.GLFW_KEY_UNKNOWN, CATEGORY);
+    public static final KeyMapping TOGGLE_UPGRADE_3 = new KeyMapping("key.travelersbackpack.toggle_upgrade_3", GLFW.GLFW_KEY_UNKNOWN, CATEGORY);
+    public static final List<KeyMapping> TOGGLE_UPGRADE_KEYS = ImmutableList.of(TOGGLE_UPGRADE_0, TOGGLE_UPGRADE_1, TOGGLE_UPGRADE_2, TOGGLE_UPGRADE_3);
     public static final Identifier STAR_MODEL_LOCATION = Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "item/supporter_star");
     public static final StandaloneModelKey<BlockModelPart> STAR_MODEL = new StandaloneModelKey<>(STAR_MODEL_LOCATION::toString);
 
     @SubscribeEvent
-    public static void registerKeys(final RegisterKeyMappingsEvent event) {
+    public static void registerKeys(RegisterKeyMappingsEvent event) {
         event.register(OPEN_BACKPACK);
         event.register(SORT_BACKPACK);
         event.register(ABILITY);
         event.register(SWAP_TOOL);
+        event.register(TOGGLE_UPGRADE_0);
+        event.register(TOGGLE_UPGRADE_1);
+        event.register(TOGGLE_UPGRADE_2);
+        event.register(TOGGLE_UPGRADE_3);
     }
 
     @SubscribeEvent

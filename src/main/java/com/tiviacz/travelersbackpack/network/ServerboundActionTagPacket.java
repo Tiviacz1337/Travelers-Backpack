@@ -56,7 +56,8 @@ public record ServerboundActionTagPacket(CompoundTag actionTag) implements Custo
                     int slot = actionTag.getIntOr("Arg0", -1);
                     boolean open = actionTag.getBooleanOr("Arg1", false);
                     int packetType = actionTag.getIntOr("Arg2", -1);
-                    ServerActions.modifyUpgradeTab(player, slot, open, packetType);
+                    boolean fromMenu = actionTag.getBooleanOr("Arg3", true);
+                    ServerActions.modifyUpgradeTab(player, slot, open, packetType, fromMenu);
                 }
                 case OPEN_SCREEN -> {
                     if(AttachmentUtils.isWearingBackpack(player)) {
