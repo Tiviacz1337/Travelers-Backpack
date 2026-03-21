@@ -5,6 +5,10 @@
 ✨ Refill Upgrade - refills items from backpack to players around backpack within refill radius (3 blocks)  
 ✨ Furnace, Smoker and Blast Furnace Upgrades - can be used when backpack is placed on the ground  
 ✨ Added 4 new keybinds to toggle upgrades in slots 1-4 without opening the backpack (unbound by default)  
+✨ Changed tools radial menu texture  
+✨ Added config option to change overlay opacity  
+✨ Left-clicking an item in the tools radial menu swaps it with the main hand item  
+✨ Right-clicking an item in the tools radial menu swaps it with the off-hand item  
 🔧 Performance improvements  
 🔧 Fixed duplication issue with Pickup Upgrade  
 🔧 Allow sorting via mouse buttons  

@@ -740,12 +740,33 @@ public class TravelersBackpackConfig {
         }
 
         public static class ToolsOverlay {
+            public final ModConfigSpec.BooleanValue swapOnClose;
+            public final ModConfigSpec.BooleanValue showTooltip;
+            public final ModConfigSpec.BooleanValue renderBackpackIconInCenter;
+            public final ModConfigSpec.DoubleValue opacity;
             public final ModConfigSpec.IntValue offsetX;
             public final ModConfigSpec.IntValue offsetY;
 
-            ToolsOverlay(final ModConfigSpec.Builder builder, final String comment, final String path) {
+            ToolsOverlay(ModConfigSpec.Builder builder, String comment, String path) {
                 builder.comment(comment)
                         .push(path);
+
+                swapOnClose = builder
+                        .comment("If true, the currently held item will be swapped with the selected tool belt slot when closing the tool belt GUI")
+                        .define("swapOnClose", true);
+
+                showTooltip = builder
+                        .comment("Displays the full tooltip when hovering over an item in the tool belt. If false, only the item name is shown")
+                        .define("showTooltip", false);
+
+                renderBackpackIconInCenter = builder
+                        .comment("Render backpack icon in the center of the tools overlay")
+                        .define("renderBackpackIconInCenter", true);
+
+                opacity = builder
+                        .comment("Overlay opacity")
+                        .defineInRange("opacity", 0.75, 0, 1);
+
                 offsetX = builder
                         .comment("X offset")
                         .defineInRange("offsetX", 0, Integer.MIN_VALUE, Integer.MAX_VALUE);
