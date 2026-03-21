@@ -105,7 +105,7 @@ public class HoseItem extends Item {
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if(AttachmentUtils.isWearingBackpack(player) && hand == InteractionHand.MAIN_HAND) {
-            BackpackWrapper wrapper = AttachmentUtils.getBackpackWrapper(player, AttachmentUtils.UPGRADES_ONLY);
+            BackpackWrapper wrapper = AttachmentUtils.getBackpackWrapper(player, AttachmentUtils.UPGRADES_ONLY.get());
             if(!wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).isPresent()) {
                 return InteractionResult.PASS;
             }
@@ -188,7 +188,7 @@ public class HoseItem extends Item {
         ItemStack stack = player.getItemInHand(context.getHand());
         if(AttachmentUtils.isWearingBackpack(player) && context.getHand() == InteractionHand.MAIN_HAND) {
             Optional<IFluidHandler> fluidHandler = FluidUtil.getFluidHandler(level, pos, direction);
-            BackpackWrapper wrapper = AttachmentUtils.getBackpackWrapper(player, AttachmentUtils.UPGRADES_ONLY);
+            BackpackWrapper wrapper = AttachmentUtils.getBackpackWrapper(player, AttachmentUtils.UPGRADES_ONLY.get());
             if(!wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).isPresent()) {
                 return InteractionResult.PASS;
             }
@@ -364,7 +364,7 @@ public class HoseItem extends Item {
     public ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity entityLiving) {
         if(entityLiving instanceof Player player) {
             if(AttachmentUtils.isWearingBackpack(player)) {
-                BackpackWrapper wrapper = AttachmentUtils.getBackpackWrapper(player, AttachmentUtils.UPGRADES_ONLY);
+                BackpackWrapper wrapper = AttachmentUtils.getBackpackWrapper(player, AttachmentUtils.UPGRADES_ONLY.get());
                 if(!wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).isPresent()) {
                     return stack;
                 }
@@ -395,7 +395,7 @@ public class HoseItem extends Item {
     @Override
     public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity entity, InteractionHand hand) {
         if(AttachmentUtils.isWearingBackpack(player) && hand == InteractionHand.MAIN_HAND && getHoseMode(stack) == SUCK_MODE) {
-            BackpackWrapper wrapper = AttachmentUtils.getBackpackWrapper(player, AttachmentUtils.UPGRADES_ONLY);
+            BackpackWrapper wrapper = AttachmentUtils.getBackpackWrapper(player, AttachmentUtils.UPGRADES_ONLY.get());
             if(!wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).isPresent()) {
                 return InteractionResult.PASS;
             }
