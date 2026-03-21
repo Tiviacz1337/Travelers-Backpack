@@ -12,6 +12,7 @@
 📚 Updated de_de - Thanks 1IntereJurry!  
 📚 Updated es_mx - Thanks BrambilaPro!  
 📚 Updated ko_kr - Thanks kjh1022abc!  
+📚 Updated zh_cn - Thanks EmptyDreams!  
 
 ⭐ Want to receive **Supporter Star Badge** for a **lifetime**? - [visit my Ko-Fi page](https://ko-fi.com/tiviacz1337)!  
 ![Banner](https://i.imgur.com/SSrFv58.png)
