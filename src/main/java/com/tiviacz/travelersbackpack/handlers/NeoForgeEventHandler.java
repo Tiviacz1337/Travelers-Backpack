@@ -83,8 +83,6 @@ import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import net.neoforged.neoforge.event.village.VillagerTradesEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.server.command.ConfigCommand;
-import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
-import net.neoforged.neoforge.transfer.item.ItemResource;
 
 import java.util.Arrays;
 import java.util.List;
@@ -588,6 +586,13 @@ public class NeoForgeEventHandler {
 
         if(AttachmentUtils.isWearingBackpack(player)) {
             BackpackWrapper wrapper = AttachmentUtils.getBackpackWrapper(player);
+            wrapper.getUpgradeManager().getUpgrade(AutoPickupUpgrade.class).ifPresent(pickupUpgrade -> {
+                if(pickupUpgrade.canPickup(itemEntity.getItem()) && pickupUpgrade.tryPickup(itemEntity, level, player.blockPosition())) {
+                    event.setCanPickup(TriState.FALSE);
+                }});
+
+        /*if(AttachmentUtils.isWearingBackpack(player)) {
+            BackpackWrapper wrapper = AttachmentUtils.getBackpackWrapper(player);
             if(wrapper.getUpgradeManager().getUpgrade(AutoPickupUpgrade.class).isPresent() && wrapper.getUpgradeManager().getUpgrade(AutoPickupUpgrade.class).get().canPickup(itemEntity.getItem())) {
                 ItemStack stackCopy = itemEntity.getItem().copy();
                 //ItemStack remainingStack = ItemUtil.insertItemReturnRemaining(new StorageAccessWrapper(wrapper, wrapper.getStorage()), itemEntity.getItem(), false, null);
@@ -598,7 +603,7 @@ public class NeoForgeEventHandler {
                     itemEntity.setItem(stackCopy);
                     event.setCanPickup(TriState.FALSE);
                 }
-            }
+            } */
         }
     }
 }

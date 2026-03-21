@@ -20,6 +20,8 @@ import com.tiviacz.travelersbackpack.inventory.sorter.SortSelector;
 import com.tiviacz.travelersbackpack.inventory.transfer.BackpackResourceHandler;
 import com.tiviacz.travelersbackpack.inventory.upgrades.IEnable;
 import com.tiviacz.travelersbackpack.inventory.upgrades.ITickableUpgrade;
+import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
+import com.tiviacz.travelersbackpack.inventory.upgrades.smelting.FurnaceUpgrade;
 import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;
 import com.tiviacz.travelersbackpack.items.upgrades.TanksUpgradeItem;
 import com.tiviacz.travelersbackpack.items.upgrades.UpgradeItem;
@@ -36,6 +38,7 @@ import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -138,6 +141,7 @@ public class BackpackWrapper {
 
         //Update client tanks if present
         getUpgradeManager().getUpgrade(TanksUpgrade.class).ifPresent(tanksUpgrade -> tanksUpgrade.syncClients(backpack));
+        getUpgradeManager().getUpgrade(FurnaceUpgrade.class).ifPresent(furnaceUpgrade -> furnaceUpgrade.syncClient(backpack));
     }
 
     public ItemStack getBackpackStack() {
@@ -167,8 +171,19 @@ public class BackpackWrapper {
         }
     }
 
+    public void setLevel(Level level) {
+        this.level = level;
+    }
+
     public Level getLevel() {
         return this.level;
+    }
+
+    public ServerLevel getServerLevel() {
+        if(this.level instanceof ServerLevel serverLevel) {
+            return serverLevel;
+        }
+        return null;
     }
 
     public BackpackResourceHandler loadHandler(DataComponentType<BackpackContainerContents> data, int defaultSize, int dataId, BiFunction<NonNullList<ItemStack>, Integer, BackpackResourceHandler> handlerFunction) {
@@ -300,6 +315,10 @@ public class BackpackWrapper {
             return RegistryHelper.getRegistryAccess().get();
         }
         return null;
+    }
+
+    public <T extends UpgradeBase<T>> Optional<T> getUpgrade(Class<T> upgradeClass) {
+        return this.getUpgradeManager().getUpgrade(upgradeClass);
     }
 
     public List<Integer> getUnsortableSlots() {
@@ -744,6 +763,26 @@ public class BackpackWrapper {
     public static void tickForBlockEntity(BackpackBlockEntity backpackBlockEntity) {
         BackpackWrapper wrapper = backpackBlockEntity.getWrapper();
         if(wrapper != BackpackWrapper.DUMMY) {
+            if(wrapper.hasTickingUpgrade()) {
+                int ticks = (int)backpackBlockEntity.getLevel().getGameTime();
+                int upgradeTicks = wrapper.getUpgradeTickInterval();
+                if(upgradeTicks == 0) return;
+
+                if(ticks % upgradeTicks == 0) {
+                    wrapper.getUpgradeManager().upgrades.forEach(upgradeBase -> {
+                        if(upgradeBase instanceof ITickableUpgrade tickable) {
+                            boolean tick = true;
+                            if(upgradeBase instanceof IEnable enable) {
+                                tick = enable.isEnabled(upgradeBase);
+                            }
+                            if(tick) {
+                                tickable.tick(null, backpackBlockEntity.getLevel(), backpackBlockEntity.getBlockPos(), ticks);
+                            }
+                        }
+                    });
+                }
+            }
+
             if(wrapper.isAbilityEnabled() && BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, wrapper.getBackpackStack())) {
                 boolean decreaseCooldown = BackpackAbilities.ABILITIES.abilityTickBlock(backpackBlockEntity);
                 if(wrapper.getCooldown() > 0) {

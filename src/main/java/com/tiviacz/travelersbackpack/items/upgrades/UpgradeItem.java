@@ -38,6 +38,10 @@ public abstract class UpgradeItem extends Item {
         return true;
     }
 
+    public boolean hasBlockFunctionality() {
+        return true;
+    }
+
     public abstract Class<? extends UpgradeBase<?>> getUpgradeClass();
 
     public abstract TriFunction<UpgradeManager, Integer, ItemStack, Optional<? extends UpgradeBase<?>>> getUpgrade();

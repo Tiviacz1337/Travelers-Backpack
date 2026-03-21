@@ -26,6 +26,11 @@ public class JukeboxUpgradeItem extends UpgradeItem {
     }
 
     @Override
+    public boolean hasBlockFunctionality() {
+        return false;
+    }
+
+    @Override
     public Class<? extends UpgradeBase<?>> getUpgradeClass() {
         return JukeboxUpgrade.class;
     }
