@@ -7,6 +7,7 @@
 ✨ Added 4 new keybinds to toggle upgrades in slots 1-4 without opening the backpack (unbound by default)  
 🔧 Performance improvements  
 🔧 Fixed duplication issue with Pickup Upgrade  
+🔧 Allow sorting via mouse buttons  
 🐛 Fixed bug with the Settings screen "back" button not working in block-form backpack  
 📚 Updated de_de - Thanks 1IntereJurry!  
 📚 Updated es_mx - Thanks BrambilaPro!  
