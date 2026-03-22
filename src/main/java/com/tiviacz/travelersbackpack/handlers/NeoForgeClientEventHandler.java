@@ -3,6 +3,7 @@ package com.tiviacz.travelersbackpack.handlers;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.capability.AttachmentUtils;
+import com.tiviacz.travelersbackpack.client.screens.RadialToolsOverlay;
 import com.tiviacz.travelersbackpack.client.screens.ToolsScreen;
 import com.tiviacz.travelersbackpack.client.screens.tooltip.BackpackTooltipComponent;
 import com.tiviacz.travelersbackpack.commands.BackpackIconCommands;
@@ -42,6 +43,7 @@ import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.*;
+import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import org.lwjgl.glfw.GLFW;
 
@@ -248,6 +250,15 @@ public class NeoForgeClientEventHandler {
                         break;
                     }
                 }
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void renderGuiOverlay(RenderGuiLayerEvent.Pre event) {
+        if(event.getName() == VanillaGuiLayers.CROSSHAIR) {
+            if(Minecraft.getInstance().screen instanceof ToolsScreen && !RadialToolsOverlay.drawCrosshair) {
+                event.setCanceled(true);
             }
         }
     }

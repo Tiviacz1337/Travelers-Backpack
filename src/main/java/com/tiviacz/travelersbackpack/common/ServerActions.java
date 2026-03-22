@@ -59,30 +59,38 @@ import java.util.List;
 import java.util.Optional;
 
 public class ServerActions {
-    public static void swapTool(Player player, int slot) {
+    public static void swapTool(Player player, int slot, int button) {
         if(!TravelersBackpackConfig.SERVER.backpackSettings.allowToolSwapping.get()) {
             return;
         }
         if(AttachmentUtils.isWearingBackpack(player)) {
             BackpackWrapper wrapper = AttachmentUtils.getBackpackWrapper(player, AttachmentUtils.TOOLS_ONLY.get());
             BackpackResourceHandler inv = wrapper.getTools();
-            ItemStack handStack = player.getMainHandItem().copy();
+            InteractionHand hand = button == 0 ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
+            ItemStack handStack = player.getItemInHand(hand);
 
-            if(!ToolSlotItemHandler.isValid(handStack) && !handStack.isEmpty()) {
+            if(!handStack.isEmpty() && !ToolSlotItemHandler.isValid(handStack)) {
                 return;
             }
 
             if(slot == -999) {
+                if(handStack.isEmpty()) return;
+
                 int insert = ResourceHandlerUtil.insertStacking(inv, ItemResource.of(handStack), handStack.getCount(), null);
-                if(insert != 0) {
-                    player.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+                int remaining = handStack.getCount() - insert;
+                ItemStack copy = handStack.copy();
+                copy.setCount(remaining);
+
+                if(insert >= handStack.getCount()) {
+                    player.setItemInHand(hand, ItemStack.EMPTY);
+                } else {
+                    player.setItemInHand(hand, copy);
                 }
             } else {
                 ItemStack currentTool = inv.getStackInSlot(slot).copy();
 
-                //Swap
-                player.setItemInHand(InteractionHand.MAIN_HAND, currentTool);
-                inv.setStackInSlot(slot, handStack);
+                inv.setStackInSlot(slot, handStack.copy());
+                player.setItemInHand(hand, currentTool);
             }
 
             if(player instanceof ServerPlayer serverPlayer) {
