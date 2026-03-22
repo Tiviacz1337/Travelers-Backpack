@@ -356,6 +356,11 @@ public class BackpackScreen extends AbstractBackpackScreen<BackpackBaseMenu> imp
                 b.mouseClicked(event, b1);
             }
         });
+        if(ModClientEventHandler.SORT_BACKPACK.matchesMouse(event)) {
+            ServerboundActionTagPacket.create(ServerboundActionTagPacket.SORTER, ContainerSorter.SORT_BACKPACK, KeyHelper.isShiftPressed());
+            playUIClickSound();
+            return true;
+        }
         return super.mouseClicked(event, b1);
     }
 
