@@ -172,6 +172,9 @@ dependencies {
     //Trash Slot
     implementation("maven.modrinth:trashslot:xyqrX19y")
 
+    //VinURL
+    compileOnly("maven.modrinth:vinurl:5NlvMz3w")
+
     //Carry On
     //runtimeOnly "curse.maven:carryon-274259:5141764"
 

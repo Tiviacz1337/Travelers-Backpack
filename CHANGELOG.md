@@ -9,6 +9,7 @@
 ✨ Added config option to change overlay opacity  
 ✨ Left-clicking an item in the tools radial menu swaps it with the main hand item  
 ✨ Right-clicking an item in the tools radial menu swaps it with the off-hand item  
+✨ Added compatibility with VinURL mod and jukebox upgrade for backpack  
 🔧 Performance improvements  
 🔧 Fixed duplication issue with Pickup Upgrade  
 🔧 Allow sorting via mouse buttons  

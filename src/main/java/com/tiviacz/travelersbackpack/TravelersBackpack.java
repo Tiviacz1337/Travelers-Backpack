@@ -43,6 +43,7 @@ public class TravelersBackpack {
     public static boolean comfortsLoaded;
     public static boolean endermanOverhaulLoaded;
     public static boolean createLoaded;
+    public static boolean vinurlLoaded;
 
     public static boolean jeiLoaded;
     public static boolean reiLoaded;
@@ -91,6 +92,7 @@ public class TravelersBackpack {
         comfortsLoaded = ModList.get().isLoaded("comforts");
         endermanOverhaulLoaded = ModList.get().isLoaded("endermanoverhaul");
         createLoaded = ModList.get().isLoaded("create");
+        vinurlLoaded = ModList.get().isLoaded("vinurl");
 
         jeiLoaded = ModList.get().isLoaded("jei");
         reiLoaded = ModList.get().isLoaded("roughlyenoughitems");

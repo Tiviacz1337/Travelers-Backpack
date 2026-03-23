@@ -1,10 +1,13 @@
 package com.tiviacz.travelersbackpack.inventory.upgrades.jukebox;
 
+import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.capability.AttachmentUtils;
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.client.screens.widgets.UpgradeWidgetBase;
 import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetElement;
 import com.tiviacz.travelersbackpack.common.ServerActions;
+import com.tiviacz.travelersbackpack.compat.vinurl.ServerboundVinURLStartPacket;
+import com.tiviacz.travelersbackpack.compat.vinurl.ServerboundVinURLStopPacket;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
 import com.tiviacz.travelersbackpack.util.Reference;
@@ -12,7 +15,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
@@ -22,6 +24,7 @@ import net.minecraft.world.item.JukeboxSong;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 
 public class JukeboxWidget extends UpgradeWidgetBase<JukeboxUpgrade> {
@@ -63,6 +66,9 @@ public class JukeboxWidget extends UpgradeWidgetBase<JukeboxUpgrade> {
             if(isMouseOverPlayButton(pMouseX, pMouseY) && isBackpackOwner()) {
                 if(isTabOpened() && this.upgrade.canPlayRecord()) {
                     ServerboundActionTagPacket.create(ServerboundActionTagPacket.UPGRADE_TAB, this.dataHolderSlot, true, ServerActions.PLAY_RECORD);
+                    if(TravelersBackpack.vinurlLoaded) {
+                        PacketDistributor.sendToServer(new ServerboundVinURLStartPacket(upgrade.diskHandler.getStackInSlot(0)));
+                    }
                     playDiscToPlayer(screen.getMenu().getPlayerInventory().player.getId(), getFromDisk(upgrade.diskHandler.getStackInSlot(0)));
                     this.screen.playUIClickSound();
                     return true;
@@ -74,6 +80,9 @@ public class JukeboxWidget extends UpgradeWidgetBase<JukeboxUpgrade> {
             if(isTabOpened() && this.upgrade.isPlayingRecord()) {
                 ServerboundActionTagPacket.create(ServerboundActionTagPacket.UPGRADE_TAB, this.dataHolderSlot, false, ServerActions.PLAY_RECORD);
                 if(this.upgrade.getUpgradeManager().getWrapper().getScreenID() == Reference.WEARABLE_SCREEN_ID) {
+                    if(TravelersBackpack.vinurlLoaded) {
+                        PacketDistributor.sendToServer(new ServerboundVinURLStopPacket(upgrade.diskHandler.getStackInSlot(0), true));
+                    }
                     stopDisc(getFromDisk(upgrade.diskHandler.getStackInSlot(0)));
                 }
                 this.screen.playUIClickSound();

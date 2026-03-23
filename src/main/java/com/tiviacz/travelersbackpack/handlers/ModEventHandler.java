@@ -1,6 +1,7 @@
 package com.tiviacz.travelersbackpack.handlers;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
+import com.tiviacz.travelersbackpack.compat.vinurl.VinURLNetwork;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.datagen.ModLootTableProvider;
 import com.tiviacz.travelersbackpack.datagen.ModRecipeProvider;
@@ -37,6 +38,10 @@ public class ModEventHandler {
     public static void registerPayloadHandler(RegisterPayloadHandlersEvent event) {
         PayloadRegistrar payloadRegistrar = event.registrar(TravelersBackpack.MODID);
         ModNetwork.register(payloadRegistrar);
+
+        if(TravelersBackpack.vinurlLoaded) {
+            VinURLNetwork.register(payloadRegistrar);
+        }
     }
 
     @SubscribeEvent
