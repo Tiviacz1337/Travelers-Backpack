@@ -368,7 +368,7 @@ public class ServerActions {
     public static void toggleSleepingBag(Player player, BlockPos pos, boolean isEquipped) {
         Level level = player.level();
         if(isEquipped) {
-            BlockPos sleepingBagPos1 = pos.relative(player.getDirection());
+            BlockPos sleepingBagPos1 = pos;
             BlockPos sleepingBagPos2 = sleepingBagPos1.relative(player.getDirection());
             boolean canPlace = placeAndUseSleepingBag(player, sleepingBagPos1, sleepingBagPos2, pos, level, player.getDirection());
             if(!canPlace) {
@@ -379,7 +379,7 @@ public class ServerActions {
 
             if(!level.isClientSide) {
                 if(player instanceof ServerPlayer serverPlayer) {
-                    player.startSleepInBed(pos.relative(player.getDirection()).relative(player.getDirection())).ifLeft(bedSleepingProblem -> {
+                    player.startSleepInBed(pos.relative(player.getDirection())).ifLeft(bedSleepingProblem -> {
                         if(bedSleepingProblem.getMessage() != null) {
                             player.displayClientMessage(bedSleepingProblem.getMessage(), true);
                             if(level.getBlockState(sleepingBagPos1).getBlock() instanceof SleepingBagBlock) {
