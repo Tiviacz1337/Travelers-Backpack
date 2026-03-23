@@ -250,22 +250,38 @@ public class ServerActions {
     public static final int SHIFT_CLICK_TO_BACKPACK = 2;
     public static final int PLAY_RECORD = 3;
 
-    public static void modifyUpgradeTab(ServerPlayer player, int slot, boolean open, int packetType) {
-        if(player.containerMenu instanceof BackpackBaseMenu menu) {
-            ItemStack upgradeStack = menu.getWrapper().getUpgrades().getStackInSlot(slot);
-            if(!upgradeStack.isEmpty()) {
-                ItemStack updateStack = upgradeStack.copy();
-                NbtHelper.set(updateStack, getPacketType(packetType), open);
-                menu.getWrapper().getUpgrades().setStackInSlot(slot, updateStack);
+    public static void modifyUpgradeTab(ServerPlayer player, int slot, boolean open, int packetType, boolean fromMenu) {
+        if(fromMenu) {
+            if(player.containerMenu instanceof BackpackBaseMenu menu) {
+                modifyUpgradeTab(menu.getWrapper(), slot, open, packetType);
+            }
+        } else {
+            BackpackWrapper wrapper = ComponentUtils.getBackpackWrapper(player, ComponentUtils.UPGRADES_ONLY.get());
+            wrapper.getUpgradeManager().mappedUpgrades.get(slot).ifPresent(upgrade -> {
+                if(upgrade instanceof IEnable enable) {
+                    boolean isEnabled = enable.isEnabled(upgrade);
+                    modifyUpgradeTab(wrapper, slot, !isEnabled, UPGRADE_ENABLED);
+                    Component upgradeName = upgrade.getDataHolderStack().getItem().getName(upgrade.getDataHolderStack());
+                    player.displayClientMessage(Component.translatable(isEnabled ? "screen.travelersbackpack.upgrade_disabled" : "screen.travelersbackpack.upgrade_enabled", upgradeName), true);
+                }
+            });
+        }
+    }
 
-                if(packetType == UPGRADE_ENABLED) {
-                    if(menu.getWrapper().getUpgradeManager().hasUpgradeInSlot(slot)) {
-                        menu.getWrapper().getUpgradeManager().mappedUpgrades.get(slot).ifPresent(upgradeBase -> {
-                            if(upgradeBase instanceof IEnable upg) {
-                                upg.setEnabled(open);
-                            }
-                        });
-                    }
+    public static void modifyUpgradeTab(BackpackWrapper wrapper, int slot, boolean open, int packetType) {
+        ItemStack upgradeStack = wrapper.getUpgrades().getStackInSlot(slot);
+        if(!upgradeStack.isEmpty()) {
+            ItemStack updateStack = upgradeStack.copy();
+            NbtHelper.set(updateStack, getPacketType(packetType), open);
+            wrapper.getUpgrades().setStackInSlot(slot, updateStack);
+
+            if(packetType == UPGRADE_ENABLED) {
+                if(wrapper.getUpgradeManager().hasUpgradeInSlot(slot)) {
+                    wrapper.getUpgradeManager().mappedUpgrades.get(slot).ifPresent(upgradeBase -> {
+                        if(upgradeBase instanceof IEnable upg) {
+                            upg.setEnabled(open);
+                        }
+                    });
                 }
             }
         }
