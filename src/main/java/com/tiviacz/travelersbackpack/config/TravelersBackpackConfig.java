@@ -218,6 +218,10 @@ public class TravelersBackpackConfig {
         //Client
 
         //Tools Overlay
+        data.client.toolsOverlay.swapOnClose = client.client.toolsOverlay.swapOnClose;
+        data.client.toolsOverlay.showTooltip = client.client.toolsOverlay.showTooltip;
+        data.client.toolsOverlay.renderBackpackIconInCenter = client.client.toolsOverlay.renderBackpackIconInCenter;
+        data.client.toolsOverlay.opacity = client.client.toolsOverlay.opacity;
         data.client.toolsOverlay.offsetX = client.client.toolsOverlay.offsetX;
         data.client.toolsOverlay.offsetY = client.client.toolsOverlay.offsetY;
 
