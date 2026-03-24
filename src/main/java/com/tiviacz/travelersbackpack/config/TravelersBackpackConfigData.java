@@ -6,7 +6,6 @@ import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
-import net.minecraftforge.common.ForgeConfigSpec;
 
 @Config(name = TravelersBackpack.MODID)
 public class TravelersBackpackConfigData implements ConfigData {
