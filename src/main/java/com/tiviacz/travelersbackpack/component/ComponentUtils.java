@@ -19,6 +19,7 @@ import org.ladysnake.cca.api.v3.entity.EntityComponentInitializer;
 import org.ladysnake.cca.api.v3.entity.RespawnCopyStrategy;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
 public class ComponentUtils implements EntityComponentInitializer {
     public static final ComponentKey<ITravelersBackpack> WEARABLE = ComponentRegistry.getOrCreate(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "travelersbackpack"), ITravelersBackpack.class);
@@ -98,7 +99,7 @@ public class ComponentUtils implements EntityComponentInitializer {
 
     @Nullable
     public static BackpackWrapper getBackpackWrapper(Player player, ItemStack stack) {
-        return getBackpackWrapper(player, stack, LOAD_ALL);
+        return getBackpackWrapper(player, stack, LOAD_ALL.get());
     }
 
     @Nullable
@@ -118,20 +119,20 @@ public class ComponentUtils implements EntityComponentInitializer {
     //Artificial wrapper for actions that do not require loading items
     @Nullable
     public static BackpackWrapper getBackpackWrapperArtificial(Player player) {
-        return getBackpackWrapper(player, NO_ITEMS);
+        return getBackpackWrapper(player, NO_ITEMS.get());
     }
 
     //Fully loaded wrapper
     @Nullable
     public static BackpackWrapper getBackpackWrapper(Player player) {
-        return getBackpackWrapper(player, LOAD_ALL);
+        return getBackpackWrapper(player, LOAD_ALL.get());
     }
 
-    public static final int[] LOAD_ALL = new int[]{1, 1, 1};
-    public static final int[] NO_ITEMS = new int[]{0, 0, 0};
-    public static final int[] STORAGE_ONLY = new int[]{1, 0, 0};
-    public static final int[] UPGRADES_ONLY = new int[]{0, 1, 0};
-    public static final int[] TOOLS_ONLY = new int[]{0, 0, 1};
+    public static final Supplier<int[]> LOAD_ALL = () -> new int[]{1, 1, 1};
+    public static final Supplier<int[]> NO_ITEMS = () -> new int[]{0, 0, 0};
+    public static final Supplier<int[]> STORAGE_ONLY = () -> new int[]{1, 0, 0};
+    public static final Supplier<int[]> UPGRADES_ONLY = () -> new int[]{0, 1, 0};
+    public static final Supplier<int[]> TOOLS_ONLY = () -> new int[]{0, 0, 1};
 
     //Situational wrapper
     @Nullable
