@@ -331,7 +331,7 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Re
                 this.infiniteAccessUsers.remove((Object)player.getId());
             }
             if(TravelersBackpackConfig.getConfig().backpackSettings.preventMultiplePlayersAccess) {
-                if(getWrapper() != BackpackWrapper.DUMMY && !getWrapper().getPlayersUsing().isEmpty()) {
+                if(getWrapper() != BackpackWrapper.DUMMY && (!getWrapper().getPlayersUsing().isEmpty() && !getWrapper().getPlayersUsing().contains(player))) {
                     return;
                 }
             }
