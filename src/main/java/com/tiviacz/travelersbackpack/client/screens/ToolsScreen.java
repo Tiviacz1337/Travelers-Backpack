@@ -1,6 +1,7 @@
 package com.tiviacz.travelersbackpack.client.screens;
 
 import com.mojang.blaze3d.platform.Window;
+import com.mojang.datafixers.util.Pair;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.handlers.KeybindHandler;
@@ -28,6 +29,9 @@ public class ToolsScreen extends Screen {
     private static final double REF_H = 1080.0;
     private long openStartMs = -1;
 
+    protected int hoveredResult = -1;
+    private boolean swapWithRelease = true;
+
     public ToolsScreen() {
         super(Component.translatable("screen.travelersbackpack.tools_overlay"));
     }
@@ -43,54 +47,24 @@ public class ToolsScreen extends Screen {
     @Override
     protected void init() {
         super.init();
-        Window mainWindow = Minecraft.getInstance().getWindow();
-
-        int sw = mainWindow.getScreenWidth();
-        int sh = mainWindow.getScreenHeight();
-
-        int cx = sw / 2;
-        int cy = sh / 2;
-
-        int offXpx = TravelersBackpackConfig.getConfig().client.toolsOverlay.offsetX; // px@1920
-        int offYpx = TravelersBackpackConfig.getConfig().client.toolsOverlay.offsetY; // px@1080
-
-        double px = offXpx / REF_W;
-        double py = offYpx / REF_H;
-
-        int scaledWidth = (int)Math.round(cx + px * sw);
-        int scaledHeight = (int)Math.round(cy + py * sh);
-        GLFW.glfwSetCursorPos(Minecraft.getInstance().getWindow().getWindow(), scaledWidth, scaledHeight);
+        Pair<Integer, Integer> scaled = getScaledWindow(false);
+        GLFW.glfwSetCursorPos(Minecraft.getInstance().getWindow().getWindow(), scaled.getFirst(), scaled.getSecond());
     }
 
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         Minecraft mc = Minecraft.getInstance();
         Player player = mc.player;
-        Window mainWindow = mc.getWindow();
 
-        int sw = mainWindow.getGuiScaledWidth();
-        int sh = mainWindow.getGuiScaledHeight();
-
-        int cx = sw / 2;
-        int cy = sh / 2;
-
-        int offXpx = TravelersBackpackConfig.getConfig().client.toolsOverlay.offsetX; // px@1920
-        int offYpx = TravelersBackpackConfig.getConfig().client.toolsOverlay.offsetY; // px@1080
-
-        double px = offXpx / REF_W;
-        double py = offYpx / REF_H;
-
-        int scaledWidth = (int)Math.round(cx + px * sw);
-        int scaledHeight = (int)Math.round(cy + py * sh);
-
+        Pair<Integer, Integer> scaled = getScaledWindow(true);
         float progress = getOpenProgress();
 
         ItemStack backpack = ComponentUtils.getWearingBackpack(player);
-        ItemStack heldItem = player.getMainHandItem();
+        ItemStack heldItem = !player.getMainHandItem().isEmpty() ? player.getMainHandItem() : player.getOffhandItem();
 
         //Hose Menu
         if(heldItem.getItem() instanceof HoseItem) {
-            int hoveredResult = RadialToolsOverlay.renderRadial(graphics, backpack, heldItem, hoseMenu, false, scaledWidth, scaledHeight, mouseX, mouseY, partialTick, progress);
+            int hoveredResult = RadialToolsOverlay.renderRadial(graphics, backpack, heldItem, hoseMenu, false, scaled.getFirst(), scaled.getSecond(), mouseX, mouseY, partialTick, progress);
 
             if(!KeybindHandler.isKeyDown(KeybindHandler.SWAP_TOOL)) {
                 selectHoseAction(mc.player, hoveredResult);
@@ -102,15 +76,38 @@ public class ToolsScreen extends Screen {
         NonNullList<ItemStack> tools = NbtHelper.getOrDefault(backpack, ModDataHelper.TOOLS_CONTAINER, NonNullList.withSize(NbtHelper.getOrDefault(backpack, ModDataHelper.TOOL_SLOTS, Tiers.LEATHER.getToolSlots()), ItemStack.EMPTY));
         int nonEmptyCount = getNonEmptyTools(tools).size();
 
-        boolean canAdd = ToolSlotItemHandler.isValid(player.getMainHandItem()) && nonEmptyCount < tools.size();
-        int hoveredResult = RadialToolsOverlay.renderRadial(graphics, backpack, heldItem, tools, canAdd, scaledWidth, scaledHeight, mouseX, mouseY, partialTick, progress);
+        boolean canAdd = ToolSlotItemHandler.isValid(heldItem) && nonEmptyCount < tools.size();
+        int hoveredResult = RadialToolsOverlay.renderRadial(graphics, backpack, heldItem, tools, canAdd, scaled.getFirst(), scaled.getSecond(), mouseX, mouseY, partialTick, progress);
+        this.hoveredResult = hoveredResult;
 
         if(!KeybindHandler.isKeyDown(KeybindHandler.SWAP_TOOL)) {
             if(hoveredResult != -1) {
-                ServerboundActionTagPacket.create(ServerboundActionTagPacket.SWAP_TOOL, hoveredResult);
+                if(swapWithRelease && TravelersBackpackConfig.getConfig().client.toolsOverlay.swapOnClose) {
+                    ServerboundActionTagPacket.create(ServerboundActionTagPacket.SWAP_TOOL, hoveredResult, 0);
+                }
             }
             onClose();
         }
+    }
+
+    public Pair<Integer, Integer> getScaledWindow(boolean scaled) {
+        Window mainWindow = Minecraft.getInstance().getWindow();
+
+        int sw = scaled ? mainWindow.getGuiScaledWidth() : mainWindow.getScreenWidth();
+        int sh = scaled ? mainWindow.getGuiScaledHeight() : mainWindow.getScreenHeight();
+
+        int cx = sw / 2;
+        int cy = sh / 2;
+
+        int offXpx = TravelersBackpackConfig.getConfig().client.toolsOverlay.offsetX; // px@1920
+        int offYpx = TravelersBackpackConfig.getConfig().client.toolsOverlay.offsetY; // px@1080
+
+        double px = offXpx / REF_W;
+        double py = offYpx / REF_H;
+
+        int scaledWidth = (int)Math.round(cx + px * sw);
+        int scaledHeight = (int)Math.round(cy + py * sh);
+        return Pair.of(scaledWidth, scaledHeight);
     }
 
     public void selectHoseAction(Player player, int hoveredResult) {
@@ -177,5 +174,15 @@ public class ToolsScreen extends Screen {
     @Override
     public boolean isPauseScreen() {
         return false;
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if(this.hoveredResult != -1) {
+            swapWithRelease = false;
+            ServerboundActionTagPacket.create(ServerboundActionTagPacket.SWAP_TOOL, hoveredResult, button);
+            return true;
+        }
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 }

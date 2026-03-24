@@ -46,30 +46,34 @@ import java.util.List;
 import java.util.Optional;
 
 public class ServerActions {
-    public static void swapTool(Player player, int slot) {
+    public static void swapTool(Player player, int slot, int button) {
         if(!TravelersBackpackConfig.getConfig().backpackSettings.allowToolSwapping) {
             return;
         }
         if(ComponentUtils.isWearingBackpack(player)) {
             BackpackWrapper wrapper = ComponentUtils.getBackpackWrapper(player, ComponentUtils.TOOLS_ONLY.get());
             ItemStackHandler inv = wrapper.getTools();
-            ItemStack handStack = player.getMainHandItem().copy();
+            InteractionHand hand = button == 0 ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
+            ItemStack handStack = player.getItemInHand(hand);
 
-            if(!ToolSlotItemHandler.isValid(handStack) && !handStack.isEmpty()) {
+            if(!handStack.isEmpty() && !ToolSlotItemHandler.isValid(handStack)) {
                 return;
             }
 
             if(slot == -999) {
-                ItemStack stack = InventoryHelper.addItemStackToHandler(inv, handStack, false);
-                if(stack.isEmpty()) {
-                    player.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+                if(handStack.isEmpty()) return;
+
+                ItemStack remaining = InventoryHelper.addItemStackToHandler(inv, handStack.copy(), false);
+                if(remaining.isEmpty()) {
+                    player.setItemInHand(hand, ItemStack.EMPTY);
+                } else {
+                    player.setItemInHand(hand, remaining);
                 }
             } else {
                 ItemStack currentTool = inv.getStackInSlot(slot).copy();
 
-                //Swap
-                player.setItemInHand(InteractionHand.MAIN_HAND, currentTool);
-                inv.setStackInSlot(slot, handStack);
+                inv.setStackInSlot(slot, handStack.copy());
+                player.setItemInHand(hand, currentTool);
             }
 
             if(player instanceof ServerPlayer serverPlayer) {

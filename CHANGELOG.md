@@ -1,4 +1,8 @@
 ✨ Added 4 new keybinds to toggle upgrades in slots 1-4 without opening the backpack (unbound by default)  
+✨ Changed tools radial menu texture  
+✨ Added config option to change overlay opacity  
+✨ Left-clicking an item in the tools radial menu swaps it with the main hand item  
+✨ Right-clicking an item in the tools radial menu swaps it with the off-hand item  
 🔧 Allow sorting via mouse buttons  
 🐛 Fixed duplication issue with pickup upgrade  
 🐛 Fixed renderTools config option not working  

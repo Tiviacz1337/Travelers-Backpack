@@ -6,6 +6,7 @@ import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
+import net.minecraftforge.common.ForgeConfigSpec;
 
 @Config(name = TravelersBackpack.MODID)
 public class TravelersBackpackConfigData implements ConfigData {
@@ -524,6 +525,19 @@ public class TravelersBackpackConfigData implements ConfigData {
         public boolean showSupporterBadge = true;
 
         public static class ToolsOverlay {
+            @Comment("If true, the currently held item will be swapped with the selected tool belt slot when closing the tool belt GUI")
+            public boolean swapOnClose = true;
+
+            @Comment("Displays the full tooltip when hovering over an item in the tool belt. If false, only the item name is shown")
+            public boolean showTooltip = false;
+
+            @Comment("Render backpack icon in the center of the tools overlay")
+            public boolean renderBackpackIconInCenter = true;
+
+            @Comment("Overlay opacity")
+            @ConfigEntry.BoundedDiscrete(min = 0, max = 1)
+            public double opacity = 0.75D;
+
             @Comment("X offset")
             public int offsetX = 0;
 

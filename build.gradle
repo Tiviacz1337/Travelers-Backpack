@@ -204,8 +204,8 @@ dependencies {
 
 	//Yigd
 	modCompileOnly("maven.modrinth:yigd:C2PIq5XX")
-	modCompileOnly("io.github.cottonmc:LibGui:8.1.1+1.20.1")
-	modCompileOnly("me.lucko:fabric-permissions-api:0.2-SNAPSHOT")
+	//modCompileOnly("io.github.cottonmc:LibGui:8.1.1+1.20.1")
+	//modCompileOnly("me.lucko:fabric-permissions-api:0.2-SNAPSHOT")
 
 	//Gravestones
 	modCompileOnly("maven.modrinth:pneumono_gravestones:PqDpF1hy")
