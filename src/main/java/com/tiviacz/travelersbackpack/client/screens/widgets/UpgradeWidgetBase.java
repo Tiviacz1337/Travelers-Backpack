@@ -110,8 +110,11 @@ public class UpgradeWidgetBase<U extends UpgradeBase> extends WidgetBase<Backpac
         if(isMouseOverIcon(mouseX, mouseY)) {
             List<Component> tooltips = new ArrayList<>();
             tooltips.add(Component.translatable(this.upgradeIconTooltip));
-            if(getUpgrade().getUpgradeManager().getWrapper().getScreenID() != Reference.WEARABLE_SCREEN_ID && this.upgrade.getDataHolderStack().getItem() instanceof UpgradeItem upgradeItem && upgradeItem.requiresEquippedBackpack()) {
-                tooltips.add(Component.translatable("screen.travelersbackpack.equip_to_use"));
+            int screenID = getUpgrade().getUpgradeManager().getWrapper().getScreenID();
+            if(this.upgrade.getDataHolderStack().getItem() instanceof UpgradeItem upgradeItem) {
+                if((screenID == Reference.ITEM_SCREEN_ID && upgradeItem.requiresEquippedBackpack() || (!upgradeItem.hasBlockFunctionality() && screenID == Reference.BLOCK_ENTITY_SCREEN_ID))) {
+                    tooltips.add(Component.translatable("screen.travelersbackpack.equip_to_use"));
+                }
             }
             guiGraphics.setTooltipForNextFrame(screen.getFont(), tooltips, Optional.empty(), mouseX, mouseY);
         }

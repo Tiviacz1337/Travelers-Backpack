@@ -2,11 +2,7 @@ package com.tiviacz.travelersbackpack.mixin;
 
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
-import com.tiviacz.travelersbackpack.inventory.handler.StorageAccessWrapper;
 import com.tiviacz.travelersbackpack.inventory.upgrades.pickup.AutoPickupUpgrade;
-import com.tiviacz.travelersbackpack.util.InventoryHelper;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -38,14 +34,11 @@ public abstract class ItemEntityMixin {
 
         if(ComponentUtils.isWearingBackpack(player)) {
             BackpackWrapper wrapper = ComponentUtils.getBackpackWrapper(player);
-            if(wrapper.getUpgradeManager().getUpgrade(AutoPickupUpgrade.class).isPresent() && wrapper.getUpgradeManager().getUpgrade(AutoPickupUpgrade.class).get().canPickup(this.getItem())) {
-                ItemStack remainingStack = InventoryHelper.insertItemStacked(wrapper.getStorageForInputOutput(), this.getItem(), false);
-                if(remainingStack != this.getItem()) {
-                    level.playSound(null, player.blockPosition(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 0.2F, (level.random.nextFloat() - level.random.nextFloat()) * 1.4F + 2.0F);
-                    this.setItem(remainingStack);
+            wrapper.getUpgradeManager().getUpgrade(AutoPickupUpgrade.class).ifPresent(pickupUpgrade -> {
+                if(pickupUpgrade.canPickup(getItem()) && pickupUpgrade.tryPickup((ItemEntity)(Object)this, level, player.blockPosition())) {
                     ci.cancel();
                 }
-            }
+            });
         }
     }
 }
