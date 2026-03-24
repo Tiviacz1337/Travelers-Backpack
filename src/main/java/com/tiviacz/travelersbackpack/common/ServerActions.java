@@ -182,13 +182,6 @@ public class ServerActions {
             return false;
         }
 
-        /*if(!player.getInventory().add(backpack)) {
-            if(player instanceof ServerPlayer serverPlayer) {
-                serverPlayer.sendSystemMessage(Component.translatable(Reference.NO_SPACE));
-            }
-            return false;
-        }*/
-
         ComponentUtils.getComponent(player).ifPresent(attachment -> {
             attachment.equipBackpack(new ItemStack(Items.AIR, 0));
             attachment.synchronise();
@@ -207,61 +200,6 @@ public class ServerActions {
     private static void playEquippingSound(Player player) {
         player.level().playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER.value(), SoundSource.PLAYERS, 1.05F, (1.0F + (player.level().getRandom().nextFloat() - player.level().getRandom().nextFloat()) * 0.2F) * 0.7F);
     }
-
-    /*public static void equipBackpack(Player player, boolean equip) {
-        if(equip) {
-            equipBackpack(player);
-        } else {
-            unequipBackpack(player);
-        }
-    }
-
-    public static void equipBackpack(Player player) {
-        Level level = player.level();
-
-        if(!level.isClientSide) {
-            if(!ComponentUtils.isWearingBackpack(player)) {
-                if(player.containerMenu instanceof BackpackItemMenu) ((ServerPlayer)player).closeContainer();
-
-                ItemStack stack = player.getMainHandItem().copy();
-
-                ComponentUtils.getComponent(player).ifPresent(attachment -> {
-                    attachment.equipBackpack(stack);
-                    attachment.synchronise();
-                });
-
-                player.getMainHandItem().shrink(1);
-                level.playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER.value(), SoundSource.PLAYERS, 1.0F, (1.0F + (level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.2F) * 0.7F);
-
-            } else {
-                ((ServerPlayer)player).closeContainer();
-                player.sendSystemMessage(Component.translatable(Reference.OTHER_BACKPACK));
-            }
-        }
-    }
-
-    public static void unequipBackpack(Player player) {
-        Level level = player.level();
-
-        if(!level.isClientSide) {
-            if(ComponentUtils.isWearingBackpack(player)) {
-                if(player.containerMenu instanceof BackpackItemMenu) ((ServerPlayer)player).closeContainer();
-
-                ItemStack backpack = ComponentUtils.getWearingBackpack(player).copy();
-
-                if(!player.getInventory().add(backpack)) {
-                    player.sendSystemMessage(Component.translatable(Reference.NO_SPACE));
-                    return;
-                }
-
-                ComponentUtils.getComponent(player).ifPresent(attachment -> {
-                    attachment.equipBackpack(new ItemStack(Items.AIR, 0));
-                    attachment.synchronise();
-                });
-                level.playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER.value(), SoundSource.PLAYERS, 1.05F, (1.0F + (level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.2F) * 0.7F);
-            }
-        }
-    }*/
 
     public static void openBackpackFromSlot(ServerPlayer player, int index, boolean fromSlot) {
         if(index >= 0 && index < player.getInventory().items.size()) {
