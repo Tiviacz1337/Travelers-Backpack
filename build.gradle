@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '1.14-SNAPSHOT'
+	id 'fabric-loom' version '1.15-SNAPSHOT'
 	id 'maven-publish'
 }
 
@@ -138,6 +138,9 @@ dependencies {
 	//Item scroller
 	modCompileOnly("maven.modrinth:item-scroller:uK5Njuv8")
 	modCompileOnly("maven.modrinth:malilib:f8wE52F5")
+
+	//VinURL
+	modCompileOnly("maven.modrinth:vinurl:7miV5XPm")
 
 	//Polymorph
 	modCompileOnly("maven.modrinth:polymorph:j4jPy88h")
