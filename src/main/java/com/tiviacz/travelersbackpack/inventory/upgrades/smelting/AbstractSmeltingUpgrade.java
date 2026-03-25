@@ -191,7 +191,7 @@ public class AbstractSmeltingUpgrade<T> extends UpgradeBase<T> implements IEnabl
     }
 
     public void checkCooking(ServerLevel level, boolean force) {
-        if(level.isClientSide() || !isEnabled(this)) {
+        if(level == null || level.isClientSide() || !isEnabled(this)) {
             return;
         }
 
