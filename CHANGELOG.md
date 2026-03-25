@@ -4,6 +4,7 @@
 ✨ Feeding Upgrade - feeds players around backpack within feeding radius (3 blocks)  
 ✨ Refill Upgrade - refills items from backpack to players around backpack within refill radius (3 blocks)  
 ✨ Furnace, Smoker and Blast Furnace Upgrades - can be used when backpack is placed on the ground  
+🔧 Performance improvements  
 
 ⭐ Want to receive **Supporter Star Badge** for a **lifetime**? - [visit my Ko-Fi page](https://ko-fi.com/tiviacz1337)!  
 ![Banner](https://i.imgur.com/SSrFv58.png)

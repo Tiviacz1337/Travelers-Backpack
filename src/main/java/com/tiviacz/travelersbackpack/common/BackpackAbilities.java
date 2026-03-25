@@ -452,7 +452,7 @@ public class BackpackAbilities {
         BackpackWrapper wrapper;
         int cooldown = backpack.getOrDefault(ModDataComponents.COOLDOWN, 0);
         if(cooldown >= 1000) {
-            wrapper = ComponentUtils.getBackpackWrapper(player, ComponentUtils.UPGRADES_ONLY);
+            wrapper = ComponentUtils.getBackpackWrapper(player, ComponentUtils.UPGRADES_ONLY.get());
             if(wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).isPresent()) {
                 TanksUpgrade upgrade = wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).get();
                 FluidTank leftTank = upgrade.getLeftTank();
