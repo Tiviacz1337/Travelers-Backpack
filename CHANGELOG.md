@@ -8,6 +8,7 @@
 🔧 Performance improvements  
 🔧 Allow sorting via mouse buttons  
 🐛 Fixed bug with the Settings screen "back" button not working in block-form backpack  
+🐛 Fixed renderTools config option not working  
 📚 Updated de_de - Thanks 1IntereJurry!  
 
 ⭐ Want to receive **Supporter Star Badge** for a **lifetime**? - [visit my Ko-Fi page](https://ko-fi.com/tiviacz1337)!  
