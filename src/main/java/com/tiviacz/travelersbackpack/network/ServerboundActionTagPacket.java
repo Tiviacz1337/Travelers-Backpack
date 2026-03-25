@@ -83,7 +83,8 @@ public record ServerboundActionTagPacket(CompoundTag actionTag) implements Custo
                 }
                 case SWAP_TOOL -> {
                     int slot = actionTag.getIntOr("Arg0", -1);
-                    ServerActions.swapTool(player, slot);
+                    int button = actionTag.getIntOr("Arg1", 0);
+                    ServerActions.swapTool(player, slot, button);
                 }
                 case TOGGLE_BUTTONS_VISIBILITY -> ServerActions.toggleButtonsVisibility(player);
                 case SHOW_TOOL_SLOTS -> {

@@ -2,6 +2,7 @@ package com.tiviacz.travelersbackpack.client.screens;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.components.RenderInfo;
+import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.FluidTank;
 import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TankWidget;
@@ -31,20 +32,13 @@ public final class RadialToolsOverlay {
 
     public static final int ADD_NEW = -999;
 
-    public static void blitCentered(GuiGraphics guiGraphics, Identifier texture, int centerX, int centerY, int size, float openProgress) {
-        int x = centerX - size / 2;
-        int y = centerY - size / 2;
+    //Client only indicator to draw or nah
+    public static boolean drawCrosshair = true;
 
-        openProgress = Mth.clamp(openProgress, 0.0F, 1.0F);
-        float t = openProgress;
-        t = t * t * (3.0F - 2.0F * t);
-        float opacity = t;
+    public static int renderRadial(GuiGraphics guiGraphics, ItemStack backpack, ItemStack heldItem, NonNullList<ItemStack> tools, boolean canAdd, int centerX, int centerY, int mouseX, int mouseY, float partialTick, float openProgress) {
+        drawCrosshair = true;
+        if(tools == null) return -1;
 
-        int i = ARGB.white(opacity);
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, texture, x, y, 0, 0, size, size, size, size, 256, 256, i);
-    }
-
-    private static void beginRadialTransform(GuiGraphics guiGraphics, int centerX, int centerY, float openProgress) {
         openProgress = Mth.clamp(openProgress, 0.0F, 1.0F);
         float t = openProgress;
         t = t * t * (3.0F - 2.0F * t);
@@ -54,36 +48,31 @@ public final class RadialToolsOverlay {
         guiGraphics.pose().translate(centerX, centerY);
         guiGraphics.pose().scale(scale, scale);
         guiGraphics.pose().translate(-centerX, -centerY);
-    }
 
-    private static ArrayList<Integer> buildSegToSlot(NonNullList<ItemStack> tools, boolean canAdd, int[] outPlusSlot) {
-        ArrayList<Integer> segToSlot = new ArrayList<>();
+        int[] plusSlotRef = new int[1];
+        ArrayList<Integer> segToSlot = buildSegToSlot(tools, canAdd, plusSlotRef);
+        int plusSlot = plusSlotRef[0];
 
-        for(int i = 0; i < tools.size(); i++) {
-            if(!tools.get(i).isEmpty()) segToSlot.add(i);
+        int x = centerX - 256 / 2;
+        int y = centerY - 256 / 2;
+        double opacity = Math.min(t, TravelersBackpackConfig.getConfig().client.toolsOverlay.opacity);
+
+        int i = ARGB.white((float)opacity);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TOOLS_OVERLAY, x, y, 0, 0, 256, 256, 256, 256, 256, 256, i);
+
+        int result;
+
+        if(heldItem.getItem() instanceof HoseItem) {
+            result = renderRadialItems(guiGraphics, backpack, tools, false, false, segToSlot, plusSlot, centerX, centerY, mouseX, mouseY);
+        } else {
+            result = renderRadialItems(guiGraphics, backpack, tools, canAdd, heldItem.isEmpty(), segToSlot, plusSlot, centerX, centerY, mouseX, mouseY);
         }
 
-        int plusSlot = -1;
-        if(canAdd) {
-            for(int i = 0; i < tools.size(); i++) {
-                if(tools.get(i).isEmpty()) {
-                    plusSlot = i;
-                    break;
-                }
-            }
-
-            if(plusSlot != -1) {
-                int insertPos = 0;
-                while(insertPos < segToSlot.size() && segToSlot.get(insertPos) < plusSlot) insertPos++;
-                segToSlot.add(insertPos, plusSlot);
-            }
-        }
-
-        outPlusSlot[0] = plusSlot;
-        return segToSlot;
+        guiGraphics.pose().popMatrix();
+        return result;
     }
 
-    public static int renderRadialItems(GuiGraphics guiGraphics, ItemStack backpack, NonNullList<ItemStack> tools, boolean canAdd, ArrayList<Integer> segToSlot, int plusSlot, int centerX, int centerY, int mouseX, int mouseY) {
+    public static int renderRadialItems(GuiGraphics guiGraphics, ItemStack backpack, NonNullList<ItemStack> tools, boolean canAdd, boolean handEmpty, ArrayList<Integer> segToSlot, int plusSlot, int centerX, int centerY, int mouseX, int mouseY) {
         Minecraft mc = Minecraft.getInstance();
         Font font = mc.font;
 
@@ -98,8 +87,6 @@ public final class RadialToolsOverlay {
             hoveredIsPlus = (canAdd && plusSlot != -1 && slot == plusSlot && tools.get(slot).isEmpty());
             hoveredResult = hoveredIsPlus ? ADD_NEW : slot;
         }
-
-        renderCenteredItem(guiGraphics, font, backpack, centerX, centerY, 1.25F);
 
         if(segments == 0 && hoveredSeg == -1) {
             return -1;
@@ -131,12 +118,14 @@ public final class RadialToolsOverlay {
             }
         }
 
+        boolean renderCenteredItem = true;
+
         if(hoveredIsPlus) {
-            guiGraphics.setTooltipForNextFrame(font, Component.translatable("screen.travelersbackpack.add_to_tools"), mouseX, mouseY);
+            guiGraphics.setTooltipForNextFrame(font, Component.translatable("screen.travelersbackpack.add"), mouseX, mouseY);
         } else if(hoveredResult >= 0) {
             ItemStack hoveredStack = tools.get(hoveredResult);
             if(!hoveredStack.isEmpty()) {
-                List<Component> tooltip = getTooltipFromItem(mc, hoveredStack);
+                List<Component> tooltip = (TravelersBackpackConfig.getConfig().client.toolsOverlay.showTooltip || hoveredStack.getItem() instanceof HoseItem) ? getTooltipFromItem(mc, hoveredStack) : new ArrayList<>(List.of(hoveredStack.getHoverName()));
                 //Fluid contents for backpack tanks
                 if(hoveredStack.getItem() instanceof BackpackTankItem) {
                     if(!backpack.getOrDefault(ModDataComponents.RENDER_INFO, RenderInfo.EMPTY).isEmpty()) {
@@ -152,39 +141,53 @@ public final class RadialToolsOverlay {
                             tooltip.addAll(TankWidget.getTankTooltip(leftTank));
                         }
                     }
+                } else {
+                    renderCenteredItem = false;
+                    renderCenteredText(guiGraphics, handEmpty ? Component.translatable("screen.travelersbackpack.take") : Component.translatable("screen.travelersbackpack.swap"), centerX, centerY);
                 }
                 guiGraphics.setTooltipForNextFrame(font, tooltip, hoveredStack.getTooltipImage(), mouseX, mouseY);
+            }
+        }
+
+        if(renderCenteredItem) {
+            if(TravelersBackpackConfig.getConfig().client.toolsOverlay.renderBackpackIconInCenter) {
+                drawCrosshair = false;
+                renderCenteredItem(guiGraphics, font, backpack, centerX, centerY, 1.25F);
             }
         }
 
         return hoveredResult;
     }
 
-    public static List<Component> getTooltipFromItem(Minecraft minecraft, ItemStack item) {
-        return item.getTooltipLines(Item.TooltipContext.of(minecraft.level), minecraft.player, TooltipFlag.Default.NORMAL);
-    }
+    private static ArrayList<Integer> buildSegToSlot(NonNullList<ItemStack> tools, boolean canAdd, int[] outPlusSlot) {
+        ArrayList<Integer> segToSlot = new ArrayList<>();
 
-    public static int renderRadial(GuiGraphics guiGraphics, ItemStack backpack, ItemStack heldItem, NonNullList<ItemStack> tools, boolean canAdd, int centerX, int centerY, int mouseX, int mouseY, float partialTick, float openProgress) {
-        if(tools == null) return -1;
-
-        beginRadialTransform(guiGraphics, centerX, centerY, openProgress);
-
-        int[] plusSlotRef = new int[1];
-        ArrayList<Integer> segToSlot = buildSegToSlot(tools, canAdd, plusSlotRef);
-        int plusSlot = plusSlotRef[0];
-
-        blitCentered(guiGraphics, TOOLS_OVERLAY, centerX, centerY, 256, openProgress);
-
-        int result;
-
-        if(heldItem.getItem() instanceof HoseItem) {
-            result = renderRadialItems(guiGraphics, backpack, tools, false, segToSlot, plusSlot, centerX, centerY, mouseX, mouseY);
-        } else {
-            result = renderRadialItems(guiGraphics, backpack, tools, canAdd, segToSlot, plusSlot, centerX, centerY, mouseX, mouseY);
+        for(int i = 0; i < tools.size(); i++) {
+            if(!tools.get(i).isEmpty()) segToSlot.add(i);
         }
 
-        guiGraphics.pose().popMatrix();
-        return result;
+        int plusSlot = -1;
+        if(canAdd) {
+            for(int i = 0; i < tools.size(); i++) {
+                if(tools.get(i).isEmpty()) {
+                    plusSlot = i;
+                    break;
+                }
+            }
+
+            if(plusSlot != -1) {
+                int insertPos = 0;
+                while(insertPos < segToSlot.size() && segToSlot.get(insertPos) < plusSlot) insertPos++;
+                segToSlot.add(insertPos, plusSlot);
+            }
+        }
+
+        outPlusSlot[0] = plusSlot;
+        return segToSlot;
+    }
+
+    public static List<Component> getTooltipFromItem(Minecraft minecraft, ItemStack item) {
+        return item.getTooltipLines(Item.TooltipContext.of(minecraft.level), minecraft.player, TooltipFlag.Default.NORMAL);
     }
 
     public static int getHoveredIndex(int cx, int cy, int mx, int my, int segments) {
@@ -209,6 +212,20 @@ public final class RadialToolsOverlay {
 
         idx = ((idx % segments) + segments) % segments;
         return idx;
+    }
+
+    private static void renderCenteredText(GuiGraphics guiGraphics, Component text, int centerX, int centerY) {
+        drawCrosshair = false;
+        Font textRenderer = Minecraft.getInstance().font;
+        int textWidth = textRenderer.width(text);
+        int textHeight = textRenderer.lineHeight;
+
+        int textX = centerX - textWidth / 2;
+        int textY = centerY - textHeight / 2;
+
+        guiGraphics.enableScissor(textX, textY, textX + 40, textY + 40);
+        guiGraphics.drawString(Minecraft.getInstance().font, text, textX, textY, 0xFFFFFFFF, true);
+        guiGraphics.disableScissor();
     }
 
     private static void renderPlusButton(GuiGraphics guiGraphics, Font font, int x, int y) {
