@@ -181,7 +181,7 @@ public class ClientBackpackTooltipComponent implements ClientTooltipComponent {
     public Component getFluidTankTooltip(FluidVariantWrapper fluidStack) {
         Component c = CommonFluid.getFluidName(fluidStack);
         Component c1 = Component.literal(": ");
-        Component c2 = Component.literal(fluidStack.getAmount() + "mB").withStyle(ChatFormatting.BLUE);
+        Component c2 = Component.literal(fluidStack.getViewAmount() + "mB").withStyle(ChatFormatting.BLUE);
         return MutableComponent.create(c.getContents()).append(c1).append(c2);
     }
 
