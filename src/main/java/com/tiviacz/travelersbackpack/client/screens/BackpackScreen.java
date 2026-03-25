@@ -440,6 +440,6 @@ public class BackpackScreen extends AbstractBackpackScreen<BackpackBaseMenu> imp
     }
 
     public Component createFluidWarning(FluidVariantWrapper fluidVariantWrapper, long backpackCapacity) {
-        return Component.literal(FluidTypeHelper.getFluidVariantName(fluidVariantWrapper.fluidVariant()).getString() + " " + fluidVariantWrapper.getViewAmount() + "/" + backpackCapacity + "mB").withStyle(ChatFormatting.RED);
+        return Component.literal(FluidTypeHelper.getFluidVariantName(fluidVariantWrapper.fluidVariant()).getString() + " " + fluidVariantWrapper.getViewAmount() + "/" + (backpackCapacity / 81) + "mB").withStyle(ChatFormatting.RED);
     }
 }
