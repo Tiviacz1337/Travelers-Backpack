@@ -174,7 +174,7 @@ public class ClientBackpackTooltipComponent implements ClientTooltipComponent {
     public void renderFluidTankTooltip(FluidVariantWrapper fluidStack, Font font, int mouseX, int mouseY, Matrix4f matrix, MultiBufferSource bufferSource) {
         Component c = CommonFluid.getFluidName(fluidStack);
         Component c1 = Component.literal(": ");
-        Component c2 = Component.literal(fluidStack.getAmount() + "mB");
+        Component c2 = Component.literal(fluidStack.getViewAmount() + "mB");
 
         font.drawInBatch(c, (float)mouseX, (float)mouseY, -1, true, matrix, bufferSource, Font.DisplayMode.NORMAL, 0, 15728880);
         font.drawInBatch(c1, (float)mouseX + font.width(c), (float)mouseY, -1, true, matrix, bufferSource, Font.DisplayMode.NORMAL, 0, 15728880);

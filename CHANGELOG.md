@@ -12,6 +12,7 @@
 ✨ Added compatibility with VinURL mod and jukebox upgrade for backpack  
 🔧 Performance improvements  
 🔧 Allow sorting via mouse buttons  
+🔧 Fluids in tanks are measured in mB instead of 81-base system  
 🐛 Fixed bug with the Settings screen "back" button not working in block-form backpack  
 🐛 Fixed renderTools config option not working  
 📚 Updated de_de - Thanks 1IntereJurry!  
