@@ -6,6 +6,7 @@ import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.BackpackSlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.ToolSlotItemHandler;
 import com.tiviacz.travelersbackpack.util.Reference;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EntityType;
@@ -223,11 +224,11 @@ public class TravelersBackpackConfig {
                 builder.push(path);
 
                 //Backpack Settings
-                leather = new TierConfig(builder, "Leather", 27, 2, 2, 1000);
-                iron = new TierConfig(builder, "Iron", 45, 3, 3, 1000);
-                gold = new TierConfig(builder, "Gold", 63, 4, 4, 1000);
-                diamond = new TierConfig(builder, "Diamond", 81, 5, 5, 1000);
-                netherite = new TierConfig(builder, "Netherite", 99, 6, 6, 1000);
+                leather = new TierConfig(builder, "Leather", 27, 2, 2, (int)FluidConstants.BUCKET);
+                iron = new TierConfig(builder, "Iron", 45, 3, 3, (int)FluidConstants.BUCKET);
+                gold = new TierConfig(builder, "Gold", 63, 4, 4, (int)FluidConstants.BUCKET);
+                diamond = new TierConfig(builder, "Diamond", 81, 5, 5, (int)FluidConstants.BUCKET);
+                netherite = new TierConfig(builder, "Netherite", 99, 6, 6, (int)FluidConstants.BUCKET);
 
                 rightClickEquip = builder
                         .comment("Enables equipping the backpack on right-click from the ground")
