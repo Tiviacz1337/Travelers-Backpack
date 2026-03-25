@@ -88,7 +88,7 @@ public class ToolsScreen extends Screen {
 
         if(!KeybindHandler.isKeyDown(KeybindHandler.SWAP_TOOL)) {
             if(hoveredResult != -1) {
-                if(swapWithRelease && TravelersBackpackConfig.getConfig().client.toolsOverlay.swapOnClose) {
+                if(swapWithRelease && TravelersBackpackConfig.CLIENT.toolsOverlay.swapOnClose.get()) {
                     ServerboundActionTagPacket.create(ServerboundActionTagPacket.SWAP_TOOL, hoveredResult, 0);
                 }
             }
@@ -105,8 +105,8 @@ public class ToolsScreen extends Screen {
         int cx = sw / 2;
         int cy = sh / 2;
 
-        int offXpx = TravelersBackpackConfig.getConfig().client.toolsOverlay.offsetX; // px@1920
-        int offYpx = TravelersBackpackConfig.getConfig().client.toolsOverlay.offsetY; // px@1080
+        int offXpx = TravelersBackpackConfig.CLIENT.toolsOverlay.offsetX.get(); // px@1920
+        int offYpx = TravelersBackpackConfig.CLIENT.toolsOverlay.offsetY.get(); // px@1080
 
         double px = offXpx / REF_W;
         double py = offYpx / REF_H;

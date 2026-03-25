@@ -29,13 +29,16 @@ public class MagnetUpgradeItem extends UpgradeItem {
 
     @Override
     public boolean isEnabled(FeatureFlagSet enabledFeatures) {
-        return TravelersBackpackConfig.getConfig().backpackUpgrades.magnetUpgradeSettings.enableUpgrade && super.isEnabled(enabledFeatures);
+        if(TravelersBackpackConfig.serverSpec.isLoaded()) {
+            return TravelersBackpackConfig.SERVER.backpackUpgrades.magnetUpgradeSettings.enableMagnetUpgrade.get() && super.isEnabled(enabledFeatures);
+        }
+        return super.isEnabled(enabledFeatures);
     }
 
     @Environment(EnvType.CLIENT)
     @Override
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> componentConsumer, TooltipFlag tooltipFlag) {
-        componentConsumer.accept(Component.translatable("item.travelersbackpack.magnet_upgrade_tooltip", TravelersBackpackConfig.getConfig().backpackUpgrades.magnetUpgradeSettings.pullRange).withStyle(ChatFormatting.BLUE));
+        componentConsumer.accept(Component.translatable("item.travelersbackpack.magnet_upgrade_tooltip", TravelersBackpackConfig.SERVER.backpackUpgrades.magnetUpgradeSettings.pullRange.get()).withStyle(ChatFormatting.BLUE));
         super.appendHoverText(stack, context, tooltipDisplay, componentConsumer, tooltipFlag);
     }
 

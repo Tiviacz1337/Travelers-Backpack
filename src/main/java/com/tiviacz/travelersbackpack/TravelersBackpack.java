@@ -13,11 +13,14 @@ import com.tiviacz.travelersbackpack.handlers.*;
 import com.tiviacz.travelersbackpack.init.*;
 import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.Supporters;
+import fuzs.forgeconfigapiport.fabric.api.v5.ConfigRegistry;
+import fuzs.forgeconfigapiport.fabric.api.v5.ModConfigEvents;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.recipe.v1.sync.RecipeSynchronization;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.server.MinecraftServer;
+import net.neoforged.fml.config.ModConfig;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
@@ -42,7 +45,18 @@ public class TravelersBackpack implements ModInitializer {
     @Override
     public void onInitialize() {
         ServerLifecycleEvents.SERVER_STARTING.register(server -> currentServer = server);
-        TravelersBackpackConfig.register();
+        ConfigRegistry.INSTANCE.register(MODID, ModConfig.Type.SERVER, TravelersBackpackConfig.serverSpec);
+        ConfigRegistry.INSTANCE.register(MODID, ModConfig.Type.COMMON, TravelersBackpackConfig.commonSpec);
+        ModConfigEvents.loading(TravelersBackpack.MODID).register(config -> {
+            if(config.getSpec() == TravelersBackpackConfig.serverSpec) {
+                TravelersBackpackConfig.SERVER.initializeLists();
+            }
+        });
+        ModConfigEvents.reloading(TravelersBackpack.MODID).register(config -> {
+            if(config.getSpec() == TravelersBackpackConfig.serverSpec) {
+                TravelersBackpackConfig.SERVER.initializeLists();
+            }
+        });
         ModItemGroups.registerItemGroup();
         ModBlocks.init();
         ModItems.init();
@@ -116,11 +130,11 @@ public class TravelersBackpack implements ModInitializer {
     }
 
     public static boolean enableAccessories() {
-        return accessoriesLoaded && TravelersBackpackConfig.getConfig().backpackSettings.backSlotIntegration;
+        return accessoriesLoaded && TravelersBackpackConfig.SERVER.backpackSettings.backSlotIntegration.get();
     }
 
     public static boolean enableTrinkets() {
-        return trinketsLoaded && !enableAccessories() && TravelersBackpackConfig.getConfig().backpackSettings.backSlotIntegration;
+        return trinketsLoaded && !enableAccessories() && TravelersBackpackConfig.SERVER.backpackSettings.backSlotIntegration.get();
     }
 
     public static boolean isAnyGraveModInstalled() {

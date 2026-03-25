@@ -33,8 +33,8 @@ public class AutoPickupUpgrade extends FilterUpgradeBase<AutoPickupUpgrade, Auto
 
     public AutoPickupUpgrade(UpgradeManager manager, int dataHolderSlot, NonNullList<ItemStack> filter, List<String> filterTags) {
         super(manager, dataHolderSlot, new Point(66, 49),
-                TravelersBackpackConfig.getConfig().backpackUpgrades.pickupUpgradeSettings.filterSlotCount,
-                TravelersBackpackConfig.getConfig().backpackUpgrades.pickupUpgradeSettings.slotsInRow, filter, filterTags);
+                TravelersBackpackConfig.SERVER.backpackUpgrades.pickupUpgradeSettings.filterSlotCount.get(),
+                TravelersBackpackConfig.SERVER.backpackUpgrades.pickupUpgradeSettings.slotsInRow.get(), filter, filterTags);
     }
 
     public boolean canPickup(ItemStack stack) {

@@ -77,7 +77,7 @@ public class KeybindHandler {
                 }
                 while(KeybindHandler.SWAP_TOOL.consumeClick()) {
                     if(mc.screen == null && !mc.options.hideGui && mc.gameMode.getPlayerMode() != GameType.SPECTATOR) {
-                        if(!TravelersBackpackConfig.getConfig().backpackSettings.allowToolSwapping && mc.player.getItemInHand(InteractionHand.MAIN_HAND).getItem() != ModItems.HOSE) {
+                        if(!TravelersBackpackConfig.SERVER.backpackSettings.allowToolSwapping.get() && mc.player.getItemInHand(InteractionHand.MAIN_HAND).getItem() != ModItems.HOSE) {
                             return;
                         }
                         mc.setScreen(new ToolsScreen());
@@ -104,7 +104,7 @@ public class KeybindHandler {
 
         ScreenEvents.BEFORE_INIT.register(((client, screen, scaledWidth, scaledHeight) -> {
             ScreenKeyboardEvents.beforeKeyPress(screen).register((gui, keyEvent) -> {
-                if(!TravelersBackpackConfig.getConfig().backpackSettings.allowOpeningFromSlot) {
+                if(!TravelersBackpackConfig.SERVER.backpackSettings.allowOpeningFromSlot.get()) {
                     return;
                 }
                 if(screen instanceof AbstractContainerScreen<?> containerScreen && client.player != null) {

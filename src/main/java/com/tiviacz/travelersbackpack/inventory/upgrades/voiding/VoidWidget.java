@@ -58,7 +58,7 @@ public class VoidWidget extends FilterUpgradeWidgetBase<VoidWidget, VoidUpgrade>
     @Override
     public void renderBg(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY) {
         super.renderBg(guiGraphics, x, y, mouseX, mouseY);
-        this.renderMatchContentsSlotOverlay(guiGraphics, upgrade.getFilter(), VoidFilterSettings.ALLOW_MODE, VoidFilterSettings.MATCH_CONTENTS, TravelersBackpackConfig.getConfig().backpackUpgrades.voidUpgradeSettings.filterSlotCount);
+        this.renderMatchContentsSlotOverlay(guiGraphics, upgrade.getFilter(), VoidFilterSettings.ALLOW_MODE, VoidFilterSettings.MATCH_CONTENTS, TravelersBackpackConfig.SERVER.backpackUpgrades.voidUpgradeSettings.filterSlotCount.get());
 
         if(isTabOpened()) {
             if(isHoveringWithTrashBin()) {

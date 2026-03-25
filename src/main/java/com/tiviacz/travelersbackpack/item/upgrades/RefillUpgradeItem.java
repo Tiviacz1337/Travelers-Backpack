@@ -19,7 +19,10 @@ public class RefillUpgradeItem extends UpgradeItem {
 
     @Override
     public boolean isEnabled(FeatureFlagSet enabledFeatures) {
-        return TravelersBackpackConfig.getConfig().backpackUpgrades.refillUpgradeSettings.enableUpgrade && super.isEnabled(enabledFeatures);
+        if(TravelersBackpackConfig.serverSpec.isLoaded()) {
+            return TravelersBackpackConfig.SERVER.backpackUpgrades.refillUpgradeSettings.enableRefillUpgrade.get() && super.isEnabled(enabledFeatures);
+        }
+        return super.isEnabled(enabledFeatures);
     }
 
     @Override

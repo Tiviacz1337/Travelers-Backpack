@@ -35,7 +35,7 @@ public class FeedingFilterSettings extends FilterSettingsBase {
     public static final int ALLOW_BAD_EFFECTS = 1;
 
     public FeedingFilterSettings(ItemStackHandler storage, List<ItemStack> items, List<Integer> filterSettings) {
-        super(storage, items, filterSettings, TravelersBackpackConfig.getConfig().backpackUpgrades.feedingUpgradeSettings.filterSlotCount);
+        super(storage, items, filterSettings, TravelersBackpackConfig.SERVER.backpackUpgrades.feedingUpgradeSettings.filterSlotCount.get());
     }
 
     @Override

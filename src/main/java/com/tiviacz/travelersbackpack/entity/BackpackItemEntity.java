@@ -18,12 +18,12 @@ public class BackpackItemEntity extends ItemEntity {
     public BackpackItemEntity(EntityType<? extends ItemEntity> entityType, Level level) {
         super(entityType, level);
         this.age = Integer.MAX_VALUE;
-        this.isInvulnerable = TravelersBackpackConfig.getConfig().backpackSettings.invulnerableBackpack;
+        this.isInvulnerable = TravelersBackpackConfig.SERVER.backpackSettings.invulnerableBackpack.get();
     }
 
     @Override
     public void tick() {
-        if(TravelersBackpackConfig.getConfig().backpackSettings.voidProtection) {
+        if(TravelersBackpackConfig.SERVER.backpackSettings.voidProtection.get()) {
             if(!this.level().isClientSide() && !isNoGravity() && wasFloatingUp && getY() < level().getMinY()) {
                 if(random.nextFloat() > 0.25F) {
                     float ab = random.nextFloat() * 2.0f;
@@ -49,7 +49,7 @@ public class BackpackItemEntity extends ItemEntity {
 
     @Override
     public boolean isInWater() {
-        if(TravelersBackpackConfig.getConfig().backpackSettings.voidProtection) {
+        if(TravelersBackpackConfig.SERVER.backpackSettings.voidProtection.get()) {
             return getY() < level().getMinY() + 1 || super.isInWater();
         }
         return super.isInWater();
@@ -72,7 +72,7 @@ public class BackpackItemEntity extends ItemEntity {
 
     @Override
     protected void onBelowWorld() {
-        if(!TravelersBackpackConfig.getConfig().backpackSettings.voidProtection) {
+        if(!TravelersBackpackConfig.SERVER.backpackSettings.voidProtection.get()) {
             this.discard();
         }
     }

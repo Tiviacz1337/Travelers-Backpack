@@ -40,7 +40,7 @@ public class TravelersBackpackTrinket implements Trinket {
 
     @Override
     public boolean canEquip(ItemStack stack, SlotReference slot, LivingEntity entity) {
-        return TravelersBackpackConfig.getConfig().backpackSettings.backSlotIntegration;
+        return TravelersBackpackConfig.SERVER.backpackSettings.backSlotIntegration.get();
     }
 
     @Override
@@ -50,7 +50,7 @@ public class TravelersBackpackTrinket implements Trinket {
 
     @Override
     public void tick(ItemStack stack, SlotReference slot, LivingEntity entity) {
-        if(!TravelersBackpackConfig.getConfig().backpackSettings.backSlotIntegration) return;
+        if(!TravelersBackpackConfig.SERVER.backpackSettings.backSlotIntegration.get()) return;
         if(entity instanceof Player player) {
             BackpackWrapper.tick(stack, player, true);
         }

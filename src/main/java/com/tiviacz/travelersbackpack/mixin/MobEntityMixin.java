@@ -5,6 +5,7 @@ import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.item.upgrades.TanksUpgradeItem;
+import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
@@ -31,14 +32,14 @@ public abstract class MobEntityMixin extends LivingEntity {
 
     @Inject(at = @At(value = "TAIL"), method = "finalizeSpawn")
     protected void initialize(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason spawnType, SpawnGroupData spawnGroupData, CallbackInfoReturnable<SpawnGroupData> cir) {
-        if(this instanceof Object && TravelersBackpackConfig.getConfig().world.spawnEntitiesWithBackpack) {
-            if((Object)this instanceof LivingEntity livingEntity && !livingEntity.isBaby() && livingEntity.getItemBySlot(EquipmentSlot.CHEST).isEmpty() && (TravelersBackpackConfig.isOverworldEntityTypePossible(livingEntity) || TravelersBackpackConfig.isNetherEntityTypePossible(livingEntity))) {
-                if(level.getRandom().nextFloat() < TravelersBackpackConfig.getConfig().world.chance) {
+        if(TravelersBackpackConfig.SERVER.world.spawnEntitiesWithBackpack.get()) {
+            if((Object)this instanceof LivingEntity livingEntity && livingEntity.getItemBySlot(EquipmentSlot.CHEST).isEmpty() && !livingEntity.isBaby() && Reference.ALLOWED_TYPE_ENTRIES.contains(livingEntity.getType())) {
+                if(level.getRandom().nextFloat() < TravelersBackpackConfig.SERVER.world.chance.get()) {
                     boolean isNether = livingEntity.getType() == EntityType.PIGLIN || livingEntity.getType() == EntityType.WITHER_SKELETON;
                     RandomSource rand = level.getRandom();
                     ItemStack backpack = isNether ?
-                            TravelersBackpackConfig.getRandomCompatibleNetherBackpackEntry(rand).getDefaultInstance() :
-                            TravelersBackpackConfig.getRandomCompatibleOverworldBackpackEntry(rand).getDefaultInstance();
+                            ModItems.COMPATIBLE_NETHER_BACKPACK_ENTRIES.get(rand.nextIntBetweenInclusive(0, ModItems.COMPATIBLE_NETHER_BACKPACK_ENTRIES.size() - 1)).getDefaultInstance() :
+                            ModItems.COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES.get(rand.nextIntBetweenInclusive(0, ModItems.COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES.size() - 1)).getDefaultInstance();
 
                     backpack.set(ModDataComponents.SLEEPING_BAG_COLOR, DyeColor.values()[rand.nextIntBetweenInclusive(0, DyeColor.values().length - 1)].getId());
                     boolean flag = false;

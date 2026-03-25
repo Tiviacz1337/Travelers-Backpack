@@ -53,7 +53,7 @@ import java.util.Optional;
 
 public class ServerActions {
     public static void swapTool(Player player, int slot, int button) {
-        if(!TravelersBackpackConfig.getConfig().backpackSettings.allowToolSwapping) {
+        if(!TravelersBackpackConfig.SERVER.backpackSettings.allowToolSwapping.get()) {
             return;
         }
         if(ComponentUtils.isWearingBackpack(player)) {
@@ -213,8 +213,8 @@ public class ServerActions {
         if(index >= 0 && index < player.getInventory().getNonEquipmentItems().size()) {
             ItemStack backpackStack = player.getInventory().getNonEquipmentItems().get(index);
             if(backpackStack.getItem() instanceof TravelersBackpackItem) {
-                if(!TravelersBackpackConfig.getConfig().backpackSettings.allowOnlyEquippedBackpack) {
-                    if(!fromSlot || TravelersBackpackConfig.getConfig().backpackSettings.allowOpeningFromSlot) {
+                if(!TravelersBackpackConfig.SERVER.backpackSettings.allowOnlyEquippedBackpack.get()) {
+                    if(!fromSlot || TravelersBackpackConfig.SERVER.backpackSettings.allowOpeningFromSlot.get()) {
                         BackpackContainer.openBackpack(player, backpackStack, Reference.ITEM_SCREEN_ID, index);
                     }
                 }

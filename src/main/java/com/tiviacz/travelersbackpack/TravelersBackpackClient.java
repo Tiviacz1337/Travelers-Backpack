@@ -21,12 +21,15 @@ import com.tiviacz.travelersbackpack.compat.polymorph.PolymorphCompat;
 import com.tiviacz.travelersbackpack.compat.trashslot.TrashSlotCompat;
 import com.tiviacz.travelersbackpack.compat.trinkets.TravelersBackpackTrinket;
 import com.tiviacz.travelersbackpack.components.RenderInfo;
+import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.fluids.potion.PotionFluidVariantAttributeHandler;
 import com.tiviacz.travelersbackpack.fluids.potion.PotionFluidVariantRenderHandler;
 import com.tiviacz.travelersbackpack.handlers.KeybindHandler;
 import com.tiviacz.travelersbackpack.handlers.ScreenRenderHandler;
 import com.tiviacz.travelersbackpack.init.*;
 import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
+import fuzs.forgeconfigapiport.fabric.api.v5.ConfigRegistry;
+import fuzs.forgeconfigapiport.fabric.api.v5.client.ConfigScreenFactoryRegistry;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -56,12 +59,18 @@ import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.DyedItemColor;
+import net.neoforged.fml.config.ModConfig;
+import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import org.jetbrains.annotations.Nullable;
 
 @Environment(EnvType.CLIENT)
 public class TravelersBackpackClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
+        //Register client config
+        ConfigRegistry.INSTANCE.register(TravelersBackpack.MODID, ModConfig.Type.CLIENT, TravelersBackpackConfig.clientSpec);
+        ConfigScreenFactoryRegistry.INSTANCE.register(TravelersBackpack.MODID, ConfigurationScreen::new);
+
         //Load render types
         BackpackDynamicModel.Loader.loadVanillaRenderTypes();
 

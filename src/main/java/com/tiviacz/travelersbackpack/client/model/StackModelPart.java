@@ -36,7 +36,7 @@ public class StackModelPart extends BackpackModelPart {
     }
 
     public void render(ItemStack backpack, SubmitNodeCollector collector, PoseStack poseStack, int light, int overlay) {
-        if(collector == null || !TravelersBackpackConfig.getConfig().client.renderTools) {
+        if(collector == null || !TravelersBackpackConfig.CLIENT.renderTools.get()) {
             return;
         }
         render(prepare(backpack), poseStack, collector, light, overlay);

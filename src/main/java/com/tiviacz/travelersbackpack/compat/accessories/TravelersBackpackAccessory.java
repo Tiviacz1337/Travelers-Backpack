@@ -41,7 +41,7 @@ public class TravelersBackpackAccessory implements Accessory {
 
     @Override
     public boolean canEquip(ItemStack stack, SlotReference reference) {
-        return TravelersBackpackConfig.getConfig().backpackSettings.backSlotIntegration;
+        return TravelersBackpackConfig.SERVER.backpackSettings.backSlotIntegration.get();
     }
 
     @Override
@@ -51,7 +51,7 @@ public class TravelersBackpackAccessory implements Accessory {
 
     @Override
     public void tick(ItemStack stack, SlotReference reference) {
-        if(!TravelersBackpackConfig.getConfig().backpackSettings.backSlotIntegration) return;
+        if(!TravelersBackpackConfig.SERVER.backpackSettings.backSlotIntegration.get()) return;
         if(reference.entity() instanceof Player player) {
             BackpackWrapper.tick(stack, player, true);
         }

@@ -29,7 +29,7 @@ public class MagnetFilterSettings extends FilterSettingsBase {
     public static final int IGNORE_COMPONENTS = 1;
 
     public MagnetFilterSettings(ItemStackHandler storage, List<ItemStack> items, List<Integer> filterSettings, List<String> filterTags) {
-        super(storage, items, filterSettings, filterTags, TravelersBackpackConfig.getConfig().backpackUpgrades.magnetUpgradeSettings.filterSlotCount);
+        super(storage, items, filterSettings, filterTags, TravelersBackpackConfig.SERVER.backpackUpgrades.magnetUpgradeSettings.filterSlotCount.get());
     }
 
     @Override

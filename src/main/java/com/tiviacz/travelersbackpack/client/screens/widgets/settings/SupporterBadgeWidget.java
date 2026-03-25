@@ -24,15 +24,15 @@ public class SupporterBadgeWidget extends SettingsWidgetBase {
     }
 
     public void sendDataToServer() {
-        boolean showSupporterStar = TravelersBackpackConfig.getConfig().client.showSupporterBadge;
-        TravelersBackpackConfig.getConfig().client.showSupporterBadge = !showSupporterStar;
-        TravelersBackpackConfig.saveConfig();
+        boolean showSupporterStar = TravelersBackpackConfig.CLIENT.showSupporterBadge.get();
+        TravelersBackpackConfig.CLIENT.showSupporterBadge.set(!showSupporterStar);
+        TravelersBackpackConfig.CLIENT.showSupporterBadge.save();
         PacketDistributor.sendToServer(new SupporterBadgePacket.Serverbound(!showSupporterStar));
     }
 
     @Override
     public void renderBg(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY) {
-        Point uv = TravelersBackpackConfig.getConfig().client.showSupporterBadge ? iconEnabledUv : iconUv;
+        Point uv = TravelersBackpackConfig.CLIENT.showSupporterBadge.get() ? iconEnabledUv : iconUv;
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BackpackScreen.ICONS, pos.x(), pos.y(), emptyTabUv.x(), emptyTabUv.y(), width, height, 256, 256); //Empty Tab
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BackpackScreen.ICONS, pos.x() + 3, pos.y() + 3, uv.x(), uv.y(), iconSize.x(), iconSize.y(), 256, 256); //Icon
     }

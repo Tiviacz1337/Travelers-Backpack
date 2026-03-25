@@ -2,46 +2,663 @@ package com.tiviacz.travelersbackpack.config;
 
 import com.google.common.collect.Multimap;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
-import com.tiviacz.travelersbackpack.common.BackpackAbilities;
-import me.shedaniel.autoconfig.AutoConfig;
-import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import com.tiviacz.travelersbackpack.init.ModItems;
+import com.tiviacz.travelersbackpack.inventory.menu.slot.BackpackSlotItemHandler;
+import com.tiviacz.travelersbackpack.inventory.menu.slot.ToolSlotItemHandler;
+import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.common.ModConfigSpec;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
 
 public class TravelersBackpackConfig {
-    public static TravelersBackpackConfigData getConfig() {
-        return AutoConfig.getConfigHolder(TravelersBackpackConfigData.class).getConfig();
-    }
+    public static class Server {
+        private static final String REGISTRY_NAME_MATCHER = "([a-z0-9_.-]+:[a-z0-9_/.-]+)";
 
-    public static void saveConfig() {
-        AutoConfig.getConfigHolder(TravelersBackpackConfigData.class).save();
-    }
+        public final BackpackSettings backpackSettings;
+        public final BackpackUpgrades backpackUpgrades;
+        public final World world;
+        public final BackpackAbilities backpackAbilities;
+        public final SlownessDebuff slownessDebuff;
 
-    public static void register() {
-        AutoConfig.register(TravelersBackpackConfigData.class, JanksonConfigSerializer::new);
+        Server(ModConfigSpec.Builder builder) {
+            builder.comment("Server config settings")
+                    .push("server");
 
-        // Listen for when the server is reloading (i.e. /reload), and reload the config
-        ServerLifecycleEvents.START_DATA_PACK_RELOAD.register((s, m) -> AutoConfig.getConfigHolder(TravelersBackpackConfigData.class).load());
+            //Backpack Settings
+            backpackSettings = new BackpackSettings(builder, "backpackSettings");
 
-        //Register Config load listener
-        AutoConfig.getConfigHolder(TravelersBackpackConfigData.class).registerLoadListener((holder, config) -> {
+            //Backpack Upgrades
+            backpackUpgrades = new BackpackUpgrades(builder, "backpackUpgrades");
+
+            //World
+            world = new World(builder, "world");
 
             //Abilities
-            BackpackAbilities.ALLOWED_ABILITIES.clear();
-            loadItemsFromConfig(TravelersBackpackConfig.getConfig().backpackAbilities.allowedAbilities, com.tiviacz.travelersbackpack.common.BackpackAbilities.ALLOWED_ABILITIES);
+            backpackAbilities = new BackpackAbilities(builder, "backpackAbilities");
 
-            //Load Backpack Effects
-            BackpackAbilities.getBackpackEffects().clear();
-            loadBackpackEffectsFromConfig(config.backpackAbilities.backpackEffects, com.tiviacz.travelersbackpack.common.BackpackAbilities.BACKPACK_EFFECTS);
+            //Slowness Debuff
+            slownessDebuff = new SlownessDebuff(builder, "slownessDebuff");
+
+            builder.pop();
+        }
+
+        public static class BackpackUpgrades {
+            public final ModConfigSpec.BooleanValue enableTanksUpgrade;
+            public final ModConfigSpec.BooleanValue enableCraftingUpgrade;
+            public final ModConfigSpec.BooleanValue enableFurnaceUpgrade;
+            public final ModConfigSpec.BooleanValue enableSmokerUpgrade;
+            public final ModConfigSpec.BooleanValue enableBlastFurnaceUpgrade;
+            public final FilterUpgradeSettings pickupUpgradeSettings;
+            public final ModConfigSpec.BooleanValue enableJukeboxUpgrade;
+            public final MagnetUpgradeSettings magnetUpgradeSettings;
+            public final FeedingUpgradeSettings feedingUpgradeSettings;
+            public final RefillUpgradeSettings refillUpgradeSettings;
+            public final FilterUpgradeSettings voidUpgradeSettings;
+
+            public BackpackUpgrades(ModConfigSpec.Builder builder, String path) {
+                builder.push(path);
+
+                enableTanksUpgrade = builder
+                        .define("enableTanksUpgrade", true);
+
+                enableCraftingUpgrade = builder
+                        .define("enableCraftingUpgrade", true);
+
+                enableFurnaceUpgrade = builder
+                        .define("enableFurnaceUpgrade", true);
+
+                enableSmokerUpgrade = builder
+                        .define("enableSmokerUpgrade", true);
+
+                enableBlastFurnaceUpgrade = builder
+                        .define("enableBlastFurnaceUpgrade", true);
+
+                pickupUpgradeSettings = new FilterUpgradeSettings(builder, "pickupUpgradeSettings", "PickupUpgrade");
+
+                enableJukeboxUpgrade = builder
+                        .define("enableJukeboxUpgrade", true);
+
+                magnetUpgradeSettings = new MagnetUpgradeSettings(builder, "magnetUpgradeSettings");
+
+                feedingUpgradeSettings = new FeedingUpgradeSettings(builder, "feedingUpgradeSettings");
+
+                refillUpgradeSettings = new RefillUpgradeSettings(builder, "refillUpgradeSettings");
+
+                voidUpgradeSettings = new FilterUpgradeSettings(builder, "voidUpgradeSettings", "VoidUpgrade");
+
+                builder.pop();
+            }
+
+            public static class FilterUpgradeSettings {
+                public final ModConfigSpec.BooleanValue enableUpgrade;
+                public final ModConfigSpec.IntValue filterSlotCount;
+                public final ModConfigSpec.IntValue slotsInRow;
+
+                public FilterUpgradeSettings(ModConfigSpec.Builder builder, String path, String upgradeName) {
+                    builder.push(path);
+
+                    enableUpgrade = builder
+                            .define("enable" + upgradeName, true);
+
+                    filterSlotCount = builder
+                            .defineInRange("filterSlotCount", 9, 1, 20);
+
+                    slotsInRow = builder
+                            .defineInRange("slotsInRow", 3, 1, 5);
+
+                    builder.pop();
+                }
+            }
+
+            public static class FeedingUpgradeSettings {
+                public final ModConfigSpec.BooleanValue enableFeedingUpgrade;
+                public final ModConfigSpec.IntValue filterSlotCount;
+                public final ModConfigSpec.IntValue slotsInRow;
+                public final ModConfigSpec.IntValue tickRate;
+
+                public FeedingUpgradeSettings(ModConfigSpec.Builder builder, String path) {
+                    builder.push(path);
+
+                    enableFeedingUpgrade = builder
+                            .define("enableFeedingUpgrade", true);
+
+                    filterSlotCount = builder
+                            .defineInRange("filterSlotCount", 9, 1, 20);
+
+                    slotsInRow = builder
+                            .defineInRange("slotsInRow", 3, 1, 5);
+
+                    tickRate = builder
+                            .defineInRange("tickRate", 100, 1, 1000);
+
+                    builder.pop();
+                }
+            }
+
+            public static class MagnetUpgradeSettings {
+                public final ModConfigSpec.BooleanValue enableMagnetUpgrade;
+                public final ModConfigSpec.IntValue filterSlotCount;
+                public final ModConfigSpec.IntValue slotsInRow;
+                public final ModConfigSpec.IntValue pullRange;
+                public final ModConfigSpec.IntValue tickRate;
+
+                public MagnetUpgradeSettings(ModConfigSpec.Builder builder, String path) {
+                    builder.push(path);
+
+                    enableMagnetUpgrade = builder
+                            .define("enableMagnetUpgrade", true);
+
+                    filterSlotCount = builder
+                            .defineInRange("filterSlotCount", 9, 1, 20);
+
+                    slotsInRow = builder
+                            .defineInRange("slotsInRow", 3, 1, 5);
+
+                    pullRange = builder
+                            .defineInRange("pullRange", 5, 1, 20);
+
+                    tickRate = builder
+                            .defineInRange("tickRate", 10, 1, 1000);
+
+                    builder.pop();
+                }
+            }
+
+            public static class RefillUpgradeSettings {
+                public final ModConfigSpec.BooleanValue enableRefillUpgrade;
+                public final ModConfigSpec.IntValue filterSlotCount;
+                public final ModConfigSpec.IntValue slotsInRow;
+                public final ModConfigSpec.IntValue tickRate;
+
+                public RefillUpgradeSettings(ModConfigSpec.Builder builder, String path) {
+                    builder.push(path);
+
+                    enableRefillUpgrade = builder
+                            .define("enableRefillUpgrade", true);
+
+                    filterSlotCount = builder
+                            .defineInRange("filterSlotCount", 9, 1, 20);
+
+                    slotsInRow = builder
+                            .defineInRange("slotsInRow", 3, 1, 5);
+
+                    tickRate = builder
+                            .defineInRange("tickRate", 5, 1, 1000);
+
+                    builder.pop();
+                }
+            }
+        }
+
+        public static class BackpackSettings {
+            public final TierConfig leather;
+            public final TierConfig iron;
+            public final TierConfig gold;
+            public final TierConfig diamond;
+            public final TierConfig netherite;
+            public final ModConfigSpec.BooleanValue rightClickEquip;
+            public final ModConfigSpec.BooleanValue rightClickUnequip;
+            public final ModConfigSpec.BooleanValue allowOnlyEquippedBackpack;
+            public final ModConfigSpec.BooleanValue allowOpeningFromSlot;
+            public final ModConfigSpec.BooleanValue preventMultiplePlayersAccess;
+            public final ModConfigSpec.BooleanValue invulnerableBackpack;
+            public final ModConfigSpec.BooleanValue allowToolSwapping;
+            public final ModConfigSpec.BooleanValue toolSlotsAcceptEverything;
+            public final ModConfigSpec.ConfigValue<List<? extends String>> toolSlotsAcceptableItems;
+            public final ModConfigSpec.ConfigValue<List<? extends String>> blacklistedItems;
+            public final ModConfigSpec.BooleanValue allowShulkerBoxes;
+            public final ModConfigSpec.BooleanValue voidProtection;
+            public final ModConfigSpec.BooleanValue backpackDeathPlace;
+            public final ModConfigSpec.BooleanValue backpackForceDeathPlace;
+            public final ModConfigSpec.BooleanValue quickSleepingBag;
+            public final ModConfigSpec.BooleanValue enableSleepingBagSpawnPoint;
+            public final ModConfigSpec.BooleanValue backSlotIntegration;
+
+            BackpackSettings(ModConfigSpec.Builder builder, String path) {
+                builder.push(path);
+
+                //Backpack Settings
+                leather = new TierConfig(builder, "Leather", 27, 2, 2, 1000);
+                iron = new TierConfig(builder, "Iron", 45, 3, 3, 1000);
+                gold = new TierConfig(builder, "Gold", 63, 4, 4, 1000);
+                diamond = new TierConfig(builder, "Diamond", 81, 5, 5, 1000);
+                netherite = new TierConfig(builder, "Netherite", 99, 6, 6, 1000);
+
+                rightClickEquip = builder
+                        .comment("Enables equipping the backpack on right-click from the ground")
+                        .define("rightClickEquip", true);
+
+                rightClickUnequip = builder
+                        .comment("Enables unequipping the backpack on right-click on the ground with empty hand")
+                        .define("rightClickUnequip", false);
+
+                allowOnlyEquippedBackpack = builder
+                        .comment("Allows to use only equipped backpack")
+                        .define("allowOnlyEquippedBackpack", false);
+
+                allowOpeningFromSlot = builder
+                        .comment("Allows opening the backpack by pressing a keybind while hovering over the slot with backpack in the player's inventory")
+                        .define("allowOpeningFromSlot", false);
+
+                preventMultiplePlayersAccess = builder
+                        .comment("Prevents more than one player from accessing the backpack at the same time when it's placed on the ground")
+                        .define("preventMultiplePlayersAccess", false);
+
+                invulnerableBackpack = builder
+                        .comment("Backpack immune to any damage source (lava, fire), can't be destroyed, never disappears as floating item")
+                        .define("invulnerableBackpack", true);
+
+                allowToolSwapping = builder
+                        .comment("Allows swapping tools between tool slots and the player’s inventory via a quick-swap menu")
+                        .define("allowToolSwapping", true);
+
+                toolSlotsAcceptEverything = builder
+                        .comment("Tool slots accept any item")
+                        .define("toolSlotsAcceptEverything", false);
+
+                toolSlotsAcceptableItems = builder
+                        .comment("List of items that can be put in tool slots (Use registry names, for example: \"minecraft:apple\", \"minecraft:flint\")")
+                        .defineList("toolSlotsAcceptableItems", Collections.emptyList(), () -> "", mapping -> ((String)mapping).matches(REGISTRY_NAME_MATCHER));
+
+                blacklistedItems = builder
+                        .comment("List of items that can't be put in backpack inventory (Use registry names, for example: \"minecraft:apple\", \"minecraft:flint\")")
+                        .defineList("blacklistedItems", Collections.emptyList(), () -> "", mapping -> ((String)mapping).matches(REGISTRY_NAME_MATCHER));
+
+                allowShulkerBoxes = builder
+                        .comment("Allows putting shulker boxes and other items with inventory in backpack")
+                        .define("allowShulkerBoxes", false);
+
+                voidProtection = builder
+                        .comment("Prevents backpack disappearing in void, spawns floating backpack above minimum Y when player dies in void")
+                        .define("voidProtection", true);
+
+                backpackDeathPlace = builder
+                        .comment("Places backpack at place where player died")
+                        .define("backpackDeathPlace", true);
+
+                backpackForceDeathPlace = builder
+                        .comment("Places backpack at place where player died, replacing all blocks that are breakable and do not have inventory (backpackDeathPlace must be true in order to work)")
+                        .define("backpackForceDeathPlace", false);
+
+                quickSleepingBag = builder
+                        .comment("Allows sleeping in a sleeping bag without the need to unequip and place the backpack on the ground")
+                        .define("quickSleepingBag", true);
+
+                enableSleepingBagSpawnPoint = builder
+                        .define("enableSleepingBagSpawnPoint", false);
+
+                backSlotIntegration = builder
+                        .comment("Backpacks can only be equipped in the Curios/Accessories 'Back' slot, provided those mods are installed. If set to false, backpacks can only be equipped by clicking the button in the Backpack GUI. " +
+                                "This setting can be changed without unequipping the backpack. An already equipped backpack will not disappear and can be retrieved from the player's inventory.")
+                        .define("backSlotIntegration", true);
+
+                builder.pop();
+            }
+
+            public static class TierConfig {
+                public final ModConfigSpec.IntValue inventorySlotCount;
+                public final ModConfigSpec.IntValue upgradeSlotCount;
+                public final ModConfigSpec.IntValue toolSlotCount;
+                public final ModConfigSpec.IntValue tankCapacityPerRow;
+
+                public TierConfig(ModConfigSpec.Builder builder, String tier, int inventorySlotCountDefault, int upgradeSlotCountDefault, int toolSlotCountDefault, int tankCapacityPerRowDefault) {
+                    builder.comment(tier + " Tier Backpack Settings").push(tier.toLowerCase(Locale.ENGLISH) + "TierBackpack");
+
+                    inventorySlotCount =
+                            builder.comment("Number of inventory slots for the tier")
+                                    .defineInRange("inventorySlotCount", inventorySlotCountDefault, 1, 154);
+
+                    upgradeSlotCount =
+                            builder.comment("Number of upgrade slots for the tier")
+                                    .defineInRange("upgradeSlotCount", upgradeSlotCountDefault, 0, 10);
+
+                    toolSlotCount =
+                            builder.comment("Number of tool slots for the tier")
+                                    .defineInRange("toolSlotCount", toolSlotCountDefault, 0, 8);
+
+                    tankCapacityPerRow =
+                            builder.comment("Tank capacity per row of backpack storage, 1000 equals 1 Bucket (Leather backpack 3 rows of 9 slots = 3 * 1000")
+                                    .defineInRange("tankCapacity", tankCapacityPerRowDefault, 1, 100000);
+
+                    builder.pop();
+                }
+            }
+
+            public record Tier(int inventorySlotCount, int toolSlotCount, int tankCapacity) {
+            }
+        }
+
+        public static class World {
+            public final ModConfigSpec.BooleanValue spawnEntitiesWithBackpack;
+            public final ModConfigSpec.DoubleValue chance;
+            public final ModConfigSpec.ConfigValue<List<? extends String>> possibleOverworldEntityTypes;
+            public final ModConfigSpec.ConfigValue<List<? extends String>> possibleNetherEntityTypes;
+            public final ModConfigSpec.ConfigValue<List<? extends String>> overworldBackpacks;
+            public final ModConfigSpec.ConfigValue<List<? extends String>> netherBackpacks;
+
+            World(ModConfigSpec.Builder builder, String path) {
+                builder.push(path);
+
+                spawnEntitiesWithBackpack = builder
+                        .comment("Enables chance to spawn Zombie, Skeleton, Wither Skeleton, Piglin or Enderman with random backpack equipped")
+                        .define("spawnEntitiesWithBackpack", true);
+
+                chance = builder
+                        .comment("Defines spawn chance of entity with a backpack")
+                        .defineInRange("chance", 0.005, 0, 1);
+
+                possibleOverworldEntityTypes = builder
+                        .comment("List of overworld entity types that can spawn with equipped backpack. DO NOT ADD anything to this list, because the game will crash, remove entries if mob should not spawn with backpack")
+                        .defineList("possibleOverworldEntityTypes", this::getPossibleOverworldEntityTypes, () -> "", mapping -> ((String)mapping).matches(REGISTRY_NAME_MATCHER));
+
+                possibleNetherEntityTypes = builder
+                        .comment("List of nether entity types that can spawn with equipped backpack. DO NOT ADD anything to this list, because the game will crash, remove entries if mob should not spawn with backpack")
+                        .defineList("possibleNetherEntityTypes", this::getPossibleNetherEntityTypes, () -> "", mapping -> ((String)mapping).matches(REGISTRY_NAME_MATCHER));
+
+                overworldBackpacks = builder
+                        .comment("List of backpacks that can spawn on overworld mobs")
+                        .defineList("overworldBackpacks", this::getOverworldBackpacksList, () -> "", mapping -> ((String)mapping).matches(REGISTRY_NAME_MATCHER));
+
+                netherBackpacks = builder
+                        .comment("List of backpacks that can spawn on nether mobs")
+                        .defineList("netherBackpacks", this::getNetherBackpacksList, () -> "", mapping -> ((String)mapping).matches(REGISTRY_NAME_MATCHER));
+
+                builder.pop();
+            }
+
+            private List<String> getPossibleOverworldEntityTypes() {
+                List<String> ret = new ArrayList<>();
+                ret.add("minecraft:zombie");
+                ret.add("minecraft:skeleton");
+                ret.add("minecraft:enderman");
+                return ret;
+            }
+
+            private List<String> getPossibleNetherEntityTypes() {
+                List<String> ret = new ArrayList<>();
+                ret.add("minecraft:wither_skeleton");
+                ret.add("minecraft:piglin");
+                return ret;
+            }
+
+
+            private List<String> getOverworldBackpacksList() {
+                List<String> ret = new ArrayList<>();
+                ret.add("travelersbackpack:standard");
+                ret.add("travelersbackpack:diamond");
+                ret.add("travelersbackpack:gold");
+                ret.add("travelersbackpack:emerald");
+                ret.add("travelersbackpack:iron");
+                ret.add("travelersbackpack:lapis");
+                ret.add("travelersbackpack:redstone");
+                ret.add("travelersbackpack:coal");
+                ret.add("travelersbackpack:bookshelf");
+                ret.add("travelersbackpack:sandstone");
+                ret.add("travelersbackpack:snow");
+                ret.add("travelersbackpack:sponge");
+                ret.add("travelersbackpack:cake");
+                ret.add("travelersbackpack:cactus");
+                ret.add("travelersbackpack:hay");
+                ret.add("travelersbackpack:melon");
+                ret.add("travelersbackpack:pumpkin");
+                ret.add("travelersbackpack:creeper");
+                ret.add("travelersbackpack:enderman");
+                ret.add("travelersbackpack:skeleton");
+                ret.add("travelersbackpack:spider");
+                ret.add("travelersbackpack:bee");
+                ret.add("travelersbackpack:wolf");
+                ret.add("travelersbackpack:fox");
+                ret.add("travelersbackpack:ocelot");
+                ret.add("travelersbackpack:horse");
+                ret.add("travelersbackpack:cow");
+                ret.add("travelersbackpack:pig");
+                ret.add("travelersbackpack:sheep");
+                ret.add("travelersbackpack:chicken");
+                ret.add("travelersbackpack:squid");
+                return ret;
+            }
+
+            private List<String> getNetherBackpacksList() {
+                List<String> ret = new ArrayList<>();
+                ret.add("travelersbackpack:quartz");
+                ret.add("travelersbackpack:nether");
+                ret.add("travelersbackpack:blaze");
+                ret.add("travelersbackpack:ghast");
+                ret.add("travelersbackpack:magma_cube");
+                ret.add("travelersbackpack:wither");
+                return ret;
+            }
+        }
+
+        public static class BackpackAbilities {
+            private static final String REGISTRY_NAME_MATCHER = "([a-z0-9_.-]+:[a-z0-9_/.-]+)";
+            private static final String EFFECT_ABILITY_MATCHER = "([a-z0-9_.-]+:[a-z0-9_/.-]+),\\s*([a-z0-9_.-]+:[a-z0-9_/.-]+),\\s*(\\d+),\\s*(\\d+),\\s*(\\d+)";
+            private static final String COOLDOWNS_MATCHER = "([a-z0-9_.-]+:[a-z0-9_/.-]+),\\s*(\\d+),\\s*(\\d+)";
+
+            public final ModConfigSpec.BooleanValue enableBackpackAbilities;
+            public final ModConfigSpec.BooleanValue forceAbilityEnabled;
+            public final ModConfigSpec.ConfigValue<List<? extends String>> allowedAbilities;
+            public final ModConfigSpec.ConfigValue<List<? extends String>> backpackEffects;
+            public final ModConfigSpec.ConfigValue<List<? extends String>> cooldowns;
+
+            BackpackAbilities(ModConfigSpec.Builder builder, String path) {
+                builder.push(path);
+
+                enableBackpackAbilities = builder
+                        .define("enableBackpackAbilities", true);
+
+                forceAbilityEnabled = builder
+                        .comment("Newly crafted backpacks will have ability enabled by default")
+                        .define("forceAbilityEnabled", true);
+
+                allowedAbilities = builder
+                        .comment("List of backpacks that are allowed to have an ability. DO NOT ADD anything to this list, because the game will crash, remove entries if backpack should not have ability")
+                        .defineList("allowedAbilities", this::getAllowedAbilities, () -> "", mapping -> ((String)mapping).matches(REGISTRY_NAME_MATCHER));
+
+                backpackEffects = builder
+                        .comment("List of effect abilities associated with backpacks, you can modify this list as you wish. Different effects can be added to different backpacks. \n Formatting: \"<backpack_registry_name>, <status_effect_registry_name>, <min_duration_ticks>, <max_duration_ticks>, <amplifier>\"")
+                        .defineList("backpackEffects", this::getBackpackEffects, () -> "", mapping -> ((String)mapping).matches(EFFECT_ABILITY_MATCHER));
+
+                cooldowns = builder
+                        .comment("List of cooldowns that are being applied after ability usage, the backpacks on the list are all that currently have cooldowns, adding additional backpack will not give it cooldown. \n Formatting: \"<backpack_registry_name>, <min_possible_cooldown_seconds>, <max_possible_cooldown_seconds>\"")
+                        .defineList("cooldowns", this::getCooldowns, () -> "", mapping -> ((String)mapping).matches(COOLDOWNS_MATCHER));
+
+                builder.pop();
+            }
+
+            private List<String> getAllowedAbilities() {
+                List<String> ret = new ArrayList<>();
+                ret.add("travelersbackpack:netherite");
+                ret.add("travelersbackpack:diamond");
+                ret.add("travelersbackpack:gold");
+                ret.add("travelersbackpack:emerald");
+                ret.add("travelersbackpack:iron");
+                ret.add("travelersbackpack:lapis");
+                ret.add("travelersbackpack:redstone");
+                ret.add("travelersbackpack:bookshelf");
+                ret.add("travelersbackpack:sponge");
+                ret.add("travelersbackpack:cake");
+                ret.add("travelersbackpack:cactus");
+                ret.add("travelersbackpack:melon");
+                ret.add("travelersbackpack:pumpkin");
+                ret.add("travelersbackpack:creeper");
+                ret.add("travelersbackpack:dragon");
+                ret.add("travelersbackpack:enderman");
+                ret.add("travelersbackpack:blaze");
+                ret.add("travelersbackpack:ghast");
+                ret.add("travelersbackpack:magma_cube");
+                ret.add("travelersbackpack:spider");
+                ret.add("travelersbackpack:wither");
+                ret.add("travelersbackpack:warden");
+                ret.add("travelersbackpack:bat");
+                ret.add("travelersbackpack:bee");
+                ret.add("travelersbackpack:ocelot");
+                ret.add("travelersbackpack:cow");
+                ret.add("travelersbackpack:chicken");
+                ret.add("travelersbackpack:squid");
+                ret.add("travelersbackpack:hay");
+                ret.add("travelersbackpack:fox");
+                return ret;
+            }
+
+            private List<String> getCooldowns() {
+                List<String> ret = new ArrayList<>();
+                ret.add("travelersbackpack:creeper, 1200, 1800");
+                ret.add("travelersbackpack:cow, 480, 540");
+                ret.add("travelersbackpack:chicken, 360, 600");
+                ret.add("travelersbackpack:cake, 360, 480");
+                ret.add("travelersbackpack:melon, 120, 480");
+                return ret;
+            }
+
+            private List<String> getBackpackEffects() {
+                List<String> ret = new ArrayList<>();
+                ret.add("travelersbackpack:bat, minecraft:night_vision, 260, 300, 0");
+                ret.add("travelersbackpack:magma_cube, minecraft:fire_resistance, 260, 300, 0");
+                ret.add("travelersbackpack:squid, minecraft:water_breathing, 260, 300, 0");
+                ret.add("travelersbackpack:squid, minecraft:night_vision, 260, 300, 0");
+                ret.add("travelersbackpack:dragon, minecraft:regeneration, 260, 300, 0");
+                ret.add("travelersbackpack:dragon, minecraft:strength, 250, 290, 0");
+                ret.add("travelersbackpack:quartz, minecraft:haste, 260, 300, 0");
+                ret.add("travelersbackpack:fox, minecraft:jump_boost, 260, 300, 0");
+                return ret;
+            }
+        }
+
+        public static class SlownessDebuff {
+            public final ModConfigSpec.BooleanValue tooManyBackpacksSlowness;
+            public final ModConfigSpec.IntValue maxNumberOfBackpacks;
+            public final ModConfigSpec.DoubleValue slownessPerExcessedBackpack;
+
+            SlownessDebuff(ModConfigSpec.Builder builder, String path) {
+                builder.push(path);
+
+                tooManyBackpacksSlowness = builder
+                        .comment("Player gets slowness effect, if carries too many backpacks in inventory")
+                        .define("tooManyBackpacksSlowness", false);
+
+                maxNumberOfBackpacks = builder
+                        .comment("Maximum number of backpacks, which can be carried in inventory, without slowness effect")
+                        .defineInRange("maxNumberOfBackpacks", 3, 1, 37);
+
+                slownessPerExcessedBackpack = builder
+                        .defineInRange("slownessPerExcessedBackpack", 1, 0.1, 5);
+
+                builder.pop();
+            }
+        }
+
+        public void loadItemsFromConfig(List<? extends String> configList, List<Item> targetList) {
+            targetList.clear();
+            for(String registryName : configList) {
+                Identifier res = Identifier.tryParse(registryName);
+
+                if(BuiltInRegistries.ITEM.containsKey(res)) {
+                    targetList.add(BuiltInRegistries.ITEM.getValue(res));
+                }
+            }
+        }
+
+        public void loadEntityTypesFromConfig(List<? extends String> configList, List<EntityType> targetList) {
+            targetList.clear();
+            for(String registryName : configList) {
+                Identifier res = Identifier.tryParse(registryName);
+
+                if(BuiltInRegistries.ENTITY_TYPE.containsKey(res)) {
+                    targetList.add(BuiltInRegistries.ENTITY_TYPE.getValue(res));
+                }
+            }
+        }
+
+        public void loadBackpackEffectsFromConfig(List<? extends String> configList, Multimap<Item, BackpackEffect> backpackEffects) {
+            backpackEffects.clear();
+            try {
+                for(String entry : configList) {
+                    String[] parts = entry.replace(" ", "").split(",");
+                    if(parts.length == 5) {
+                        Identifier backpackRes = Identifier.tryParse(parts[0]);
+                        Identifier effectRes = Identifier.tryParse(parts[1]);
+
+                        if(BuiltInRegistries.ITEM.containsKey(backpackRes) && BuiltInRegistries.MOB_EFFECT.get(effectRes).isPresent() && BuiltInRegistries.ITEM.get(backpackRes).isPresent()) {
+                            Item backpack = BuiltInRegistries.ITEM.get(backpackRes).get().value();
+                            int minDuration = Integer.parseInt(parts[2]);
+                            int maxDuration = Integer.parseInt(parts[3]);
+                            int amplifier = Integer.parseInt(parts[4]);
+
+                            if(minDuration < 0 || maxDuration < 0 || amplifier < 0) {
+                                TravelersBackpack.LOGGER.error("Backpack Effects: duration and amplifier must be positive integers!");
+                            }
+
+                            if(minDuration > maxDuration) {
+                                TravelersBackpack.LOGGER.error("Backpack Effects: minDuration must be less than or equal to maxDuration!");
+                            }
+
+                            backpackEffects.put(backpack, new BackpackEffect(BuiltInRegistries.MOB_EFFECT.get(effectRes).get(), minDuration, maxDuration, amplifier));
+                        }
+                    }
+                }
+            } catch(Exception e) {
+                TravelersBackpack.LOGGER.error("Could not load Backpack Effect from Config! Check your config if entries are correct!");
+            }
+        }
+
+        public void loadCooldownsFromConfig(List<? extends String> config, Map<Item, Cooldown> cooldownConfigs) {
+            cooldownConfigs.clear();
+            try {
+                for(String entry : config) {
+                    String[] parts = entry.replace(" ", "").split(",");
+                    if(parts.length == 3) {
+                        Identifier backpackRes = Identifier.tryParse(parts[0]);
+                        if(BuiltInRegistries.ITEM.get(backpackRes).isEmpty()) {
+                            continue;
+                        }
+                        Item backpack = BuiltInRegistries.ITEM.get(backpackRes).get().value();
+                        int minCooldown = Integer.parseInt(parts[1]);
+                        int maxCooldown = Integer.parseInt(parts[2]);
+
+                        if(minCooldown < 0 || maxCooldown < 0) {
+                            TravelersBackpack.LOGGER.error("Cooldowns: cooldowns must be positive integers!");
+                        }
+
+                        if(minCooldown > maxCooldown) {
+                            TravelersBackpack.LOGGER.error("Cooldowns: minCooldown must be less than or equal to maxCooldown!");
+                        }
+
+                        cooldownConfigs.put(backpack, new Cooldown(minCooldown, maxCooldown));
+                    }
+                }
+            } catch(Exception e) {
+                TravelersBackpack.LOGGER.error("Could not load Cooldowns from Config! Check your config if entries are correct!");
+            }
+        }
+
+        public void initializeLists() {
+            if(!serverSpec.isLoaded()) {
+                return;
+            }
+
+            //Container
+            loadItemsFromConfig(TravelersBackpackConfig.SERVER.backpackSettings.toolSlotsAcceptableItems.get(), ToolSlotItemHandler.TOOL_SLOTS_ACCEPTABLE_ITEMS);
+            loadItemsFromConfig(TravelersBackpackConfig.SERVER.backpackSettings.blacklistedItems.get(), BackpackSlotItemHandler.BLACKLISTED_ITEMS);
+
+            //Spawns
+            loadItemsFromConfig(TravelersBackpackConfig.SERVER.world.overworldBackpacks.get(), ModItems.COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES);
+            loadItemsFromConfig(TravelersBackpackConfig.SERVER.world.netherBackpacks.get(), ModItems.COMPATIBLE_NETHER_BACKPACK_ENTRIES);
+
+            //Abilities
+            loadItemsFromConfig(TravelersBackpackConfig.SERVER.backpackAbilities.allowedAbilities.get(), com.tiviacz.travelersbackpack.common.BackpackAbilities.ALLOWED_ABILITIES);
+
+            //Entities
+            loadEntityTypesFromConfig(TravelersBackpackConfig.SERVER.world.possibleOverworldEntityTypes.get(), Reference.ALLOWED_TYPE_ENTRIES);
+            loadEntityTypesFromConfig(TravelersBackpackConfig.SERVER.world.possibleNetherEntityTypes.get(), Reference.ALLOWED_TYPE_ENTRIES);
+
+            //Backpack Effects
+            loadBackpackEffectsFromConfig(TravelersBackpackConfig.SERVER.backpackAbilities.backpackEffects.get(), com.tiviacz.travelersbackpack.common.BackpackAbilities.BACKPACK_EFFECTS);
 
             //Update allowed abilities if added effect
             com.tiviacz.travelersbackpack.common.BackpackAbilities.getBackpackEffects().entries().stream().forEach(entry -> {
@@ -53,357 +670,168 @@ public class TravelersBackpackConfig {
                 }
             });
 
-            //Remove all abilities that are not allowed //#TODO probably tweak
-            List<Item> allowed = new ArrayList<>(BackpackAbilities.ALLOWED_ABILITIES);
-            BackpackAbilities.ITEM_ABILITIES_LIST.removeIf(item -> !allowed.contains(item));
-            BackpackAbilities.BLOCK_ABILITIES_LIST.removeIf(item -> !allowed.contains(item));
-
             //Cooldowns
-            BackpackAbilities.getCooldowns().clear();
-            loadCooldownsFromConfig(config.backpackAbilities.cooldowns, com.tiviacz.travelersbackpack.common.BackpackAbilities.COOLDOWNS);
-
-            return InteractionResult.SUCCESS;
-        });
+            loadCooldownsFromConfig(TravelersBackpackConfig.SERVER.backpackAbilities.cooldowns.get(), com.tiviacz.travelersbackpack.common.BackpackAbilities.COOLDOWNS);
+        }
     }
 
-    public static boolean isToolAllowed(ItemStack value) {
-        return isOnItemList(value, getConfig().backpackSettings.toolSlotsAcceptableItems);
+    public static class Common {
+        public final ModConfigSpec.BooleanValue enableLoot;
+        public final ModConfigSpec.BooleanValue enableVillagerTrade;
+
+        Common(ModConfigSpec.Builder builder) {
+            builder.comment("Common config settings")
+                    .push("common");
+
+            enableLoot = builder
+                    .comment("Enables backpacks spawning in loot chests")
+                    .define("enableLoot", true);
+
+            enableVillagerTrade = builder
+                    .comment("Enables trade for Villager Backpack in Librarian villager trades")
+                    .define("enableVillagerTrade", true);
+
+            builder.pop();
+        }
     }
 
-    public static boolean isItemBlacklisted(ItemStack value) {
-        return isOnItemList(value, getConfig().backpackSettings.blacklistedItems);
-    }
+    public static class Client {
+        public final ModConfigSpec.BooleanValue showBackpackIconInInventory;
+        public final ModConfigSpec.BooleanValue sendBackpackCoordinatesMessage;
+        public final ModConfigSpec.BooleanValue obtainTips;
+        public final ModConfigSpec.BooleanValue renderTools;
+        public final ModConfigSpec.BooleanValue showSupporterBadge;
+        public final ToolsOverlay toolsOverlay;
+        public final Overlay overlay;
 
-    public static boolean isOverworldEntityTypePossible(Entity value) {
-        return isOnEntityList(value, getConfig().world.possibleOverworldEntityTypes);
-    }
+        Client(ModConfigSpec.Builder builder) {
+            builder.comment("Client-only settings")
+                    .push("client");
 
-    public static boolean isNetherEntityTypePossible(Entity value) {
-        return isOnEntityList(value, getConfig().world.possibleOverworldEntityTypes);
-    }
+            showBackpackIconInInventory = builder
+                    .comment("Whether the backpack icon should be visible in player's inventory")
+                    .define("showBackpackIconInInventory", true);
 
-    public static boolean isOnEntityList(Entity value, String[] list) {
-        return Arrays.stream(list).anyMatch(p -> p.equals(BuiltInRegistries.ENTITY_TYPE.getKey(value.getType()).toString()));
-    }
+            sendBackpackCoordinatesMessage = builder
+                    .comment("Sends a message to the player on death with backpack coordinates")
+                    .define("sendBackpackCoordinatesMessage", true);
 
-    public static boolean isOnItemList(ItemStack value, String[] list) {
-        return Arrays.stream(list).anyMatch(p -> p.equals(BuiltInRegistries.ITEM.getKey(value.getItem()).toString()));
-    }
+            obtainTips = builder
+                    .comment("Enables tip, how to obtain a backpack, if there's no crafting recipe for it")
+                    .define("obtainTips", true);
 
-    public static Item getRandomCompatibleOverworldBackpackEntry(RandomSource random) {
-        String[] backpacks = getConfig().world.overworldBackpacks;
-        String selectedBackpack = backpacks[random.nextInt(backpacks.length)];
+            renderTools = builder
+                    .comment("Render tools in tool slots on the backpack, while worn")
+                    .define("renderTools", true);
 
-        return BuiltInRegistries.ITEM.getOptional(Identifier.tryParse(selectedBackpack)).orElseThrow(() -> new NoSuchElementException("Wrong backpack registry name specified in the config!"));
-    }
+            showSupporterBadge = builder
+                    .comment("Only for supporters, option to show/hide the Supporter Star Badge. If you want to receive the Supporter Star Badge, visit my Ko-fi page :)! - https://ko-fi.com/tiviacz1337")
+                    .define("showSupporterBadge", true);
 
-    public static Item getRandomCompatibleNetherBackpackEntry(RandomSource random) {
-        String[] backpacks = getConfig().world.netherBackpacks;
-        String selectedBackpack = backpacks[random.nextInt(backpacks.length)];
+            toolsOverlay = new ToolsOverlay(builder, "The position of the Tools Overlay on the screen", "toolsOverlay");
 
-        return BuiltInRegistries.ITEM.getOptional(Identifier.tryParse(selectedBackpack)).orElseThrow(() -> new NoSuchElementException("Wrong backpack registry name specified in the config!"));
-    }
+            overlay = new Overlay(
+                    builder,
+                    "The position of the Overlay on the screen",
+                    "overlay",
+                    true, 20, 30
+            );
 
-    public static CompoundTag writeToNbt() {
-        TravelersBackpackConfigData data = getConfig();
-        CompoundTag nbt = new CompoundTag();
-
-        //Backpack Upgrades
-        nbt.putBoolean("backpackUpgrades.enableTanksUpgrade", data.backpackUpgrades.enableTanksUpgrade);
-        nbt.putBoolean("backpackUpgrades.enableCraftingUpgrade", data.backpackUpgrades.enableCraftingUpgrade);
-        nbt.putBoolean("backpackUpgrades.enableFurnaceUpgrade", data.backpackUpgrades.enableFurnaceUpgrade);
-        nbt.putBoolean("backpackUpgrades.enableSmokerUpgrade", data.backpackUpgrades.enableSmokerUpgrade);
-        nbt.putBoolean("backpackUpgrades.enableBlastFurnaceUpgrade", data.backpackUpgrades.enableBlastFurnaceUpgrade);
-        nbt.putBoolean("backpackUpgrades.enableJukeboxUpgrade", data.backpackUpgrades.enableJukeboxUpgrade);
-        //Pickup
-        nbt.putBoolean("backpackUpgrades.pickupUpgradeSettings.enableUpgrade", data.backpackUpgrades.pickupUpgradeSettings.enableUpgrade);
-        nbt.putInt("backpackUpgrades.pickupUpgradeSettings.filterSlotCount", data.backpackUpgrades.pickupUpgradeSettings.filterSlotCount);
-        nbt.putInt("backpackUpgrades.pickupUpgradeSettings.slotsInRow", data.backpackUpgrades.pickupUpgradeSettings.slotsInRow);
-        //Magnet
-        nbt.putBoolean("backpackUpgrades.magnetUpgradeSettings.enableUpgrade", data.backpackUpgrades.magnetUpgradeSettings.enableUpgrade);
-        nbt.putInt("backpackUpgrades.magnetUpgradeSettings.filterSlotCount", data.backpackUpgrades.magnetUpgradeSettings.filterSlotCount);
-        nbt.putInt("backpackUpgrades.magnetUpgradeSettings.slotsInRow", data.backpackUpgrades.magnetUpgradeSettings.slotsInRow);
-        nbt.putInt("backpackUpgrades.magnetUpgradeSettings.pullRange", data.backpackUpgrades.magnetUpgradeSettings.pullRange);
-        nbt.putInt("backpackUpgrades.magnetUpgradeSettings.tickRate", data.backpackUpgrades.magnetUpgradeSettings.tickRate);
-        //Feeding
-        nbt.putBoolean("backpackUpgrades.feedingUpgradeSettings.enableUpgrade", data.backpackUpgrades.feedingUpgradeSettings.enableUpgrade);
-        nbt.putInt("backpackUpgrades.feedingUpgradeSettings.filterSlotCount", data.backpackUpgrades.feedingUpgradeSettings.filterSlotCount);
-        nbt.putInt("backpackUpgrades.feedingUpgradeSettings.slotsInRow", data.backpackUpgrades.feedingUpgradeSettings.slotsInRow);
-        nbt.putInt("backpackUpgrades.feedingUpgradeSettings.tickRate", data.backpackUpgrades.feedingUpgradeSettings.tickRate);
-        //Refill
-        nbt.putBoolean("backpackUpgrades.refillUpgradeSettings.enableUpgrade", data.backpackUpgrades.refillUpgradeSettings.enableUpgrade);
-        nbt.putInt("backpackUpgrades.refillUpgradeSettings.filterSlotCount", data.backpackUpgrades.refillUpgradeSettings.filterSlotCount);
-        nbt.putInt("backpackUpgrades.refillUpgradeSettings.slotsInRow", data.backpackUpgrades.refillUpgradeSettings.slotsInRow);
-        nbt.putInt("backpackUpgrades.refillUpgradeSettings.tickRate", data.backpackUpgrades.refillUpgradeSettings.tickRate);
-        //Void
-        nbt.putBoolean("backpackUpgrades.voidUpgradeSettings.enableUpgrade", data.backpackUpgrades.voidUpgradeSettings.enableUpgrade);
-        nbt.putInt("backpackUpgrades.voidUpgradeSettings.filterSlotCount", data.backpackUpgrades.voidUpgradeSettings.filterSlotCount);
-        nbt.putInt("backpackUpgrades.voidUpgradeSettings.slotsInRow", data.backpackUpgrades.voidUpgradeSettings.slotsInRow);
-
-        //Backpack Settings
-
-        //Leather
-        nbt.putInt("backpackSettings.leather.inventorySlotCount", data.backpackSettings.leather.inventorySlotCount);
-        nbt.putInt("backpackSettings.leather.upgradeSlotCount", data.backpackSettings.leather.upgradeSlotCount);
-        nbt.putInt("backpackSettings.leather.toolSlotCount", data.backpackSettings.leather.toolSlotCount);
-        nbt.putLong("backpackSettings.leather.tankCapacityPerRow", data.backpackSettings.leather.tankCapacityPerRow);
-        //Iron
-        nbt.putInt("backpackSettings.iron.inventorySlotCount", data.backpackSettings.iron.inventorySlotCount);
-        nbt.putInt("backpackSettings.iron.upgradeSlotCount", data.backpackSettings.iron.upgradeSlotCount);
-        nbt.putInt("backpackSettings.iron.toolSlotCount", data.backpackSettings.iron.toolSlotCount);
-        nbt.putLong("backpackSettings.iron.tankCapacityPerRow", data.backpackSettings.iron.tankCapacityPerRow);
-        //Gold
-        nbt.putInt("backpackSettings.gold.inventorySlotCount", data.backpackSettings.gold.inventorySlotCount);
-        nbt.putInt("backpackSettings.gold.upgradeSlotCount", data.backpackSettings.gold.upgradeSlotCount);
-        nbt.putInt("backpackSettings.gold.toolSlotCount", data.backpackSettings.gold.toolSlotCount);
-        nbt.putLong("backpackSettings.gold.tankCapacityPerRow", data.backpackSettings.gold.tankCapacityPerRow);
-        //Diamond
-        nbt.putInt("backpackSettings.diamond.inventorySlotCount", data.backpackSettings.diamond.inventorySlotCount);
-        nbt.putInt("backpackSettings.diamond.upgradeSlotCount", data.backpackSettings.diamond.upgradeSlotCount);
-        nbt.putInt("backpackSettings.diamond.toolSlotCount", data.backpackSettings.diamond.toolSlotCount);
-        nbt.putLong("backpackSettings.diamond.tankCapacityPerRow", data.backpackSettings.diamond.tankCapacityPerRow);
-        //Netherite
-        nbt.putInt("backpackSettings.netherite.inventorySlotCount", data.backpackSettings.netherite.inventorySlotCount);
-        nbt.putInt("backpackSettings.netherite.upgradeSlotCount", data.backpackSettings.netherite.upgradeSlotCount);
-        nbt.putInt("backpackSettings.netherite.toolSlotCount", data.backpackSettings.netherite.toolSlotCount);
-        nbt.putLong("backpackSettings.netherite.tankCapacityPerRow", data.backpackSettings.netherite.tankCapacityPerRow);
-
-        nbt.putBoolean("backpackSettings.rightClickEquip", data.backpackSettings.rightClickEquip);
-        nbt.putBoolean("backpackSettings.rightClickUnequip", data.backpackSettings.rightClickUnequip);
-        nbt.putBoolean("backpackSettings.allowOnlyEquippedBackpack", data.backpackSettings.allowOnlyEquippedBackpack);
-        nbt.putBoolean("backpackSettings.allowOpeningFromSlot", data.backpackSettings.allowOpeningFromSlot);
-        nbt.putBoolean("backpackSettings.preventMultiplePlayersAccess", data.backpackSettings.preventMultiplePlayersAccess);
-        nbt.putBoolean("backpackSettings.invulnerableBackpack", data.backpackSettings.invulnerableBackpack);
-        nbt.putBoolean("backpackSettings.allowToolSwapping", data.backpackSettings.allowToolSwapping);
-        nbt.putString("backpackSettings.toolSlotsAcceptableItems", String.join(",", data.backpackSettings.toolSlotsAcceptableItems));
-        nbt.putString("backpackSettings.blacklistedItems", String.join(",", data.backpackSettings.blacklistedItems));
-        nbt.putBoolean("backpackSettings.toolSlotsAcceptEverything", data.backpackSettings.toolSlotsAcceptEverything);
-        nbt.putBoolean("backpackSettings.allowShulkerBoxes", data.backpackSettings.allowShulkerBoxes); //#TODO disable backpacks
-        nbt.putBoolean("backpackSettings.voidProtection", data.backpackSettings.voidProtection);
-        nbt.putBoolean("backpackSettings.backpackDeathPlace", data.backpackSettings.backpackDeathPlace);
-        nbt.putBoolean("backpackSettings.backpackForceDeathPlace", data.backpackSettings.backpackForceDeathPlace);
-        nbt.putBoolean("backpackSettings.quickSleepingBag", data.backpackSettings.quickSleepingBag);
-        nbt.putBoolean("backpackSettings.enableSleepingBagSpawnPoint", data.backpackSettings.enableSleepingBagSpawnPoint);
-        nbt.putBoolean("backpackSettings.backSlotIntegration", data.backpackSettings.backSlotIntegration);
-
-        //World
-        nbt.putBoolean("world.enableLoot", data.world.enableLoot);
-        nbt.putFloat("world.chance", data.world.chance);
-        nbt.putBoolean("world.spawnEntitiesWithBackpack", data.world.spawnEntitiesWithBackpack);
-        nbt.putString("world.possibleOverworldEntityTypes", String.join(",", data.world.possibleOverworldEntityTypes));
-        nbt.putString("world.possibleNetherEntityTypes", String.join(",", data.world.possibleNetherEntityTypes));
-        nbt.putString("world.overworldBackpacks", String.join(",", data.world.overworldBackpacks));
-        nbt.putString("world.netherBackpacks", String.join(",", data.world.netherBackpacks));
-        nbt.putBoolean("world.enableVillagerTrade", data.world.enableVillagerTrade);
-
-        //Backpack Abilities
-        nbt.putBoolean("backpackAbilities.enableBackpackAbilities", data.backpackAbilities.enableBackpackAbilities);
-        nbt.putBoolean("backpackAbilities.forceAbilityEnabled", data.backpackAbilities.forceAbilityEnabled);
-        nbt.putString("backpackAbilities.allowedAbilities", String.join(",", data.backpackAbilities.allowedAbilities));
-        nbt.putString("backpackAbilities.backpackEffects", String.join(",", data.backpackAbilities.backpackEffects));
-        nbt.putString("backpackAbilities.cooldowns", String.join(",", data.backpackAbilities.cooldowns));
-
-        //Slowness Debuff
-        nbt.putBoolean("slownessDebuff.tooManyBackpacksSlowness", data.slownessDebuff.tooManyBackpacksSlowness);
-        nbt.putInt("slownessDebuff.maxNumberOfBackpacks", data.slownessDebuff.maxNumberOfBackpacks);
-        nbt.putInt("slownessDebuff.slownessPerExcessedBackpack", data.slownessDebuff.slownessPerExcessedBackpack);
-
-        return nbt;
-    }
-
-    public static TravelersBackpackConfigData readFromNbt(CompoundTag nbt) {
-        TravelersBackpackConfigData client = getConfig();
-        TravelersBackpackConfigData data = new TravelersBackpackConfigData();
-
-        //Client
-
-        //Tools Overlay
-        data.client.toolsOverlay.offsetX = client.client.toolsOverlay.offsetX;
-        data.client.toolsOverlay.offsetY = client.client.toolsOverlay.offsetY;
-
-        //Overlay
-        data.client.overlay.enableOverlay = client.client.overlay.enableOverlay;
-        data.client.overlay.offsetX = client.client.overlay.offsetX;
-        data.client.overlay.offsetY = client.client.overlay.offsetY;
-
-        data.client.showBackpackIconInInventory = client.client.showBackpackIconInInventory;
-        data.client.sendBackpackCoordinatesMessage = client.client.sendBackpackCoordinatesMessage;
-        data.client.enableToolCycling = client.client.enableToolCycling;
-        data.client.disableScrollWheel = client.client.disableScrollWheel;
-        data.client.obtainTips = client.client.obtainTips;
-        data.client.renderTools = client.client.renderTools;
-        data.client.showSupporterBadge = client.client.showSupporterBadge;
-
-        if(nbt == null) {
-            return data;
+            builder.pop();
         }
 
-        data.backpackUpgrades.enableTanksUpgrade = nbt.getBoolean("backpackUpgrades.enableTanksUpgrade").get();
-        data.backpackUpgrades.enableCraftingUpgrade = nbt.getBoolean("backpackUpgrades.enableCraftingUpgrade").get();
-        data.backpackUpgrades.enableFurnaceUpgrade = nbt.getBoolean("backpackUpgrades.enableFurnaceUpgrade").get();
-        data.backpackUpgrades.enableSmokerUpgrade = nbt.getBoolean("backpackUpgrades.enableSmokerUpgrade").get();
-        data.backpackUpgrades.enableBlastFurnaceUpgrade = nbt.getBoolean("backpackUpgrades.enableBlastFurnaceUpgrade").get();
-        data.backpackUpgrades.enableJukeboxUpgrade = nbt.getBoolean("backpackUpgrades.enableJukeboxUpgrade").get();
+        public static class ToolsOverlay {
+            public final ModConfigSpec.BooleanValue swapOnClose;
+            public final ModConfigSpec.BooleanValue showTooltip;
+            public final ModConfigSpec.BooleanValue renderBackpackIconInCenter;
+            public final ModConfigSpec.DoubleValue opacity;
+            public final ModConfigSpec.IntValue offsetX;
+            public final ModConfigSpec.IntValue offsetY;
 
-        data.backpackUpgrades.pickupUpgradeSettings.enableUpgrade = nbt.getBoolean("backpackUpgrades.pickupUpgradeSettings.enableUpgrade").get();
-        data.backpackUpgrades.pickupUpgradeSettings.filterSlotCount = nbt.getInt("backpackUpgrades.pickupUpgradeSettings.filterSlotCount").get();
-        data.backpackUpgrades.pickupUpgradeSettings.slotsInRow = nbt.getInt("backpackUpgrades.pickupUpgradeSettings.slotsInRow").get();
+            ToolsOverlay(ModConfigSpec.Builder builder, String comment, String path) {
+                builder.comment(comment)
+                        .push(path);
+                swapOnClose = builder
+                        .comment("If true, the currently held item will be swapped with the selected tool belt slot when closing the tool belt GUI")
+                        .define("swapOnClose", true);
 
-        data.backpackUpgrades.magnetUpgradeSettings.enableUpgrade = nbt.getBoolean("backpackUpgrades.magnetUpgradeSettings.enableUpgrade").get();
-        data.backpackUpgrades.magnetUpgradeSettings.filterSlotCount = nbt.getInt("backpackUpgrades.magnetUpgradeSettings.filterSlotCount").get();
-        data.backpackUpgrades.magnetUpgradeSettings.slotsInRow = nbt.getInt("backpackUpgrades.magnetUpgradeSettings.slotsInRow").get();
-        data.backpackUpgrades.magnetUpgradeSettings.pullRange = nbt.getInt("backpackUpgrades.magnetUpgradeSettings.pullRange").get();
-        data.backpackUpgrades.magnetUpgradeSettings.tickRate = nbt.getInt("backpackUpgrades.magnetUpgradeSettings.tickRate").get();
+                showTooltip = builder
+                        .comment("Displays the full tooltip when hovering over an item in the tool belt. If false, only the item name is shown")
+                        .define("showTooltip", false);
 
-        data.backpackUpgrades.feedingUpgradeSettings.enableUpgrade = nbt.getBoolean("backpackUpgrades.feedingUpgradeSettings.enableUpgrade").get();
-        data.backpackUpgrades.feedingUpgradeSettings.filterSlotCount = nbt.getInt("backpackUpgrades.feedingUpgradeSettings.filterSlotCount").get();
-        data.backpackUpgrades.feedingUpgradeSettings.slotsInRow = nbt.getInt("backpackUpgrades.feedingUpgradeSettings.slotsInRow").get();
-        data.backpackUpgrades.feedingUpgradeSettings.tickRate = nbt.getInt("backpackUpgrades.feedingUpgradeSettings.tickRate").get();
+                renderBackpackIconInCenter = builder
+                        .comment("Render backpack icon in the center of the tools overlay")
+                        .define("renderBackpackIconInCenter", true);
 
-        data.backpackUpgrades.refillUpgradeSettings.enableUpgrade = nbt.getBoolean("backpackUpgrades.refillUpgradeSettings.enableUpgrade").get();
-        data.backpackUpgrades.refillUpgradeSettings.filterSlotCount = nbt.getInt("backpackUpgrades.refillUpgradeSettings.filterSlotCount").get();
-        data.backpackUpgrades.refillUpgradeSettings.slotsInRow = nbt.getInt("backpackUpgrades.refillUpgradeSettings.slotsInRow").get();
-        data.backpackUpgrades.refillUpgradeSettings.tickRate = nbt.getInt("backpackUpgrades.refillUpgradeSettings.tickRate").get();
+                opacity = builder
+                        .comment("Overlay opacity")
+                        .defineInRange("opacity", 0.75, 0, 1);
 
-        data.backpackUpgrades.voidUpgradeSettings.enableUpgrade = nbt.getBoolean("backpackUpgrades.voidUpgradeSettings.enableUpgrade").get();
-        data.backpackUpgrades.voidUpgradeSettings.filterSlotCount = nbt.getInt("backpackUpgrades.voidUpgradeSettings.filterSlotCount").get();
-        data.backpackUpgrades.voidUpgradeSettings.slotsInRow = nbt.getInt("backpackUpgrades.voidUpgradeSettings.slotsInRow").get();
+                offsetX = builder
+                        .comment("X offset")
+                        .defineInRange("offsetX", 0, Integer.MIN_VALUE, Integer.MAX_VALUE);
 
-        //Leather
-        data.backpackSettings.leather.inventorySlotCount = nbt.getInt("backpackSettings.leather.inventorySlotCount").get();
-        data.backpackSettings.leather.upgradeSlotCount = nbt.getInt("backpackSettings.leather.upgradeSlotCount").get();
-        data.backpackSettings.leather.toolSlotCount = nbt.getInt("backpackSettings.leather.toolSlotCount").get();
-        data.backpackSettings.leather.tankCapacityPerRow = nbt.getLong("backpackSettings.leather.tankCapacityPerRow").get();
-        //Iron
-        data.backpackSettings.iron.inventorySlotCount = nbt.getInt("backpackSettings.iron.inventorySlotCount").get();
-        data.backpackSettings.iron.upgradeSlotCount = nbt.getInt("backpackSettings.iron.upgradeSlotCount").get();
-        data.backpackSettings.iron.toolSlotCount = nbt.getInt("backpackSettings.iron.toolSlotCount").get();
-        data.backpackSettings.iron.tankCapacityPerRow = nbt.getLong("backpackSettings.iron.tankCapacityPerRow").get();
-        //Gold
-        data.backpackSettings.gold.inventorySlotCount = nbt.getInt("backpackSettings.gold.inventorySlotCount").get();
-        data.backpackSettings.gold.upgradeSlotCount = nbt.getInt("backpackSettings.gold.upgradeSlotCount").get();
-        data.backpackSettings.gold.toolSlotCount = nbt.getInt("backpackSettings.gold.toolSlotCount").get();
-        data.backpackSettings.gold.tankCapacityPerRow = nbt.getLong("backpackSettings.gold.tankCapacityPerRow").get();
-        //Diamond
-        data.backpackSettings.diamond.inventorySlotCount = nbt.getInt("backpackSettings.diamond.inventorySlotCount").get();
-        data.backpackSettings.diamond.upgradeSlotCount = nbt.getInt("backpackSettings.diamond.upgradeSlotCount").get();
-        data.backpackSettings.diamond.toolSlotCount = nbt.getInt("backpackSettings.diamond.toolSlotCount").get();
-        data.backpackSettings.diamond.tankCapacityPerRow = nbt.getLong("backpackSettings.diamond.tankCapacityPerRow").get();
-        //Netherite
-        data.backpackSettings.netherite.inventorySlotCount = nbt.getInt("backpackSettings.netherite.inventorySlotCount").get();
-        data.backpackSettings.netherite.upgradeSlotCount = nbt.getInt("backpackSettings.netherite.upgradeSlotCount").get();
-        data.backpackSettings.netherite.toolSlotCount = nbt.getInt("backpackSettings.netherite.toolSlotCount").get();
-        data.backpackSettings.netherite.tankCapacityPerRow = nbt.getLong("backpackSettings.netherite.tankCapacityPerRow").get();
+                offsetY = builder
+                        .comment("Y offset")
+                        .defineInRange("offsetY", 0, Integer.MIN_VALUE, Integer.MAX_VALUE);
 
-        data.backpackSettings.rightClickEquip = nbt.getBoolean("backpackSettings.rightClickEquip").get();
-        data.backpackSettings.rightClickUnequip = nbt.getBoolean("backpackSettings.rightClickUnequip").get();
-        data.backpackSettings.allowOnlyEquippedBackpack = nbt.getBoolean("backpackSettings.allowOnlyEquippedBackpack").get();
-        data.backpackSettings.allowOpeningFromSlot = nbt.getBoolean("backpackSettings.allowOpeningFromSlot").get();
-        data.backpackSettings.preventMultiplePlayersAccess = nbt.getBoolean("backpackSettings.preventMultiplePlayersAccess").get();
-        data.backpackSettings.invulnerableBackpack = nbt.getBoolean("backpackSettings.invulnerableBackpack").get();
-        data.backpackSettings.allowToolSwapping = nbt.getBoolean("backpackSettings.allowToolSwapping").get();
-        data.backpackSettings.toolSlotsAcceptableItems = nbt.getString("backpackSettings.toolSlotsAcceptableItems").get().split(",");
-        data.backpackSettings.blacklistedItems = nbt.getString("backpackSettings.blacklistedItems").get().split(",");
-        data.backpackSettings.toolSlotsAcceptEverything = nbt.getBoolean("backpackSettings.toolSlotsAcceptEverything").get();
-        data.backpackSettings.allowShulkerBoxes = nbt.getBoolean("backpackSettings.allowShulkerBoxes").get();
-        data.backpackSettings.voidProtection = nbt.getBoolean("backpackSettings.voidProtection").get();
-        data.backpackSettings.backpackDeathPlace = nbt.getBoolean("backpackSettings.backpackDeathPlace").get();
-        data.backpackSettings.backpackForceDeathPlace = nbt.getBoolean("backpackSettings.backpackForceDeathPlace").get();
-        data.backpackSettings.quickSleepingBag = nbt.getBoolean("backpackSettings.quickSleepingBag").get();
-        data.backpackSettings.enableSleepingBagSpawnPoint = nbt.getBoolean("backpackSettings.enableSleepingBagSpawnPoint").get();
-        data.backpackSettings.backSlotIntegration = nbt.getBoolean("backpackSettings.backSlotIntegration").get();
+                builder.pop();
+            }
+        }
 
-        //World
-        data.world.enableLoot = nbt.getBoolean("world.enableLoot").get();
-        data.world.chance = nbt.getFloat("world.chance").get();
-        data.world.spawnEntitiesWithBackpack = nbt.getBoolean("world.spawnEntitiesWithBackpack").get();
-        data.world.possibleOverworldEntityTypes = nbt.getString("world.possibleOverworldEntityTypes").get().split(",");
-        data.world.possibleNetherEntityTypes = nbt.getString("world.possibleNetherEntityTypes").get().split(",");
-        data.world.overworldBackpacks = nbt.getString("world.overworldBackpacks").get().split(",");
-        data.world.netherBackpacks = nbt.getString("world.netherBackpacks").get().split(",");
-        data.world.enableVillagerTrade = nbt.getBoolean("world.enableVillagerTrade").get();
+        public static class Overlay {
+            public final ModConfigSpec.BooleanValue enableOverlay;
+            public final ModConfigSpec.IntValue offsetX;
+            public final ModConfigSpec.IntValue offsetY;
 
-        //Backpack Abilities
-        data.backpackAbilities.enableBackpackAbilities = nbt.getBoolean("backpackAbilities.enableBackpackAbilities").get();
-        data.backpackAbilities.forceAbilityEnabled = nbt.getBoolean("backpackAbilities.forceAbilityEnabled").get();
-        data.backpackAbilities.allowedAbilities = nbt.getString("backpackAbilities.allowedAbilities").get().split(",");
-        data.backpackAbilities.backpackEffects = nbt.getString("backpackAbilities.backpackEffects").get().split(",");
-        data.backpackAbilities.cooldowns = nbt.getString("backpackAbilities.cooldowns").get().split(",");
+            Overlay(ModConfigSpec.Builder builder, String comment, String path, boolean defaultOverlay, int defaultX, int defaultY) {
+                builder.comment(comment)
+                        .push(path);
 
-        //Slowness Debuff
-        data.slownessDebuff.tooManyBackpacksSlowness = nbt.getBoolean("slownessDebuff.tooManyBackpacksSlowness").get();
-        data.slownessDebuff.maxNumberOfBackpacks = nbt.getInt("slownessDebuff.maxNumberOfBackpacks").get();
-        data.slownessDebuff.slownessPerExcessedBackpack = nbt.getInt("slownessDebuff.slownessPerExcessedBackpack").get();
-        return data;
-    }
+                enableOverlay = builder
+                        .comment("Enables tanks and tool slots overlay, while backpack is worn")
+                        .define("enableOverlay", defaultOverlay);
 
-    public static void loadItemsFromConfig(String[] configList, List<Item> targetList) {
-        for(String registryName : configList) {
-            Identifier res = Identifier.tryParse(registryName);
+                offsetX = builder
+                        .comment("Offsets to left side")
+                        .defineInRange("offsetX", defaultX, Integer.MIN_VALUE, Integer.MAX_VALUE);
 
-            if(BuiltInRegistries.ITEM.get(res).isPresent()) {
-                targetList.add(BuiltInRegistries.ITEM.getValue(res));
+                offsetY = builder
+                        .comment("Offsets to up")
+                        .defineInRange("offsetY", defaultY, Integer.MIN_VALUE, Integer.MAX_VALUE);
+
+                builder.pop();
             }
         }
     }
 
-    public static void loadBackpackEffectsFromConfig(String[] configList, Multimap<Item, BackpackEffect> backpackEffects) {
-        try {
-            for(String entry : configList) {
-                String[] parts = entry.replace(" ", "").split(";");
-                if(parts.length == 5) {
-                    Identifier backpackRes = Identifier.tryParse(parts[0]);
-                    Identifier effectRes = Identifier.tryParse(parts[1]);
+    //Server
+    public static final ModConfigSpec serverSpec;
+    public static final Server SERVER;
 
-                    if(BuiltInRegistries.ITEM.containsKey(backpackRes) && BuiltInRegistries.MOB_EFFECT.get(effectRes).isPresent() && BuiltInRegistries.ITEM.get(backpackRes).isPresent()) {
-                        Item backpack = BuiltInRegistries.ITEM.getValue(backpackRes);
-                        int minDuration = Integer.parseInt(parts[2]);
-                        int maxDuration = Integer.parseInt(parts[3]);
-                        int amplifier = Integer.parseInt(parts[4]);
-
-                        if(minDuration < 0 || maxDuration < 0 || amplifier < 0) {
-                            TravelersBackpack.LOGGER.error("Backpack Effects: duration and amplifier must be positive integers!");
-                        }
-
-                        if(minDuration > maxDuration) {
-                            TravelersBackpack.LOGGER.error("Backpack Effects: minDuration must be less than or equal to maxDuration!");
-                        }
-
-                        backpackEffects.put(backpack, new BackpackEffect(BuiltInRegistries.MOB_EFFECT.get(effectRes).get(), minDuration, maxDuration, amplifier));
-                    }
-                }
-            }
-        } catch(Exception e) {
-            TravelersBackpack.LOGGER.error("Could not load Backpack Effect from Config! Check your config if entries are correct!");
-        }
+    static {
+        Pair<Server, ModConfigSpec> specPair = new ModConfigSpec.Builder().configure(Server::new);
+        serverSpec = specPair.getRight();
+        SERVER = specPair.getLeft();
     }
 
-    public static void loadCooldownsFromConfig(String[] config, Map<Item, Cooldown> cooldownConfigs) {
-        try {
-            for(String entry : config) {
-                String[] parts = entry.replace(" ", "").split(";");
-                if(parts.length == 3) {
-                    Identifier backpackRes = Identifier.tryParse(parts[0]);
-                    if(BuiltInRegistries.ITEM.get(backpackRes).isEmpty()) {
-                        continue;
-                    }
-                    Item backpack = BuiltInRegistries.ITEM.getValue(backpackRes);
-                    int minCooldown = Integer.parseInt(parts[1]);
-                    int maxCooldown = Integer.parseInt(parts[2]);
+    //Common
+    public static final ModConfigSpec commonSpec;
+    public static final Common COMMON;
 
-                    if(minCooldown < 0 || maxCooldown < 0) {
-                        TravelersBackpack.LOGGER.error("Cooldowns: cooldowns must be positive integers!");
-                    }
+    static {
+        Pair<Common, ModConfigSpec> specPair = new ModConfigSpec.Builder().configure(Common::new);
+        commonSpec = specPair.getRight();
+        COMMON = specPair.getLeft();
+    }
 
-                    if(minCooldown > maxCooldown) {
-                        TravelersBackpack.LOGGER.error("Cooldowns: minCooldown must be less than or equal to maxCooldown!");
-                    }
+    //Client
+    public static final ModConfigSpec clientSpec;
+    public static final Client CLIENT;
 
-                    cooldownConfigs.put(backpack, new Cooldown(minCooldown, maxCooldown));
-                }
-            }
-        } catch(Exception e) {
-            TravelersBackpack.LOGGER.error("Could not load Cooldowns from Config! Check your config if entries are correct!");
-        }
+    static {
+        Pair<Client, ModConfigSpec> specPair = new ModConfigSpec.Builder().configure(Client::new);
+        clientSpec = specPair.getRight();
+        CLIENT = specPair.getLeft();
     }
 }

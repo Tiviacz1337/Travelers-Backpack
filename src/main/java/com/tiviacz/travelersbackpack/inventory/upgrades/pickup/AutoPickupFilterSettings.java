@@ -31,7 +31,7 @@ public class AutoPickupFilterSettings extends FilterSettingsBase {
     public static final int IGNORE_COMPONENTS = 1;
 
     public AutoPickupFilterSettings(ItemStackHandler storage, List<ItemStack> items, List<Integer> filterSettings, List<String> filterTags) {
-        super(storage, items, filterSettings, filterTags, TravelersBackpackConfig.getConfig().backpackUpgrades.pickupUpgradeSettings.filterSlotCount);
+        super(storage, items, filterSettings, filterTags, TravelersBackpackConfig.SERVER.backpackUpgrades.pickupUpgradeSettings.filterSlotCount.get());
     }
 
     @Override

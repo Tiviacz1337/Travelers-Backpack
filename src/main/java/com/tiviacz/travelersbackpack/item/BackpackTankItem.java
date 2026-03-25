@@ -11,6 +11,9 @@ public class BackpackTankItem extends Item {
 
     @Override
     public boolean isEnabled(FeatureFlagSet enabledFeatures) {
-        return TravelersBackpackConfig.getConfig().backpackUpgrades.enableTanksUpgrade && super.isEnabled(enabledFeatures);
+        if(TravelersBackpackConfig.serverSpec.isLoaded()) {
+            return TravelersBackpackConfig.SERVER.backpackUpgrades.enableTanksUpgrade.get() && super.isEnabled(enabledFeatures);
+        }
+        return super.isEnabled(enabledFeatures);
     }
 }

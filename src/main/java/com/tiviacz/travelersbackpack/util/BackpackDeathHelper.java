@@ -29,8 +29,8 @@ public class BackpackDeathHelper {
 
         boolean drop = true;
 
-        if(TravelersBackpackConfig.getConfig().backpackSettings.backpackDeathPlace) {
-            if(TravelersBackpackConfig.getConfig().backpackSettings.backpackForceDeathPlace)
+        if(TravelersBackpackConfig.SERVER.backpackSettings.backpackDeathPlace.get()) {
+            if(TravelersBackpackConfig.SERVER.backpackSettings.backpackForceDeathPlace.get())
                 drop = !placeBackpack(level, player, player.blockPosition(), stack);
             else drop = !tryPlace(level, player, stack);
         }
@@ -42,11 +42,11 @@ public class BackpackDeathHelper {
         Block block = Block.byItem(stack.getItem());
         int y = placePos.getY();
 
-        if(TravelersBackpackConfig.getConfig().backpackSettings.backpackForceDeathPlace) {
+        if(TravelersBackpackConfig.SERVER.backpackSettings.backpackForceDeathPlace.get()) {
             BlockPos playerPos = player.blockPosition();
             y = playerPos.getY();
 
-            if(TravelersBackpackConfig.getConfig().backpackSettings.voidProtection) {
+            if(TravelersBackpackConfig.SERVER.backpackSettings.voidProtection.get()) {
                 if(y <= level.getMinY()) {
                     y = level.getMinY() + 5;
                 }
@@ -121,7 +121,7 @@ public class BackpackDeathHelper {
 
         for(int Y : positions) {
             int y = (int)player.getY();
-            if(TravelersBackpackConfig.getConfig().backpackSettings.voidProtection) {
+            if(TravelersBackpackConfig.SERVER.backpackSettings.voidProtection.get()) {
                 if(y <= level.getMinY()) {
                     y = level.getMinY() + 5;
                 }

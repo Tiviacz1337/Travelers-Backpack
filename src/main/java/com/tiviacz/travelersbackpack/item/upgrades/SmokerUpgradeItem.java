@@ -19,7 +19,10 @@ public class SmokerUpgradeItem extends UpgradeItem {
 
     @Override
     public boolean isEnabled(FeatureFlagSet enabledFeatures) {
-        return TravelersBackpackConfig.getConfig().backpackUpgrades.enableSmokerUpgrade && super.isEnabled(enabledFeatures);
+        if(TravelersBackpackConfig.serverSpec.isLoaded()) {
+            return TravelersBackpackConfig.SERVER.backpackUpgrades.enableSmokerUpgrade.get() && super.isEnabled(enabledFeatures);
+        }
+        return super.isEnabled(enabledFeatures);
     }
 
     @Override

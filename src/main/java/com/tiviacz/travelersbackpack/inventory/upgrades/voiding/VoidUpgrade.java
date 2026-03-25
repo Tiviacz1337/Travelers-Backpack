@@ -20,8 +20,8 @@ import java.util.List;
 public class VoidUpgrade extends FilterUpgradeBase<VoidUpgrade, VoidFilterSettings> implements IEnable {
     public VoidUpgrade(UpgradeManager manager, int dataHolderSlot, NonNullList<ItemStack> filter, List<String> filterTags) {
         super(manager, dataHolderSlot, new Point(66, 49),
-                TravelersBackpackConfig.getConfig().backpackUpgrades.voidUpgradeSettings.filterSlotCount,
-                TravelersBackpackConfig.getConfig().backpackUpgrades.voidUpgradeSettings.slotsInRow, filter, filterTags);
+                TravelersBackpackConfig.SERVER.backpackUpgrades.voidUpgradeSettings.filterSlotCount.get(),
+                TravelersBackpackConfig.SERVER.backpackUpgrades.voidUpgradeSettings.slotsInRow.get(), filter, filterTags);
     }
 
     @Override

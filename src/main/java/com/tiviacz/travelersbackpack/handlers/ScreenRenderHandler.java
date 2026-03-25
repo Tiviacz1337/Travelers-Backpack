@@ -91,7 +91,7 @@ public class ScreenRenderHandler {
                 }
             }
 
-            if(!TravelersBackpackConfig.getConfig().client.showBackpackIconInInventory) return;
+            if(!TravelersBackpackConfig.CLIENT.showBackpackIconInInventory.get()) return;
 
             if(ComponentUtils.isWearingBackpack(player)) {
                 if(TravelersBackpack.enableIntegration()) return;
@@ -137,7 +137,7 @@ public class ScreenRenderHandler {
                         }
                     }
 
-                    if(!TravelersBackpackConfig.getConfig().client.showBackpackIconInInventory) return false;
+                    if(!TravelersBackpackConfig.CLIENT.showBackpackIconInInventory.get()) return false;
 
                     if(ComponentUtils.isWearingBackpack(player)) {
                         if(TravelersBackpack.enableIntegration()) return false;

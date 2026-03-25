@@ -41,8 +41,8 @@ public class FeedingUpgrade extends FilterUpgradeBase<FeedingUpgrade, FeedingFil
 
     public FeedingUpgrade(UpgradeManager manager, int dataHolderSlot, NonNullList<ItemStack> filter) {
         super(manager, dataHolderSlot, new Point(66, 49),
-                TravelersBackpackConfig.getConfig().backpackUpgrades.feedingUpgradeSettings.filterSlotCount,
-                TravelersBackpackConfig.getConfig().backpackUpgrades.feedingUpgradeSettings.slotsInRow, filter, List.of());
+                TravelersBackpackConfig.SERVER.backpackUpgrades.feedingUpgradeSettings.filterSlotCount.get(),
+                TravelersBackpackConfig.SERVER.backpackUpgrades.feedingUpgradeSettings.slotsInRow.get(), filter, List.of());
     }
 
     @Override
@@ -89,7 +89,7 @@ public class FeedingUpgrade extends FilterUpgradeBase<FeedingUpgrade, FeedingFil
 
     @Override
     public int getTickRate() {
-        return TravelersBackpackConfig.getConfig().backpackUpgrades.feedingUpgradeSettings.tickRate;
+        return TravelersBackpackConfig.SERVER.backpackUpgrades.feedingUpgradeSettings.tickRate.get();
     }
 
     @Override

@@ -55,7 +55,7 @@ public final class RadialToolsOverlay {
 
         int x = centerX - 256 / 2;
         int y = centerY - 256 / 2;
-        double opacity = Math.min(t, TravelersBackpackConfig.getConfig().client.toolsOverlay.opacity);
+        double opacity = Math.min(t, TravelersBackpackConfig.CLIENT.toolsOverlay.opacity.get());
 
         int i = ARGB.white((float)opacity);
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TOOLS_OVERLAY, x, y, 0, 0, 256, 256, 256, 256, 256, 256, i);
@@ -125,7 +125,7 @@ public final class RadialToolsOverlay {
         } else if(hoveredResult >= 0) {
             ItemStack hoveredStack = tools.get(hoveredResult);
             if(!hoveredStack.isEmpty()) {
-                List<Component> tooltip = (TravelersBackpackConfig.getConfig().client.toolsOverlay.showTooltip || hoveredStack.getItem() instanceof HoseItem) ? getTooltipFromItem(mc, hoveredStack) : new ArrayList<>(List.of(hoveredStack.getHoverName()));
+                List<Component> tooltip = (TravelersBackpackConfig.CLIENT.toolsOverlay.showTooltip.get() || hoveredStack.getItem() instanceof HoseItem) ? getTooltipFromItem(mc, hoveredStack) : new ArrayList<>(List.of(hoveredStack.getHoverName()));
                 //Fluid contents for backpack tanks
                 if(hoveredStack.getItem() instanceof BackpackTankItem) {
                     if(!backpack.getOrDefault(ModDataComponents.RENDER_INFO, RenderInfo.EMPTY).isEmpty()) {
@@ -150,7 +150,7 @@ public final class RadialToolsOverlay {
         }
 
         if(renderCenteredItem) {
-            if(TravelersBackpackConfig.getConfig().client.toolsOverlay.renderBackpackIconInCenter) {
+            if(TravelersBackpackConfig.CLIENT.toolsOverlay.renderBackpackIconInCenter.get()) {
                 drawCrosshair = false;
                 renderCenteredItem(guiGraphics, font, backpack, centerX, centerY, 1.25F);
             }

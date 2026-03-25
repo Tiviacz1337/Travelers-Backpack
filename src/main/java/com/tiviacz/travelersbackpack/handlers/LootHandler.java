@@ -12,7 +12,7 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCon
 
 public class LootHandler {
     public static void registerListeners() {
-        if(TravelersBackpackConfig.getConfig().world.enableLoot) {
+        if(TravelersBackpackConfig.COMMON.enableLoot.get()) {
             LootTableEvents.MODIFY.register((key, tableBuilder, source, provider) ->
             {
                 if(BuiltInLootTables.ABANDONED_MINESHAFT.equals(key)) {

@@ -30,7 +30,7 @@ public class VoidFilterSettings extends FilterSettingsBase {
     public static final int IGNORE_COMPONENTS = 1;
 
     public VoidFilterSettings(ItemStackHandler storage, List<ItemStack> items, List<Integer> filterSettings, List<String> filterTags) {
-        super(storage, items, filterSettings, filterTags, TravelersBackpackConfig.getConfig().backpackUpgrades.voidUpgradeSettings.filterSlotCount);
+        super(storage, items, filterSettings, filterTags, TravelersBackpackConfig.SERVER.backpackUpgrades.voidUpgradeSettings.filterSlotCount.get());
     }
 
     @Override

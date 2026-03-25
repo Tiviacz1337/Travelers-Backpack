@@ -1,3 +1,4 @@
+### ✨ Changed Cloth Config dependency to Forge Config Api Port - CONFIG CHANGES HAVE TO BE REAPPLIED!  
 ✨ Following upgrades can be used when backpack is placed as a block  
 ✨ Magnet Upgrade - teleports items within pull radius (default 5 blocks) and places them directly in front of backpack  
 ✨ Pickup Upgrade - collects items around backpack (1 block) (and items thrown at backpack) and places them inside backpack storage  

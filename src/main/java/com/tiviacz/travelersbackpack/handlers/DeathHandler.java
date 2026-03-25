@@ -3,13 +3,13 @@ package com.tiviacz.travelersbackpack.handlers;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
-import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.network.ClientboundSendMessagePacket;
 import com.tiviacz.travelersbackpack.util.BackpackDeathHelper;
 import com.tiviacz.travelersbackpack.util.LogHelper;
 import com.tiviacz.travelersbackpack.util.PacketDistributor;
+import com.tiviacz.travelersbackpack.util.Reference;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -64,7 +64,7 @@ public class DeathHandler {
                     }
                 }
             }
-            if(TravelersBackpackConfig.isOverworldEntityTypePossible(livingEntity) || TravelersBackpackConfig.isNetherEntityTypePossible(livingEntity)) {
+            if(Reference.ALLOWED_TYPE_ENTRIES.contains(livingEntity.getType())) {
                 if(livingEntity.getItemBySlot(EquipmentSlot.CHEST).getItem() instanceof TravelersBackpackItem) {
                     if(!(damageSource.getDirectEntity() instanceof Player)) return;
 

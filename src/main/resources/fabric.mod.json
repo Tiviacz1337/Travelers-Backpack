@@ -42,9 +42,6 @@
     ],
     "cardinal-components-entity": [
       "com.tiviacz.travelersbackpack.component.ComponentUtils"
-    ],
-    "modmenu": [
-      "com.tiviacz.travelersbackpack.compat.modmenu.ModMenuIntegration"
     ]
   },
   "mixins": [
@@ -57,7 +54,7 @@
     "java": ">=21",
     "cardinal-components-base": "*",
     "cardinal-components-entity": "*",
-    "cloth-config": "*"
+    "forgeconfigapiport": "*"
   },
   "suggests": {
     "modmenu": "*"

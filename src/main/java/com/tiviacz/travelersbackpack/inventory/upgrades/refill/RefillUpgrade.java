@@ -48,12 +48,12 @@ public class RefillUpgrade extends UpgradeBase<RefillUpgrade> implements IEnable
 
     @Override
     public int getFilterSlotCount() {
-        return TravelersBackpackConfig.getConfig().backpackUpgrades.refillUpgradeSettings.filterSlotCount;
+        return TravelersBackpackConfig.SERVER.backpackUpgrades.refillUpgradeSettings.filterSlotCount.get();
     }
 
     @Override
     public int getSlotsInRow() {
-        return TravelersBackpackConfig.getConfig().backpackUpgrades.refillUpgradeSettings.slotsInRow;
+        return TravelersBackpackConfig.SERVER.backpackUpgrades.refillUpgradeSettings.slotsInRow.get();
     }
 
     @Override
@@ -185,7 +185,7 @@ public class RefillUpgrade extends UpgradeBase<RefillUpgrade> implements IEnable
 
     @Override
     public int getTickRate() {
-        return TravelersBackpackConfig.getConfig().backpackUpgrades.refillUpgradeSettings.tickRate;
+        return TravelersBackpackConfig.SERVER.backpackUpgrades.refillUpgradeSettings.tickRate.get();
     }
 
     protected FilterHandler createFilter(NonNullList<ItemStack> stacks, int size) {

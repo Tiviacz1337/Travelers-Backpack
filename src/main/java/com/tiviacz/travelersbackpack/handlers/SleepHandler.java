@@ -15,7 +15,7 @@ public class SleepHandler {
         EntitySleepEvents.ALLOW_SETTING_SPAWN.register((player, sleepingPos) -> !(!player.level().isClientSide() && player.level().getBlockState(sleepingPos).getBlock() instanceof SleepingBagBlock));
 
         EntitySleepEvents.STOP_SLEEPING.register((player, sleepingPos) -> {
-            if(!TravelersBackpackConfig.getConfig().backpackSettings.quickSleepingBag) {
+            if(!TravelersBackpackConfig.SERVER.backpackSettings.quickSleepingBag.get()) {
                 return;
             }
             Level level = player.level();

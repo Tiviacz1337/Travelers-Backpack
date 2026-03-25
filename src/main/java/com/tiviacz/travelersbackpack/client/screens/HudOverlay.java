@@ -22,7 +22,7 @@ public class HudOverlay {
     public static final Identifier OVERLAY = Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "textures/gui/overlay.png");
 
     public static void renderOverlay(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
-        if(!TravelersBackpackConfig.getConfig().client.overlay.enableOverlay) return;
+        if(!TravelersBackpackConfig.CLIENT.overlay.enableOverlay.get()) return;
 
         Minecraft mc = Minecraft.getInstance();
         Player player = mc.player;
@@ -33,8 +33,8 @@ public class HudOverlay {
 
         ItemStack stack = ComponentUtils.getWearingBackpack(player);
 
-        int x = window.getGuiScaledWidth() - TravelersBackpackConfig.getConfig().client.overlay.offsetX;
-        int y = window.getGuiScaledHeight() - TravelersBackpackConfig.getConfig().client.overlay.offsetY;
+        int x = window.getGuiScaledWidth() - TravelersBackpackConfig.CLIENT.overlay.offsetX.get();
+        int y = window.getGuiScaledHeight() - TravelersBackpackConfig.CLIENT.overlay.offsetY.get();
 
         RenderInfo info = stack.getOrDefault(ModDataComponents.RENDER_INFO, RenderInfo.EMPTY);
         if(info.isEmpty()) return;

@@ -269,7 +269,7 @@ public class BackpackScreen extends AbstractBackpackScreen<BackpackBaseMenu> imp
                 xOffset += 12;
             }
 
-            if(TravelersBackpackConfig.getConfig().backpackSettings.quickSleepingBag) {
+            if(TravelersBackpackConfig.SERVER.backpackSettings.quickSleepingBag.get()) {
                 buttons.add(new SleepingBagButton(this, true, xOffset));
                 xOffset += 12;
             }

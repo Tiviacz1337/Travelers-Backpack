@@ -50,7 +50,7 @@ public class RightClickHandler {
             BlockPos pos = hitResult.getBlockPos();
 
             //Quick Unequip
-            if(TravelersBackpackConfig.getConfig().backpackSettings.rightClickUnequip && !TravelersBackpack.enableIntegration()) {
+            if(TravelersBackpackConfig.SERVER.backpackSettings.rightClickUnequip.get() && !TravelersBackpack.enableIntegration()) {
                 if(ComponentUtils.isWearingBackpack(player)) {
                     if(player.isShiftKeyDown() && hand == InteractionHand.MAIN_HAND && player.getMainHandItem().isEmpty()) {
                         ItemStack backpackStack = ComponentUtils.getWearingBackpack(player).copy();
@@ -161,7 +161,7 @@ public class RightClickHandler {
             }
 
             //Quick Equip
-            if(TravelersBackpackConfig.getConfig().backpackSettings.rightClickEquip && level.getBlockEntity(pos) instanceof BackpackBlockEntity backpackBlockEntity) {
+            if(TravelersBackpackConfig.SERVER.backpackSettings.rightClickEquip.get() && level.getBlockEntity(pos) instanceof BackpackBlockEntity backpackBlockEntity) {
                 if(player.isShiftKeyDown() && !ComponentUtils.isWearingBackpack(player) && !TravelersBackpack.enableIntegration()) {
                     //Prioritize placing block
                     if(player.getItemInHand(hand).getItem() instanceof BlockItem) {

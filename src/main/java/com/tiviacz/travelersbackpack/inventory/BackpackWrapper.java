@@ -423,7 +423,7 @@ public class BackpackWrapper {
     }
 
     public boolean isAbilityEnabled() {
-        return this.stack.getOrDefault(ModDataComponents.ABILITY_ENABLED, TravelersBackpackConfig.getConfig().backpackAbilities.forceAbilityEnabled);
+        return this.stack.getOrDefault(ModDataComponents.ABILITY_ENABLED, TravelersBackpackConfig.SERVER.backpackAbilities.forceAbilityEnabled.get());
     }
 
     public SortSelector.SortType getSortType() {
@@ -811,7 +811,7 @@ public class BackpackWrapper {
             int ticks = (int)player.level().getGameTime();
             if(BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, ComponentUtils.getWearingBackpack(player))) {
                 if(BackpackAbilities.isAbilityEnabledInConfig(stack)) {
-                    if(stack.getOrDefault(ModDataComponents.ABILITY_ENABLED, TravelersBackpackConfig.getConfig().backpackAbilities.forceAbilityEnabled)) {
+                    if(stack.getOrDefault(ModDataComponents.ABILITY_ENABLED, TravelersBackpackConfig.SERVER.backpackAbilities.forceAbilityEnabled.get())) {
                         boolean decreaseCooldown = BackpackAbilities.ABILITIES.abilityTick(stack, player);
                         if(stack.getOrDefault(ModDataComponents.COOLDOWN, 0) > 0) {
                             BackpackWrapper wrapper;

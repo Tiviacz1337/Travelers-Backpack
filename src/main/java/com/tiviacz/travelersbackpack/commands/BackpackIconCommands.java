@@ -15,15 +15,15 @@ public class BackpackIconCommands {
     }
 
     public int hideIcon(FabricClientCommandSource source) {
-        TravelersBackpackConfig.getConfig().client.showBackpackIconInInventory = false;
-        TravelersBackpackConfig.saveConfig();
+        TravelersBackpackConfig.CLIENT.showBackpackIconInInventory.set(false);
+        TravelersBackpackConfig.CLIENT.showBackpackIconInInventory.save();
         source.sendFeedback(Component.translatable("screen.travelersbackpack.hidden_icon_info"));
         return 1;
     }
 
     public int showIcon() {
-        TravelersBackpackConfig.getConfig().client.showBackpackIconInInventory = true;
-        TravelersBackpackConfig.saveConfig();
+        TravelersBackpackConfig.CLIENT.showBackpackIconInInventory.set(true);
+        TravelersBackpackConfig.CLIENT.showBackpackIconInInventory.save();
         return 1;
     }
 }

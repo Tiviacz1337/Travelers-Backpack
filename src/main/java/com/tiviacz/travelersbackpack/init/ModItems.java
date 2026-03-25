@@ -16,6 +16,9 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.item.Item;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static com.tiviacz.travelersbackpack.init.ModBlocks.SKELETON_TRAVELERS_BACKPACK;
 
 public class ModItems {
@@ -209,4 +212,7 @@ public class ModItems {
     public static ResourceKey<Item> resourceKey(String name) {
         return ResourceKey.create(Registries.ITEM, resourceLocation(name));
     }
+
+    public static final List<Item> COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES = new ArrayList<>();
+    public static final List<Item> COMPATIBLE_NETHER_BACKPACK_ENTRIES = new ArrayList<>();
 }

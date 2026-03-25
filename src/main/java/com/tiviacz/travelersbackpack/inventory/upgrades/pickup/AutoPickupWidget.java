@@ -27,7 +27,7 @@ public class AutoPickupWidget extends FilterUpgradeWidgetBase<AutoPickupWidget, 
     @Override
     public void renderBg(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY) {
         super.renderBg(guiGraphics, x, y, mouseX, mouseY);
-        this.renderMatchContentsSlotOverlay(guiGraphics, upgrade.getFilter(), AutoPickupFilterSettings.ALLOW_MODE, AutoPickupFilterSettings.MATCH_CONTENTS, TravelersBackpackConfig.getConfig().backpackUpgrades.pickupUpgradeSettings.filterSlotCount);
+        this.renderMatchContentsSlotOverlay(guiGraphics, upgrade.getFilter(), AutoPickupFilterSettings.ALLOW_MODE, AutoPickupFilterSettings.MATCH_CONTENTS, TravelersBackpackConfig.SERVER.backpackUpgrades.pickupUpgradeSettings.filterSlotCount.get());
     }
 
     @Override

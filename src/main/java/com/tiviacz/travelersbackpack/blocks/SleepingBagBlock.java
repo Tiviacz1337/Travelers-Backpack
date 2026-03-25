@@ -126,7 +126,7 @@ public class SleepingBagBlock extends BedBlock {
 
                 return InteractionResult.SUCCESS;
             } else {
-                if(TravelersBackpackConfig.getConfig().backpackSettings.enableSleepingBagSpawnPoint) {
+                if(TravelersBackpackConfig.SERVER.backpackSettings.enableSleepingBagSpawnPoint.get()) {
                     if(pPlayer instanceof ServerPlayer serverPlayer) {
                         serverPlayer.setRespawnPosition(new ServerPlayer.RespawnConfig(LevelData.RespawnData.of(pLevel.dimension(), pPos, serverPlayer.getYRot(), serverPlayer.getXRot()), true), true);
                     }

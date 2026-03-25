@@ -29,8 +29,8 @@ import java.util.List;
 public class MagnetUpgrade extends FilterUpgradeBase<MagnetUpgrade, MagnetFilterSettings> implements IEnable, ITickableUpgrade {
     public MagnetUpgrade(UpgradeManager manager, int dataHolderSlot, NonNullList<ItemStack> filter, List<String> filterTags) {
         super(manager, dataHolderSlot, new Point(66, 49),
-                TravelersBackpackConfig.getConfig().backpackUpgrades.magnetUpgradeSettings.filterSlotCount,
-                TravelersBackpackConfig.getConfig().backpackUpgrades.magnetUpgradeSettings.slotsInRow, filter, filterTags);
+                TravelersBackpackConfig.SERVER.backpackUpgrades.magnetUpgradeSettings.filterSlotCount.get(),
+                TravelersBackpackConfig.SERVER.backpackUpgrades.magnetUpgradeSettings.slotsInRow.get(), filter, filterTags);
     }
 
     @Override
@@ -46,11 +46,11 @@ public class MagnetUpgrade extends FilterUpgradeBase<MagnetUpgrade, MagnetFilter
 
     @Override
     public int getTickRate() {
-        return TravelersBackpackConfig.getConfig().backpackUpgrades.magnetUpgradeSettings.tickRate;
+        return TravelersBackpackConfig.SERVER.backpackUpgrades.magnetUpgradeSettings.tickRate.get();
     }
 
     public int getPullRange() {
-        return TravelersBackpackConfig.getConfig().backpackUpgrades.magnetUpgradeSettings.pullRange;
+        return TravelersBackpackConfig.SERVER.backpackUpgrades.magnetUpgradeSettings.pullRange.get();
     }
 
     @Override
