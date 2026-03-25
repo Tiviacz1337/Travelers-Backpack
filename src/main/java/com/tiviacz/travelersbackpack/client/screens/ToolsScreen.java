@@ -2,7 +2,7 @@ package com.tiviacz.travelersbackpack.client.screens;
 
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.datafixers.util.Pair;
-import com.tiviacz.travelersbackpack.component.ComponentUtils;
+import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
 import com.tiviacz.travelersbackpack.components.BackpackContainerContents;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.handlers.KeybindHandler;
@@ -65,7 +65,7 @@ public class ToolsScreen extends Screen {
         Pair<Integer, Integer> scaled = getScaledWindow(true);
         float progress = getOpenProgress();
 
-        ItemStack backpack = ComponentUtils.getWearingBackpack(player);
+        ItemStack backpack = AttachmentUtils.getWearingBackpack(player);
         ItemStack heldItem = !player.getMainHandItem().isEmpty() ? player.getMainHandItem() : player.getOffhandItem();
 
         //Hose Menu

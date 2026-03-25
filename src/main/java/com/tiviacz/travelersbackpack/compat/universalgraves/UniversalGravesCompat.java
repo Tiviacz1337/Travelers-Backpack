@@ -1,8 +1,7 @@
 package com.tiviacz.travelersbackpack.compat.universalgraves;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
-import com.tiviacz.travelersbackpack.component.ComponentUtils;
-import com.tiviacz.travelersbackpack.component.ITravelersBackpack;
+import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
 import eu.pb4.graves.GravesApi;
 import eu.pb4.graves.grave.GraveInventoryMask;
 import net.minecraft.nbt.Tag;
@@ -24,16 +23,16 @@ public class UniversalGravesCompat implements GraveInventoryMask {
     public void addToGrave(ServerPlayer serverPlayerEntity, ItemConsumer itemConsumer) {
         if(TravelersBackpack.enableIntegration()) return;
 
-        if(ComponentUtils.isWearingBackpack(serverPlayerEntity)) {
-            ItemStack stack = ComponentUtils.getWearingBackpack(serverPlayerEntity);
+        if(AttachmentUtils.isWearingBackpack(serverPlayerEntity)) {
+            ItemStack stack = AttachmentUtils.getWearingBackpack(serverPlayerEntity);
 
             if(GravesApi.canAddItem(serverPlayerEntity, stack)) {
                 itemConsumer.addItem(stack, 0);
 
-                ComponentUtils.getComponent(serverPlayerEntity).ifPresent(ITravelersBackpack::remove);
+                AttachmentUtils.getAttachment(serverPlayerEntity).ifPresent(attachment -> attachment.remove(serverPlayerEntity));
 
                 //Sync
-                //ComponentUtils.synchronise(serverPlayerEntity);
+                //AttachmentUtils.synchronise(serverPlayerEntity);
             }
         }
     }
@@ -42,14 +41,14 @@ public class UniversalGravesCompat implements GraveInventoryMask {
     public boolean moveToPlayerExactly(ServerPlayer serverPlayerEntity, ItemStack itemStack, int i, @Nullable Tag nbtElement) {
         if(TravelersBackpack.enableIntegration()) return false;
 
-        if(!ComponentUtils.isWearingBackpack(serverPlayerEntity)) {
+        if(!AttachmentUtils.isWearingBackpack(serverPlayerEntity)) {
             ItemStack stack = itemStack.copy();
-            ComponentUtils.getComponent(serverPlayerEntity).ifPresent(comp -> {
-                comp.equipBackpack(stack);
+            AttachmentUtils.getAttachment(serverPlayerEntity).ifPresent(attachment -> {
+                attachment.equipBackpack(stack, serverPlayerEntity);
             });
 
             //Sync
-            //ComponentUtils.synchronise(serverPlayerEntity);
+            //AttachmentUtils.synchronise(serverPlayerEntity);
 
             serverPlayerEntity.level().playSound(null, serverPlayerEntity.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER.value(), SoundSource.PLAYERS, 1.0F, (1.0F + (serverPlayerEntity.level().random.nextFloat() - serverPlayerEntity.level().random.nextFloat()) * 0.2F) * 0.7F);
 

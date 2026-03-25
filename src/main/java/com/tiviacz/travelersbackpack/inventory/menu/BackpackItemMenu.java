@@ -1,6 +1,6 @@
 package com.tiviacz.travelersbackpack.inventory.menu;
 
-import com.tiviacz.travelersbackpack.component.ComponentUtils;
+import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
 import com.tiviacz.travelersbackpack.init.ModScreenHandlerTypes;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.DisabledSlot;
@@ -34,11 +34,11 @@ public class BackpackItemMenu extends BackpackBaseMenu {
 
         if(screenID == Reference.WEARABLE_SCREEN_ID) {
             if(entityId != -1) {
-                BackpackWrapper targetWrapper = ComponentUtils.getBackpackWrapper((Player)inventory.player.level().getEntity(entityId));
+                BackpackWrapper targetWrapper = AttachmentUtils.getBackpackWrapper((Player)inventory.player.level().getEntity(entityId));
                 targetWrapper.addUser(inventory.player);
                 return targetWrapper;
             }
-            return ComponentUtils.getBackpackWrapper(inventory.player);
+            return AttachmentUtils.getBackpackWrapper(inventory.player);
         } else {
             ItemStack backpackStack = entityId == -1 ? inventory.player.getItemInHand(InteractionHand.MAIN_HAND) : inventory.getNonEquipmentItems().get(entityId);
             return new BackpackWrapper(backpackStack, screenID, inventory.player, inventory.player.level(), entityId);
@@ -98,7 +98,7 @@ public class BackpackItemMenu extends BackpackBaseMenu {
     @Override
     public boolean stillValid(Player player) {
         if(getWrapper().getBackpackOwner() != null) {
-            return getWrapper().getBackpackOwner().isAlive() && ComponentUtils.isWearingBackpack(getWrapper().getBackpackOwner());
+            return getWrapper().getBackpackOwner().isAlive() && AttachmentUtils.isWearingBackpack(getWrapper().getBackpackOwner());
         }
         if(getWrapper().getScreenID() == Reference.ITEM_SCREEN_ID) {
             ItemStack backpackStack = getWrapper().getBackpackSlotIndex() == -1 ? player.getItemInHand(InteractionHand.MAIN_HAND) : inventory.getItem(getWrapper().getBackpackSlotIndex());

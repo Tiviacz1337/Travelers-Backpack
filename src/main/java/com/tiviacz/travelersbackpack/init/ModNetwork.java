@@ -10,6 +10,8 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 
 public class ModNetwork {
     public static void initClient() {
+        ClientPlayNetworking.registerGlobalReceiver(ClientboundSyncAttachmentPacket.TYPE, ClientboundSyncAttachmentPacket::handle);
+        ClientPlayNetworking.registerGlobalReceiver(ClientboundSyncComponentsPacket.TYPE, ClientboundSyncComponentsPacket::handle);
         ClientPlayNetworking.registerGlobalReceiver(ClientboundSendMessagePacket.TYPE, ClientboundSendMessagePacket::handle);
         ClientPlayNetworking.registerGlobalReceiver(ClientboundSyncItemStackPacket.TYPE, ClientboundSyncItemStackPacket::handle);
         ClientPlayNetworking.registerGlobalReceiver(ClientboundUpdateRecipePacket.TYPE, ClientboundUpdateRecipePacket::handle);
@@ -23,6 +25,8 @@ public class ModNetwork {
     }
 
     public static void initServer() {
+        PayloadTypeRegistry.playS2C().register(ClientboundSyncAttachmentPacket.TYPE, ClientboundSyncAttachmentPacket.STREAM_CODEC);
+        PayloadTypeRegistry.playS2C().register(ClientboundSyncComponentsPacket.TYPE, ClientboundSyncComponentsPacket.STREAM_CODEC);
         PayloadTypeRegistry.playS2C().register(ClientboundSendMessagePacket.TYPE, ClientboundSendMessagePacket.STREAM_CODEC);
         PayloadTypeRegistry.playS2C().register(ClientboundSyncItemStackPacket.TYPE, ClientboundSyncItemStackPacket.STREAM_CODEC);
         PayloadTypeRegistry.playS2C().register(ClientboundUpdateRecipePacket.TYPE, ClientboundUpdateRecipePacket.STREAM_CODEC);

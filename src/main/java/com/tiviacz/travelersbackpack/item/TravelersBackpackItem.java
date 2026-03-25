@@ -6,7 +6,7 @@ import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
 import com.tiviacz.travelersbackpack.client.screens.tooltip.BackpackTooltipComponent;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.common.ServerActions;
-import com.tiviacz.travelersbackpack.component.ComponentUtils;
+import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
 import com.tiviacz.travelersbackpack.components.BackpackContainerContents;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.entity.BackpackItemEntity;
@@ -89,7 +89,7 @@ public class TravelersBackpackItem extends BlockItem {
                 BackpackContainer.openBackpack((ServerPlayer)player, player.getInventory().getSelectedItem(), Reference.ITEM_SCREEN_ID, player.getInventory().getSelectedSlot());
             }
         } else {
-            if(!ComponentUtils.isWearingBackpack(player) && !TravelersBackpack.enableIntegration()) {
+            if(!AttachmentUtils.isWearingBackpack(player) && !TravelersBackpack.enableIntegration()) {
                 ServerActions.equipBackpack(player);
                 player.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
             }

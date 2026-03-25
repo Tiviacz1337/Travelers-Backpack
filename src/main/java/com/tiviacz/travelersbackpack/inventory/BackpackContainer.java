@@ -1,9 +1,10 @@
 package com.tiviacz.travelersbackpack.inventory;
 
-import com.tiviacz.travelersbackpack.component.ComponentUtils;
-import com.tiviacz.travelersbackpack.component.TravelersBackpackComponent;
+import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
 import com.tiviacz.travelersbackpack.init.ModScreenHandlerTypes;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackItemMenu;
+import com.tiviacz.travelersbackpack.network.ClientboundSyncAttachmentPacket;
+import com.tiviacz.travelersbackpack.util.PacketDistributor;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.network.chat.Component;
@@ -40,7 +41,7 @@ public record BackpackContainer(ItemStack stack, Player player, int screenID, in
                 @Override
                 public @Nullable AbstractContainerMenu createMenu(int i, Inventory inventory, Player player) {
                     if(screenID == Reference.WEARABLE_SCREEN_ID) {
-                        return new BackpackItemMenu(i, inventory, ComponentUtils.getBackpackWrapper(player));
+                        return new BackpackItemMenu(i, inventory, AttachmentUtils.getBackpackWrapper(player));
                     } else {
                         return new BackpackItemMenu(i, inventory, new BackpackWrapper(stack, screenID, player, player.level()));
                     }
@@ -66,7 +67,7 @@ public record BackpackContainer(ItemStack stack, Player player, int screenID, in
                 @Override
                 public @Nullable AbstractContainerMenu createMenu(int i, Inventory inventory, Player player) {
                     if(screenID == Reference.WEARABLE_SCREEN_ID) {
-                        return new BackpackItemMenu(i, inventory, ComponentUtils.getBackpackWrapper(player));
+                        return new BackpackItemMenu(i, inventory, AttachmentUtils.getBackpackWrapper(player));
                     } else {
                         return new BackpackItemMenu(i, inventory, new BackpackWrapper(stack, screenID, player, player.level(), index));
                     }
@@ -92,7 +93,7 @@ public record BackpackContainer(ItemStack stack, Player player, int screenID, in
                 @Override
                 public @Nullable AbstractContainerMenu createMenu(int i, Inventory inventory, Player player) {
                     if(screenID == Reference.WEARABLE_SCREEN_ID) {
-                        return new BackpackItemMenu(i, inventory, ComponentUtils.getBackpackWrapper(targetPlayer));
+                        return new BackpackItemMenu(i, inventory, AttachmentUtils.getBackpackWrapper(targetPlayer));
                     } else {
                         return new BackpackItemMenu(i, inventory, new BackpackWrapper(stack, screenID, player, player.level()));
                     }
@@ -107,9 +108,8 @@ public record BackpackContainer(ItemStack stack, Player player, int screenID, in
     }
 
     public static void synchroniseToOpener(ServerPlayer opener, ServerPlayer target) {
-        if(opener != null) { //Sync data from target to opener
-            ComponentUtils.WEARABLE.syncWith(opener, (ComponentProvider)target, (buf, rec) -> ((TravelersBackpackComponent)ComponentUtils.WEARABLE.get(target)).writeSyncPacket(ComponentUtils.getWearingBackpack(target), buf, rec, false), p -> true);
-            //ComponentUtils.getComponent(target).ifPresent(cap -> PacketDistributor.sendToPlayer(opener, new ClientboundSyncAttachmentPacket(target.getId(), cap.getBackpack())));
+        if(opener != null) {
+            AttachmentUtils.getAttachment(target).ifPresent(attachment -> PacketDistributor.sendToPlayer(opener, new ClientboundSyncAttachmentPacket(target.getId(), attachment.getBackpack())));
         }
     }
 }

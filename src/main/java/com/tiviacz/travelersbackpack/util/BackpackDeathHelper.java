@@ -1,10 +1,10 @@
 package com.tiviacz.travelersbackpack.util;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
+import com.tiviacz.travelersbackpack.attachment.TravelersBackpackAttachment;
 import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
 import com.tiviacz.travelersbackpack.common.BackpackManager;
-import com.tiviacz.travelersbackpack.component.ComponentUtils;
-import com.tiviacz.travelersbackpack.component.ITravelersBackpack;
+import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.network.ClientboundSendMessagePacket;
@@ -109,8 +109,8 @@ public class BackpackDeathHelper {
         //    ((BackpackBlockEntity)level.getBlockEntity(targetPos)).setCustomName(stack.getHoverName());
         //}
 
-        if(ComponentUtils.isWearingBackpack(player) && !level.isClientSide()) {
-            ComponentUtils.getComponent(player).ifPresent(ITravelersBackpack::remove);
+        if(AttachmentUtils.isWearingBackpack(player) && !level.isClientSide()) {
+            AttachmentUtils.getAttachment(player).ifPresent(attachment -> attachment.remove(player));
         }
     }
 

@@ -1,19 +1,23 @@
 package com.tiviacz.travelersbackpack.attachment;
 
+import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.init.ModAttachmentTypes;
+import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
+import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
+import dev.emi.trinkets.api.TrinketsApi;
+import io.wispforest.accessories.api.AccessoriesCapability;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
-/**
- * Preparation for removal of the required Cardinal Components dependency.
- * This class is not used in version 1.21.x.
- * Use the component ComponentUtils instead.
- * Currently, this class is only used for data transfer purposes.
- */
 public class AttachmentUtils {
-    public static Optional<ITravelersBackpackAttachment> getAttachment(Player player) {
+    public static Optional<TravelersBackpackAttachment> getAttachment(Player player) {
         if(player == null) {
             return Optional.empty();
         }
@@ -28,26 +32,19 @@ public class AttachmentUtils {
         });
     }
 
- /*   public static void synchronise(Player player) {
-        if(player instanceof ServerPlayer) {
-            //getComponent(player).ifPresent(com.tiviacz.travelersbackpack.component.ITravelersBackpack::synchronise);
-        }
+    public static void synchronise(Player player) {
+        AttachmentUtils.getAttachment(player).ifPresent(a -> a.synchronise(player));
     }
 
     public static boolean isWearingBackpack(Player player) {
         if(TravelersBackpack.enableIntegration()) {
             if(TravelersBackpack.enableTrinkets()) {
                 if(TrinketsApi.getTrinketComponent(player).isPresent()) {
-                    if(TrinketsApi.getTrinketComponent(player).get().isEquipped(t -> t.getItem() instanceof TravelersBackpackItem)) {
-                        return true;
-                    }
+                    return TrinketsApi.getTrinketComponent(player).get().isEquipped(t -> t.getItem() instanceof TravelersBackpackItem);
                 }
-            }
-            if(TravelersBackpack.enableAccessories()) {
+            } else {
                 if(AccessoriesCapability.get(player) != null) {
-                    if(AccessoriesCapability.get(player).isEquipped(t -> t.getItem() instanceof TravelersBackpackItem)) {
-                        return true;
-                    }
+                    return AccessoriesCapability.get(player).isEquipped(t -> t.getItem() instanceof TravelersBackpackItem);
                 }
             }
             return false;
@@ -61,14 +58,9 @@ public class AttachmentUtils {
     public static ItemStack getWearingBackpack(Player player) {
         if(TravelersBackpack.enableIntegration()) {
             if(TravelersBackpack.enableTrinkets()) {
-                if(TrinketsApi.getTrinketComponent(player).isPresent()) {
-                    if(TrinketsApi.getTrinketComponent(player).get().isEquipped(t -> t.getItem() instanceof TravelersBackpackItem)) {
-                        return TrinketsApi.getTrinketComponent(player).get().getEquipped(t -> t.getItem() instanceof TravelersBackpackItem).getFirst().getB();
-                    }
-                }
-            }
-            if(TravelersBackpack.enableAccessories()) {
-                if(isWearingBackpack(player) && AccessoriesCapability.getOptionally(player).isPresent()) {
+                return isWearingBackpack(player) ? TrinketsApi.getTrinketComponent(player).get().getEquipped(t -> t.getItem() instanceof TravelersBackpackItem).getFirst().getB() : ItemStack.EMPTY;
+            } else {
+                if(isWearingBackpack(player)) {
                     if(AccessoriesCapability.get(player).getFirstEquipped(t -> t.getItem() instanceof TravelersBackpackItem) != null) {
                         return AccessoriesCapability.get(player).getFirstEquipped(t -> t.getItem() instanceof TravelersBackpackItem).stack();
                     }
@@ -87,9 +79,9 @@ public class AttachmentUtils {
             //Sync
             synchronise(player);
         }
-    }*/
+    }
 
-  /*  @Nullable
+    @Nullable
     public static BackpackWrapper getBackpackWrapper(Player player, ItemStack stack) {
         return getBackpackWrapper(player, stack, LOAD_ALL.get());
     }
@@ -103,13 +95,13 @@ public class AttachmentUtils {
             return null;
         }
         if(isWearingBackpack(player)) {
-            return AttachmentUtils.getAttachment(player).map(ITravelersBackpack::getWrapper).orElse(null);
+            return AttachmentUtils.getAttachment(player).map(TravelersBackpackAttachment::getWrapper).orElse(null);
         }
         return null;
-    }*/
+    }
 
     //Artificial wrapper for actions that do not require loading items
-   /* @Nullable
+    @Nullable
     public static BackpackWrapper getBackpackWrapperArtificial(Player player) {
         return getBackpackWrapper(player, NO_ITEMS.get());
     }
@@ -136,8 +128,8 @@ public class AttachmentUtils {
             return null;
         }
         if(isWearingBackpack(player)) {
-            return AttachmentUtils.getAttachment(player).map(ITravelersBackpack::getWrapper).orElse(null);
+            return AttachmentUtils.getAttachment(player).map(TravelersBackpackAttachment::getWrapper).orElse(null);
         }
         return null;
-    }*/
+    }
 }

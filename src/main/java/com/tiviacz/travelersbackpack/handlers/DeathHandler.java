@@ -2,7 +2,7 @@ package com.tiviacz.travelersbackpack.handlers;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
-import com.tiviacz.travelersbackpack.component.ComponentUtils;
+import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.network.ClientboundSendMessagePacket;
@@ -32,7 +32,7 @@ public class DeathHandler {
 
         ServerLivingEntityEvents.AFTER_DEATH.register((livingEntity, damageSource) -> {
             if(livingEntity instanceof ServerPlayer player) {
-                if(ComponentUtils.isWearingBackpack(player)) {
+                if(AttachmentUtils.isWearingBackpack(player)) {
                     //If integration detected, then do not use this logic, it will be handled by the integration/added to the grave
                     if(TravelersBackpack.enableIntegration()) {
                         return;
@@ -43,7 +43,7 @@ public class DeathHandler {
                         if(serverLevel.getGameRules().get(GameRules.KEEP_INVENTORY)) return;
                     }
 
-                    ItemStack stack = ComponentUtils.getWearingBackpack(player);
+                    ItemStack stack = AttachmentUtils.getWearingBackpack(player);
 
                     if(BackpackDeathHelper.onPlayerDrops(player.level(), player, stack)) {
                         if(player.level().isClientSide()) return;
@@ -56,9 +56,9 @@ public class DeathHandler {
 
                         player.level().addFreshEntity(itemEntity);
 
-                        ComponentUtils.getComponent(player).ifPresent(attachment -> {
-                            attachment.remove();
-                            attachment.synchronise();
+                        AttachmentUtils.getAttachment(player).ifPresent(attachment -> {
+                            attachment.remove(player);
+                            attachment.synchronise(player);
                         });
                         return;
                     }

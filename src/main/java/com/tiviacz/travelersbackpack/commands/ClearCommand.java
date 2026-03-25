@@ -3,7 +3,7 @@ package com.tiviacz.travelersbackpack.commands;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
-import com.tiviacz.travelersbackpack.component.ComponentUtils;
+import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
@@ -32,15 +32,15 @@ public class ClearCommand {
     }
 
     private static int removeBackpack(CommandSourceStack source, ServerPlayer player) {
-        if(ComponentUtils.isWearingBackpack(player)) {
+        if(AttachmentUtils.isWearingBackpack(player)) {
             if(TravelersBackpack.enableIntegration()) return -1;
 
-            ComponentUtils.getComponent(player).ifPresent(data -> {
+            AttachmentUtils.getAttachment(player).ifPresent(data -> {
                 if(!player.addItem(data.getBackpack().copy())) {
                     player.drop(data.getBackpack().copy(), true);
                 }
-                data.equipBackpack(ItemStack.EMPTY);
-                data.synchronise();
+                data.equipBackpack(ItemStack.EMPTY, player);
+                data.synchronise(player);
             });
             source.sendSuccess(() -> Component.literal("Removed Traveler's Backpack from " + player.getDisplayName().getString() + " and added copy to inventory"), true);
             return 1;
@@ -51,10 +51,10 @@ public class ClearCommand {
     }
 
     private static int clearBackpack(CommandSourceStack source, ServerPlayer player) {
-        if(ComponentUtils.isWearingBackpack(player)) {
+        if(AttachmentUtils.isWearingBackpack(player)) {
             if(TravelersBackpack.enableIntegration()) return -1;
 
-            ComponentUtils.getComponent(player).ifPresent(data -> {
+            AttachmentUtils.getAttachment(player).ifPresent(data -> {
                 ItemStack stack = data.getBackpack().copy();
                 if(!player.addItem(stack.copy())) {
                     player.drop(stack.copy(), true);
@@ -62,8 +62,8 @@ public class ClearCommand {
                 int tier = stack.getOrDefault(ModDataComponents.TIER, 0);
                 ItemStack clearedStack = stack.getItem().getDefaultInstance();
                 clearedStack.set(ModDataComponents.TIER, tier);
-                data.equipBackpack(clearedStack);
-                data.synchronise();
+                data.equipBackpack(clearedStack, player);
+                data.synchronise(player);
             });
             source.sendSuccess(() -> Component.literal("Cleared contents of Traveler's Backpack from " + player.getDisplayName().getString() + " and added copy to inventory"), true);
             return 1;

@@ -2,7 +2,7 @@ package com.tiviacz.travelersbackpack.client.screens;
 
 import com.mojang.blaze3d.platform.Window;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
-import com.tiviacz.travelersbackpack.component.ComponentUtils;
+import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
 import com.tiviacz.travelersbackpack.components.RenderInfo;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
@@ -28,10 +28,10 @@ public class HudOverlay {
         Player player = mc.player;
         Window window = mc.getWindow();
 
-        if(!ComponentUtils.isWearingBackpack(player) || mc.options.hideGui || (mc.gameMode != null && mc.gameMode.getPlayerMode() == GameType.SPECTATOR))
+        if(!AttachmentUtils.isWearingBackpack(player) || mc.options.hideGui || (mc.gameMode != null && mc.gameMode.getPlayerMode() == GameType.SPECTATOR))
             return;
 
-        ItemStack stack = ComponentUtils.getWearingBackpack(player);
+        ItemStack stack = AttachmentUtils.getWearingBackpack(player);
 
         int x = window.getGuiScaledWidth() - TravelersBackpackConfig.CLIENT.overlay.offsetX.get();
         int y = window.getGuiScaledHeight() - TravelersBackpackConfig.CLIENT.overlay.offsetY.get();

@@ -1,6 +1,6 @@
 package com.tiviacz.travelersbackpack.mixin;
 
-import com.tiviacz.travelersbackpack.component.ComponentUtils;
+import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
 import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.HumanoidRenderStateBackpackInject;
 import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
@@ -25,7 +25,7 @@ public class HumoanoidMobRenderer {
     @Inject(at = @At(value = "TAIL"), method = "extractHumanoidRenderState")
     private static void render(LivingEntity entity, HumanoidRenderState reusedState, float partialTick, ItemModelResolver itemModelResolver, CallbackInfo ci) {
         if(entity instanceof Player player && reusedState instanceof HumanoidRenderStateBackpackInject injectedReusedState) {
-            ItemStack backpack = ComponentUtils.getWearingBackpack(player);
+            ItemStack backpack = AttachmentUtils.getWearingBackpack(player);
             if(!backpack.isEmpty()) {
                 injectedReusedState.setBackpackStack(backpack);
             } else if(injectedReusedState.getBackpackStack() != null) {

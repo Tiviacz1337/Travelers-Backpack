@@ -1,7 +1,7 @@
 package com.tiviacz.travelersbackpack.inventory.menu;
 
 import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
-import com.tiviacz.travelersbackpack.component.ComponentUtils;
+import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
 import com.tiviacz.travelersbackpack.init.ModScreenHandlerTypes;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.DisabledSlot;
@@ -141,7 +141,7 @@ public class BackpackSettingsMenu extends AbstractBackpackMenu {
             return this.access.evaluate((level, blockPos) -> level.getBlockState(blockPos).is(this.backpackBlock) && player.isWithinBlockInteractionRange(blockPos, 4.0), true);
         } else {
             if(getWrapper().getBackpackOwner() != null) {
-                return getWrapper().getBackpackOwner().isAlive() && ComponentUtils.isWearingBackpack(getWrapper().getBackpackOwner());
+                return getWrapper().getBackpackOwner().isAlive() && AttachmentUtils.isWearingBackpack(getWrapper().getBackpackOwner());
             }
             return true;
         }
@@ -164,7 +164,7 @@ public class BackpackSettingsMenu extends AbstractBackpackMenu {
         BlockPos pos = data.pos(); //Not used here
         int index = data.index();
         if(screenID == Reference.WEARABLE_SCREEN_ID) {
-            return ComponentUtils.getBackpackWrapper(inventory.player);
+            return AttachmentUtils.getBackpackWrapper(inventory.player);
         } else {
             ItemStack backpackStack = index == -1 ? inventory.player.getItemInHand(InteractionHand.MAIN_HAND) : inventory.getNonEquipmentItems().get(index);
             return new BackpackWrapper(backpackStack, screenID, inventory.player, inventory.player.level(), index);

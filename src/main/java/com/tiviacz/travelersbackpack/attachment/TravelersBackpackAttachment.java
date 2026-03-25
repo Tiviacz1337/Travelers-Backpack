@@ -3,6 +3,9 @@ package com.tiviacz.travelersbackpack.attachment;
 import com.mojang.serialization.Codec;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
+import com.tiviacz.travelersbackpack.network.ClientboundSyncAttachmentPacket;
+import com.tiviacz.travelersbackpack.network.ClientboundSyncComponentsPacket;
+import com.tiviacz.travelersbackpack.util.PacketDistributor;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -11,13 +14,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
-/**
- * Preparation for removal of the required Cardinal Components dependency.
- * This class is not used in version 1.21.x.
- * Use the component TravelersBackpackComponent instead.
- * Currently, this class is only used for data transfer purposes.
- */
-public class TravelersBackpackAttachment implements ITravelersBackpackAttachment {
+public class TravelersBackpackAttachment {
     public static Codec<TravelersBackpackAttachment> CODEC = ItemStack.OPTIONAL_CODEC.xmap(TravelersBackpackAttachment::new, TravelersBackpackAttachment::getBackpack);
     public static StreamCodec<RegistryFriendlyByteBuf, TravelersBackpackAttachment> STREAM_CODEC = ItemStack.OPTIONAL_STREAM_CODEC.map(TravelersBackpackAttachment::new, TravelersBackpackAttachment::getBackpack);
     public static TravelersBackpackAttachment DEFAULT = new TravelersBackpackAttachment(new ItemStack(Items.AIR, 0));
@@ -29,7 +26,6 @@ public class TravelersBackpackAttachment implements ITravelersBackpackAttachment
         this.backpack = backpack;
     }
 
-    @Override
     public boolean hasBackpack() {
         return this.backpack.getItem() instanceof TravelersBackpackItem;
     }
@@ -38,7 +34,6 @@ public class TravelersBackpackAttachment implements ITravelersBackpackAttachment
         return this.backpack;
     }
 
-    @Override
     public void equipBackpack(ItemStack stack, Player player) {
         this.remove(player);
         if(!(stack.getItem() instanceof TravelersBackpackItem)) return;
@@ -51,7 +46,6 @@ public class TravelersBackpackAttachment implements ITravelersBackpackAttachment
         synchronise(player);
     }
 
-    @Override
     public void updateBackpack(ItemStack stack, Player player) {
         if(this.backpackWrapper != null) {
             this.backpack = stack;
@@ -61,7 +55,6 @@ public class TravelersBackpackAttachment implements ITravelersBackpackAttachment
         }
     }
 
-    @Override
     public void applyComponents(DataComponentMap map) {
         if(this.backpackWrapper != null) {
             this.backpack.applyComponents(map);
@@ -69,41 +62,39 @@ public class TravelersBackpackAttachment implements ITravelersBackpackAttachment
         }
     }
 
-    @Override
     public void removeWearable() {
         this.backpack = new ItemStack(Items.AIR, 0);
     }
 
-    @Override
     public void removeWrapper() {
         if(this.backpackWrapper != null) {
             this.backpackWrapper = null;
         }
     }
 
-    @Override
     public void remove(Player player) {
         removeWearable();
         removeWrapper();
 
         //Update client to remove old backpack wrapper
-        /*if(this.player.level() != null && !this.player.level().isClientSide) {
-            PacketDistributor.sendToPlayersTrackingEntityAndSelf(this.player, new ClientboundSyncAttachmentPacket(this.player.getId(), this.backpack, true));
-        }*/
+        if(player.level() != null && !player.level().isClientSide()) {
+            PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new ClientboundSyncAttachmentPacket(player.getId(), this.backpack, true));
+        }
     }
 
-    @Override
     public BackpackWrapper getWrapper() {
         return this.backpackWrapper;
     }
 
-    @Override
     public void synchronise(Player player) {
-
+        if(player != null && !player.level().isClientSide()) {
+            AttachmentUtils.getAttachment(player).ifPresent(cap -> PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new ClientboundSyncAttachmentPacket(player.getId(), this.backpack)));
+        }
     }
 
-    @Override
     public void synchronise(DataComponentMap map, Player player) {
-
+        if(player != null && !player.level().isClientSide()) {
+            AttachmentUtils.getAttachment(player).ifPresent(cap -> PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new ClientboundSyncComponentsPacket(player.getId(), map)));
+        }
     }
 }

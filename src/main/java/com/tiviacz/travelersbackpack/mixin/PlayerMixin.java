@@ -1,9 +1,11 @@
 package com.tiviacz.travelersbackpack.mixin;
 
+import com.tiviacz.travelersbackpack.attachment.TravelersBackpackAttachment;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.common.ServerActions;
-import com.tiviacz.travelersbackpack.component.ComponentUtils;
+import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
+import com.tiviacz.travelersbackpack.init.ModAttachmentTypes;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
@@ -14,7 +16,10 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Abilities;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -23,6 +28,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Mixin(Player.class)
@@ -47,14 +53,14 @@ public abstract class PlayerMixin extends LivingEntity {
     private void abilityTick(CallbackInfo info) {
         if(this instanceof Object) {
             if((Object)this instanceof Player player) {
-                if(ComponentUtils.isWearingBackpack(player)) {
-                    BackpackWrapper.tick(ComponentUtils.getWearingBackpack(player), player, false);
+                if(AttachmentUtils.isWearingBackpack(player)) {
+                    BackpackWrapper.tick(AttachmentUtils.getWearingBackpack(player), player, false);
                 }
-                if(TravelersBackpackConfig.SERVER.backpackAbilities.enableBackpackAbilities.get() && BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, ComponentUtils.getWearingBackpack(player))) {
-                    if(!checkAbilitiesForRemoval && BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_REMOVAL_LIST, ComponentUtils.getWearingBackpack(player)))
+                if(TravelersBackpackConfig.SERVER.backpackAbilities.enableBackpackAbilities.get() && BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, AttachmentUtils.getWearingBackpack(player))) {
+                    if(!checkAbilitiesForRemoval && BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_REMOVAL_LIST, AttachmentUtils.getWearingBackpack(player)))
                         checkAbilitiesForRemoval = true;
                 }
-                if(checkAbilitiesForRemoval && !player.level().isClientSide() && (!ComponentUtils.isWearingBackpack(player) || !TravelersBackpackConfig.SERVER.backpackAbilities.enableBackpackAbilities.get())) {
+                if(checkAbilitiesForRemoval && !player.level().isClientSide() && (!AttachmentUtils.isWearingBackpack(player) || !TravelersBackpackConfig.SERVER.backpackAbilities.enableBackpackAbilities.get())) {
                     ServerActions.runAbilitiesRemoval(player);
                     checkAbilitiesForRemoval = false;
                 }
@@ -120,5 +126,18 @@ public abstract class PlayerMixin extends LivingEntity {
         }
 
         return atomic;
+    }
+
+    //Transfer method for cardinal components data
+    @Inject(method = "readAdditionalSaveData", at = @At(value = "HEAD"))
+    private void fromTag(ValueInput view, CallbackInfo ci) {
+        Optional<ValueInput> cca = view.child("cardinal_components");
+        cca.ifPresent(nested -> {
+            Optional<ValueInput> backpack = nested.child("travelersbackpack:travelersbackpack");
+            backpack.ifPresent(nestedBackpack -> {
+                ItemStack stack = nestedBackpack.read("Wearable", ItemStack.OPTIONAL_CODEC).orElseGet(() -> new ItemStack(Items.AIR, 0));
+                this.setAttached(ModAttachmentTypes.TRAVELERS_BACKPACK, new TravelersBackpackAttachment(stack));
+            });
+        });
     }
 }

@@ -2,7 +2,7 @@ package com.tiviacz.travelersbackpack.network;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.common.ServerActions;
-import com.tiviacz.travelersbackpack.component.ComponentUtils;
+import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
 import com.tiviacz.travelersbackpack.inventory.BackpackContainer;
 import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TankActions;
 import com.tiviacz.travelersbackpack.util.PacketDistributor;
@@ -58,8 +58,8 @@ public record ServerboundActionTagPacket(CompoundTag actionTag) implements Custo
                     ServerActions.modifyUpgradeTab(player, slot, open, packetType, fromMenu);
                 }
                 case OPEN_SCREEN -> {
-                    if(ComponentUtils.isWearingBackpack(player)) {
-                        BackpackContainer.openBackpack(player, ComponentUtils.getWearingBackpack(player), Reference.WEARABLE_SCREEN_ID);
+                    if(AttachmentUtils.isWearingBackpack(player)) {
+                        BackpackContainer.openBackpack(player, AttachmentUtils.getWearingBackpack(player), Reference.WEARABLE_SCREEN_ID);
                     }
                 }
                 case OPEN_BACKPACK -> {

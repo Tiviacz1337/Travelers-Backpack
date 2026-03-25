@@ -2,7 +2,7 @@ package com.tiviacz.travelersbackpack.item;
 
 import com.tiviacz.travelersbackpack.advancements.ActionTypeTrigger;
 import com.tiviacz.travelersbackpack.common.ServerActions;
-import com.tiviacz.travelersbackpack.component.ComponentUtils;
+import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
 import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
 import com.tiviacz.travelersbackpack.init.ModAdvancements;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
@@ -109,8 +109,8 @@ public class HoseItem extends Item {
     @Override
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
-        if(ComponentUtils.isWearingBackpack(player) && hand == InteractionHand.MAIN_HAND) {
-            BackpackWrapper wrapper = ComponentUtils.getBackpackWrapper(player, ComponentUtils.UPGRADES_ONLY.get());
+        if(AttachmentUtils.isWearingBackpack(player) && hand == InteractionHand.MAIN_HAND) {
+            BackpackWrapper wrapper = AttachmentUtils.getBackpackWrapper(player, AttachmentUtils.UPGRADES_ONLY.get());
             if(!wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).isPresent()) {
                 return InteractionResult.PASS;
             }
@@ -190,12 +190,12 @@ public class HoseItem extends Item {
         BlockPos pos = context.getClickedPos();
         Direction direction = context.getClickedFace();
         ItemStack stack = player.getItemInHand(context.getHand());
-        if(ComponentUtils.isWearingBackpack(player) && context.getHand() == InteractionHand.MAIN_HAND) {
+        if(AttachmentUtils.isWearingBackpack(player) && context.getHand() == InteractionHand.MAIN_HAND) {
             Storage<FluidVariant> fluidVariantStorage = null;
             if(!level.isClientSide()) {
                 fluidVariantStorage = FluidStorage.SIDED.find(level, pos, direction);
             }
-            BackpackWrapper wrapper = ComponentUtils.getBackpackWrapper(player, ComponentUtils.UPGRADES_ONLY.get());
+            BackpackWrapper wrapper = AttachmentUtils.getBackpackWrapper(player, AttachmentUtils.UPGRADES_ONLY.get());
             if(!wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).isPresent()) {
                 return InteractionResult.PASS;
             }
@@ -383,8 +383,8 @@ public class HoseItem extends Item {
     @Override
     public ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity entityLiving) {
         if(entityLiving instanceof Player player) {
-            if(ComponentUtils.isWearingBackpack(player)) {
-                BackpackWrapper wrapper = ComponentUtils.getBackpackWrapper(player, ComponentUtils.UPGRADES_ONLY.get());
+            if(AttachmentUtils.isWearingBackpack(player)) {
+                BackpackWrapper wrapper = AttachmentUtils.getBackpackWrapper(player, AttachmentUtils.UPGRADES_ONLY.get());
                 if(!wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).isPresent()) {
                     return stack;
                 }
@@ -408,8 +408,8 @@ public class HoseItem extends Item {
 
 /*    @Override
     public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity entity, InteractionHand hand) {
-        if(ComponentUtils.isWearingBackpack(player) && hand == InteractionHand.MAIN_HAND && getHoseMode(stack) == SUCK_MODE) {
-            BackpackWrapper wrapper = ComponentUtils.getBackpackWrapper(player);
+        if(AttachmentUtils.isWearingBackpack(player) && hand == InteractionHand.MAIN_HAND && getHoseMode(stack) == SUCK_MODE) {
+            BackpackWrapper wrapper = AttachmentUtils.getBackpackWrapper(player);
             if(!wrapper.getUpgradeManager().tanksUpgrade.isPresent()) {
                 return InteractionResult.PASS;
             }

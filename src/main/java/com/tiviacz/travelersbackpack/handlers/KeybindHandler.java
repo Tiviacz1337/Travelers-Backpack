@@ -6,7 +6,7 @@ import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.client.screens.ToolsScreen;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.common.ServerActions;
-import com.tiviacz.travelersbackpack.component.ComponentUtils;
+import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
@@ -64,13 +64,13 @@ public class KeybindHandler {
             Player player = mc.player;
             if(player == null) return;
 
-            if(ComponentUtils.isWearingBackpack(player)) {
+            if(AttachmentUtils.isWearingBackpack(player)) {
                 while(KeybindHandler.OPEN_BACKPACK.consumeClick()) {
                     ServerboundActionTagPacket.create(ServerboundActionTagPacket.OPEN_SCREEN);
                 }
                 while(KeybindHandler.ABILITY.consumeClick()) {
-                    if(BackpackAbilities.ALLOWED_ABILITIES.contains(ComponentUtils.getWearingBackpack(player).getItem())) {
-                        boolean ability = ComponentUtils.getBackpackWrapperArtificial(player).isAbilityEnabled();
+                    if(BackpackAbilities.ALLOWED_ABILITIES.contains(AttachmentUtils.getWearingBackpack(player).getItem())) {
+                        boolean ability = AttachmentUtils.getBackpackWrapperArtificial(player).isAbilityEnabled();
                         ServerboundActionTagPacket.create(ServerboundActionTagPacket.ABILITY_SLIDER, !ability);
                         player.displayClientMessage(Component.translatable(ability ? "screen.travelersbackpack.ability_disabled" : "screen.travelersbackpack.ability_enabled"), true);
                     }
@@ -104,6 +104,9 @@ public class KeybindHandler {
 
         ScreenEvents.BEFORE_INIT.register(((client, screen, scaledWidth, scaledHeight) -> {
             ScreenKeyboardEvents.beforeKeyPress(screen).register((gui, keyEvent) -> {
+                Player player = Minecraft.getInstance().player;
+                if(player == null) return;
+
                 if(!TravelersBackpackConfig.SERVER.backpackSettings.allowOpeningFromSlot.get()) {
                     return;
                 }

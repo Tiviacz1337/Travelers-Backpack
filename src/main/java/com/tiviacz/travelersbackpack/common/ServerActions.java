@@ -3,7 +3,7 @@ package com.tiviacz.travelersbackpack.common;
 import com.tiviacz.travelersbackpack.advancements.ActionTypeTrigger;
 import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
 import com.tiviacz.travelersbackpack.blocks.SleepingBagBlock;
-import com.tiviacz.travelersbackpack.component.ComponentUtils;
+import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
 import com.tiviacz.travelersbackpack.init.ModAdvancements;
@@ -56,8 +56,8 @@ public class ServerActions {
         if(!TravelersBackpackConfig.SERVER.backpackSettings.allowToolSwapping.get()) {
             return;
         }
-        if(ComponentUtils.isWearingBackpack(player)) {
-            BackpackWrapper wrapper = ComponentUtils.getBackpackWrapper(player, ComponentUtils.TOOLS_ONLY.get());
+        if(AttachmentUtils.isWearingBackpack(player)) {
+            BackpackWrapper wrapper = AttachmentUtils.getBackpackWrapper(player, AttachmentUtils.TOOLS_ONLY.get());
             ItemStackHandler inv = wrapper.getTools();
             InteractionHand hand = button == 0 ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
             ItemStack handStack = player.getItemInHand(hand);
@@ -101,7 +101,7 @@ public class ServerActions {
     public static boolean swapBackpack(Player player) {
         Level level = player.level();
 
-        if(level.isClientSide() || !ComponentUtils.isWearingBackpack(player)) {
+        if(level.isClientSide() || !AttachmentUtils.isWearingBackpack(player)) {
             return false;
         }
 
@@ -109,12 +109,12 @@ public class ServerActions {
             ((ServerPlayer)player).closeContainer();
         }
 
-        ItemStack equippedBackpack = ComponentUtils.getWearingBackpack(player).copy();
+        ItemStack equippedBackpack = AttachmentUtils.getWearingBackpack(player).copy();
         ItemStack newBackpack = player.getMainHandItem().copy();
 
-        ComponentUtils.getComponent(player).ifPresent(attachment -> {
-            attachment.equipBackpack(newBackpack);
-            attachment.synchronise();
+        AttachmentUtils.getAttachment(player).ifPresent(attachment -> {
+            attachment.equipBackpack(newBackpack, player);
+            attachment.synchronise(player);
         });
 
         runAbilitiesRemoval(player);
@@ -136,7 +136,7 @@ public class ServerActions {
             return false;
         }
 
-        if(ComponentUtils.isWearingBackpack(player)) {
+        if(AttachmentUtils.isWearingBackpack(player)) {
             return swapBackpack(player);
         }
 
@@ -146,9 +146,9 @@ public class ServerActions {
 
         ItemStack stack = player.getMainHandItem().copy();
 
-        ComponentUtils.getComponent(player).ifPresent(attachment -> {
-            attachment.equipBackpack(stack);
-            attachment.synchronise();
+        AttachmentUtils.getAttachment(player).ifPresent(attachment -> {
+            attachment.equipBackpack(stack, player);
+            attachment.synchronise(player);
         });
 
         player.getMainHandItem().shrink(1);
@@ -165,7 +165,7 @@ public class ServerActions {
     public static boolean unequipBackpack(Player player) {
         Level level = player.level();
 
-        if(level.isClientSide() || !ComponentUtils.isWearingBackpack(player)) {
+        if(level.isClientSide() || !AttachmentUtils.isWearingBackpack(player)) {
             return false;
         }
 
@@ -173,7 +173,7 @@ public class ServerActions {
             ((ServerPlayer)player).closeContainer();
         }
 
-        ItemStack backpack = ComponentUtils.getWearingBackpack(player).copy();
+        ItemStack backpack = AttachmentUtils.getWearingBackpack(player).copy();
 
         //Try to add to inventory
         int index = player.getInventory().getSlotWithRemainingSpace(backpack);
@@ -190,9 +190,9 @@ public class ServerActions {
             return false;
         }
 
-        ComponentUtils.getComponent(player).ifPresent(attachment -> {
-            attachment.equipBackpack(new ItemStack(Items.AIR, 0));
-            attachment.synchronise();
+        AttachmentUtils.getAttachment(player).ifPresent(attachment -> {
+            attachment.equipBackpack(new ItemStack(Items.AIR, 0), player);
+            attachment.synchronise(player);
         });
 
         return true;
@@ -259,7 +259,7 @@ public class ServerActions {
                 modifyUpgradeTab(menu.getWrapper(), slot, open, packetType);
             }
         } else {
-            BackpackWrapper wrapper = ComponentUtils.getBackpackWrapper(player, ComponentUtils.UPGRADES_ONLY.get());
+            BackpackWrapper wrapper = AttachmentUtils.getBackpackWrapper(player, AttachmentUtils.UPGRADES_ONLY.get());
             wrapper.getUpgradeManager().mappedUpgrades.get(slot).ifPresent(upgrade -> {
                 if(upgrade instanceof IEnable enable) {
                     boolean isEnabled = enable.isEnabled(upgrade);
@@ -321,7 +321,7 @@ public class ServerActions {
     }
 
     public static void switchAbilitySlider(ServerPlayer player, boolean sliderValue) {
-        BackpackWrapper wrapper = ComponentUtils.getBackpackWrapperArtificial(player);
+        BackpackWrapper wrapper = AttachmentUtils.getBackpackWrapperArtificial(player);
 
         //If ability slider is being switched in the backpack screen, then reassign the wrapper
         if(player.containerMenu instanceof BackpackBaseMenu menu) {
@@ -424,7 +424,7 @@ public class ServerActions {
         if(!player.onGround() || level.getBlockState(sleepingBagPos1.below()).isAir() || level.getBlockState(sleepingBagPos1.below()).getBlock() instanceof LiquidBlock || level.environmentAttributes().getValue(EnvironmentAttributes.BED_RULE, pos).explodes()) {
             return false;
         }
-        ItemStack backpack = ComponentUtils.getWearingBackpack(player);
+        ItemStack backpack = AttachmentUtils.getWearingBackpack(player);
         if(BackpackBlockEntity.canPlaceSleepingBag(sleepingBagPos2, level) && BackpackBlockEntity.canPlaceSleepingBag(sleepingBagPos1, level)) {
             level.playSound(null, sleepingBagPos2, SoundEvents.WOOL_PLACE, SoundSource.BLOCKS, 0.5F, 1.0F);
 

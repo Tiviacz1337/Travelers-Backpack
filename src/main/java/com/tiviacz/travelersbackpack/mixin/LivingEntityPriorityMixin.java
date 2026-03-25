@@ -1,7 +1,7 @@
 package com.tiviacz.travelersbackpack.mixin;
 
 import com.tiviacz.travelersbackpack.common.BackpackManager;
-import com.tiviacz.travelersbackpack.component.ComponentUtils;
+import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
@@ -19,8 +19,8 @@ public class LivingEntityPriorityMixin {
         if(!(e instanceof ServerPlayer player)) return;
 
         //Mixin responsible only for creating backup of equipped backpack before any compatibility actions are taken, does not make any changes to backpacks or anything
-        if(ComponentUtils.isWearingBackpack(player)) {
-            BackpackManager.addBackpack(player, ComponentUtils.getWearingBackpack(player));
+        if(AttachmentUtils.isWearingBackpack(player)) {
+            BackpackManager.addBackpack(player, AttachmentUtils.getWearingBackpack(player));
         }
     }
 }

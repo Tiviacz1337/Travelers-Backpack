@@ -106,8 +106,8 @@ dependencies {
 	api 'com.electronwill.night-config:toml:3.8.1'
 
 	//Cardinal Components
-	modImplementation "dev.onyxstudios.cardinal-components-api:cardinal-components-base:${project.cca_version}"
-	modImplementation "dev.onyxstudios.cardinal-components-api:cardinal-components-entity:${project.cca_version}"
+	modRuntimeOnly("dev.onyxstudios.cardinal-components-api:cardinal-components-base:${project.cca_version}")
+	modRuntimeOnly("dev.onyxstudios.cardinal-components-api:cardinal-components-entity:${project.cca_version}")
 
 	//Required for Polymorph
 	modCompileOnly "dev.onyxstudios.cardinal-components-api:cardinal-components-block:${project.cca_version}"

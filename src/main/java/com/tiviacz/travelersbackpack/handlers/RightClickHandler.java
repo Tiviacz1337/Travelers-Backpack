@@ -5,7 +5,7 @@ import com.tiviacz.travelersbackpack.advancements.ActionTypeTrigger;
 import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
 import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
 import com.tiviacz.travelersbackpack.common.recipes.ShapedBackpackRecipe;
-import com.tiviacz.travelersbackpack.component.ComponentUtils;
+import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModAdvancements;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
@@ -51,9 +51,9 @@ public class RightClickHandler {
 
             //Quick Unequip
             if(TravelersBackpackConfig.SERVER.backpackSettings.rightClickUnequip.get() && !TravelersBackpack.enableIntegration()) {
-                if(ComponentUtils.isWearingBackpack(player)) {
+                if(AttachmentUtils.isWearingBackpack(player)) {
                     if(player.isShiftKeyDown() && hand == InteractionHand.MAIN_HAND && player.getMainHandItem().isEmpty()) {
-                        ItemStack backpackStack = ComponentUtils.getWearingBackpack(player).copy();
+                        ItemStack backpackStack = AttachmentUtils.getWearingBackpack(player).copy();
                         UseOnContext context = new UseOnContext(level, player, hand, backpackStack, hitResult);
                         boolean quickPickupFlag = level.getBlockState(pos).getBlock() instanceof TravelersBackpackBlock;
 
@@ -62,9 +62,9 @@ public class RightClickHandler {
                                 player.swing(hand, true);
                                 if(!level.isClientSide()) {
                                     //level.playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER.value(), SoundSource.PLAYERS, 1.05F, (1.0F + (level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.2F) * 0.7F);
-                                    ComponentUtils.getComponent(player).ifPresent(data -> {
-                                        data.remove();
-                                        data.synchronise();
+                                    AttachmentUtils.getAttachment(player).ifPresent(data -> {
+                                        data.remove(player);
+                                        data.synchronise(player);
                                     });
                                 }
                                 return InteractionResult.SUCCESS;
@@ -162,7 +162,7 @@ public class RightClickHandler {
 
             //Quick Equip
             if(TravelersBackpackConfig.SERVER.backpackSettings.rightClickEquip.get() && level.getBlockEntity(pos) instanceof BackpackBlockEntity backpackBlockEntity) {
-                if(player.isShiftKeyDown() && !ComponentUtils.isWearingBackpack(player) && !TravelersBackpack.enableIntegration()) {
+                if(player.isShiftKeyDown() && !AttachmentUtils.isWearingBackpack(player) && !TravelersBackpack.enableIntegration()) {
                     //Prioritize placing block
                     if(player.getItemInHand(hand).getItem() instanceof BlockItem) {
                         return InteractionResult.PASS;
@@ -172,7 +172,7 @@ public class RightClickHandler {
                     Direction direction = level.getBlockState(pos).getValue(TravelersBackpackBlock.FACING);
 
                     if(!level.isClientSide() && level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState())) {
-                        ComponentUtils.equipBackpack(player, backpack);
+                        AttachmentUtils.equipBackpack(player, backpack);
                         backpackBlockEntity.removeSleepingBag(level, direction);
 
                         return InteractionResult.SUCCESS;

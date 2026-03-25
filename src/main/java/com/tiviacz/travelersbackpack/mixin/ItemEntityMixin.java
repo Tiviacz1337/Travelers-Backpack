@@ -1,6 +1,6 @@
 package com.tiviacz.travelersbackpack.mixin;
 
-import com.tiviacz.travelersbackpack.component.ComponentUtils;
+import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.upgrades.pickup.AutoPickupUpgrade;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -32,8 +32,8 @@ public abstract class ItemEntityMixin {
 
         Level level = player.level();
 
-        if(ComponentUtils.isWearingBackpack(player)) {
-            BackpackWrapper wrapper = ComponentUtils.getBackpackWrapper(player);
+        if(AttachmentUtils.isWearingBackpack(player)) {
+            BackpackWrapper wrapper = AttachmentUtils.getBackpackWrapper(player);
             wrapper.getUpgradeManager().getUpgrade(AutoPickupUpgrade.class).ifPresent(pickupUpgrade -> {
                 if(pickupUpgrade.canPickup(getItem()) && pickupUpgrade.tryPickup((ItemEntity)(Object)this, level, player.blockPosition())) {
                     ci.cancel();

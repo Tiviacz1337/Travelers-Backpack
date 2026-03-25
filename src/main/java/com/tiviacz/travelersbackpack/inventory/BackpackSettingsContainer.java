@@ -1,6 +1,6 @@
 package com.tiviacz.travelersbackpack.inventory;
 
-import com.tiviacz.travelersbackpack.component.ComponentUtils;
+import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
 import com.tiviacz.travelersbackpack.init.ModScreenHandlerTypes;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackSettingsMenu;
 import com.tiviacz.travelersbackpack.util.Reference;
@@ -29,7 +29,7 @@ public record BackpackSettingsContainer(ItemStack stack, Player player, int scre
     @Override
     public @Nullable AbstractContainerMenu createMenu(int i, Inventory inventory, Player player) {
         if(screenID == Reference.WEARABLE_SCREEN_ID) {
-            return new BackpackSettingsMenu(i, inventory, ComponentUtils.getBackpackWrapper(player));
+            return new BackpackSettingsMenu(i, inventory, AttachmentUtils.getBackpackWrapper(player));
         } else {
             return new BackpackSettingsMenu(i, inventory, new BackpackWrapper(stack, screenID, player, player.level(), index));
         }

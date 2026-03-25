@@ -3,7 +3,7 @@ package com.tiviacz.travelersbackpack.handlers;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.client.screens.tooltip.BackpackTooltipComponent;
-import com.tiviacz.travelersbackpack.component.ComponentUtils;
+import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.BackpackSlotItemHandler;
 import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
@@ -74,9 +74,9 @@ public class ScreenRenderHandler {
         //Render Backpack Icon if Backpack is equipped in Capability but Integration is enabled to easily retrieve the backpack
         if(mc.screen instanceof InventoryScreen) {
             boolean highlighted = mouseX >= screen.leftPos + 77 && mouseX < screen.leftPos + 77 + 16 && mouseY >= screen.topPos + 62 - 18 && mouseY < screen.topPos + 62 - 18 + 16;
-            if(ComponentUtils.getComponent(player).isPresent()) {
-                if(ComponentUtils.getComponent(player).get().hasBackpack() && TravelersBackpack.enableIntegration()) {
-                    ItemStack backpack = ComponentUtils.getComponent(player).get().getBackpack();
+            if(AttachmentUtils.getAttachment(player).isPresent()) {
+                if(AttachmentUtils.getAttachment(player).get().hasBackpack() && TravelersBackpack.enableIntegration()) {
+                    ItemStack backpack = AttachmentUtils.getAttachment(player).get().getBackpack();
                     if(highlighted) {
                         RenderHelper.renderSlotHighlightBack(guiGraphics, screen.leftPos + 77, screen.topPos + 62 - 18);
                     }
@@ -93,10 +93,10 @@ public class ScreenRenderHandler {
 
             if(!TravelersBackpackConfig.CLIENT.showBackpackIconInInventory.get()) return;
 
-            if(ComponentUtils.isWearingBackpack(player)) {
+            if(AttachmentUtils.isWearingBackpack(player)) {
                 if(TravelersBackpack.enableIntegration()) return;
 
-                ItemStack backpack = ComponentUtils.getWearingBackpack(player);
+                ItemStack backpack = AttachmentUtils.getWearingBackpack(player);
                 if(highlighted) {
                     RenderHelper.renderSlotHighlightBack(guiGraphics, screen.leftPos + 77, screen.topPos + 62 - 18);
                 }
@@ -126,11 +126,11 @@ public class ScreenRenderHandler {
             if(screen2 instanceof InventoryScreen screen) {
                 ScreenMouseEvents.afterMouseClick(screen).register((screen1, mouseButtonEvent, doubleClick) -> {
                     //Render Backpack Icon if Backpack is equipped in Capability but Integration is enabled to easily retrieve the backpack
-                    if(Minecraft.getInstance().screen instanceof InventoryScreen && ComponentUtils.getComponent(player).isPresent()) {
-                        if(ComponentUtils.getComponent(player).get().hasBackpack() && TravelersBackpack.enableIntegration()) {
+                    if(Minecraft.getInstance().screen instanceof InventoryScreen && AttachmentUtils.getAttachment(player).isPresent()) {
+                        if(AttachmentUtils.getAttachment(player).get().hasBackpack() && TravelersBackpack.enableIntegration()) {
                             if(mouseButtonEvent.x() >= screen.leftPos + 77 && mouseButtonEvent.x() < screen.leftPos + 77 + 16 && mouseButtonEvent.y() >= screen.topPos + 62 - 18 && mouseButtonEvent.y() < screen.topPos + 62 - 18 + 16) {
                                 if(mouseButtonEvent.button() == GLFW.GLFW_MOUSE_BUTTON_1) {
-                                    PacketDistributor.sendToServer(new ServerboundRetrieveBackpackPacket(ComponentUtils.getComponent(player).get().getBackpack().getItem().getDefaultInstance()));
+                                    PacketDistributor.sendToServer(new ServerboundRetrieveBackpackPacket(AttachmentUtils.getAttachment(player).get().getBackpack().getItem().getDefaultInstance()));
                                     return true;
                                 }
                             }
@@ -139,7 +139,7 @@ public class ScreenRenderHandler {
 
                     if(!TravelersBackpackConfig.CLIENT.showBackpackIconInInventory.get()) return false;
 
-                    if(ComponentUtils.isWearingBackpack(player)) {
+                    if(AttachmentUtils.isWearingBackpack(player)) {
                         if(TravelersBackpack.enableIntegration()) return false;
 
                         if(mouseButtonEvent.x() >= screen.leftPos + 77 && mouseButtonEvent.x() < screen.leftPos + 77 + 16 && mouseButtonEvent.y() >= screen.topPos + 62 - 18 && mouseButtonEvent.y() < screen.topPos + 62 - 18 + 16) {

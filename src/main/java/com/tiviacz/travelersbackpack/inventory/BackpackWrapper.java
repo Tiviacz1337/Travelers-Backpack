@@ -5,7 +5,7 @@ import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
-import com.tiviacz.travelersbackpack.component.ComponentUtils;
+import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
 import com.tiviacz.travelersbackpack.components.*;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
@@ -538,7 +538,7 @@ public class BackpackWrapper {
         //Sync attachment stack
         if(getBackpackOwner() != null) {
             DataComponentMap.Builder mapBuilder = DataComponentMap.builder();
-            ItemStack serverDataHolder = ComponentUtils.getWearingBackpack(getBackpackOwner()).copy();
+            ItemStack serverDataHolder = AttachmentUtils.getWearingBackpack(getBackpackOwner()).copy();
             ItemStack serverDataHolderCopy = ItemStackUtils.reduceSize(serverDataHolder);
             for(DataComponentType type : dataComponentTypes) {
                 if(!serverDataHolderCopy.has(type)) {
@@ -547,7 +547,7 @@ public class BackpackWrapper {
                 mapBuilder.set(type, serverDataHolderCopy.get(type));
             }
             if(getBackpackOwner() instanceof ServerPlayer serverPlayer && serverPlayer.connection == null) return; //?
-            ComponentUtils.getComponent(getBackpackOwner()).ifPresent(data -> data.synchronise(mapBuilder.build()));
+            AttachmentUtils.getAttachment(getBackpackOwner()).ifPresent(data -> data.synchronise(mapBuilder.build(), getBackpackOwner()));
         }
     }
 
@@ -787,7 +787,7 @@ public class BackpackWrapper {
 
     @Nullable
     public static BackpackWrapper getBackpackWrapper(Player player, ItemStack backpack, int[] dataLoad) {
-        if(ComponentUtils.isWearingBackpack(player)) {
+        if(AttachmentUtils.isWearingBackpack(player)) {
             if(player.containerMenu instanceof BackpackItemMenu menu && menu.getWrapper().getScreenID() == Reference.WEARABLE_SCREEN_ID) {
                 return menu.getWrapper();
             } else {
@@ -807,9 +807,9 @@ public class BackpackWrapper {
             if(TravelersBackpack.enableIntegration()) return;
         }
 
-        if(player.isAlive() && ComponentUtils.isWearingBackpack(player)) {
+        if(player.isAlive() && AttachmentUtils.isWearingBackpack(player)) {
             int ticks = (int)player.level().getGameTime();
-            if(BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, ComponentUtils.getWearingBackpack(player))) {
+            if(BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, AttachmentUtils.getWearingBackpack(player))) {
                 if(BackpackAbilities.isAbilityEnabledInConfig(stack)) {
                     if(stack.getOrDefault(ModDataComponents.ABILITY_ENABLED, TravelersBackpackConfig.SERVER.backpackAbilities.forceAbilityEnabled.get())) {
                         boolean decreaseCooldown = BackpackAbilities.ABILITIES.abilityTick(stack, player);
@@ -817,7 +817,7 @@ public class BackpackWrapper {
                             BackpackWrapper wrapper;
                             if(ticks % 100 == 0) {
                                 if(decreaseCooldown) {
-                                    wrapper = ComponentUtils.getBackpackWrapper(player, stack, ComponentUtils.NO_ITEMS.get());
+                                    wrapper = AttachmentUtils.getBackpackWrapper(player, stack, AttachmentUtils.NO_ITEMS.get());
                                     int cooldown = wrapper.getCooldown();
                                     if(player.level().isClientSide()) return;
                                     if(cooldown - 100 < 0) {
@@ -832,7 +832,7 @@ public class BackpackWrapper {
                         if(stack.getOrDefault(ModDataComponents.COOLDOWN, 0) > 0) {
                             BackpackWrapper wrapper;
                             if(ticks % 100 == 0) {
-                                wrapper = ComponentUtils.getBackpackWrapper(player, stack, ComponentUtils.NO_ITEMS.get());
+                                wrapper = AttachmentUtils.getBackpackWrapper(player, stack, AttachmentUtils.NO_ITEMS.get());
                                 int cooldown = wrapper.getCooldown();
                                 if(player.level().isClientSide()) return;
                                 if(cooldown - 100 < 0) {
@@ -853,7 +853,7 @@ public class BackpackWrapper {
                 if(upgradeTicks == 0) return;
                 BackpackWrapper wrapper;
                 if(ticks % upgradeTicks == 0) {
-                    wrapper = ComponentUtils.getBackpackWrapper(player, stack, ComponentUtils.UPGRADES_ONLY.get());
+                    wrapper = AttachmentUtils.getBackpackWrapper(player, stack, AttachmentUtils.UPGRADES_ONLY.get());
                     wrapper.getUpgradeManager().upgrades.forEach(upgradeBase -> {
                         if(upgradeBase instanceof ITickableUpgrade tickable) {
                             boolean tick = true;

@@ -6,12 +6,6 @@ import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.resources.Identifier;
 
-/**
- * Preparation for removal of the required Cardinal Components dependency.
- * This class is not used in version 1.21.x.
- * Use the component ComponentUtils#WEARABLE instead.
- * Currently, this class is only used for data transfer purposes.
- */
 public class ModAttachmentTypes {
     public static final AttachmentType<TravelersBackpackAttachment> TRAVELERS_BACKPACK = AttachmentRegistry.create(Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "travelers_backpack"), builder -> builder
             .initializer(() -> TravelersBackpackAttachment.DEFAULT)

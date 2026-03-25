@@ -2,7 +2,7 @@ package com.tiviacz.travelersbackpack.client.screens.buttons;
 
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
-import com.tiviacz.travelersbackpack.component.ComponentUtils;
+import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
 import com.tiviacz.travelersbackpack.util.TextUtils;
@@ -28,7 +28,7 @@ public class AbilitySliderButton extends Button {
         if(isBlock) {
             drawButton(guiGraphics, mouseX, mouseY, BackpackScreen.ICONS);
         } else {
-            if(ComponentUtils.isWearingBackpack(screen.getMenu().getPlayerInventory().player)) {
+            if(AttachmentUtils.isWearingBackpack(screen.getMenu().getPlayerInventory().player)) {
                 drawButton(guiGraphics, mouseX, mouseY, BackpackScreen.ICONS);
             }
         }

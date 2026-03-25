@@ -4,7 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
-import com.tiviacz.travelersbackpack.component.ComponentUtils;
+import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.handler.ItemStackHandler;
 import net.minecraft.commands.CommandBuildContext;
@@ -55,16 +55,16 @@ public class UnpackCommand {
     }
 
     public int unpackTargetInventory(CommandSourceStack source, ServerPlayer serverPlayer) {
-        boolean hasBackpack = ComponentUtils.isWearingBackpack(serverPlayer);
+        boolean hasBackpack = AttachmentUtils.isWearingBackpack(serverPlayer);
         if(TravelersBackpack.enableIntegration()) return -1;
 
         if(hasBackpack) {
             AtomicBoolean flag = new AtomicBoolean(false);
-            ComponentUtils.getComponent(serverPlayer).ifPresent(data -> {
+            AttachmentUtils.getAttachment(serverPlayer).ifPresent(data -> {
                 NonNullList<ItemStack> stacks = collectItems(data.getWrapper());
                 if(!stacks.isEmpty()) {
                     if(!source.getLevel().isClientSide()) {
-                        data.synchronise();
+                        data.synchronise(serverPlayer);
                         Containers.dropContents(source.getLevel(), serverPlayer.blockPosition(), stacks);
                         flag.set(true);
                     }

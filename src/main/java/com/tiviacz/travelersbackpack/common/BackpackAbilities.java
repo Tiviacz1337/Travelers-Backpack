@@ -5,7 +5,7 @@ import com.google.common.collect.Multimap;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
 import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
-import com.tiviacz.travelersbackpack.component.ComponentUtils;
+import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
 import com.tiviacz.travelersbackpack.config.BackpackEffect;
 import com.tiviacz.travelersbackpack.config.Cooldown;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
@@ -130,7 +130,7 @@ public class BackpackAbilities {
                             addTimedMobEffect(player, backpackEffect.effect(), backpackEffect.minDuration(), backpackEffect.maxDuration(), backpackEffect.amplifier(), false, false, false);
                         }
                         //Apply cooldown
-                        setCooldown(ComponentUtils.getBackpackWrapperArtificial(player), backpackItem);
+                        setCooldown(AttachmentUtils.getBackpackWrapperArtificial(player), backpackItem);
                     }
                     //Tick cooldown, but return at the end to check if there's any custom ability associated with backpack
                     tickCooldown = true;
@@ -431,13 +431,13 @@ public class BackpackAbilities {
     public void chickenAbility(ItemStack backpack, Player player, boolean firstSwitch) {
         if(firstSwitch && !player.level().isClientSide()) {
             if(!hasCooldown(backpack)) {
-                BackpackWrapper wrapper = ComponentUtils.getBackpackWrapperArtificial(player);
+                BackpackWrapper wrapper = AttachmentUtils.getBackpackWrapperArtificial(player);
                 setCooldown(wrapper, wrapper.getBackpackStack().getItem());
                 return;
             }
         }
         if(!hasCooldown(backpack)) {
-            BackpackWrapper wrapper = ComponentUtils.getBackpackWrapperArtificial(player);
+            BackpackWrapper wrapper = AttachmentUtils.getBackpackWrapperArtificial(player);
             player.level().playSound(null, player.blockPosition(), SoundEvents.CHICKEN_EGG, SoundSource.AMBIENT, 1.0F, (player.level().random.nextFloat() - player.level().random.nextFloat()) * 0.3F + 1.0F);
             if(player.level().isClientSide()) return;
             if(player.level() instanceof ServerLevel serverLevel) {
@@ -452,7 +452,7 @@ public class BackpackAbilities {
         BackpackWrapper wrapper;
         int cooldown = backpack.getOrDefault(ModDataComponents.COOLDOWN, 0);
         if(cooldown >= 1000) {
-            wrapper = ComponentUtils.getBackpackWrapper(player, ComponentUtils.UPGRADES_ONLY.get());
+            wrapper = AttachmentUtils.getBackpackWrapper(player, AttachmentUtils.UPGRADES_ONLY.get());
             if(wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).isPresent()) {
                 TanksUpgrade upgrade = wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).get();
                 FluidTank leftTank = upgrade.getLeftTank();
@@ -473,7 +473,7 @@ public class BackpackAbilities {
 
         int drops = 0;
         if(gameTime % 100 == 0) {
-            wrapper = ComponentUtils.getBackpackWrapperArtificial(player);
+            wrapper = AttachmentUtils.getBackpackWrapperArtificial(player);
             if(player.isInWater()) {
                 drops += 5 * 10;
             }
@@ -536,7 +536,7 @@ public class BackpackAbilities {
     }
 
     public static boolean creeperAbility(Player player) {
-        BackpackWrapper wrapper = ComponentUtils.getBackpackWrapperArtificial(player);
+        BackpackWrapper wrapper = AttachmentUtils.getBackpackWrapperArtificial(player);
         if(player.isDeadOrDying() && wrapper != null && wrapper.getBackpackStack().getItem() == ModItems.CREEPER_TRAVELERS_BACKPACK && wrapper.isAbilityEnabled() && wrapper.getCooldown() <= 0) {
             player.setHealth(1.0F);
             player.removeAllEffects();
@@ -658,7 +658,7 @@ public class BackpackAbilities {
     public void cowAbility(ItemStack stack, Player player) {
         if(!player.getActiveEffects().isEmpty() && !hasCooldown(stack)) {
             if(player.getActiveEffects().stream().anyMatch(effect -> effect.getEffect().value().getCategory() == MobEffectCategory.HARMFUL)) {
-                BackpackWrapper wrapper = ComponentUtils.getBackpackWrapperArtificial(player);
+                BackpackWrapper wrapper = AttachmentUtils.getBackpackWrapperArtificial(player);
                 if(!player.level().isClientSide()) {
                     player.level().levelEvent(2007, player.blockPosition(), 16777215);
                     setCooldown(wrapper, stack.getItem());
@@ -697,7 +697,7 @@ public class BackpackAbilities {
         if(!TravelersBackpackConfig.SERVER.backpackAbilities.enableBackpackAbilities.get() || !BackpackAbilities.ALLOWED_ABILITIES.contains(item)) {
             return false;
         }
-        return ComponentUtils.isWearingBackpack(player) && ComponentUtils.getWearingBackpack(player).getItem() == item && ComponentUtils.getWearingBackpack(player).getOrDefault(ModDataComponents.ABILITY_ENABLED, true);
+        return AttachmentUtils.isWearingBackpack(player) && AttachmentUtils.getWearingBackpack(player).getItem() == item && AttachmentUtils.getWearingBackpack(player).getOrDefault(ModDataComponents.ABILITY_ENABLED, true);
     }
 
     public void addTimedMobEffect(Player player, Holder<MobEffect> effect, int minDuration, int maxDuration, int amplifier, boolean ambient, boolean showParticle, boolean showIcon) {

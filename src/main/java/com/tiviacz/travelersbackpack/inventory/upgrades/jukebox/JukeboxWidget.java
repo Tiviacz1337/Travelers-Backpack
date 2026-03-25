@@ -4,7 +4,7 @@ import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.client.screens.widgets.UpgradeWidgetBase;
 import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetElement;
 import com.tiviacz.travelersbackpack.common.ServerActions;
-import com.tiviacz.travelersbackpack.component.ComponentUtils;
+import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
 import com.tiviacz.travelersbackpack.util.Reference;
@@ -143,7 +143,7 @@ public class JukeboxWidget extends UpgradeWidgetBase<JukeboxUpgrade> {
         @Override
         public void tick() {
             if(this.entity instanceof Player player) {
-                if(!ComponentUtils.isWearingBackpack(player) || !shouldStopPlaying(player)) {
+                if(!AttachmentUtils.isWearingBackpack(player) || !shouldStopPlaying(player)) {
                     this.stop();
                 }
             }
@@ -157,7 +157,7 @@ public class JukeboxWidget extends UpgradeWidgetBase<JukeboxUpgrade> {
         }
 
         public boolean shouldStopPlaying(Player player) {
-            return ComponentUtils.getBackpackWrapper(player, ComponentUtils.UPGRADES_ONLY.get()).getUpgradeManager().getUpgrade(JukeboxUpgrade.class).isPresent();
+            return AttachmentUtils.getBackpackWrapper(player, AttachmentUtils.UPGRADES_ONLY.get()).getUpgradeManager().getUpgrade(JukeboxUpgrade.class).isPresent();
         }
     }
 }

@@ -3,7 +3,7 @@ package com.tiviacz.travelersbackpack.compat.pneumonogravestones;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DynamicOps;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
-import com.tiviacz.travelersbackpack.component.ComponentUtils;
+import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -21,11 +21,11 @@ public class BackpackDataType extends GravestoneDataType {
     @Override
     public void writeData(CompoundTag nbt, DynamicOps<Tag> ops, Player player) {
         if(TravelersBackpack.enableIntegration()) return;
-        ComponentUtils.getComponent(player).ifPresent(component -> {
+        AttachmentUtils.getAttachment(player).ifPresent(component -> {
             if(component.hasBackpack()) {
                 DataResult<Tag> result = ItemStack.OPTIONAL_CODEC.encodeStart(ops, component.getBackpack());
                 nbt.put(KEY, (Tag)result.result().orElseThrow());
-                component.remove();
+                component.remove(player);
             }
         });
     }
@@ -41,8 +41,8 @@ public class BackpackDataType extends GravestoneDataType {
         Optional<ItemStack> optional = VersionUtil.get(ops, nbt, KEY, ItemStack.OPTIONAL_CODEC);
 
         optional.ifPresent(backpack -> {
-            if(!ComponentUtils.isWearingBackpack(player)) {
-                ComponentUtils.equipBackpack(player, backpack);
+            if(!AttachmentUtils.isWearingBackpack(player)) {
+                AttachmentUtils.equipBackpack(player, backpack);
             } else {
                 this.dropStack(player, backpack);
             }
