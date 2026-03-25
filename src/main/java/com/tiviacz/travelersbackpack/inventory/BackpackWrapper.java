@@ -402,7 +402,9 @@ public class BackpackWrapper {
     }
 
     public void setRenderInfo(CompoundTag compound) {
-        setDataAndSync(ModDataComponents.RENDER_INFO, new RenderInfo(compound));
+        if(!getRenderInfo().compoundTag().equals(compound)) {
+            setDataAndSync(ModDataComponents.RENDER_INFO, new RenderInfo(compound));
+        }
     }
 
     public void removeRenderInfo() {
