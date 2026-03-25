@@ -44,8 +44,6 @@
     "fabric-api": ">=0.120.0",
     "minecraft": "~1.21.6",
     "java": ">=21",
-    "cardinal-components-base": "*",
-    "cardinal-components-entity": "*",
     "forgeconfigapiport": "*"
   },
   "suggests": {
