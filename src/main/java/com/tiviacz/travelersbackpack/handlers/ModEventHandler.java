@@ -99,16 +99,16 @@ public class ModEventHandler {
     }
 
     @SubscribeEvent
-    public static void onModConfigLoad(final ModConfigEvent.Loading configEvent) {
+    public static void onModConfigLoad(ModConfigEvent.Loading configEvent) {
         if(configEvent.getConfig().getSpec() == TravelersBackpackConfig.serverSpec) {
-            TravelersBackpackConfig.SERVER.initializeLists();
+            TravelersBackpackConfig.SERVER.reload();
         }
     }
 
     @SubscribeEvent
-    public static void onModConfigReload(final ModConfigEvent.Reloading configEvent) {
+    public static void onModConfigReload(ModConfigEvent.Reloading configEvent) {
         if(configEvent.getConfig().getSpec() == TravelersBackpackConfig.serverSpec) {
-            TravelersBackpackConfig.SERVER.initializeLists();
+            TravelersBackpackConfig.SERVER.reload();
         }
     }
 }
