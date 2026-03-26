@@ -7,6 +7,7 @@ import com.tiviacz.travelersbackpack.compat.craftingtweaks.CraftingTweaksCompat;
 import com.tiviacz.travelersbackpack.compat.pneumonogravestones.PneumonoGravestonesCompat;
 import com.tiviacz.travelersbackpack.compat.trinkets.TravelersBackpackTrinket;
 import com.tiviacz.travelersbackpack.compat.universalgraves.UniversalGravesCompat;
+import com.tiviacz.travelersbackpack.compat.vinurl.VinURLNetwork;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
 import com.tiviacz.travelersbackpack.handlers.*;
@@ -38,6 +39,7 @@ public class TravelersBackpack implements ModInitializer {
     public static boolean comfortsLoaded;
     public static boolean universalGravesLoaded;
     public static boolean pneumonoGravestonesLoaded;
+    public static boolean vinurlLoaded;
 
     public static boolean polymorphLoaded;
     public static boolean trashSlotLoaded;
@@ -106,6 +108,8 @@ public class TravelersBackpack implements ModInitializer {
 
         polymorphLoaded = fabricLoader.isModLoaded("polymorph");
         trashSlotLoaded = fabricLoader.isModLoaded("trashslot");
+        vinurlLoaded = fabricLoader.isModLoaded("vinurl");
+        if(vinurlLoaded) VinURLNetwork.register();
 
         //Fetch supporters
         Supporters.fetchSupporters();
