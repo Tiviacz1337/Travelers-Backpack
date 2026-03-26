@@ -45,11 +45,11 @@ jobs:
           #curseforge-id: 321117
           modrinth-id: rlloIFEV
 
-          curseforge-token: "${{ env.CURSEFORGE_TOKEN }}"
+          #curseforge-token: "${{ env.CURSEFORGE_TOKEN }}"
           modrinth-token: "${{ env.MODRINTH_TOKEN }}"
 
           modrinth-name: ${{ env.RELEASE_NAME_MODRINTH }}
-          curseforge-name: ${{ env.RELEASE_NAME_CURSEFORGE }}
+          #curseforge-name: ${{ env.RELEASE_NAME_CURSEFORGE }}
           version: "${{ env.VERSION }}"
           version-type: release
           changelog-file: CHANGELOG.md
