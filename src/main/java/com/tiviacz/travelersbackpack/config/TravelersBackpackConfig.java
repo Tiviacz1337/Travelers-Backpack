@@ -25,7 +25,7 @@ public class TravelersBackpackConfig {
         public final BackpackAbilities backpackAbilities;
         public final SlownessDebuff slownessDebuff;
 
-        Server(final ModConfigSpec.Builder builder) {
+        Server(ModConfigSpec.Builder builder) {
             builder.comment("Server config settings")
                     .push("server");
 
@@ -60,7 +60,7 @@ public class TravelersBackpackConfig {
             public final RefillUpgradeSettings refillUpgradeSettings;
             public final FilterUpgradeSettings voidUpgradeSettings;
 
-            public BackpackUpgrades(final ModConfigSpec.Builder builder, final String path) {
+            public BackpackUpgrades(ModConfigSpec.Builder builder, String path) {
                 builder.push(path);
 
                 enableTanksUpgrade = builder
@@ -99,7 +99,7 @@ public class TravelersBackpackConfig {
                 public final ModConfigSpec.IntValue filterSlotCount;
                 public final ModConfigSpec.IntValue slotsInRow;
 
-                public FilterUpgradeSettings(final ModConfigSpec.Builder builder, final String path, final String upgradeName) {
+                public FilterUpgradeSettings(ModConfigSpec.Builder builder, String path, String upgradeName) {
                     builder.push(path);
 
                     enableUpgrade = builder
@@ -121,7 +121,7 @@ public class TravelersBackpackConfig {
                 public final ModConfigSpec.IntValue slotsInRow;
                 public final ModConfigSpec.IntValue tickRate;
 
-                public FeedingUpgradeSettings(final ModConfigSpec.Builder builder, final String path) {
+                public FeedingUpgradeSettings(ModConfigSpec.Builder builder, String path) {
                     builder.push(path);
 
                     enableFeedingUpgrade = builder
@@ -147,7 +147,7 @@ public class TravelersBackpackConfig {
                 public final ModConfigSpec.IntValue pullRange;
                 public final ModConfigSpec.IntValue tickRate;
 
-                public MagnetUpgradeSettings(final ModConfigSpec.Builder builder, final String path) {
+                public MagnetUpgradeSettings(ModConfigSpec.Builder builder, String path) {
                     builder.push(path);
 
                     enableMagnetUpgrade = builder
@@ -175,7 +175,7 @@ public class TravelersBackpackConfig {
                 public final ModConfigSpec.IntValue slotsInRow;
                 public final ModConfigSpec.IntValue tickRate;
 
-                public RefillUpgradeSettings(final ModConfigSpec.Builder builder, final String path) {
+                public RefillUpgradeSettings(ModConfigSpec.Builder builder, String path) {
                     builder.push(path);
 
                     enableRefillUpgrade = builder
@@ -219,7 +219,7 @@ public class TravelersBackpackConfig {
             public final ModConfigSpec.BooleanValue enableSleepingBagSpawnPoint;
             public final ModConfigSpec.BooleanValue backSlotIntegration;
 
-            BackpackSettings(final ModConfigSpec.Builder builder, final String path) {
+            BackpackSettings(ModConfigSpec.Builder builder, String path) {
                 builder.push(path);
 
                 //Backpack Settings
@@ -341,7 +341,7 @@ public class TravelersBackpackConfig {
             public final ModConfigSpec.ConfigValue<List<? extends String>> overworldBackpacks;
             public final ModConfigSpec.ConfigValue<List<? extends String>> netherBackpacks;
 
-            World(final ModConfigSpec.Builder builder, final String path) {
+            World(ModConfigSpec.Builder builder, String path) {
                 builder.push(path);
 
                 spawnEntitiesWithBackpack = builder
@@ -446,7 +446,7 @@ public class TravelersBackpackConfig {
             public final ModConfigSpec.ConfigValue<List<? extends String>> backpackEffects;
             public final ModConfigSpec.ConfigValue<List<? extends String>> cooldowns;
 
-            BackpackAbilities(final ModConfigSpec.Builder builder, final String path) {
+            BackpackAbilities(ModConfigSpec.Builder builder, String path) {
                 builder.push(path);
 
                 enableBackpackAbilities = builder
@@ -535,7 +535,7 @@ public class TravelersBackpackConfig {
             public final ModConfigSpec.IntValue maxNumberOfBackpacks;
             public final ModConfigSpec.DoubleValue slownessPerExcessedBackpack;
 
-            SlownessDebuff(final ModConfigSpec.Builder builder, final String path) {
+            SlownessDebuff(ModConfigSpec.Builder builder, String path) {
                 builder.push(path);
 
                 tooManyBackpacksSlowness = builder
@@ -554,6 +554,7 @@ public class TravelersBackpackConfig {
         }
 
         public void loadItemsFromConfig(List<? extends String> configList, List<Item> targetList) {
+            targetList.clear();
             for(String registryName : configList) {
                 ResourceLocation res = ResourceLocation.tryParse(registryName);
 
@@ -564,6 +565,7 @@ public class TravelersBackpackConfig {
         }
 
         public void loadEntityTypesFromConfig(List<? extends String> configList, List<EntityType> targetList) {
+            targetList.clear();
             for(String registryName : configList) {
                 ResourceLocation res = ResourceLocation.tryParse(registryName);
 
@@ -574,6 +576,7 @@ public class TravelersBackpackConfig {
         }
 
         public void loadBackpackEffectsFromConfig(List<? extends String> configList, Multimap<Item, BackpackEffect> backpackEffects) {
+            backpackEffects.clear();
             try {
                 for(String entry : configList) {
                     String[] parts = entry.replace(" ", "").split(",");
@@ -605,6 +608,7 @@ public class TravelersBackpackConfig {
         }
 
         public void loadCooldownsFromConfig(List<? extends String> config, Map<Item, Cooldown> cooldownConfigs) {
+            cooldownConfigs.clear();
             try {
                 for(String entry : config) {
                     String[] parts = entry.replace(" ", "").split(",");
@@ -630,47 +634,41 @@ public class TravelersBackpackConfig {
             }
         }
 
-        private boolean initialized = false;
-
-        public void initializeLists() {
+        public void reload() {
             if(!serverSpec.isLoaded()) {
                 return;
             }
 
-            if(!initialized) {
-                //Container
-                loadItemsFromConfig(TravelersBackpackConfig.SERVER.backpackSettings.toolSlotsAcceptableItems.get(), ToolSlotItemHandler.TOOL_SLOTS_ACCEPTABLE_ITEMS);
-                loadItemsFromConfig(TravelersBackpackConfig.SERVER.backpackSettings.blacklistedItems.get(), BackpackSlotItemHandler.BLACKLISTED_ITEMS);
+            //Container
+            loadItemsFromConfig(TravelersBackpackConfig.SERVER.backpackSettings.toolSlotsAcceptableItems.get(), ToolSlotItemHandler.TOOL_SLOTS_ACCEPTABLE_ITEMS);
+            loadItemsFromConfig(TravelersBackpackConfig.SERVER.backpackSettings.blacklistedItems.get(), BackpackSlotItemHandler.BLACKLISTED_ITEMS);
 
-                //Spawns
-                loadItemsFromConfig(TravelersBackpackConfig.SERVER.world.overworldBackpacks.get(), ModItems.COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES);
-                loadItemsFromConfig(TravelersBackpackConfig.SERVER.world.netherBackpacks.get(), ModItems.COMPATIBLE_NETHER_BACKPACK_ENTRIES);
+            //Spawns
+            loadItemsFromConfig(TravelersBackpackConfig.SERVER.world.overworldBackpacks.get(), ModItems.COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES);
+            loadItemsFromConfig(TravelersBackpackConfig.SERVER.world.netherBackpacks.get(), ModItems.COMPATIBLE_NETHER_BACKPACK_ENTRIES);
 
-                //Abilities
-                loadItemsFromConfig(TravelersBackpackConfig.SERVER.backpackAbilities.allowedAbilities.get(), com.tiviacz.travelersbackpack.common.BackpackAbilities.ALLOWED_ABILITIES);
+            //Abilities
+            loadItemsFromConfig(TravelersBackpackConfig.SERVER.backpackAbilities.allowedAbilities.get(), com.tiviacz.travelersbackpack.common.BackpackAbilities.ALLOWED_ABILITIES);
 
-                //Entities
-                loadEntityTypesFromConfig(TravelersBackpackConfig.SERVER.world.possibleOverworldEntityTypes.get(), Reference.ALLOWED_TYPE_ENTRIES);
-                loadEntityTypesFromConfig(TravelersBackpackConfig.SERVER.world.possibleNetherEntityTypes.get(), Reference.ALLOWED_TYPE_ENTRIES);
+            //Entities
+            loadEntityTypesFromConfig(TravelersBackpackConfig.SERVER.world.possibleOverworldEntityTypes.get(), Reference.ALLOWED_TYPE_ENTRIES);
+            loadEntityTypesFromConfig(TravelersBackpackConfig.SERVER.world.possibleNetherEntityTypes.get(), Reference.ALLOWED_TYPE_ENTRIES);
 
-                //Backpack Effects
-                loadBackpackEffectsFromConfig(TravelersBackpackConfig.SERVER.backpackAbilities.backpackEffects.get(), com.tiviacz.travelersbackpack.common.BackpackAbilities.BACKPACK_EFFECTS);
+            //Backpack Effects
+            loadBackpackEffectsFromConfig(TravelersBackpackConfig.SERVER.backpackAbilities.backpackEffects.get(), com.tiviacz.travelersbackpack.common.BackpackAbilities.BACKPACK_EFFECTS);
 
-                //Update allowed abilities if added effect
-                com.tiviacz.travelersbackpack.common.BackpackAbilities.getBackpackEffects().entries().stream().forEach(entry -> {
-                    if(!com.tiviacz.travelersbackpack.common.BackpackAbilities.ALLOWED_ABILITIES.contains(entry.getKey())) {
-                        com.tiviacz.travelersbackpack.common.BackpackAbilities.ALLOWED_ABILITIES.add(entry.getKey());
-                    }
-                    if(!com.tiviacz.travelersbackpack.common.BackpackAbilities.ITEM_ABILITIES_LIST.contains(entry.getKey())) {
-                        com.tiviacz.travelersbackpack.common.BackpackAbilities.ITEM_ABILITIES_LIST.add(entry.getKey());
-                    }
-                });
+            //Update allowed abilities if added effect
+            com.tiviacz.travelersbackpack.common.BackpackAbilities.getBackpackEffects().entries().stream().forEach(entry -> {
+                if(!com.tiviacz.travelersbackpack.common.BackpackAbilities.ALLOWED_ABILITIES.contains(entry.getKey())) {
+                    com.tiviacz.travelersbackpack.common.BackpackAbilities.ALLOWED_ABILITIES.add(entry.getKey());
+                }
+                if(!com.tiviacz.travelersbackpack.common.BackpackAbilities.ITEM_ABILITIES_LIST.contains(entry.getKey())) {
+                    com.tiviacz.travelersbackpack.common.BackpackAbilities.ITEM_ABILITIES_LIST.add(entry.getKey());
+                }
+            });
 
-                //Cooldowns
-                loadCooldownsFromConfig(TravelersBackpackConfig.SERVER.backpackAbilities.cooldowns.get(), com.tiviacz.travelersbackpack.common.BackpackAbilities.COOLDOWNS);
-            }
-
-            initialized = true;
+            //Cooldowns
+            loadCooldownsFromConfig(TravelersBackpackConfig.SERVER.backpackAbilities.cooldowns.get(), com.tiviacz.travelersbackpack.common.BackpackAbilities.COOLDOWNS);
         }
     }
 
@@ -678,7 +676,7 @@ public class TravelersBackpackConfig {
         public final ModConfigSpec.BooleanValue enableLoot;
         public final ModConfigSpec.BooleanValue enableVillagerTrade;
 
-        Common(final ModConfigSpec.Builder builder) {
+        Common(ModConfigSpec.Builder builder) {
             builder.comment("Common config settings")
                     .push("common");
 
@@ -703,7 +701,7 @@ public class TravelersBackpackConfig {
         public final ToolsOverlay toolsOverlay;
         public final Overlay overlay;
 
-        Client(final ModConfigSpec.Builder builder) {
+        Client(ModConfigSpec.Builder builder) {
             builder.comment("Client-only settings")
                     .push("client");
 
@@ -784,7 +782,7 @@ public class TravelersBackpackConfig {
             public final ModConfigSpec.IntValue offsetX;
             public final ModConfigSpec.IntValue offsetY;
 
-            Overlay(final ModConfigSpec.Builder builder, final String comment, final String path, final boolean defaultOverlay, final int defaultX, final int defaultY) {
+            Overlay(ModConfigSpec.Builder builder, String comment, String path, boolean defaultOverlay, int defaultX, int defaultY) {
                 builder.comment(comment)
                         .push(path);
 
@@ -808,30 +806,22 @@ public class TravelersBackpackConfig {
     //Server
     public static final ModConfigSpec serverSpec;
     public static final Server SERVER;
-
-    static {
-        final Pair<Server, ModConfigSpec> specPair = new ModConfigSpec.Builder().configure(Server::new);
-        serverSpec = specPair.getRight();
-        SERVER = specPair.getLeft();
-    }
-
     //Common
     public static final ModConfigSpec commonSpec;
     public static final Common COMMON;
-
-    static {
-        final Pair<Common, ModConfigSpec> specPair = new ModConfigSpec.Builder().configure(Common::new);
-        commonSpec = specPair.getRight();
-        COMMON = specPair.getLeft();
-    }
-
     //Client
     public static final ModConfigSpec clientSpec;
     public static final Client CLIENT;
 
     static {
-        final Pair<Client, ModConfigSpec> specPair = new ModConfigSpec.Builder().configure(Client::new);
-        clientSpec = specPair.getRight();
-        CLIENT = specPair.getLeft();
+        Pair<Server, ModConfigSpec> serverSpecPair = new ModConfigSpec.Builder().configure(Server::new);
+        serverSpec = serverSpecPair.getRight();
+        SERVER = serverSpecPair.getLeft();
+        Pair<Common, ModConfigSpec> commonSpecPair = new ModConfigSpec.Builder().configure(Common::new);
+        commonSpec = commonSpecPair.getRight();
+        COMMON = commonSpecPair.getLeft();
+        Pair<Client, ModConfigSpec> clientSpecPair = new ModConfigSpec.Builder().configure(Client::new);
+        clientSpec = clientSpecPair.getRight();
+        CLIENT = clientSpecPair.getLeft();
     }
 }
