@@ -25,7 +25,7 @@ public class TravelersBackpackConfig {
         public final BackpackAbilities backpackAbilities;
         public final SlownessDebuff slownessDebuff;
 
-        Server(final ForgeConfigSpec.Builder builder) {
+        Server(ForgeConfigSpec.Builder builder) {
             builder.comment("Server config settings")
                     .push("server");
 
@@ -60,7 +60,7 @@ public class TravelersBackpackConfig {
             public final RefillUpgradeSettings refillUpgradeSettings;
             public final FilterUpgradeSettings voidUpgradeSettings;
 
-            public BackpackUpgrades(final ForgeConfigSpec.Builder builder, final String path) {
+            public BackpackUpgrades(ForgeConfigSpec.Builder builder, String path) {
                 builder.push(path);
 
                 enableTanksUpgrade = builder
@@ -99,7 +99,7 @@ public class TravelersBackpackConfig {
                 public final ForgeConfigSpec.IntValue filterSlotCount;
                 public final ForgeConfigSpec.IntValue slotsInRow;
 
-                public FilterUpgradeSettings(final ForgeConfigSpec.Builder builder, final String path, final String upgradeName) {
+                public FilterUpgradeSettings(ForgeConfigSpec.Builder builder, String path, String upgradeName) {
                     builder.push(path);
 
                     enableUpgrade = builder
@@ -121,7 +121,7 @@ public class TravelersBackpackConfig {
                 public final ForgeConfigSpec.IntValue slotsInRow;
                 public final ForgeConfigSpec.IntValue tickRate;
 
-                public FeedingUpgradeSettings(final ForgeConfigSpec.Builder builder, final String path) {
+                public FeedingUpgradeSettings(ForgeConfigSpec.Builder builder, String path) {
                     builder.push(path);
 
                     enableFeedingUpgrade = builder
@@ -147,7 +147,7 @@ public class TravelersBackpackConfig {
                 public final ForgeConfigSpec.IntValue pullRange;
                 public final ForgeConfigSpec.IntValue tickRate;
 
-                public MagnetUpgradeSettings(final ForgeConfigSpec.Builder builder, final String path) {
+                public MagnetUpgradeSettings(ForgeConfigSpec.Builder builder, String path) {
                     builder.push(path);
 
                     enableMagnetUpgrade = builder
@@ -175,7 +175,7 @@ public class TravelersBackpackConfig {
                 public final ForgeConfigSpec.IntValue slotsInRow;
                 public final ForgeConfigSpec.IntValue tickRate;
 
-                public RefillUpgradeSettings(final ForgeConfigSpec.Builder builder, final String path) {
+                public RefillUpgradeSettings(ForgeConfigSpec.Builder builder, String path) {
                     builder.push(path);
 
                     enableRefillUpgrade = builder
@@ -219,7 +219,7 @@ public class TravelersBackpackConfig {
             public final ForgeConfigSpec.BooleanValue enableSleepingBagSpawnPoint;
             public final ForgeConfigSpec.BooleanValue backSlotIntegration;
 
-            BackpackSettings(final ForgeConfigSpec.Builder builder, final String path) {
+            BackpackSettings(ForgeConfigSpec.Builder builder, String path) {
                 builder.push(path);
 
                 //Backpack Settings
@@ -341,7 +341,7 @@ public class TravelersBackpackConfig {
             public final ForgeConfigSpec.ConfigValue<List<? extends String>> overworldBackpacks;
             public final ForgeConfigSpec.ConfigValue<List<? extends String>> netherBackpacks;
 
-            World(final ForgeConfigSpec.Builder builder, final String path) {
+            World(ForgeConfigSpec.Builder builder, String path) {
                 builder.push(path);
 
                 spawnEntitiesWithBackpack = builder
@@ -446,7 +446,7 @@ public class TravelersBackpackConfig {
             public final ForgeConfigSpec.ConfigValue<List<? extends String>> backpackEffects;
             public final ForgeConfigSpec.ConfigValue<List<? extends String>> cooldowns;
 
-            BackpackAbilities(final ForgeConfigSpec.Builder builder, final String path) {
+            BackpackAbilities(ForgeConfigSpec.Builder builder, String path) {
                 builder.push(path);
 
                 enableBackpackAbilities = builder
@@ -535,7 +535,7 @@ public class TravelersBackpackConfig {
             public final ForgeConfigSpec.IntValue maxNumberOfBackpacks;
             public final ForgeConfigSpec.DoubleValue slownessPerExcessedBackpack;
 
-            SlownessDebuff(final ForgeConfigSpec.Builder builder, final String path) {
+            SlownessDebuff(ForgeConfigSpec.Builder builder, String path) {
                 builder.push(path);
 
                 tooManyBackpacksSlowness = builder
@@ -554,6 +554,7 @@ public class TravelersBackpackConfig {
         }
 
         public void loadItemsFromConfig(List<? extends String> configList, List<Item> targetList) {
+            targetList.clear();
             for(String registryName : configList) {
                 ResourceLocation res = ResourceLocation.tryParse(registryName);
 
@@ -564,6 +565,7 @@ public class TravelersBackpackConfig {
         }
 
         public void loadEntityTypesFromConfig(List<? extends String> configList, List<EntityType> targetList) {
+            targetList.clear();
             for(String registryName : configList) {
                 ResourceLocation res = ResourceLocation.tryParse(registryName);
 
@@ -574,6 +576,7 @@ public class TravelersBackpackConfig {
         }
 
         public void loadBackpackEffectsFromConfig(List<? extends String> configList, Multimap<Item, BackpackEffect> backpackEffects) {
+            backpackEffects.clear();
             try {
                 for(String entry : configList) {
                     String[] parts = entry.replace(" ", "").split(",");
@@ -605,6 +608,7 @@ public class TravelersBackpackConfig {
         }
 
         public void loadCooldownsFromConfig(List<? extends String> config, Map<Item, Cooldown> cooldownConfigs) {
+            cooldownConfigs.clear();
             try {
                 for(String entry : config) {
                     String[] parts = entry.replace(" ", "").split(",");
@@ -630,47 +634,41 @@ public class TravelersBackpackConfig {
             }
         }
 
-        private boolean initialized = false;
-
-        public void initializeLists() {
+        public void reload() {
             if(!serverSpec.isLoaded()) {
                 return;
             }
 
-            if(!initialized) {
-                //Container
-                loadItemsFromConfig(TravelersBackpackConfig.SERVER.backpackSettings.toolSlotsAcceptableItems.get(), ToolSlotItemHandler.TOOL_SLOTS_ACCEPTABLE_ITEMS);
-                loadItemsFromConfig(TravelersBackpackConfig.SERVER.backpackSettings.blacklistedItems.get(), BackpackSlotItemHandler.BLACKLISTED_ITEMS);
+            //Container
+            loadItemsFromConfig(TravelersBackpackConfig.SERVER.backpackSettings.toolSlotsAcceptableItems.get(), ToolSlotItemHandler.TOOL_SLOTS_ACCEPTABLE_ITEMS);
+            loadItemsFromConfig(TravelersBackpackConfig.SERVER.backpackSettings.blacklistedItems.get(), BackpackSlotItemHandler.BLACKLISTED_ITEMS);
 
-                //Spawns
-                loadItemsFromConfig(TravelersBackpackConfig.SERVER.world.overworldBackpacks.get(), ModItems.COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES);
-                loadItemsFromConfig(TravelersBackpackConfig.SERVER.world.netherBackpacks.get(), ModItems.COMPATIBLE_NETHER_BACKPACK_ENTRIES);
+            //Spawns
+            loadItemsFromConfig(TravelersBackpackConfig.SERVER.world.overworldBackpacks.get(), ModItems.COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES);
+            loadItemsFromConfig(TravelersBackpackConfig.SERVER.world.netherBackpacks.get(), ModItems.COMPATIBLE_NETHER_BACKPACK_ENTRIES);
 
-                //Abilities
-                loadItemsFromConfig(TravelersBackpackConfig.SERVER.backpackAbilities.allowedAbilities.get(), com.tiviacz.travelersbackpack.common.BackpackAbilities.ALLOWED_ABILITIES);
+            //Abilities
+            loadItemsFromConfig(TravelersBackpackConfig.SERVER.backpackAbilities.allowedAbilities.get(), com.tiviacz.travelersbackpack.common.BackpackAbilities.ALLOWED_ABILITIES);
 
-                //Entities
-                loadEntityTypesFromConfig(TravelersBackpackConfig.SERVER.world.possibleOverworldEntityTypes.get(), Reference.ALLOWED_TYPE_ENTRIES);
-                loadEntityTypesFromConfig(TravelersBackpackConfig.SERVER.world.possibleNetherEntityTypes.get(), Reference.ALLOWED_TYPE_ENTRIES);
+            //Entities
+            loadEntityTypesFromConfig(TravelersBackpackConfig.SERVER.world.possibleOverworldEntityTypes.get(), Reference.ALLOWED_TYPE_ENTRIES);
+            loadEntityTypesFromConfig(TravelersBackpackConfig.SERVER.world.possibleNetherEntityTypes.get(), Reference.ALLOWED_TYPE_ENTRIES);
 
-                //Backpack Effects
-                loadBackpackEffectsFromConfig(TravelersBackpackConfig.SERVER.backpackAbilities.backpackEffects.get(), com.tiviacz.travelersbackpack.common.BackpackAbilities.BACKPACK_EFFECTS);
+            //Backpack Effects
+            loadBackpackEffectsFromConfig(TravelersBackpackConfig.SERVER.backpackAbilities.backpackEffects.get(), com.tiviacz.travelersbackpack.common.BackpackAbilities.BACKPACK_EFFECTS);
 
-                //Update allowed abilities if added effect
-                com.tiviacz.travelersbackpack.common.BackpackAbilities.getBackpackEffects().entries().stream().forEach(entry -> {
-                    if(!com.tiviacz.travelersbackpack.common.BackpackAbilities.ALLOWED_ABILITIES.contains(entry.getKey())) {
-                        com.tiviacz.travelersbackpack.common.BackpackAbilities.ALLOWED_ABILITIES.add(entry.getKey());
-                    }
-                    if(!com.tiviacz.travelersbackpack.common.BackpackAbilities.ITEM_ABILITIES_LIST.contains(entry.getKey())) {
-                        com.tiviacz.travelersbackpack.common.BackpackAbilities.ITEM_ABILITIES_LIST.add(entry.getKey());
-                    }
-                });
+            //Update allowed abilities if added effect
+            com.tiviacz.travelersbackpack.common.BackpackAbilities.getBackpackEffects().entries().stream().forEach(entry -> {
+                if(!com.tiviacz.travelersbackpack.common.BackpackAbilities.ALLOWED_ABILITIES.contains(entry.getKey())) {
+                    com.tiviacz.travelersbackpack.common.BackpackAbilities.ALLOWED_ABILITIES.add(entry.getKey());
+                }
+                if(!com.tiviacz.travelersbackpack.common.BackpackAbilities.ITEM_ABILITIES_LIST.contains(entry.getKey())) {
+                    com.tiviacz.travelersbackpack.common.BackpackAbilities.ITEM_ABILITIES_LIST.add(entry.getKey());
+                }
+            });
 
-                //Cooldowns
-                loadCooldownsFromConfig(TravelersBackpackConfig.SERVER.backpackAbilities.cooldowns.get(), com.tiviacz.travelersbackpack.common.BackpackAbilities.COOLDOWNS);
-            }
-
-            initialized = true;
+            //Cooldowns
+            loadCooldownsFromConfig(TravelersBackpackConfig.SERVER.backpackAbilities.cooldowns.get(), com.tiviacz.travelersbackpack.common.BackpackAbilities.COOLDOWNS);
         }
     }
 
@@ -678,7 +676,7 @@ public class TravelersBackpackConfig {
         public final ForgeConfigSpec.BooleanValue enableLoot;
         public final ForgeConfigSpec.BooleanValue enableVillagerTrade;
 
-        Common(final ForgeConfigSpec.Builder builder) {
+        Common(ForgeConfigSpec.Builder builder) {
             builder.comment("Common config settings")
                     .push("common");
 
@@ -703,7 +701,7 @@ public class TravelersBackpackConfig {
         public final ToolsOverlay toolsOverlay;
         public final Overlay overlay;
 
-        Client(final ForgeConfigSpec.Builder builder) {
+        Client(ForgeConfigSpec.Builder builder) {
             builder.comment("Client-only settings")
                     .push("client");
 
@@ -747,7 +745,7 @@ public class TravelersBackpackConfig {
             public final ForgeConfigSpec.IntValue offsetX;
             public final ForgeConfigSpec.IntValue offsetY;
 
-            ToolsOverlay(ForgeConfigSpec.Builder builder, final String comment, final String path) {
+            ToolsOverlay(ForgeConfigSpec.Builder builder, String comment, String path) {
                 builder.comment(comment)
                         .push(path);
 
@@ -784,7 +782,7 @@ public class TravelersBackpackConfig {
             public final ForgeConfigSpec.IntValue offsetX;
             public final ForgeConfigSpec.IntValue offsetY;
 
-            Overlay(final ForgeConfigSpec.Builder builder, final String comment, final String path, final boolean defaultOverlay, final int defaultX, final int defaultY) {
+            Overlay(ForgeConfigSpec.Builder builder, String comment, String path, boolean defaultOverlay, int defaultX, int defaultY) {
                 builder.comment(comment)
                         .push(path);
 
@@ -808,30 +806,22 @@ public class TravelersBackpackConfig {
     //Server
     public static final ForgeConfigSpec serverSpec;
     public static final Server SERVER;
-
-    static {
-        final Pair<Server, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(Server::new);
-        serverSpec = specPair.getRight();
-        SERVER = specPair.getLeft();
-    }
-
     //Common
     public static final ForgeConfigSpec commonSpec;
     public static final Common COMMON;
-
-    static {
-        final Pair<Common, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(Common::new);
-        commonSpec = specPair.getRight();
-        COMMON = specPair.getLeft();
-    }
-
     //Client
     public static final ForgeConfigSpec clientSpec;
     public static final Client CLIENT;
 
     static {
-        final Pair<Client, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(Client::new);
-        clientSpec = specPair.getRight();
-        CLIENT = specPair.getLeft();
+        Pair<Server, ForgeConfigSpec> serverSpecPair = new ForgeConfigSpec.Builder().configure(Server::new);
+        serverSpec = serverSpecPair.getRight();
+        SERVER = serverSpecPair.getLeft();
+        Pair<Common, ForgeConfigSpec> commonSpecPair = new ForgeConfigSpec.Builder().configure(Common::new);
+        commonSpec = commonSpecPair.getRight();
+        COMMON = commonSpecPair.getLeft();
+        Pair<Client, ForgeConfigSpec> clientSpecPair = new ForgeConfigSpec.Builder().configure(Client::new);
+        clientSpec = clientSpecPair.getRight();
+        CLIENT = clientSpecPair.getLeft();
     }
 }
