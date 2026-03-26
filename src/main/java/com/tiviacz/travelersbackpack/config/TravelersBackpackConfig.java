@@ -638,7 +638,7 @@ public class TravelersBackpackConfig {
             }
         }
 
-        public void initializeLists() {
+        public void reload() {
             if(!serverSpec.isLoaded()) {
                 return;
             }
@@ -809,30 +809,22 @@ public class TravelersBackpackConfig {
     //Server
     public static final ModConfigSpec serverSpec;
     public static final Server SERVER;
-
-    static {
-        Pair<Server, ModConfigSpec> specPair = new ModConfigSpec.Builder().configure(Server::new);
-        serverSpec = specPair.getRight();
-        SERVER = specPair.getLeft();
-    }
-
     //Common
     public static final ModConfigSpec commonSpec;
     public static final Common COMMON;
-
-    static {
-        Pair<Common, ModConfigSpec> specPair = new ModConfigSpec.Builder().configure(Common::new);
-        commonSpec = specPair.getRight();
-        COMMON = specPair.getLeft();
-    }
-
     //Client
     public static final ModConfigSpec clientSpec;
     public static final Client CLIENT;
 
     static {
-        Pair<Client, ModConfigSpec> specPair = new ModConfigSpec.Builder().configure(Client::new);
-        clientSpec = specPair.getRight();
-        CLIENT = specPair.getLeft();
+        Pair<Server, ModConfigSpec> serverSpecPair = new ModConfigSpec.Builder().configure(Server::new);
+        serverSpec = serverSpecPair.getRight();
+        SERVER = serverSpecPair.getLeft();
+        Pair<Common, ModConfigSpec> commonSpecPair = new ModConfigSpec.Builder().configure(Common::new);
+        commonSpec = commonSpecPair.getRight();
+        COMMON = commonSpecPair.getLeft();
+        Pair<Client, ModConfigSpec> clientSpecPair = new ModConfigSpec.Builder().configure(Client::new);
+        clientSpec = clientSpecPair.getRight();
+        CLIENT = clientSpecPair.getLeft();
     }
 }

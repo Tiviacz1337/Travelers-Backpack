@@ -51,12 +51,12 @@ public class TravelersBackpack implements ModInitializer {
         ConfigRegistry.INSTANCE.register(MODID, ModConfig.Type.COMMON, TravelersBackpackConfig.commonSpec);
         ModConfigEvents.loading(TravelersBackpack.MODID).register(config -> {
             if(config.getSpec() == TravelersBackpackConfig.serverSpec) {
-                TravelersBackpackConfig.SERVER.initializeLists();
+                TravelersBackpackConfig.SERVER.reload();
             }
         });
         ModConfigEvents.reloading(TravelersBackpack.MODID).register(config -> {
             if(config.getSpec() == TravelersBackpackConfig.serverSpec) {
-                TravelersBackpackConfig.SERVER.initializeLists();
+                TravelersBackpackConfig.SERVER.reload();
             }
         });
         ModItemGroups.registerItemGroup();
