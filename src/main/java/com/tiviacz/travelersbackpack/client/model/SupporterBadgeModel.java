@@ -2,12 +2,10 @@ package com.tiviacz.travelersbackpack.client.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import net.fabricmc.fabric.api.renderer.v1.render.FabricBlockModelRenderer;
-import net.minecraft.client.Minecraft;
+import net.fabricmc.fabric.api.renderer.v1.render.RenderLayerHelper;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.EmptyBlockAndTintGetter;
@@ -50,7 +48,7 @@ public class SupporterBadgeModel {
         }
     }
 
-    public void render(PoseStack poseStack, int packedLightIn) {
+    public void render(PoseStack poseStack, SubmitNodeCollector collector, int packedLightIn) {
         poseStack.pushPose();
         translateAndRotate(poseStack);
         BlockStateModel starModel = StarModelReloadListener.INSTANCE.getStarModel();
@@ -62,19 +60,13 @@ public class SupporterBadgeModel {
         poseStack.mulPose(Axis.XP.rotationDegrees(90.0F));
         poseStack.scale(0.3F, 0.3F, 0.3F);
 
-        renderModel(poseStack, starModel, packedLightIn);
+        renderModel(poseStack, collector, starModel, packedLightIn);
         poseStack.popPose();
     }
 
     //Fabric
 
-    private void renderModel(PoseStack matrixStack, BlockStateModel model, int packedLightIn) {
-        MultiBufferSource buffer = Minecraft.getInstance().renderBuffers().bufferSource();
-       /* Renderer renderer = Renderer.get();
-        var emitter = renderer.mutableMesh().emitter();
-        model.emitQuads(emitter, EmptyBlockAndTintGetter.INSTANCE, BlockPos.ZERO, Blocks.AIR.defaultBlockState(), RandomSource.create(42L), (d) -> {
-            return false;
-        });*/
-        FabricBlockModelRenderer.render(matrixStack.last(), (chunkSectionLayer) -> buffer.getBuffer(RenderTypes.solidMovingBlock()), model, 1, 1, 1, packedLightIn, OverlayTexture.NO_OVERLAY, EmptyBlockAndTintGetter.INSTANCE, BlockPos.ZERO, Blocks.AIR.defaultBlockState());
+    private void renderModel(PoseStack matrixStack, SubmitNodeCollector collector, BlockStateModel model, int packedLightIn) {
+        collector.order(0).submitBlockStateModel(matrixStack, RenderLayerHelper::getEntityBlockLayer, model, 1, 1, 1, packedLightIn, OverlayTexture.NO_OVERLAY, 0, EmptyBlockAndTintGetter.INSTANCE, BlockPos.ZERO, Blocks.AIR.defaultBlockState());
     }
 }

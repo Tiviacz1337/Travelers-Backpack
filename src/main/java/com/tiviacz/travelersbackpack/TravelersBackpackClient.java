@@ -133,7 +133,7 @@ public class TravelersBackpackClient implements ClientModInitializer {
             TravelersBackpackTrinket.initClient();
     }
 
-    public static final Identifier STAR_MODEL = Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "item/supporter_star");
+    public static final Identifier STAR_MODEL = Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "block/supporter_star");
     public static final ExtraModelKey<BlockStateModel> STAR_MODEL_KEY = ExtraModelKey.create(STAR_MODEL::toString);
 
     public static final Identifier BACKPACK_BASE = Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "block/backpack_base");

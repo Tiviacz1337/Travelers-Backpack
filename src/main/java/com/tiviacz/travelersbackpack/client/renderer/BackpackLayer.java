@@ -57,7 +57,7 @@ public class BackpackLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 
         String name = ((HumanoidRenderStateBackpackInject)state).getName();
         if(name != null && Supporters.SUPPORTERS.contains(name)) {
-            BACKPACK_MODEL.supporterBadgeModel.render(poseStack, packedLightIn);
+            BACKPACK_MODEL.supporterBadgeModel.render(poseStack, collector, packedLightIn);
         }
         poseStack.popPose();
     }
