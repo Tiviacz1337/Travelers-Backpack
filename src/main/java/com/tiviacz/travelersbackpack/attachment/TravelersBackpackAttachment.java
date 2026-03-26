@@ -17,7 +17,6 @@ import net.minecraft.world.item.Items;
 public class TravelersBackpackAttachment {
     public static Codec<TravelersBackpackAttachment> CODEC = ItemStack.OPTIONAL_CODEC.xmap(TravelersBackpackAttachment::new, TravelersBackpackAttachment::getBackpack);
     public static StreamCodec<RegistryFriendlyByteBuf, TravelersBackpackAttachment> STREAM_CODEC = ItemStack.OPTIONAL_STREAM_CODEC.map(TravelersBackpackAttachment::new, TravelersBackpackAttachment::getBackpack);
-    public static TravelersBackpackAttachment DEFAULT = new TravelersBackpackAttachment(new ItemStack(Items.AIR, 0));
 
     public BackpackWrapper backpackWrapper;
     public ItemStack backpack = new ItemStack(Items.AIR, 0);

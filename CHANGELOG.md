@@ -1,4 +1,5 @@
 ### ✨ Changed Cloth Config dependency to Forge Config Api Port - CONFIG CHANGES HAVE TO BE REAPPLIED!  
+🐛 HOTFIX FOR SERVER ISSUES  
 ✨ Removed required Cardinal Components API dependency  
 ✨ Following upgrades can be used when backpack is placed as a block  
 ✨ Magnet Upgrade - teleports items within pull radius (default 5 blocks) and places them directly in front of backpack  
