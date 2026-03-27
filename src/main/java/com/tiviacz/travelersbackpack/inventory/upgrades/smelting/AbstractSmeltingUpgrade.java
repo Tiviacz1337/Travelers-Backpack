@@ -37,7 +37,8 @@ public class AbstractSmeltingUpgrade<T> extends UpgradeBase<T> implements IEnabl
     protected static final int SLOT_INPUT = 0;
     protected static final int SLOT_FUEL = 1;
     protected static final int SLOT_RESULT = 2;
-    private final Supplier<ServerLevel> level;
+    private final Supplier<ServerLevel> serverLevel;
+    private final Supplier<Level> level;
     protected ItemStackHandler items;
     private RecipeHolder<? extends AbstractCookingRecipe> cachedRecipe = null;
     private boolean recipeFetched = false;
@@ -47,7 +48,8 @@ public class AbstractSmeltingUpgrade<T> extends UpgradeBase<T> implements IEnabl
 
     public AbstractSmeltingUpgrade(UpgradeManager manager, int dataHolderSlot, NonNullList<ItemStack> furnaceContents, RecipeType<? extends AbstractCookingRecipe> recipeType, String upgradeName) {
         super(manager, dataHolderSlot, new Point(66, 82));
-        this.level = () -> manager.getWrapper().getServerLevel();
+        this.serverLevel = () -> manager.getWrapper().getServerLevel();
+        this.level = () -> manager.getWrapper().getLevel();
         this.items = createHandler(furnaceContents);
         this.recipeType = recipeType;
         this.quickCheck = RecipeManager.createCheck(this.recipeType);
@@ -92,7 +94,7 @@ public class AbstractSmeltingUpgrade<T> extends UpgradeBase<T> implements IEnabl
             stopCooking();
             stopBurning();
         } else {
-            checkCooking(this.level.get(), false);
+            checkCooking(this.serverLevel.get(), false);
         }
     }
 
@@ -245,7 +247,7 @@ public class AbstractSmeltingUpgrade<T> extends UpgradeBase<T> implements IEnabl
 
     public void finishCooking() {
         if(this.cachedRecipe == null) {
-            this.cachedRecipe = this.quickCheck.getRecipeFor(new SingleRecipeInput(getStack(SLOT_INPUT)), this.level.get()).orElse(null);
+            this.cachedRecipe = this.quickCheck.getRecipeFor(new SingleRecipeInput(getStack(SLOT_INPUT)), this.serverLevel.get()).orElse(null);
         }
         if(this.cachedRecipe != null) {
             ItemStack result = this.cachedRecipe.value().assemble(new SingleRecipeInput(getStack(SLOT_INPUT)), this.level.get().registryAccess());
@@ -270,7 +272,7 @@ public class AbstractSmeltingUpgrade<T> extends UpgradeBase<T> implements IEnabl
         }
 
         if(canBurn(this.cachedRecipe)) {
-            checkCooking(this.level.get(), true);
+            checkCooking(this.serverLevel.get(), true);
         } else {
             stopCooking();
         }
@@ -384,7 +386,7 @@ public class AbstractSmeltingUpgrade<T> extends UpgradeBase<T> implements IEnabl
                 updateDataHolderUnchecked(dataHolderStack -> setSlotChanged(dataHolderStack, slot, getStackInSlot(slot)));
 
                 if(getUpgradeManager().getWrapper().getScreenID() == Reference.WEARABLE_SCREEN_ID) {
-                    checkCooking(AbstractSmeltingUpgrade.this.level.get(), false);
+                    checkCooking(AbstractSmeltingUpgrade.this.serverLevel.get(), false);
                 }
             }
 
