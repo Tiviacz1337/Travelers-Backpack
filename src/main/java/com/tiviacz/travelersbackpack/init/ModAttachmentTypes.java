@@ -11,7 +11,7 @@ import net.minecraft.world.item.Items;
 public class ModAttachmentTypes {
     public static final AttachmentType<TravelersBackpackAttachment> TRAVELERS_BACKPACK = AttachmentRegistry.create(Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "travelers_backpack"), builder -> builder
             .initializer(() -> new TravelersBackpackAttachment(new ItemStack(Items.AIR, 0)))
-            .persistent(TravelersBackpackAttachment.CODEC));
+            .persistent(TravelersBackpackAttachment.CODEC).copyOnDeath());
 
     public static void init() {
 

@@ -11,6 +11,7 @@ import com.tiviacz.travelersbackpack.util.LogHelper;
 import com.tiviacz.travelersbackpack.util.PacketDistributor;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
+import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -72,6 +73,11 @@ public class DeathHandler {
                     livingEntity.level().addFreshEntity(itemEntity);
                 }
             }
+        });
+
+        ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> {
+            ItemStack backpack = AttachmentUtils.getWearingBackpack(newPlayer);
+            AttachmentUtils.getAttachment(newPlayer).ifPresent(attachment -> attachment.equipBackpack(backpack, newPlayer));
         });
     }
 }
