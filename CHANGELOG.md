@@ -1,4 +1,5 @@
 ### ✨ Changed Cloth Config dependency to Forge Config Api Port - CONFIG CHANGES HAVE TO BE REAPPLIED!
+🐛 Hotfix for a syncing issue after the player dies with keepInventory enabled - the backpack remained equipped but was invisible, appearing only after reloading the world  
 🐛 HOTFIX FOR SERVER ISSUES  
 🐛 Hotfix for backpack disappearing if playing with keepInventory enabled  
 🐛 Fixed smelting upgrades crash  

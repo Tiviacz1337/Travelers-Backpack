@@ -76,8 +76,9 @@ public class DeathHandler {
         });
 
         ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> {
-            ItemStack backpack = AttachmentUtils.getWearingBackpack(newPlayer);
-            AttachmentUtils.getAttachment(newPlayer).ifPresent(attachment -> attachment.equipBackpack(backpack, newPlayer));
+            ItemStack backpack = AttachmentUtils.getWearingBackpack(oldPlayer);
+            AttachmentUtils.getAttachment(oldPlayer).ifPresent(attachment -> attachment.equipBackpack(backpack, newPlayer));
+            //AttachmentUtils.synchronise(oldPlayer);
         });
     }
 }
