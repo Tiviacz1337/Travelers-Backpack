@@ -1,6 +1,5 @@
 {
   "loader": "travelersbackpack:backpack",
-  "render_type": "solid",
   "backpackTexture": "travelersbackpack:block/backpack/lapis",
   "particle": "minecraft:block/lapis_block"
 }

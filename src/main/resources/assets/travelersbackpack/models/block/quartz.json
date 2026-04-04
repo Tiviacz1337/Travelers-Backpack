@@ -1,6 +1,5 @@
 {
   "loader": "travelersbackpack:backpack",
-  "render_type": "translucent",
   "backpackTexture": "travelersbackpack:block/backpack/quartz",
   "particle": "minecraft:block/quartz_block_side"
 }

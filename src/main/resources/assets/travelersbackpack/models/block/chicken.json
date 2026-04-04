@@ -1,6 +1,5 @@
 {
   "loader": "travelersbackpack:backpack",
-  "render_type": "solid",
   "backpackTexture": "travelersbackpack:block/backpack/chicken",
   "particle": "minecraft:block/white_wool"
 }

@@ -1,6 +1,5 @@
 {
   "loader": "travelersbackpack:backpack",
-  "render_type": "cutout",
   "backpackTexture": "travelersbackpack:block/backpack/standard",
   "particle": "minecraft:block/brown_wool"
 }

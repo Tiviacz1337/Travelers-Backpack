@@ -1,6 +1,5 @@
 {
   "loader": "travelersbackpack:backpack",
-  "render_type": "solid",
   "backpackTexture": "travelersbackpack:block/backpack/squid",
   "particle": "minecraft:block/light_blue_terracotta"
 }

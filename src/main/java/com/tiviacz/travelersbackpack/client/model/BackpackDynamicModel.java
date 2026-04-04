@@ -298,7 +298,7 @@ public class BackpackDynamicModel implements UnbakedModel {
 
         private BakedQuad createQuad(List<Vector3f> vectors, TextureAtlasSprite sprite, Direction face, boolean hasAmbientOcclusion, int color, float u1x, float u2x, float v1x, float v2x) {
             QuadBakingVertexConsumer quadBaker = new QuadBakingVertexConsumer();
-            quadBaker.setSprite(sprite, ChunkSectionLayer.TRANSLUCENT, Sheets.translucentBlockItemSheet());
+            quadBaker.setSprite(sprite, ChunkSectionLayer.CUTOUT, Sheets.cutoutBlockItemSheet());
             Vec3i dirVec = face.getUnitVec3i();
             quadBaker.setDirection(face);
             quadBaker.setTintIndex(-1);
