@@ -2,7 +2,9 @@ package com.tiviacz.travelersbackpack.init;
 
 import com.mojang.serialization.Codec;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
-import com.tiviacz.travelersbackpack.components.*;
+import com.tiviacz.travelersbackpack.components.Fluids;
+import com.tiviacz.travelersbackpack.components.RenderInfo;
+import com.tiviacz.travelersbackpack.components.Slots;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -64,14 +66,14 @@ public class ModDataComponents {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<RenderInfo>> RENDER_INFO =
             register("render_info", builder -> builder.persistent(RenderInfo.CODEC).networkSynchronized(RenderInfo.STREAM_CODEC));
 
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<BackpackContainerContents>> BACKPACK_CONTAINER =
-            register("backpack_container", builder -> builder.persistent(BackpackContainerContents.CODEC).networkSynchronized(BackpackContainerContents.STREAM_CODEC));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ItemContainerContents>> BACKPACK_CONTAINER =
+            register("backpack_container", builder -> builder.persistent(ItemContainerContents.CODEC).networkSynchronized(ItemContainerContents.STREAM_CODEC));
 
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<BackpackContainerContents>> UPGRADES =
-            register("upgrades", builder -> builder.persistent(BackpackContainerContents.CODEC).networkSynchronized(BackpackContainerContents.STREAM_CODEC));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ItemContainerContents>> UPGRADES =
+            register("upgrades", builder -> builder.persistent(ItemContainerContents.CODEC).networkSynchronized(ItemContainerContents.STREAM_CODEC));
 
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<BackpackContainerContents>> TOOLS_CONTAINER =
-            register("tools_container", builder -> builder.persistent(BackpackContainerContents.CODEC).networkSynchronized(BackpackContainerContents.STREAM_CODEC));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ItemContainerContents>> TOOLS_CONTAINER =
+            register("tools_container", builder -> builder.persistent(ItemContainerContents.CODEC).networkSynchronized(ItemContainerContents.STREAM_CODEC));
 
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> SLEEPING_BAG_COLOR =
             register("sleeping_bag_color", builder -> builder.persistent(Codec.INT).networkSynchronized(ByteBufCodecs.INT));

@@ -1,6 +1,6 @@
 package com.tiviacz.travelersbackpack.inventory.upgrades;
 
-import com.tiviacz.travelersbackpack.inventory.transfer.BackpackResourceHandler;
+import com.tiviacz.travelersbackpack.util.StacksHandlerUtils;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -9,6 +9,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -20,15 +21,15 @@ public abstract class FilterSettingsBase {
     protected List<String> filterTags = new ArrayList<>();
     protected List<TagKey<Item>> tags = new ArrayList<>();
     protected List<Integer> filterSettings;
-    protected BackpackResourceHandler storage;
+    protected ItemStacksResourceHandler storage;
     protected HolderLookup.Provider access;
     private final int slotLimit;
 
-    public FilterSettingsBase(BackpackResourceHandler storage, List<ItemStack> items, List<Integer> filterSettings, HolderLookup.Provider access, int slotLimit) {
+    public FilterSettingsBase(ItemStacksResourceHandler storage, List<ItemStack> items, List<Integer> filterSettings, HolderLookup.Provider access, int slotLimit) {
         this(storage, items, filterSettings, List.of(), access, slotLimit);
     }
 
-    public FilterSettingsBase(BackpackResourceHandler storage, List<ItemStack> items, List<Integer> filterSettings, List<String> filterTags, HolderLookup.Provider access, int slotLimit) {
+    public FilterSettingsBase(ItemStacksResourceHandler storage, List<ItemStack> items, List<Integer> filterSettings, List<String> filterTags, HolderLookup.Provider access, int slotLimit) {
         this.filterItems = items;
         this.filterTags = filterTags;
         this.filterSettings = filterSettings;
@@ -58,9 +59,9 @@ public abstract class FilterSettingsBase {
 
     public Stream<ItemStack> streamStorageContents() {
         List<ItemStack> arrayList = new ArrayList<>();
-        for(int i = 0; i < storage.getSlots(); i++) {
-            if(!storage.getStackInSlot(i).isEmpty()) {
-                arrayList.add(storage.getStackInSlot(i));
+        for(int i = 0; i < StacksHandlerUtils.getSlots(storage); i++) {
+            if(!StacksHandlerUtils.getStackInSlot(storage, i).isEmpty()) {
+                arrayList.add(StacksHandlerUtils.getStackInSlot(storage, i));
             }
         }
         return arrayList.stream();
@@ -108,7 +109,7 @@ public abstract class FilterSettingsBase {
             stack = filterItems.get(0);
         }
         if(!stack.isEmpty()) {
-            stack.getTags().forEach(tag -> addableTags.add(tag.location().toString()));
+            stack.tags().forEach(tag -> addableTags.add(tag.location().toString()));
         }
         addableTags.removeAll(this.filterTags);
         return addableTags;

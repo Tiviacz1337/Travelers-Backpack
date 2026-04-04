@@ -5,11 +5,10 @@ import com.tiviacz.travelersbackpack.inventory.sorter.ContainerSorter;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
 import com.tiviacz.travelersbackpack.util.KeyHelper;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.FormattedCharSequence;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +20,7 @@ public class SortingButtons extends WidgetBase<BackpackScreen> {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BackpackScreen.ICONS, pos.x(), pos.y(), 77, 54, width, height, 256, 256);
         if(isButtonHovered(pos, mouseX, mouseY, Buttons.SORT)) {
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BackpackScreen.ICONS, pos.x() + 1, pos.y() + 2, 78, 69, 12, 12, 256, 256);
@@ -38,7 +37,7 @@ public class SortingButtons extends WidgetBase<BackpackScreen> {
     }
 
     @Override
-    public void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    public void renderTooltip(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         if(isButtonHovered(pos, mouseX, mouseY, Buttons.SORT)) {
             List<Component> list = new ArrayList<>();
             list.add(Component.translatable("screen.travelersbackpack.sort"));

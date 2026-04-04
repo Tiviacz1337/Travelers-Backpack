@@ -8,7 +8,6 @@ import com.tiviacz.travelersbackpack.datagen.ModRecipeProvider;
 import com.tiviacz.travelersbackpack.init.ModBlockEntityTypes;
 import com.tiviacz.travelersbackpack.init.ModNetwork;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
-import com.tiviacz.travelersbackpack.inventory.transfer.FluidTankWrapper;
 import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;
 import net.minecraft.core.Direction;
 import net.minecraft.data.DataGenerator;
@@ -56,43 +55,43 @@ public class ModEventHandler {
             Direction direction = blockEntity.getBlockDirection();
             if(blockEntity.getWrapper() != BackpackWrapper.DUMMY && blockEntity.getWrapper().getUpgradeManager().getUpgrade(TanksUpgrade.class).isPresent()) {
                 TanksUpgrade tanksUpgrade = blockEntity.getWrapper().getUpgradeManager().getUpgrade(TanksUpgrade.class).get();
-                if(side == null) return new FluidTankWrapper(tanksUpgrade.getLeftTank());
+                if(side == null) return tanksUpgrade.getLeftTank();
 
                 if(direction == Direction.NORTH) {
                     switch(side) {
                         case WEST:
-                            return new FluidTankWrapper(tanksUpgrade.getRightTank());
+                            return tanksUpgrade.getRightTank();
                         case EAST:
-                            return new FluidTankWrapper(tanksUpgrade.getLeftTank());
+                            return tanksUpgrade.getLeftTank();
                     }
                 }
                 if(direction == Direction.SOUTH) {
                     switch(side) {
                         case EAST:
-                            return new FluidTankWrapper(tanksUpgrade.getRightTank());
+                            return tanksUpgrade.getRightTank();
                         case WEST:
-                            return new FluidTankWrapper(tanksUpgrade.getLeftTank());
+                            return tanksUpgrade.getLeftTank();
                     }
                 }
 
                 if(direction == Direction.EAST) {
                     switch(side) {
                         case NORTH:
-                            return new FluidTankWrapper(tanksUpgrade.getRightTank());
+                            return tanksUpgrade.getRightTank();
                         case SOUTH:
-                            return new FluidTankWrapper(tanksUpgrade.getLeftTank());
+                            return tanksUpgrade.getLeftTank();
                     }
                 }
 
                 if(direction == Direction.WEST) {
                     switch(side) {
                         case SOUTH:
-                            return new FluidTankWrapper(tanksUpgrade.getRightTank());
+                            return tanksUpgrade.getRightTank();
                         case NORTH:
-                            return new FluidTankWrapper(tanksUpgrade.getLeftTank());
+                            return tanksUpgrade.getLeftTank();
                     }
                 }
-                return new FluidTankWrapper(tanksUpgrade.getLeftTank());
+                return tanksUpgrade.getLeftTank();
             }
             return new FluidStacksResourceHandler(0, 0);
         });

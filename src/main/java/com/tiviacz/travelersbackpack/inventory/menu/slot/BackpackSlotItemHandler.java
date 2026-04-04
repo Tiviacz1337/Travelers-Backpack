@@ -27,26 +27,6 @@ public class BackpackSlotItemHandler extends ResourceHandlerSlot {
         return !(stack.getItem() instanceof TravelersBackpackItem) && !stack.is(ModTags.BLACKLISTED_ITEMS) && (TravelersBackpackConfig.SERVER.backpackSettings.allowShulkerBoxes.get() || stack.getItem().canFitInsideContainerItems());
     }
 
-   /* @Override
-    public void setChanged() { //#TODO report to NEOFORGE
-        if(!getItem().getItem().canFitInsideContainerItems() || getItem().getItem() instanceof BundleItem) {
-            ((IItemHandlerModifiable)this.getItemHandler()).setStackInSlot(index, getItem()); //fix for EasyShulkerBoxes and BundleItem not calling onContentsChanged
-        }
-        super.setChanged();
-    }*/
-
-   /* @Override
-    public void onTake(Player player, ItemStack stack) {
-        set(getItem()); //Emi fix
-        super.onTake(player, stack);
-    }*/
-
-    //Fixes JEI
-    /*@Override
-    public boolean mayPlace(ItemStack stack) {
-        return getItemHandler().isItemValid(index, stack);
-    }*/
-
     @Override
     public int getContainerSlot() {
         return this.containerIndex;

@@ -9,12 +9,12 @@ import net.minecraft.advancements.criterion.RecipeUnlockedTrigger;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.TransmuteResult;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -25,10 +25,10 @@ public class BackpackUpgradeRecipeBuilder {
     private final Ingredient base;
     private final Ingredient addition;
     private final RecipeCategory category;
-    private final Item result;
+    private final ItemStackTemplate result;
     private final Map<String, Criterion<?>> criteria = new LinkedHashMap<>();
 
-    public BackpackUpgradeRecipeBuilder(Ingredient pTemplate, Ingredient pBase, Ingredient pAddition, RecipeCategory pCategory, Item pResult) {
+    public BackpackUpgradeRecipeBuilder(Ingredient pTemplate, Ingredient pBase, Ingredient pAddition, RecipeCategory pCategory, ItemStackTemplate pResult) {
         this.category = pCategory;
         this.template = pTemplate;
         this.base = pBase;
@@ -37,7 +37,7 @@ public class BackpackUpgradeRecipeBuilder {
     }
 
     public static BackpackUpgradeRecipeBuilder backpackUpgrade(Ingredient pTemplate, Ingredient pBase, Ingredient pAddition, RecipeCategory pCategory, Item pResult) {
-        return new BackpackUpgradeRecipeBuilder(pTemplate, pBase, pAddition, pCategory, pResult);
+        return new BackpackUpgradeRecipeBuilder(pTemplate, pBase, pAddition, pCategory, new ItemStackTemplate(pResult));
     }
 
     public BackpackUpgradeRecipeBuilder unlocks(String pKey, Criterion<?> criterion) {
@@ -50,6 +50,7 @@ public class BackpackUpgradeRecipeBuilder {
     }
 
     public void save(RecipeOutput output, ResourceKey<Recipe<?>> resourceKey) {
+
         this.ensureValid(resourceKey);
         Advancement.Builder advancement$builder = output.advancement()
                 .addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(resourceKey))
@@ -57,8 +58,7 @@ public class BackpackUpgradeRecipeBuilder {
                 .requirements(AdvancementRequirements.Strategy.OR);
         this.criteria.forEach(advancement$builder::addCriterion);
         BackpackUpgradeRecipe backpackUpgradeRecipe = new BackpackUpgradeRecipe(
-                Optional.of(this.template), this.base, Optional.of(this.addition), new TransmuteResult(this.result)
-        );
+                Optional.of(this.template), this.base, Optional.of(this.addition), this.result);
         output.accept(
                 resourceKey, backpackUpgradeRecipe, advancement$builder.build(resourceKey.identifier().withPrefix("recipes/" + this.category.getFolderName() + "/"))
         );

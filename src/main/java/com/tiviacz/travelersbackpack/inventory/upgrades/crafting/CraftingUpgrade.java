@@ -2,9 +2,7 @@ package com.tiviacz.travelersbackpack.inventory.upgrades.crafting;
 
 import com.mojang.datafixers.util.Pair;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
-import com.tiviacz.travelersbackpack.components.BackpackContainerContents;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
-import com.tiviacz.travelersbackpack.inventory.transfer.BackpackResourceHandler;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.UpgradeManager;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
@@ -14,20 +12,23 @@ import com.tiviacz.travelersbackpack.inventory.menu.slot.ResultSlotExt;
 import com.tiviacz.travelersbackpack.inventory.upgrades.IMoveSelector;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
-import com.tiviacz.travelersbackpack.util.InventoryHelper;
+import com.tiviacz.travelersbackpack.util.ContainerContentsHelper;
+import com.tiviacz.travelersbackpack.util.StacksHandlerUtils;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ResultContainer;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.ItemContainerContents;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class CraftingUpgrade extends UpgradeBase<CraftingUpgrade> implements IMoveSelector {
-    public BackpackResourceHandler crafting;
+    public ItemStacksResourceHandler crafting;
     public ResultContainer resultSlots;
     public CraftingContainerImproved craftSlots;
 
@@ -46,12 +47,12 @@ public class CraftingUpgrade extends UpgradeBase<CraftingUpgrade> implements IMo
     @Override
     public void onUpgradeRemoved(ItemStack removedStack, @Nullable Player player) {
         if(removedStack.has(ModDataComponents.BACKPACK_CONTAINER)) {
-            NonNullList<ItemStack> retrievedContents = removedStack.getOrDefault(ModDataComponents.BACKPACK_CONTAINER, new BackpackContainerContents(9)).getItems();
-            BackpackResourceHandler tempHandler = new BackpackResourceHandler(retrievedContents);
-            BackpackBaseMenu.checkHandlerAndPlaySound(tempHandler, player, tempHandler.getSlots());
+            NonNullList<ItemStack> retrievedContents = ContainerContentsHelper.getItems(removedStack.getOrDefault(ModDataComponents.BACKPACK_CONTAINER, ItemContainerContents.EMPTY), 9);
+            ItemStacksResourceHandler tempHandler = new ItemStacksResourceHandler(retrievedContents);
+            BackpackBaseMenu.checkHandlerAndPlaySound(tempHandler, player, StacksHandlerUtils.getSlots(tempHandler));
 
             //Save
-            removedStack.set(ModDataComponents.BACKPACK_CONTAINER, InventoryHelper.itemsToList(tempHandler.getSlots(), tempHandler));
+            removedStack.set(ModDataComponents.BACKPACK_CONTAINER, ItemContainerContents.fromItems(retrievedContents));
         }
     }
 
@@ -96,14 +97,14 @@ public class CraftingUpgrade extends UpgradeBase<CraftingUpgrade> implements IMo
     }
 
     public void setSlotChanged(ItemStack dataHolderStack, int index, ItemStack stack) {
-        dataHolderStack.update(ModDataComponents.BACKPACK_CONTAINER, new BackpackContainerContents(9), new BackpackContainerContents.Slot(index, stack), BackpackContainerContents::updateSlot);
+        dataHolderStack.update(ModDataComponents.BACKPACK_CONTAINER, ItemContainerContents.EMPTY, currentContents -> ContainerContentsHelper.updateStack(currentContents, 9, stack, index));
     }
 
-    private BackpackResourceHandler createHandler(NonNullList<ItemStack> stacks) {
-        return new BackpackResourceHandler(stacks) {
+    private ItemStacksResourceHandler createHandler(NonNullList<ItemStack> stacks) {
+        return new ItemStacksResourceHandler(stacks) {
             @Override
             protected void onContentsChanged(int slot, ItemStack previousStack) {
-                updateDataHolderUnchecked(dataHolderStack -> setSlotChanged(dataHolderStack, slot, getStackInSlot(slot)));
+                updateDataHolderUnchecked(dataHolderStack -> setSlotChanged(dataHolderStack, slot, StacksHandlerUtils.getStackInSlot(this, slot)));
             }
 
             @Override

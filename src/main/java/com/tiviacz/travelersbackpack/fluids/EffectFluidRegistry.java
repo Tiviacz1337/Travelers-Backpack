@@ -60,7 +60,7 @@ public class EffectFluidRegistry {
         if(!EFFECT_REGISTRY.containsKey(uniqueId) && effect.fluid != null) {
             EFFECT_REGISTRY.put(uniqueId, effect);
             effect.setEffectID(effectIDCounter);
-            LogHelper.info(("Registered the FluidEffect with Unique ID of " + uniqueId + " for " + effect.fluid.getFluidType().getDescription(new FluidStack(effect.fluid, 1000)).getString() + " (Fluid Amount Required: " + effect.amountRequired + ")" + " with the ID " + effectIDCounter));
+            LogHelper.info(("Registered the FluidEffect with Unique ID of " + uniqueId + " for " + effect.fluid.builtInRegistryHolder() + " (Fluid Amount Required: " + effect.amountRequired + ")" + " with the ID " + effectIDCounter));
             effectIDCounter++;
             return effectIDCounter;
         }

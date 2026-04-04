@@ -1,67 +1,48 @@
 package com.tiviacz.travelersbackpack.util;
 
-import com.tiviacz.travelersbackpack.components.BackpackContainerContents;
-import com.tiviacz.travelersbackpack.inventory.transfer.BackpackResourceHandler;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemUtil;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 
 public class InventoryHelper {
-    public static ItemStack removeItem(BackpackResourceHandler handler, int slot, int amount) {
-        if(slot >= 0 && slot < handler.getSlots() && !handler.getStackInSlot(slot).isEmpty() && amount > 0) {
-            ItemStack currentStack = handler.getStackInSlot(slot).copy();
+    public static ItemStack removeItem(ItemStacksResourceHandler handler, int slot, int amount) {
+        if(slot >= 0 && slot < StacksHandlerUtils.getSlots(handler) && !StacksHandlerUtils.getStackInSlot(handler, slot).isEmpty() && amount > 0) {
+            ItemStack currentStack = StacksHandlerUtils.getStackInSlot(handler, slot).copy();
             ItemStack stackAtPointer = currentStack.copy();
             currentStack.split(amount);
-            handler.setStackInSlot(slot, currentStack);
+            StacksHandlerUtils.setStackInSlot(handler, slot, currentStack);
             return stackAtPointer;
         }
         return ItemStack.EMPTY;
     }
 
-    public static ItemStack removeItemShiftClick(BackpackResourceHandler handler, int slot, int amount) {
-        if(slot >= 0 && slot < handler.getSlots() && !handler.getStackInSlot(slot).isEmpty() && amount > 0) {
-            ItemStack currentStack = handler.getStackInSlot(slot);
+    public static ItemStack removeItemShiftClick(ItemStacksResourceHandler handler, int slot, int amount) {
+        if(slot >= 0 && slot < StacksHandlerUtils.getSlots(handler) && !StacksHandlerUtils.getStackInSlot(handler, slot).isEmpty() && amount > 0) {
+            ItemStack currentStack = StacksHandlerUtils.getStackInSlot(handler, slot);
             currentStack.split(amount);
-            handler.setStackInSlot(slot, currentStack);
-            return handler.getStackInSlot(slot);
+            StacksHandlerUtils.setStackInSlot(handler, slot, currentStack);
+            return StacksHandlerUtils.getStackInSlot(handler, slot);
         }
         return ItemStack.EMPTY;
     }
 
-    public static ItemStack takeItem(BackpackResourceHandler handler, int slot) {
-        return slot >= 0 && slot < handler.getSlots() ? ItemUtil.insertItemReturnRemaining(handler, slot, ItemStack.EMPTY, false, null) : ItemStack.EMPTY;
+    public static ItemStack takeItem(ItemStacksResourceHandler handler, int slot) {
+        return slot >= 0 && slot < StacksHandlerUtils.getSlots(handler) ? ItemUtil.insertItemReturnRemaining(handler, slot, ItemStack.EMPTY, false, null) : ItemStack.EMPTY;
     }
 
-    public static boolean isEmpty(BackpackResourceHandler handler) {
-        for(int i = 0; i < handler.getSlots(); i++) {
-            if(!handler.getStackInSlot(i).isEmpty()) {
+    public static boolean isEmpty(ItemStacksResourceHandler handler) {
+        for(int i = 0; i < StacksHandlerUtils.getSlots(handler); i++) {
+            if(!StacksHandlerUtils.getStackInSlot(handler, i).isEmpty()) {
                 return false;
             }
         }
         return true;
-    }
-
-    public static BackpackContainerContents itemsToList(int size, BackpackResourceHandler handler) {
-        List<ItemStack> list = new ArrayList<>(size);
-
-        for(int i = 0; i < handler.getSlots(); i++) {
-            list.add(handler.getStackInSlot(i));
-        }
-        for(int i = handler.getSlots(); i < size; i++) {
-            list.add(ItemStack.EMPTY);
-        }
-        return BackpackContainerContents.fromItems(size, list);
     }
 
     public static void iterateHandler(ResourceHandler<ItemResource> handler, BiConsumer<Integer, ItemStack> consumer) {
@@ -71,16 +52,9 @@ public class InventoryHelper {
         }
     }
 
-    public static void iterateHandler(IItemHandler handler, BiConsumer<Integer, ItemStack> consumer) {
-        for(int i = 0; i < handler.getSlots(); i++) {
-            ItemStack stack = handler.getStackInSlot(i);
-            consumer.accept(i, stack);
-        }
-    }
-
-    public static boolean iterate(BackpackResourceHandler handler, BiFunction<Integer, ItemStack, Boolean> function) {
-        for(int i = 0; i < handler.getSlots(); i++) {
-            boolean matches = function.apply(i, handler.getStackInSlot(i).copy());
+    public static boolean iterate(ItemStacksResourceHandler handler, BiFunction<Integer, ItemStack, Boolean> function) {
+        for(int i = 0; i < StacksHandlerUtils.getSlots(handler); i++) {
+            boolean matches = function.apply(i, StacksHandlerUtils.getStackInSlot(handler, i).copy());
             if(matches) {
                 return true;
             }
@@ -88,13 +62,9 @@ public class InventoryHelper {
         return false;
     }
 
-    public static ItemStack addItemStackToHandler(IItemHandlerModifiable handler, ItemStack stack, boolean simulate) {
-        return ItemHandlerHelper.insertItemStacked(handler, stack, simulate);
-    }
-
-    public static ItemStack extractFromBackpack(BackpackResourceHandler handler, ItemStack stack, int amount, boolean simulate) {
-        for(int i = 0; i < handler.getSlots(); i++) {
-            if(ItemStack.isSameItemSameComponents(stack, handler.getStackInSlot(i))) {
+    public static ItemStack extractFromBackpack(ItemStacksResourceHandler handler, ItemStack stack, int amount, boolean simulate) {
+        for(int i = 0; i < StacksHandlerUtils.getSlots(handler); i++) {
+            if(ItemStack.isSameItemSameComponents(stack, StacksHandlerUtils.getStackInSlot(handler, i))) {
                 return extractItem(handler, i, amount, simulate);
             }
         }

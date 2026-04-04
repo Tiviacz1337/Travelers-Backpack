@@ -1,16 +1,6 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_ender_eye": {
-      "conditions": {
-        "items": [
-          {
-            "items": "minecraft:ender_eye"
-          }
-        ]
-      },
-      "trigger": "minecraft:inventory_changed"
-    },
     "has_the_recipe": {
       "conditions": {
         "recipe": "travelersbackpack:end"
@@ -20,8 +10,7 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
-      "has_ender_eye"
+      "has_the_recipe"
     ]
   ],
   "rewards": {

@@ -16,7 +16,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 public class AttachmentUtils {
-    public static Optional<ITravelersBackpack> getAttachment(Player player) {
+    public static Optional<BackpackAttachment> getAttachment(Player player) {
         if(player == null) {
             return Optional.empty();
         }
@@ -24,7 +24,7 @@ public class AttachmentUtils {
     }
 
     public static void synchronise(Player player) {
-        AttachmentUtils.getAttachment(player).ifPresent(ITravelersBackpack::synchronise);
+        AttachmentUtils.getAttachment(player).ifPresent(BackpackAttachment::synchronise);
     }
 
     public static boolean isWearingBackpack(Player player) {
@@ -65,7 +65,7 @@ public class AttachmentUtils {
     public static void equipBackpack(Player player, ItemStack stack) {
         if(getAttachment(player).isPresent() && !isWearingBackpack(player)) {
             getAttachment(player).ifPresent(attachment -> attachment.equipBackpack(stack));
-            player.level().playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER.value(), SoundSource.PLAYERS, 1.0F, (1.0F + (player.level().random.nextFloat() - player.level().random.nextFloat()) * 0.2F) * 0.7F);
+            player.level().playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER.value(), SoundSource.PLAYERS, 1.0F, (1.0F + (player.level().getRandom().nextFloat() - player.level().getRandom().nextFloat()) * 0.2F) * 0.7F);
 
             //Sync
             synchronise(player);
@@ -86,7 +86,7 @@ public class AttachmentUtils {
             return null;
         }
         if(isWearingBackpack(player)) {
-            return AttachmentUtils.getAttachment(player).map(ITravelersBackpack::getWrapper).orElse(null);
+            return AttachmentUtils.getAttachment(player).map(BackpackAttachment::getWrapper).orElse(null);
         }
         return null;
     }
@@ -118,7 +118,7 @@ public class AttachmentUtils {
             return null;
         }
         if(isWearingBackpack(player)) {
-            return AttachmentUtils.getAttachment(player).map(ITravelersBackpack::getWrapper).orElse(null);
+            return AttachmentUtils.getAttachment(player).map(BackpackAttachment::getWrapper).orElse(null);
         }
         return null;
     }

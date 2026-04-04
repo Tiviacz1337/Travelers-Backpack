@@ -48,13 +48,18 @@ import com.tiviacz.travelersbackpack.inventory.upgrades.voiding.VoidWidget;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.color.block.BlockTintSource;
 import net.minecraft.client.color.item.ItemTintSource;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.block.model.BlockModelPart;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.FluidModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.entity.*;
 import net.minecraft.client.renderer.entity.player.AvatarRenderer;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
+import net.minecraft.client.resources.model.sprite.Material;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
@@ -68,20 +73,20 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.component.DyedItemColor;
 import net.minecraft.world.level.GameType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.FluidState;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.*;
-import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
-import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
+import net.neoforged.neoforge.client.fluid.FluidTintSource;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 import net.neoforged.neoforge.client.model.standalone.SimpleUnbakedStandaloneModel;
 import net.neoforged.neoforge.client.model.standalone.StandaloneModelKey;
 import net.neoforged.neoforge.client.renderstate.RegisterRenderStateModifiersEvent;
 import net.neoforged.neoforge.fluids.FluidStack;
-import org.lwjgl.glfw.GLFW;
-
 import org.jetbrains.annotations.Nullable;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.List;
 
@@ -98,7 +103,7 @@ public class ModClientEventHandler {
     public static final KeyMapping TOGGLE_UPGRADE_3 = new KeyMapping("key.travelersbackpack.toggle_upgrade_3", GLFW.GLFW_KEY_UNKNOWN, CATEGORY);
     public static final List<KeyMapping> TOGGLE_UPGRADE_KEYS = ImmutableList.of(TOGGLE_UPGRADE_0, TOGGLE_UPGRADE_1, TOGGLE_UPGRADE_2, TOGGLE_UPGRADE_3);
     public static final Identifier STAR_MODEL_LOCATION = Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "item/supporter_star");
-    public static final StandaloneModelKey<BlockModelPart> STAR_MODEL = new StandaloneModelKey<>(STAR_MODEL_LOCATION::toString);
+    public static final StandaloneModelKey<BlockStateModelPart> STAR_MODEL = new StandaloneModelKey<>(STAR_MODEL_LOCATION::toString);
 
     @SubscribeEvent
     public static void registerKeys(RegisterKeyMappingsEvent event) {
@@ -143,18 +148,25 @@ public class ModClientEventHandler {
     }
 
     @SubscribeEvent
-    public static void registerBlockColorHandlers(RegisterColorHandlersEvent.Block event) {
-        event.register((state, blockDisplayReader, pos, tintIndex) -> {
-            if(tintIndex != 0 || pos == null) {
-                return -1;
-            }
-            if(blockDisplayReader.getBlockEntity(pos) instanceof BackpackBlockEntity backpack) {
+    public static void registerBlockColorHandlers(RegisterColorHandlersEvent.BlockTintSources event) {
+        event.register(List.of(new BackpackBlockTintSource()), ModBlocks.STANDARD_TRAVELERS_BACKPACK.get());
+    }
+
+    private static class BackpackBlockTintSource implements BlockTintSource {
+        @Override
+        public int color(BlockState state) {
+            return -1;
+        }
+
+        @Override
+        public int colorInWorld(BlockState state, BlockAndTintGetter level, BlockPos pos) {
+            if(level.getBlockEntity(pos) instanceof BackpackBlockEntity backpack) {
                 if(backpack.getWrapper().getBackpackStack().has(DataComponents.DYED_COLOR)) {
                     return ARGB.opaque(backpack.getWrapper().getBackpackStack().get(DataComponents.DYED_COLOR).rgb());
                 }
             }
             return -1;
-        }, ModBlocks.STANDARD_TRAVELERS_BACKPACK.get());
+        }
     }
 
     @SubscribeEvent
@@ -183,30 +195,24 @@ public class ModClientEventHandler {
     }
 
     @SubscribeEvent
-    public static void registerClientExtenstions(RegisterClientExtensionsEvent event) {
-        event.registerFluidType(new IClientFluidTypeExtensions() {
-            private static final int EMPTY_COLOR = 0xf800f8;
+    public static void registerFluidModels(RegisterFluidModelsEvent event) {
+        event.register(POTION_MODEL, ModFluids.POTION_FLUID, ModFluids.POTION_FLOWING);
+    }
 
-            @Override
-            public int getTintColor() {
-                return EMPTY_COLOR | 0xFF000000;
-            }
+    private static final FluidModel.Unbaked POTION_MODEL = new FluidModel.Unbaked(new Material(PotionFluidType.POTION_STILL_RL), new Material(PotionFluidType.POTION_FLOW_RL), null, new PotionFluidTintSource());
 
-            @Override
-            public int getTintColor(FluidStack stack) {
-                return stack.getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY).getColor();
-            }
+    public record PotionFluidTintSource() implements FluidTintSource {
+        private static final int EMPTY_COLOR = 0xf800f8;
 
-            @Override
-            public Identifier getStillTexture() {
-                return PotionFluidType.POTION_STILL_RL;
-            }
+        @Override
+        public int color(FluidState state) {
+            return EMPTY_COLOR | 0xFF000000;
+        }
 
-            @Override
-            public Identifier getFlowingTexture() {
-                return PotionFluidType.POTION_FLOW_RL;
-            }
-        }, ModFluids.POTION_FLUID_TYPE);
+        @Override
+        public int colorAsStack(FluidStack stack) {
+            return stack.getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY).getColor();
+        }
     }
 
     @SubscribeEvent
@@ -218,10 +224,10 @@ public class ModClientEventHandler {
 
     @SubscribeEvent
     public static void registerOverlay(final RegisterGuiLayersEvent evt) {
-        evt.registerBelow(VanillaGuiLayers.HOTBAR, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "overlay"), (pGuiGraphics, pPartialTick) -> {
+        evt.registerBelow(VanillaGuiLayers.HOTBAR, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "overlay"), (pGuiGraphicsExtractor, pPartialTick) -> {
             Minecraft mc = Minecraft.getInstance();
             if(TravelersBackpackConfig.CLIENT.overlay.enableOverlay.get() && !mc.options.hideGui && AttachmentUtils.isWearingBackpack(mc.player) && mc.gameMode.getPlayerMode() != GameType.SPECTATOR) {
-                HudOverlay.renderOverlay(AttachmentUtils.getWearingBackpack(mc.player), mc, pGuiGraphics);
+                HudOverlay.renderOverlay(AttachmentUtils.getWearingBackpack(mc.player), mc, pGuiGraphicsExtractor);
             }
         });
     }
@@ -296,7 +302,6 @@ public class ModClientEventHandler {
         for(EntityType<?> type : evt.getEntityTypes()) {
             if(evt.getRenderer(type) instanceof HumanoidMobRenderer renderer) {
                 if(renderer.getModel() instanceof HumanoidModel) {
-
                     if(TravelersBackpack.endermanOverhaulLoaded && type == EntityType.ENDERMAN) continue;
                     //if(mobRenderer instanceof PlayerRenderer) continue;
 

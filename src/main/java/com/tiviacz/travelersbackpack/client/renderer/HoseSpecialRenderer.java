@@ -11,11 +11,8 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 public record HoseSpecialRenderer() implements SelectItemModelProperty<Integer> {
-
     public static final SelectItemModelProperty.Type<HoseSpecialRenderer, Integer> TYPE = SelectItemModelProperty.Type.create(
-            // The map codec for this property
             MapCodec.unit(new HoseSpecialRenderer()),
-            // The codec for the object being selected
             Codec.INT
     );
 

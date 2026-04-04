@@ -8,7 +8,7 @@ import com.tiviacz.travelersbackpack.inventory.menu.AbstractBackpackMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.DisabledSlot;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -150,14 +150,14 @@ public abstract class AbstractBackpackScreen<T extends AbstractBackpackMenu> ext
         return (int)Math.ceil((double)this.slotCount / getSlotsInRow()) - (int)Math.ceil((double)this.visibleSlots / getSlotsInRow());
     }
 
-    public void renderInventoryBackground(GuiGraphics guiGraphics, int x, int y, Identifier texture, int xSize, int slotsHeight) {
+    public void renderInventoryBackground(GuiGraphicsExtractor guiGraphics, int x, int y, Identifier texture, int xSize, int slotsHeight) {
         int halfSlotHeight = slotsHeight / 2;
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, texture, x, y, 0, 0, xSize, TOP_BAR_OFFSET + halfSlotHeight, 256, 256);
         int playerInventoryHeight = 98;
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, texture, x, y + TOP_BAR_OFFSET + halfSlotHeight, 0, 256 - (playerInventoryHeight + halfSlotHeight), xSize, playerInventoryHeight + halfSlotHeight, 256, 256);
     }
 
-    public void renderSlots(GuiGraphics guiGraphics, int x, int y, int slotCount) {
+    public void renderSlots(GuiGraphicsExtractor guiGraphics, int x, int y, int slotCount) {
         int lastSlotRow = this.slotCount % getSlotsInRow();
         int visibleRows = this.visibleRows;
         int fullRows = this.isScrollable ? visibleRows : slotCount / getSlotsInRow();
@@ -186,7 +186,7 @@ public abstract class AbstractBackpackScreen<T extends AbstractBackpackMenu> ext
         }
     }
 
-    public void renderLockedBackpackSlot(GuiGraphics guiGraphics) {
+    public void renderLockedBackpackSlot(GuiGraphicsExtractor guiGraphics) {
         if(menu.disabledSlotIndex > 0 && menu.disabledSlotIndex < menu.slots.size()) {
             if(menu.getSlot(menu.disabledSlotIndex) instanceof DisabledSlot slot) {
                 int x = leftPos + slot.x;
@@ -197,19 +197,20 @@ public abstract class AbstractBackpackScreen<T extends AbstractBackpackMenu> ext
     }
 
     @Override
-    protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
+    public void extractBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float a) {
+        super.extractBackground(guiGraphics, mouseX, mouseY, a);
         int x = (this.width - this.imageWidth) / 2;
         int y = (this.height - this.imageHeight) / 2;
-        renderScreen(guiGraphics, x, y, mouseX, mouseY, partialTicks);
+        renderScreen(guiGraphics, x, y, mouseX, mouseY, a);
         drawUnsortableSlots(guiGraphics);
         drawMemorySlots(guiGraphics);
     }
 
-    public abstract void renderScreen(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY, float partialTicks);
+    public abstract void renderScreen(GuiGraphicsExtractor guiGraphics, int x, int y, int mouseX, int mouseY, float partialTicks);
 
-    public abstract void drawUnsortableSlots(GuiGraphics guiGraphics);
+    public abstract void drawUnsortableSlots(GuiGraphicsExtractor guiGraphics);
 
-    public abstract void drawMemorySlots(GuiGraphics guiGraphics);
+    public abstract void drawMemorySlots(GuiGraphicsExtractor guiGraphics);
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {

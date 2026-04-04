@@ -1,18 +1,17 @@
 package com.tiviacz.travelersbackpack.client.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.QuadInstance;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import com.tiviacz.travelersbackpack.handlers.ModClientEventHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.BlockModelPart;
-import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.util.RandomSource;
 import org.joml.Quaternionf;
 
@@ -58,7 +57,7 @@ public class SupporterBadgeModel {
     public void render(PoseStack poseStack, int packedLightIn) {
         poseStack.pushPose();
         translateAndRotate(poseStack);
-        BlockModelPart starModel = Minecraft.getInstance().getModelManager().getStandaloneModel(ModClientEventHandler.STAR_MODEL);
+        BlockStateModelPart starModel = Minecraft.getInstance().getModelManager().getStandaloneModel(ModClientEventHandler.STAR_MODEL);
 
         //Y - Front/Back
         //X - Left/Right
@@ -72,13 +71,14 @@ public class SupporterBadgeModel {
     }
 
     //Forge
+    private final QuadInstance quadInstance = new QuadInstance();
 
-    private void renderModel(PoseStack matrixStack, BlockModelPart model, int packedLightIn) {
+    private void renderModel(PoseStack matrixStack, BlockStateModelPart model, int packedLightIn) {
         MultiBufferSource.BufferSource src = Minecraft.getInstance().renderBuffers().bufferSource();
         VertexConsumer worldrenderer = src.getBuffer(RenderTypes.entityCutout(TextureAtlas.LOCATION_BLOCKS));
         List<BakedQuad> quads = model.getQuads(null);
         for(BakedQuad quad : quads) {
-            worldrenderer.putBulkData(matrixStack.last(), quad, 1.0f, 1.0f, 1.0f, 1.0f, packedLightIn, OverlayTexture.NO_OVERLAY);
+            worldrenderer.putBakedQuad(matrixStack.last(), quad, quadInstance); //.putBulkData(matrixStack.last(), quad, 1.0f, 1.0f, 1.0f, 1.0f, packedLightIn, OverlayTexture.NO_OVERLAY);
         }
         src.endBatch();
     }

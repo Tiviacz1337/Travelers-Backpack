@@ -1,7 +1,6 @@
 package com.tiviacz.travelersbackpack.inventory.upgrades.feeding;
 
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
-import com.tiviacz.travelersbackpack.inventory.transfer.BackpackResourceHandler;
 import com.tiviacz.travelersbackpack.inventory.upgrades.FilterSettingsBase;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
@@ -14,6 +13,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.Consumable;
 import net.minecraft.world.item.consume_effects.ApplyStatusEffectsConsumeEffect;
 import net.minecraft.world.item.consume_effects.ConsumeEffect;
+import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -35,7 +35,7 @@ public class FeedingFilterSettings extends FilterSettingsBase {
     public static final int BLOCK_BAD_EFFECTS = 0;
     public static final int ALLOW_BAD_EFFECTS = 1;
 
-    public FeedingFilterSettings(BackpackResourceHandler storage, List<ItemStack> items, List<Integer> filterSettings, HolderLookup.Provider access) {
+    public FeedingFilterSettings(ItemStacksResourceHandler storage, List<ItemStack> items, List<Integer> filterSettings, HolderLookup.Provider access) {
         super(storage, items, filterSettings, access, TravelersBackpackConfig.SERVER.backpackUpgrades.feedingUpgradeSettings.filterSlotCount.get());
     }
 

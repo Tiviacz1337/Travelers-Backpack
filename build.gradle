@@ -3,7 +3,7 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id 'net.neoforged.gradle.userdev' version '7.0.192'
+    id 'net.neoforged.gradle.userdev' version '7.1.21'
 }
 
 tasks.named('wrapper', Wrapper).configure {
@@ -27,7 +27,7 @@ base {
 }
 
 // Mojang ships Java 21 to end users starting in 1.20.5, so mods should target Java 21.
-java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+java.toolchain.languageVersion = JavaLanguageVersion.of(25)
 
 //minecraft.accessTransformers.file rootProject.file('src/main/resources/META-INF/accesstransformer.cfg')
 //minecraft.accessTransformers.entry public net.minecraft.client.Minecraft textureManager # textureManager
@@ -157,7 +157,7 @@ dependencies {
     compileOnly "top.theillusivec4.curios:curios-neoforge:${curios_continuation_version}"
 
     //JEI
-    implementation("maven.modrinth:jei:5VCxZEmH")
+    implementation("maven.modrinth:jei:sYDSsI50")
 
     //EMI
     compileOnly("maven.modrinth:emi:ouSj7NfF")
@@ -168,14 +168,14 @@ dependencies {
     compileOnly("maven.modrinth:cloth-config:Wsus0EWg")
 
     //Crafting Tweaks
-    implementation("maven.modrinth:crafting-tweaks:UG4VEpsU")
-    implementation("maven.modrinth:balm:mZ461M3N")
+    compileOnly("maven.modrinth:crafting-tweaks:UG4VEpsU")
+    compileOnly("maven.modrinth:balm:mZ461M3N")
 
     //Carry On
     //runtimeOnly "curse.maven:carryon-274259:5141764"
 
     //Trash Slot
-    implementation("maven.modrinth:trashslot:Kq3z6gII")
+    compileOnly("maven.modrinth:trashslot:Kq3z6gII")
 
     //Comforts
     compileOnly("maven.modrinth:comforts:CZFrqdSy")

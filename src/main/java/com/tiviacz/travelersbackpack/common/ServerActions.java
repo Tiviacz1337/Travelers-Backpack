@@ -11,13 +11,12 @@ import com.tiviacz.travelersbackpack.init.ModAdvancements;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.BackpackContainer;
-import com.tiviacz.travelersbackpack.inventory.menu.slot.ToolSlotItemHandler;
-import com.tiviacz.travelersbackpack.inventory.transfer.BackpackResourceHandler;
 import com.tiviacz.travelersbackpack.inventory.BackpackSettingsContainer;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackItemMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackSettingsMenu;
+import com.tiviacz.travelersbackpack.inventory.menu.slot.ToolSlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.sorter.ContainerSorter;
 import com.tiviacz.travelersbackpack.inventory.upgrades.IEnable;
 import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
@@ -25,6 +24,7 @@ import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;
 import com.tiviacz.travelersbackpack.items.HoseItem;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.Reference;
+import com.tiviacz.travelersbackpack.util.StacksHandlerUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponentType;
@@ -49,11 +49,11 @@ import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BedPart;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
+import net.neoforged.neoforge.transfer.fluid.FluidStacksResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
 
 import java.util.List;
 import java.util.Optional;
@@ -65,7 +65,7 @@ public class ServerActions {
         }
         if(AttachmentUtils.isWearingBackpack(player)) {
             BackpackWrapper wrapper = AttachmentUtils.getBackpackWrapper(player, AttachmentUtils.TOOLS_ONLY.get());
-            BackpackResourceHandler inv = wrapper.getTools();
+            ItemStacksResourceHandler inv = wrapper.getTools();
             InteractionHand hand = button == 0 ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
             ItemStack handStack = player.getItemInHand(hand);
 
@@ -87,9 +87,9 @@ public class ServerActions {
                     player.setItemInHand(hand, copy);
                 }
             } else {
-                ItemStack currentTool = inv.getStackInSlot(slot).copy();
+                ItemStack currentTool = StacksHandlerUtils.getStackInSlot(inv, slot).copy();
 
-                inv.setStackInSlot(slot, handStack.copy());
+                StacksHandlerUtils.setStackInSlot(inv, slot, handStack.copy());
                 player.setItemInHand(hand, currentTool);
             }
 
@@ -273,18 +273,18 @@ public class ServerActions {
                     boolean isEnabled = enable.isEnabled(upgrade);
                     modifyUpgradeTab(wrapper, slot, !isEnabled, UPGRADE_ENABLED);
                     Component upgradeName = upgrade.getDataHolderStack().getItem().getName(upgrade.getDataHolderStack());
-                    player.displayClientMessage(Component.translatable(isEnabled ? "screen.travelersbackpack.upgrade_disabled" : "screen.travelersbackpack.upgrade_enabled", upgradeName), true);
+                    player.sendOverlayMessage(Component.translatable(isEnabled ? "screen.travelersbackpack.upgrade_disabled" : "screen.travelersbackpack.upgrade_enabled", upgradeName));
                 }
             });
         }
     }
 
     public static void modifyUpgradeTab(BackpackWrapper wrapper, int slot, boolean open, int packetType) {
-        ItemStack upgradeStack = wrapper.getUpgrades().getStackInSlot(slot);
+        ItemStack upgradeStack = StacksHandlerUtils.getStackInSlot(wrapper.getUpgrades(), slot);
         if(!upgradeStack.isEmpty()) {
             ItemStack updateStack = upgradeStack.copy();
             updateStack.set(getPacketType(packetType), open);
-            wrapper.getUpgrades().setStackInSlot(slot, updateStack);
+            StacksHandlerUtils.setStackInSlot(wrapper.getUpgrades(), slot, updateStack);
 
             if(packetType == UPGRADE_ENABLED) {
                 if(wrapper.getUpgradeManager().hasUpgradeInSlot(slot)) {
@@ -311,12 +311,12 @@ public class ServerActions {
     public static void removeBackpackUpgrade(ServerPlayer player, int slot) {
         if(player.containerMenu instanceof BackpackBaseMenu menu) {
             BackpackWrapper wrapper = menu.getWrapper();
-            if(!wrapper.getUpgrades().getStackInSlot(slot).isEmpty()) {
+            if(!StacksHandlerUtils.getStackInSlot(wrapper.getUpgrades(), slot).isEmpty()) {
                 Optional<UpgradeBase<?>> upgrade = wrapper.getUpgradeManager().mappedUpgrades.get(slot);
 
-                ItemStack upgradeStack = wrapper.getUpgrades().getStackInSlot(slot).copy();
+                ItemStack upgradeStack = StacksHandlerUtils.getStackInSlot(wrapper.getUpgrades(), slot).copy();
                 upgradeStack.set(ModDataComponents.TAB_OPEN, false);
-                wrapper.getUpgrades().setStackInSlot(slot, ItemStack.EMPTY);
+                StacksHandlerUtils.setStackInSlot(wrapper.getUpgrades(), slot, ItemStack.EMPTY);
 
                 upgrade.ifPresent(upgradeBase -> upgradeBase.onUpgradeRemoved(upgradeStack, player));
 
@@ -394,7 +394,7 @@ public class ServerActions {
                 if(player instanceof ServerPlayer serverPlayer) {
                     player.startSleepInBed(pos.relative(player.getDirection())).ifLeft(bedSleepingProblem -> {
                         if(bedSleepingProblem.message() != null) {
-                            player.displayClientMessage(bedSleepingProblem.message(), true);
+                            player.sendOverlayMessage(bedSleepingProblem.message());
                             if(level.getBlockState(sleepingBagPos1).getBlock() instanceof SleepingBagBlock) {
                                 level.setBlockAndUpdate(sleepingBagPos1, Blocks.AIR.defaultBlockState());
                             }
@@ -463,10 +463,10 @@ public class ServerActions {
                 BackpackWrapper wrapper = menu.getWrapper();
                 wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).ifPresent(tanks -> {
                     if(index == 0) {
-                        tanks.getLeftTank().drain(wrapper.getBackpackTankCapacity(), IFluidHandler.FluidAction.EXECUTE);
+                        StacksHandlerUtils.drain(tanks.getLeftTank(), wrapper.getBackpackTankCapacity(), false);
                     }
                     if(index == 1) {
-                        tanks.getRightTank().drain(wrapper.getBackpackTankCapacity(), IFluidHandler.FluidAction.EXECUTE);
+                        StacksHandlerUtils.drain(tanks.getRightTank(), wrapper.getBackpackTankCapacity(), false);
                     }
                 });
                 break;
@@ -487,8 +487,8 @@ public class ServerActions {
         return 0;
     }
 
-    public static boolean setFluidEffect(Level level, Player player, FluidTank tank) {
-        FluidStack fluidStack = tank.getFluid();
+    public static boolean setFluidEffect(Level level, Player player, FluidStacksResourceHandler tank) {
+        FluidStack fluidStack = StacksHandlerUtils.getFluid(tank);
         boolean done = false;
         if(EffectFluidRegistry.hasExecutableEffects(fluidStack, level, player)) {
             done = EffectFluidRegistry.executeEffects(fluidStack, player, level);

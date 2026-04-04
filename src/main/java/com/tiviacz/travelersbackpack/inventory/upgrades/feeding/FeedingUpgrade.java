@@ -2,7 +2,6 @@ package com.tiviacz.travelersbackpack.inventory.upgrades.feeding;
 
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
-import com.tiviacz.travelersbackpack.inventory.transfer.BackpackResourceHandler;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.UpgradeManager;
 import com.tiviacz.travelersbackpack.inventory.upgrades.FilterUpgradeBase;
@@ -12,6 +11,7 @@ import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.inventory.upgrades.filter.FilterHandler;
 import com.tiviacz.travelersbackpack.util.InventoryHelper;
 import com.tiviacz.travelersbackpack.util.Reference;
+import com.tiviacz.travelersbackpack.util.StacksHandlerUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
@@ -25,11 +25,13 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.event.EventHooks;
 import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -71,9 +73,8 @@ public class FeedingUpgrade extends FilterUpgradeBase<FeedingUpgrade, FeedingFil
         return new FilterHandler(stacks, size) {
             @Override
             protected void onContentsChanged(int slot, ItemStack previousStack) {
-                updateDataHolderUnchecked(ModDataComponents.BACKPACK_CONTAINER.get(), InventoryHelper.itemsToList(size, filter));
-
-                getFilterSettings().updateFilter(getDataHolderStack().get(ModDataComponents.BACKPACK_CONTAINER).getItems());
+                updateDataHolderUnchecked(ModDataComponents.BACKPACK_CONTAINER.get(), ItemContainerContents.fromItems(filter.copyToList()));
+                getFilterSettings().updateFilter(filter.copyToList());
             }
 
             @Override
@@ -135,11 +136,11 @@ public class FeedingUpgrade extends FilterUpgradeBase<FeedingUpgrade, FeedingFil
     }
 
     private boolean tryFeedingFoodFromStorage(Level level, int hungerLevel, Player player) {
-        BackpackResourceHandler storage = getUpgradeManager().getWrapper().getStorage();
+        ItemStacksResourceHandler storage = getUpgradeManager().getWrapper().getStorage();
         return InventoryHelper.iterate(storage, (slot, stack) -> tryFeedingStack(level, hungerLevel, player, slot, stack, storage));
     }
 
-    private boolean tryFeedingStack(Level level, int hungerLevel, Player player, Integer slot, ItemStack stack, BackpackResourceHandler backpackStorage) {
+    private boolean tryFeedingStack(Level level, int hungerLevel, Player player, Integer slot, ItemStack stack, ItemStacksResourceHandler backpackStorage) {
         if(isEdible(stack, player) && canEat(player, stack)) {
             ItemStack mainHandItem = player.getMainHandItem();
             player.getInventory().getNonEquipmentItems().set(player.getInventory().getSelectedSlot(), stack);
@@ -150,7 +151,7 @@ public class FeedingUpgrade extends FilterUpgradeBase<FeedingUpgrade, FeedingFil
             if(singleItemCopy.use(level, player, InteractionHand.MAIN_HAND) == InteractionResult.CONSUME) {
 
                 stack.shrink(1);
-                backpackStorage.setStackInSlot(slot, stack);
+                StacksHandlerUtils.setStackInSlot(backpackStorage, slot, stack);
 
                 ItemStack resultItem = EventHooks.onItemUseFinish(player, singleItemCopy.copy(), 0, singleItemCopy.finishUsingItem(level, player));
 
@@ -175,7 +176,7 @@ public class FeedingUpgrade extends FilterUpgradeBase<FeedingUpgrade, FeedingFil
         if(!stack.has(DataComponents.FOOD)) {
             return false;
         }
-        FoodProperties foodProperties = stack.get(DataComponents.FOOD); //stack, player);
+        FoodProperties foodProperties = stack.get(DataComponents.FOOD);
         return foodProperties != null && foodProperties.nutrition() >= 1;
     }
 

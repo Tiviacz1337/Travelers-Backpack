@@ -326,7 +326,6 @@
   "travelersbackpack.configuration.sendBackpackCoordinatesMessage": "Send Backpack Coordinates Message",
   "travelersbackpack.configuration.obtainTips": "Obtain Tips",
   "travelersbackpack.configuration.renderTools": "Render Tools",
-
   "advancements.travelersbackpack.root.title": "Traveler's Backpack Guide",
   "advancements.travelersbackpack.root.description": "Explore some lesser-known features that Traveler's Backpack has to offer",
   "advancements.travelersbackpack.sleeping_bag.title": "Getting Started",

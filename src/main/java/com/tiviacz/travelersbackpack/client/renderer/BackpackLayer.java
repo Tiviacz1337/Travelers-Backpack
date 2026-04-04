@@ -45,17 +45,6 @@ public class BackpackLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
         }
     }
 
-    /*@Override
-    public void render(PoseStack poseStack, SubmitNodeCollector collector, int packedLightIn, AvatarRenderState state, float limbSwing, float limbSwingAmount) {
-        if(TravelersBackpack.enableIntegration()) return;
-
-        ItemStack backpack = state.getRenderData(BACKPACK_KEY);
-
-        if(backpack != null && backpack.getItem() instanceof TravelersBackpackItem) {
-            renderBackpackLayer(getParentModel(), poseStack, collector, packedLightIn, state, backpack);
-        }
-    }*/
-
     public static void renderBackpackLayer(HumanoidModel humanoidModel, PoseStack poseStack, SubmitNodeCollector collector, int packedLightIn, HumanoidRenderState state, ItemStackRenderState backpackRenderState, StackModelPart tools, ItemStack stack) {
         if(!stack.getOrDefault(ModDataComponents.IS_VISIBLE, true))
             return;

@@ -5,7 +5,7 @@ import com.tiviacz.travelersbackpack.client.screens.widgets.UpgradeWidgetBase;
 import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetElement;
 import com.tiviacz.travelersbackpack.common.ServerActions;
 import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
@@ -21,7 +21,7 @@ public class ResultArrowElement {
         this.arrowElement = arrowElement;
     }
 
-    public void renderBg(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY) {
+    public void renderBg(GuiGraphicsExtractor guiGraphics, int x, int y, int mouseX, int mouseY) {
         if(upgradeWidgetBase.isTabOpened() && upgradeWidgetBase.getUpgrade() instanceof IMoveSelector selector) {
             if(selector.shiftClickToBackpack(upgradeWidgetBase.getUpgrade().getDataHolderStack())) {
                 guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BackpackScreen.ICONS, upgradeWidgetBase.getPos().x() + arrowElement.pos().x(), upgradeWidgetBase.getPos().y() + arrowElement.pos().y(), 12, 55, arrowElement.size().x(), arrowElement.size().y(), 256, 256);
@@ -31,7 +31,7 @@ public class ResultArrowElement {
         }
     }
 
-    public void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    public void renderTooltip(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         if(upgradeWidgetBase.isTabOpened() && isMouseOverShiftClickButton(mouseX, mouseY) && upgradeWidgetBase.getUpgrade() instanceof IMoveSelector selector) {
             if(selector.shiftClickToBackpack(upgradeWidgetBase.getUpgrade().getDataHolderStack())) {
                 guiGraphics.setTooltipForNextFrame(backpackScreen.getFont(), Component.translatable("screen.travelersbackpack.crafting_to_backpack"), mouseX, mouseY);

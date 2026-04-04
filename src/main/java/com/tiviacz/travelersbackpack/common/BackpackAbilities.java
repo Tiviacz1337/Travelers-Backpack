@@ -4,12 +4,10 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
-import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
 import com.tiviacz.travelersbackpack.capability.AttachmentUtils;
 import com.tiviacz.travelersbackpack.config.BackpackEffect;
 import com.tiviacz.travelersbackpack.config.Cooldown;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
-import com.tiviacz.travelersbackpack.handlers.NeoForgeEventHandler;
 import com.tiviacz.travelersbackpack.init.ModBlocks;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.init.ModItems;
@@ -17,6 +15,7 @@ import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;
 import com.tiviacz.travelersbackpack.util.BackpackDeathHelper;
 import com.tiviacz.travelersbackpack.util.CooldownHelper;
+import com.tiviacz.travelersbackpack.util.StacksHandlerUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.particles.BlockParticleOption;
@@ -61,43 +60,16 @@ import net.neoforged.neoforge.event.entity.living.EnderManAngerEvent;
 import net.neoforged.neoforge.event.entity.living.LivingChangeTargetEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
-import net.neoforged.neoforge.event.tick.PlayerTickEvent;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.transfer.fluid.FluidStacksResourceHandler;
 import org.jetbrains.annotations.Nullable;
+
 import java.util.*;
 
 public class BackpackAbilities {
-    /**
-     * Main class for all available abilities
-     * connects to few events and block methods to execute/remove proper abilities
-     * It's such a mess right now, I might create better system for all of that in the future.
-     * <p>
-     * //Connecting abilities to player, abilities removals
-     * {@link NeoForgeEventHandler#playerTick(PlayerTickEvent.Post)}
-     * <p>
-     * //Connecting abilities to block entity
-     * {@link BackpackBlockEntity#tick(Level, BlockPos, BlockState, BackpackBlockEntity)}
-     * <p>
-     * //Ability removals
-     * {@link ServerActions#switchAbilitySlider(BackpackWrapper, boolean)} (Player, boolean)}
-     * <p>
-     * //Cosmetic only
-     * {@link TravelersBackpackBlock#animateTick(BlockState, Level, BlockPos, RandomSource)}
-     * <p>
-     * //Few uses of block abilities
-     * {@link TravelersBackpackBlock}
-     * <p>
-     * //Creeper ability
-     * {@link NeoForgeEventHandler#playerDeath(LivingDeathEvent)}
-     */
     public static final BackpackAbilities ABILITIES = new BackpackAbilities();
 
-    /**
-     * Return TRUE to enable ability cooldown decreasing
-     */
     public boolean abilityTick(@Nullable ItemStack backpack, @Nullable Player player) {
         boolean tickCooldown = false;
         if(backpack != null) {
@@ -378,9 +350,9 @@ public class BackpackAbilities {
             }
             for(int o = 0; o < 4; o++) {
                 backpackBlockEntity.getLevel().addParticle(ParticleTypes.ENCHANT, enchanting.getX() + 0.5D, enchanting.getY() + 2.0D, enchanting.getZ() + 0.5D,
-                        ((backpackBlockEntity.getBlockPos().getX() - enchanting.getX()) + backpackBlockEntity.getLevel().random.nextFloat()) - 0.5D,
-                        ((backpackBlockEntity.getBlockPos().getY() - enchanting.getY()) - backpackBlockEntity.getLevel().random.nextFloat() - 1.0F),
-                        ((backpackBlockEntity.getBlockPos().getZ() - enchanting.getZ()) + backpackBlockEntity.getLevel().random.nextFloat()) - 0.5D);
+                        ((backpackBlockEntity.getBlockPos().getX() - enchanting.getX()) + backpackBlockEntity.getLevel().getRandom().nextFloat()) - 0.5D,
+                        ((backpackBlockEntity.getBlockPos().getY() - enchanting.getY()) - backpackBlockEntity.getLevel().getRandom().nextFloat() - 1.0F),
+                        ((backpackBlockEntity.getBlockPos().getZ() - enchanting.getZ()) + backpackBlockEntity.getLevel().getRandom().nextFloat()) - 0.5D);
             }
         }
     }
@@ -388,17 +360,17 @@ public class BackpackAbilities {
     public void spongeAbility(BackpackBlockEntity backpackBlockEntity) {
         if(backpackBlockEntity.getWrapper().getUpgradeManager().getUpgrade(TanksUpgrade.class).isPresent()) {
             TanksUpgrade tanksUpgrade = backpackBlockEntity.getWrapper().getUpgradeManager().getUpgrade(TanksUpgrade.class).get();
-            if(!tanksUpgrade.getLeftTank().isEmpty() && !tanksUpgrade.getRightTank().isEmpty()) {
-                if(tanksUpgrade.getLeftTank().getFluid().getFluid().isSame(Fluids.WATER) && tanksUpgrade.getRightTank().getFluid().getFluid().isSame(Fluids.WATER)) {
-                    if(tanksUpgrade.getLeftTank().getFluidAmount() == tanksUpgrade.getLeftTank().getCapacity() && tanksUpgrade.getRightTank().getFluidAmount() == tanksUpgrade.getRightTank().getCapacity()) {
-                        float f = backpackBlockEntity.getLevel().random.nextFloat() * (float)Math.PI * 2.0F;
-                        float f1 = backpackBlockEntity.getLevel().random.nextFloat() * 0.5F + 0.5F;
+            if(!StacksHandlerUtils.isEmpty(tanksUpgrade.getLeftTank()) && !StacksHandlerUtils.isEmpty(tanksUpgrade.getRightTank())) {
+                if(StacksHandlerUtils.getFluid(tanksUpgrade.getLeftTank()).getFluid().isSame(Fluids.WATER) && StacksHandlerUtils.getFluid(tanksUpgrade.getRightTank()).getFluid().isSame(Fluids.WATER)) {
+                    if(StacksHandlerUtils.getFluidAmount(tanksUpgrade.getLeftTank()) == StacksHandlerUtils.getCapacity(tanksUpgrade.getLeftTank()) && StacksHandlerUtils.getFluidAmount(tanksUpgrade.getRightTank()) == StacksHandlerUtils.getCapacity(tanksUpgrade.getRightTank())) {
+                        float f = backpackBlockEntity.getLevel().getRandom().nextFloat() * (float)Math.PI * 2.0F;
+                        float f1 = backpackBlockEntity.getLevel().getRandom().nextFloat() * 0.5F + 0.5F;
                         float f2 = Mth.sin(f) * 0.5F * f1;
                         float f3 = Mth.cos(f) * 0.5F * f1;
                         backpackBlockEntity.getLevel().addParticle(ParticleTypes.SPLASH,
                                 backpackBlockEntity.getBlockPos().getX() + f2 + 0.5F,
-                                backpackBlockEntity.getBlockPos().getY() + backpackBlockEntity.getLevel().random.nextFloat(),
-                                backpackBlockEntity.getBlockPos().getZ() + f3 + 0.5F, (double)(float)Math.pow(2.0D, (backpackBlockEntity.getLevel().random.nextInt(169) - 12) / 12.0D) / 24.0D, -1.0D, 0.0D);
+                                backpackBlockEntity.getBlockPos().getY() + backpackBlockEntity.getLevel().getRandom().nextFloat(),
+                                backpackBlockEntity.getBlockPos().getZ() + f3 + 0.5F, (double)(float)Math.pow(2.0D, (backpackBlockEntity.getLevel().getRandom().nextInt(169) - 12) / 12.0D) / 24.0D, -1.0D, 0.0D);
                     }
                 }
             }
@@ -410,18 +382,18 @@ public class BackpackAbilities {
         if(!hasCooldown(backpack)) {
             player.getFoodData().eat(20, 0.1F);
             player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 10 * 20));
-            player.level().playSound(null, player.blockPosition(), SoundEvents.GENERIC_EAT.value(), SoundSource.AMBIENT, 0.6F, (player.level().random.nextFloat() - player.level().random.nextFloat()) * 0.3F + 1.0F);
+            player.level().playSound(null, player.blockPosition(), SoundEvents.GENERIC_EAT.value(), SoundSource.AMBIENT, 0.6F, (player.level().getRandom().nextFloat() - player.level().getRandom().nextFloat()) * 0.3F + 1.0F);
 
             if(player.level() instanceof ServerLevel server) {
                 for(int i = 0; i < 3; i++) {
-                    float f = server.random.nextFloat() * (float)Math.PI * 2.0F;
-                    float f1 = server.random.nextFloat() * 0.5F + 0.5F;
+                    float f = server.getRandom().nextFloat() * (float)Math.PI * 2.0F;
+                    float f1 = server.getRandom().nextFloat() * 0.5F + 0.5F;
                     float f2 = Mth.sin(f) * 0.5F * f1;
                     float f3 = Mth.cos(f) * 0.5F * f1;
                     server.sendParticles(ParticleTypes.HEART,
                             player.position().x + f2,
-                            player.getBoundingBox().minY + player.level().random.nextFloat() + 0.5F,
-                            player.position().z + f3, 3, (double)(float)Math.pow(2.0D, (player.level().random.nextInt(169) - 12) / 12.0D) / 24.0D, -1.0D, 0.0D, 0);
+                            player.getBoundingBox().minY + player.level().getRandom().nextFloat() + 0.5F,
+                            player.position().z + f3, 3, (double)(float)Math.pow(2.0D, (player.level().getRandom().nextInt(169) - 12) / 12.0D) / 24.0D, -1.0D, 0.0D, 0);
                 }
             }
             if(getCooldowns().containsKey(backpack.getItem())) {
@@ -441,7 +413,7 @@ public class BackpackAbilities {
         }
         if(!hasCooldown(backpack)) {
             BackpackWrapper wrapper = AttachmentUtils.getBackpackWrapperArtificial(player);
-            player.level().playSound(null, player.blockPosition(), SoundEvents.CHICKEN_EGG, SoundSource.AMBIENT, 1.0F, (player.level().random.nextFloat() - player.level().random.nextFloat()) * 0.3F + 1.0F);
+            player.level().playSound(null, player.blockPosition(), SoundEvents.CHICKEN_EGG, SoundSource.AMBIENT, 1.0F, (player.level().getRandom().nextFloat() - player.level().getRandom().nextFloat()) * 0.3F + 1.0F);
             if(player.level().isClientSide()) return;
             player.spawnAtLocation((ServerLevel)player.level(), Items.EGG);
             setCooldown(wrapper, wrapper.getBackpackStack().getItem());
@@ -456,12 +428,12 @@ public class BackpackAbilities {
             wrapper = AttachmentUtils.getBackpackWrapper(player, AttachmentUtils.UPGRADES_ONLY.get());
             if(wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).isPresent()) {
                 TanksUpgrade upgrade = wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).get();
-                FluidTank leftTank = upgrade.getLeftTank();
-                FluidTank rightTank = upgrade.getRightTank();
+                FluidStacksResourceHandler leftTank = upgrade.getLeftTank();
+                FluidStacksResourceHandler rightTank = upgrade.getRightTank();
                 FluidStack water = new FluidStack(Fluids.WATER, 1000);
                 if(!player.level().isClientSide()) {
-                    leftTank.fill(water, IFluidHandler.FluidAction.EXECUTE);
-                    rightTank.fill(water, IFluidHandler.FluidAction.EXECUTE);
+                    StacksHandlerUtils.fill(leftTank, water, false);
+                    StacksHandlerUtils.fill(rightTank, water, false);
                 }
 
                 if(player.level().isClientSide()) return;
@@ -497,11 +469,11 @@ public class BackpackAbilities {
         if(cooldown >= 1000) {
             if(wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).isPresent()) {
                 TanksUpgrade upgrade = wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).get();
-                FluidTank leftTank = upgrade.getLeftTank();
-                FluidTank rightTank = upgrade.getRightTank();
+                FluidStacksResourceHandler leftTank = upgrade.getLeftTank();
+                FluidStacksResourceHandler rightTank = upgrade.getRightTank();
                 FluidStack water = new FluidStack(Fluids.WATER, 1000);
-                leftTank.fill(water, IFluidHandler.FluidAction.EXECUTE);
-                rightTank.fill(water, IFluidHandler.FluidAction.EXECUTE);
+                StacksHandlerUtils.fill(leftTank, water, false);
+                StacksHandlerUtils.fill(rightTank, water, false);
                 wrapper.setCooldown(0);
             } else {
                 return;
@@ -524,7 +496,7 @@ public class BackpackAbilities {
 
     public static void melonAbility(BackpackBlockEntity backpackBlockEntity) {
         if(backpackBlockEntity.getWrapper().isAbilityEnabled() && backpackBlockEntity.getWrapper().getCooldown() <= 0) {
-            Block.popResource(backpackBlockEntity.getLevel(), backpackBlockEntity.getBlockPos(), new ItemStack(Items.MELON_SLICE, backpackBlockEntity.getLevel().random.nextInt(0, 3)));
+            Block.popResource(backpackBlockEntity.getLevel(), backpackBlockEntity.getBlockPos(), new ItemStack(Items.MELON_SLICE, backpackBlockEntity.getLevel().getRandom().nextInt(0, 3)));
             setCooldown(backpackBlockEntity.getWrapper(), backpackBlockEntity.getWrapper().getBackpackStack().getItem());
         }
     }
@@ -570,7 +542,7 @@ public class BackpackAbilities {
         if(event.getProjectile() instanceof SmallFireball fireball && event.getRayTraceResult().getType() == HitResult.Type.ENTITY) {
             EntityHitResult result = (EntityHitResult)event.getRayTraceResult();
             if(result.getEntity() instanceof Player player && ABILITIES.checkBackpack(player, ModItems.BLAZE_TRAVELERS_BACKPACK.get())) {
-                player.level().playSound(null, player.blockPosition(), SoundEvents.SHIELD_BLOCK.value(), SoundSource.PLAYERS, 1.0F, 0.8F + player.level().random.nextFloat() * 0.4F);
+                player.level().playSound(null, player.blockPosition(), SoundEvents.SHIELD_BLOCK.value(), SoundSource.PLAYERS, 1.0F, 0.8F + player.level().getRandom().nextFloat() * 0.4F);
                 sendParticlesPacket(ParticleTypes.FLAME, player, 3);
                 fireball.discard();
                 event.setCanceled(true);
@@ -589,7 +561,7 @@ public class BackpackAbilities {
     }
 
     public void spiderAbility(Player player) {
-        if(player.horizontalCollision && !player.isInFluidType()) {
+        if(player.horizontalCollision && !player.isInLiquid()) {
             //Make player climb the wall if crashed with elytra
             if(player.isFallFlying()) {
                 player.stopFallFlying();
@@ -601,13 +573,13 @@ public class BackpackAbilities {
                 player.setDeltaMovement(player.getDeltaMovement().x, 0.20D, player.getDeltaMovement().z);
                 Level level = player.level();
                 BlockState state = level.getBlockState(player.blockPosition().relative(player.getDirection()));
-                if(state.getBlockHolder().getKey() != null && state.getBlockHolder().getKey().identifier().getNamespace().equals("create")) {
+                if(state.typeHolder().getKey() != null && state.typeHolder().getKey().identifier().getNamespace().equals("create")) {
                     return;
                 }
                 player.level().addParticle(new BlockParticleOption(ParticleTypes.BLOCK, state),
-                        player.getX() + (level.random.nextDouble() - 0.5D) * (double)player.getDimensions(Pose.STANDING).width(),
+                        player.getX() + (level.getRandom().nextDouble() - 0.5D) * (double)player.getDimensions(Pose.STANDING).width(),
                         player.getY() + 0.1D,
-                        player.getZ() + (level.random.nextDouble() - 0.5D) * (double)player.getDimensions(Pose.STANDING).width(),
+                        player.getZ() + (level.getRandom().nextDouble() - 0.5D) * (double)player.getDimensions(Pose.STANDING).width(),
                         0.0D, 1.5D, 0.0D);
             }
         }
@@ -720,9 +692,9 @@ public class BackpackAbilities {
 
     public static void sendParticlesPacket(ParticleOptions type, Player player, int count) {
         for(int i = 0; i < count; i++) {
-            double d0 = player.level().random.nextGaussian() * 0.02D;
-            double d1 = player.level().random.nextGaussian() * 0.02D;
-            double d2 = player.level().random.nextGaussian() * 0.02D;
+            double d0 = player.level().getRandom().nextGaussian() * 0.02D;
+            double d1 = player.level().getRandom().nextGaussian() * 0.02D;
+            double d2 = player.level().getRandom().nextGaussian() * 0.02D;
             if(player.level() instanceof ServerLevel server) {
                 server.sendParticles(type, player.getRandomX(1.0D), player.getRandomY() + 0.5D, player.getRandomZ(1.0D), 1, d0, d1, d2, 0.0F);
             }

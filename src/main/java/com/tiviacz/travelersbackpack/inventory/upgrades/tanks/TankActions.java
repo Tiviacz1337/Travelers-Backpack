@@ -6,57 +6,61 @@ import com.tiviacz.travelersbackpack.inventory.InventoryActions;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
 import com.tiviacz.travelersbackpack.util.FluidStackHelper;
 import com.tiviacz.travelersbackpack.util.Reference;
+import com.tiviacz.travelersbackpack.util.StacksHandlerUtils;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.PotionItem;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.common.SoundActions;
-import net.neoforged.neoforge.fluids.FluidActionResult;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.FluidUtil;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.fluid.FluidStacksResourceHandler;
+
+import java.util.Optional;
 
 public class TankActions {
     public static void fillTank(ServerPlayer player, boolean leftTank) {
         if(player instanceof ServerPlayer serverPlayer && serverPlayer.containerMenu instanceof BackpackBaseMenu menu) {
             BackpackWrapper wrapper = menu.getWrapper();
-            FluidTank tank = leftTank ? wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).get().getLeftTank() : wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).get().getRightTank();
+            FluidStacksResourceHandler tank = leftTank ? wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).get().getLeftTank() : wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).get().getRightTank();
             ItemStack carried = menu.getCarried();
-            if(FluidUtil.getFluidContained(carried).isPresent() && carried.getCount() == 1) {
+            Optional<ResourceHandler<FluidResource>> carriedHandler = Optional.ofNullable(ItemAccess.forPlayerCursor(player, menu).getCapability(Capabilities.Fluid.ITEM));
+            FluidResource carriedResource = carriedHandler.map(fluidResourceResourceHandler -> fluidResourceResourceHandler.getResource(0)).orElse(FluidResource.EMPTY);
+            if(carriedHandler.isPresent() && !carriedResource.isEmpty() && carried.getCount() == 1) {
                 //Fluid sound
-                SoundEvent fluidSound = tank.isEmpty() ? SoundEvents.BUCKET_EMPTY : tank.getFluid().getFluidType().getSound(tank.getFluid(), SoundActions.BUCKET_EMPTY);
+                SoundEvent fluidSound = StacksHandlerUtils.isEmpty(tank) ? SoundEvents.BUCKET_EMPTY : StacksHandlerUtils.getFluid(tank).getFluidType().getSound(StacksHandlerUtils.getFluid(tank), SoundActions.BUCKET_EMPTY);
 
-                FluidActionResult result = FluidUtil.tryEmptyContainer(carried, tank, wrapper.getBackpackTankCapacity(), wrapper.getScreenID() == Reference.ITEM_SCREEN_ID ? null : serverPlayer, true);
-                if(result.isSuccess()) {
+                int movedAmount = ResourceHandlerUtil.move(carriedHandler.get(), tank, p -> true, carriedHandler.get().getAmountAsInt(0), null);
+                if(movedAmount > 0) {
                     //Play client only sound for item
-                    if(wrapper.getScreenID() == Reference.ITEM_SCREEN_ID) {
-                        InventoryActions.playFluidSound(wrapper.getBackpackOwner(), wrapper.getPlayersUsing(), fluidSound, false);
-                    }
-                    menu.setCarried(result.getResult());
+                    InventoryActions.playFluidSound(wrapper.getBackpackOwner(), wrapper.getPlayersUsing(), fluidSound, false);
                 }
-            } else if(FluidUtil.getFluidHandler(carried).isPresent() && FluidUtil.getFluidContained(carried).isEmpty()) {
-                ItemStack carriedCopy = carried.copy();
-                int count = carriedCopy.getCount();
-                carriedCopy.setCount(count - 1);
+            } else if(carriedHandler.isPresent() && carriedResource.isEmpty()) {
+                int remainingCount = carried.getCount();
+                if(carried.getCount() > 1) {
+                    carried.setCount(1);
+                }
 
                 //Fluid sound
-                SoundEvent fluidSound = tank.isEmpty() ? SoundEvents.BUCKET_FILL : tank.getFluid().getFluidType().getSound(tank.getFluid(), SoundActions.BUCKET_FILL);
+                SoundEvent fluidSound = StacksHandlerUtils.isEmpty(tank) ? SoundEvents.BUCKET_FILL : StacksHandlerUtils.getFluid(tank).getFluidType().getSound(StacksHandlerUtils.getFluid(tank), SoundActions.BUCKET_FILL);
 
-                FluidActionResult result = FluidUtil.tryFillContainer(carried, tank, wrapper.getBackpackTankCapacity(), wrapper.getScreenID() == Reference.ITEM_SCREEN_ID ? null : serverPlayer, true);
-                if(result.isSuccess()) {
-                    if(carriedCopy.getCount() > 0) {
-                        serverPlayer.getInventory().placeItemBackInInventory(result.getResult());
-                        menu.setCarried(carriedCopy);
-                    } else {
-                        menu.setCarried(result.getResult());
+                int movedAmount = ResourceHandlerUtil.move(tank, carriedHandler.get(), p -> true, wrapper.getBackpackTankCapacity(), null);
+                if(movedAmount > 0) {
+                    ItemStack result = menu.getCarried().copy();
+                    if(remainingCount > 1) {
+                        serverPlayer.getInventory().placeItemBackInInventory(result);
+                        menu.setCarried(carried.copyWithCount(remainingCount - 1));
                     }
                     //Play client only sound for item
-                    if(wrapper.getScreenID() == Reference.ITEM_SCREEN_ID) {
-                        InventoryActions.playFluidSound(wrapper.getBackpackOwner(), wrapper.getPlayersUsing(), fluidSound, true);
-                    }
+                    InventoryActions.playFluidSound(wrapper.getBackpackOwner(), wrapper.getPlayersUsing(), fluidSound, true);
+                } else {
+                    carried.setCount(remainingCount);
                 }
             } else if(carried.getItem() instanceof PotionItem && carried.getItem() != Items.GLASS_BOTTLE) {
                 if(carried.getCount() == 1) {
@@ -79,29 +83,29 @@ public class TankActions {
         }
     }
 
-    public static boolean tryEmptyPotion(ItemStack carried, FluidTank tank, int potionType) {
+    public static boolean tryEmptyPotion(ItemStack carried, FluidStacksResourceHandler tank, int potionType) {
         int amount = Reference.POTION;
         FluidStack fluidStack = new FluidStack(ModFluids.POTION_FLUID.get(), amount);
         FluidStackHelper.setFluidStackData(carried, fluidStack, potionType);
-        if(tank.isEmpty() || FluidStack.isSameFluidSameComponents(tank.getFluid(), fluidStack)) {
-            if(tank.getFluidAmount() + amount <= tank.getCapacity()) {
-                tank.fill(fluidStack, IFluidHandler.FluidAction.EXECUTE);
+        if(StacksHandlerUtils.isEmpty(tank) || FluidStack.isSameFluidSameComponents(StacksHandlerUtils.getFluid(tank), fluidStack)) {
+            if(StacksHandlerUtils.getFluidAmount(tank) + amount <= StacksHandlerUtils.getCapacity(tank)) {
+                StacksHandlerUtils.fill(tank, fluidStack, false);
                 return true;
             }
         }
         return false;
     }
 
-    public static ItemStack tryFillPotion(ItemStack carried, FluidTank tank, ServerPlayer player, boolean simulate) {
-        if(tank.getFluid().getFluid() == ModFluids.POTION_FLUID.get() && tank.getFluidAmount() >= Reference.POTION) {
-            ItemStack filledPotion = FluidStackHelper.getItemStackFromFluidStack(tank.getFluid());
+    public static ItemStack tryFillPotion(ItemStack carried, FluidStacksResourceHandler tank, ServerPlayer player, boolean simulate) {
+        if(StacksHandlerUtils.getFluid(tank).getFluid() == ModFluids.POTION_FLUID.get() && StacksHandlerUtils.getFluidAmount(tank) >= Reference.POTION) {
+            ItemStack filledPotion = FluidStackHelper.getItemStackFromFluidStack(StacksHandlerUtils.getFluid(tank));
             if(simulate) {
                 return filledPotion; //Return for simulate to check if it's possible to fill the bottle
             }
             ItemStack carriedCopy = carried.copy();
             int count = carriedCopy.getCount();
             carriedCopy.setCount(count - 1);
-            tank.drain(Reference.POTION, IFluidHandler.FluidAction.EXECUTE);
+            StacksHandlerUtils.drain(tank, Reference.POTION, false);
             if(carriedCopy.getCount() > 0) {
                 player.getInventory().placeItemBackInInventory(filledPotion);
                 return carriedCopy;

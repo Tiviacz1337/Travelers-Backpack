@@ -1,16 +1,16 @@
 package com.tiviacz.travelersbackpack.inventory.upgrades.smelting;
 
 import com.mojang.datafixers.util.Pair;
-import com.tiviacz.travelersbackpack.components.BackpackContainerContents;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
-import com.tiviacz.travelersbackpack.inventory.transfer.BackpackResourceHandler;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.UpgradeManager;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.BackpackSlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.UpgradeSlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.upgrades.*;
+import com.tiviacz.travelersbackpack.util.ContainerContentsHelper;
 import com.tiviacz.travelersbackpack.util.Reference;
+import com.tiviacz.travelersbackpack.util.StacksHandlerUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponentType;
@@ -19,10 +19,12 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -35,7 +37,7 @@ public class AbstractSmeltingUpgrade<T> extends UpgradeBase<T> implements IEnabl
     protected static final int SLOT_FUEL = 1;
     protected static final int SLOT_RESULT = 2;
     private final Supplier<ServerLevel> level;
-    protected BackpackResourceHandler items;
+    protected ItemStacksResourceHandler items;
     private RecipeHolder<? extends AbstractCookingRecipe> cachedRecipe = null;
     private boolean recipeFetched = false;
     private final RecipeType<? extends AbstractCookingRecipe> recipeType;
@@ -93,10 +95,12 @@ public class AbstractSmeltingUpgrade<T> extends UpgradeBase<T> implements IEnabl
 
     public void syncClient(ItemStack backpack) {
         int slot = getDataHolderSlot();
-        BackpackContainerContents contents = backpack.get(ModDataComponents.UPGRADES);
+        ItemContainerContents contents = backpack.get(ModDataComponents.UPGRADES);
+        int upgradesSize = backpack.get(ModDataComponents.UPGRADE_SLOTS);
         if(contents == null) return;
-        if(slot >= contents.getItems().size()) return;
-        ItemStack stack = contents.getItems().get(slot);
+        NonNullList<ItemStack> stacks = ContainerContentsHelper.getItems(contents, upgradesSize);
+        if(slot >= stacks.size()) return;
+        ItemStack stack = stacks.get(slot);
         long finishTime = stack.getOrDefault(ModDataComponents.BURN_FINISH_TIME, (long)0);
         int total = stack.getOrDefault(ModDataComponents.BURN_TOTAL_TIME, 0);
         setBurnTotalTime(total);
@@ -131,10 +135,6 @@ public class AbstractSmeltingUpgrade<T> extends UpgradeBase<T> implements IEnabl
                 tickSmelting(serverLevel);
             }
         }
-
-        /*if(player != null && player.containerMenu instanceof BackpackBaseMenu && player.level() instanceof ServerLevel serverLevel) {
-            tickSmelting(serverLevel);
-        }*/
 
         if(!hasCooldown() || getCooldown() != getTickRate()) {
             setCooldown(getTickRate());
@@ -222,7 +222,7 @@ public class AbstractSmeltingUpgrade<T> extends UpgradeBase<T> implements IEnabl
 
     private boolean canBurn(@Nullable RecipeHolder<? extends AbstractCookingRecipe> recipe) {
         if(!getStack(SLOT_INPUT).isEmpty() && recipe != null && hasFuel()) {
-            ItemStack cookingResult = recipe.value().assemble(new SingleRecipeInput(getStack(SLOT_INPUT)), this.level.get().registryAccess());
+            ItemStack cookingResult = recipe.value().assemble(new SingleRecipeInput(getStack(SLOT_INPUT)));
             if(cookingResult.isEmpty()) {
                 return false;
             } else {
@@ -247,7 +247,7 @@ public class AbstractSmeltingUpgrade<T> extends UpgradeBase<T> implements IEnabl
             this.cachedRecipe = this.quickCheck.getRecipeFor(new SingleRecipeInput(getStack(SLOT_INPUT)), this.level.get()).orElse(null);
         }
         if(this.cachedRecipe != null) {
-            ItemStack result = this.cachedRecipe.value().assemble(new SingleRecipeInput(getStack(SLOT_INPUT)), this.level.get().registryAccess());
+            ItemStack result = this.cachedRecipe.value().assemble(new SingleRecipeInput(getStack(SLOT_INPUT)));
 
             //Reduce input slot count
             ItemStack input = getStack(SLOT_INPUT).copy();
@@ -277,8 +277,8 @@ public class AbstractSmeltingUpgrade<T> extends UpgradeBase<T> implements IEnabl
 
     public void shrinkFuelSlot() {
         ItemStack fuel = getStack(SLOT_FUEL).copy();
-        if(!fuel.getCraftingRemainder().isEmpty()) {
-            setStack(SLOT_FUEL, fuel.getCraftingRemainder());
+        if(fuel.getCraftingRemainder() != null) {
+            setStack(SLOT_FUEL, fuel.getCraftingRemainder().create());
         } else {
             fuel.shrink(1);
             setStack(SLOT_FUEL, fuel);
@@ -298,11 +298,11 @@ public class AbstractSmeltingUpgrade<T> extends UpgradeBase<T> implements IEnabl
     }
 
     public void setStack(int slot, ItemStack stack) {
-        this.items.setStackInSlot(slot, stack);
+        StacksHandlerUtils.setStackInSlot(this.items, slot, stack);
     }
 
     public ItemStack getStack(int slot) {
-        return this.items.getStackInSlot(slot);
+        return StacksHandlerUtils.getStackInSlot(this.items, slot);
     }
 
     protected int getBurnDuration(ItemStack pFuel) {
@@ -356,7 +356,7 @@ public class AbstractSmeltingUpgrade<T> extends UpgradeBase<T> implements IEnabl
     }
 
     public void setSlotChanged(ItemStack dataHolderStack, int index, ItemStack stack) {
-        dataHolderStack.update(ModDataComponents.BACKPACK_CONTAINER, new BackpackContainerContents(3), new BackpackContainerContents.Slot(index, stack), BackpackContainerContents::updateSlot);
+        dataHolderStack.update(ModDataComponents.BACKPACK_CONTAINER, ItemContainerContents.EMPTY, currentContents -> ContainerContentsHelper.updateStack(currentContents, 3, stack, index));
     }
 
     public <D> void setStackData(DataComponentType<D> data, D value) {
@@ -366,14 +366,14 @@ public class AbstractSmeltingUpgrade<T> extends UpgradeBase<T> implements IEnabl
         } else {
             stack.set(data, value);
         }
-        getUpgradeManager().getUpgradesHandler().setStackInSlot(getDataHolderSlot(), stack);
+        StacksHandlerUtils.setStackInSlot(getUpgradeManager().getUpgradesHandler(), getDataHolderSlot(), stack);
     }
 
-    private BackpackResourceHandler createHandler(NonNullList<ItemStack> stacks) {
-        return new BackpackResourceHandler(stacks) {
+    private ItemStacksResourceHandler createHandler(NonNullList<ItemStack> stacks) {
+        return new ItemStacksResourceHandler(stacks) {
             @Override
             protected void onContentsChanged(int slot, ItemStack previousStack) {
-                updateDataHolderUnchecked(dataHolderStack -> setSlotChanged(dataHolderStack, slot, getStackInSlot(slot)));
+                updateDataHolderUnchecked(dataHolderStack -> setSlotChanged(dataHolderStack, slot, StacksHandlerUtils.getStackInSlot(this, slot)));
 
                 if(getUpgradeManager().getWrapper().getScreenID() != Reference.ITEM_SCREEN_ID) {
                     checkCooking(AbstractSmeltingUpgrade.this.level.get(), false);

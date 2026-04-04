@@ -1,27 +1,29 @@
 package com.tiviacz.travelersbackpack.inventory.upgrades.jukebox;
 
 import com.mojang.datafixers.util.Pair;
-import com.tiviacz.travelersbackpack.components.BackpackContainerContents;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
-import com.tiviacz.travelersbackpack.inventory.transfer.BackpackResourceHandler;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.UpgradeManager;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.UpgradeSlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
+import com.tiviacz.travelersbackpack.util.ContainerContentsHelper;
+import com.tiviacz.travelersbackpack.util.StacksHandlerUtils;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.ItemContainerContents;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class JukeboxUpgrade extends UpgradeBase<JukeboxUpgrade> {
-    public BackpackResourceHandler diskHandler;
+    public ItemStacksResourceHandler diskHandler;
 
     public JukeboxUpgrade(UpgradeManager manager, int dataHolderSlot, NonNullList<ItemStack> musicDiskContents) {
         super(manager, dataHolderSlot, new Point(66, 46));
@@ -62,18 +64,18 @@ public class JukeboxUpgrade extends UpgradeBase<JukeboxUpgrade> {
     }
 
     public boolean canPlayRecord() {
-        return !isPlayingRecord() && !diskHandler.getStackInSlot(0).isEmpty();
+        return !isPlayingRecord() && !StacksHandlerUtils.getStackInSlot(diskHandler, 0).isEmpty();
     }
 
     public void setSlotChanged(ItemStack dataHolderStack, int index, ItemStack stack) {
-        dataHolderStack.update(ModDataComponents.BACKPACK_CONTAINER, new BackpackContainerContents(1), new BackpackContainerContents.Slot(index, stack), BackpackContainerContents::updateSlot);
+        dataHolderStack.update(ModDataComponents.BACKPACK_CONTAINER, ItemContainerContents.EMPTY, currentContents -> ContainerContentsHelper.updateStack(currentContents, 1, stack, index));
     }
 
-    private BackpackResourceHandler createHandler(NonNullList<ItemStack> stacks) {
-        return new BackpackResourceHandler(stacks) {
+    private ItemStacksResourceHandler createHandler(NonNullList<ItemStack> stacks) {
+        return new ItemStacksResourceHandler(stacks) {
             @Override
             protected void onContentsChanged(int slot, ItemStack previousStack) {
-                updateDataHolderUnchecked(dataHolderStack -> setSlotChanged(dataHolderStack, slot, getStackInSlot(slot)));
+                updateDataHolderUnchecked(dataHolderStack -> setSlotChanged(dataHolderStack, slot, StacksHandlerUtils.getStackInSlot(this, slot)));
             }
 
             @Override

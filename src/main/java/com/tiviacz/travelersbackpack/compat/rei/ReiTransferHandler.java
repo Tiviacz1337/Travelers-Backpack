@@ -17,7 +17,7 @@ import java.util.stream.IntStream;
 public class ReiTransferHandler implements SimpleTransferHandler {
     @Override
     public ApplicabilityResult checkApplicable(Context context) {
-        if(!BackpackBaseMenu.class.isInstance(context.getMenu())
+        if(!(context.getMenu() instanceof BackpackBaseMenu)
                 || !BuiltinPlugin.CRAFTING.equals(context.getDisplay().getCategoryIdentifier())
                 || context.getContainerScreen() == null) {
             return ApplicabilityResult.createNotApplicable();

@@ -8,8 +8,9 @@ import com.tiviacz.travelersbackpack.common.ServerActions;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
 import com.tiviacz.travelersbackpack.util.Reference;
+import com.tiviacz.travelersbackpack.util.StacksHandlerUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
@@ -32,8 +33,8 @@ public class JukeboxWidget extends UpgradeWidgetBase<JukeboxUpgrade> {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        super.render(guiGraphics, mouseX, mouseY, partialTicks);
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
 
         if(isTabOpened()) {
             if(isMouseOverPlayButton(mouseX, mouseY)) {
@@ -46,7 +47,7 @@ public class JukeboxWidget extends UpgradeWidgetBase<JukeboxUpgrade> {
     }
 
     @Override
-    public void renderBg(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY) {
+    public void renderBg(GuiGraphicsExtractor guiGraphics, int x, int y, int mouseX, int mouseY) {
         super.renderBg(guiGraphics, x, y, mouseX, mouseY);
 
         if(isTabOpened()) {
@@ -62,7 +63,7 @@ public class JukeboxWidget extends UpgradeWidgetBase<JukeboxUpgrade> {
             if(isMouseOverPlayButton(event.x(), event.y()) && isBackpackOwner()) {
                 if(isTabOpened() && this.upgrade.canPlayRecord()) {
                     ServerboundActionTagPacket.create(ServerboundActionTagPacket.UPGRADE_TAB, this.dataHolderSlot, true, ServerActions.PLAY_RECORD);
-                    playDiscToPlayer(screen.getMenu().getPlayerInventory().player.getId(), getFromDisk(upgrade.diskHandler.getStackInSlot(0)));
+                    playDiscToPlayer(screen.getMenu().getPlayerInventory().player.getId(), getFromDisk(StacksHandlerUtils.getStackInSlot(upgrade.diskHandler, 0)));
                     this.screen.playUIClickSound();
                     return true;
                 }
@@ -73,7 +74,7 @@ public class JukeboxWidget extends UpgradeWidgetBase<JukeboxUpgrade> {
             if(isTabOpened() && this.upgrade.isPlayingRecord()) {
                 ServerboundActionTagPacket.create(ServerboundActionTagPacket.UPGRADE_TAB, this.dataHolderSlot, false, ServerActions.PLAY_RECORD);
                 if(this.upgrade.getUpgradeManager().getWrapper().getScreenID() == Reference.WEARABLE_SCREEN_ID) {
-                    stopDisc(getFromDisk(upgrade.diskHandler.getStackInSlot(0)));
+                    stopDisc(getFromDisk(StacksHandlerUtils.getStackInSlot(upgrade.diskHandler, 0)));
                 }
                 this.screen.playUIClickSound();
                 return true;
@@ -93,7 +94,7 @@ public class JukeboxWidget extends UpgradeWidgetBase<JukeboxUpgrade> {
     @Nullable
     public JukeboxSong getFromDisk(ItemStack stack) {
         if(stack.has(DataComponents.JUKEBOX_PLAYABLE)) {
-            return JukeboxSong.fromStack(screen.getMenu().getPlayerInventory().player.registryAccess(), stack).get().value();
+            return JukeboxSong.fromStack(stack).get().value();
         }
         return null;
     }
@@ -113,7 +114,6 @@ public class JukeboxWidget extends UpgradeWidgetBase<JukeboxUpgrade> {
             return;
         }
 
-        //Minecraft.getInstance().getSoundManager().stop();
         Minecraft.getInstance().getSoundManager().queueTickingSound(new MovingSound(entity, jukeboxSong.soundEvent().value()));
         Minecraft.getInstance().gui.setNowPlaying(jukeboxSong.description());
     }

@@ -34,9 +34,6 @@ public class BackpackModel extends BackpackModelPart {
             backpackRenderState.submit(poseStack, collector, packedLightIn, OverlayTexture.NO_OVERLAY, 0);
         }
 
-        //ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
-        //itemRenderer.renderStatic(stack, ItemDisplayContext.NONE, packedLightIn, OverlayTexture.NO_OVERLAY, poseStack, bufferIn, Minecraft.getInstance().level, 0);
-
         //Render Tools
         tools.render(stack, collector, poseStack, packedLightIn, OverlayTexture.NO_OVERLAY);
 

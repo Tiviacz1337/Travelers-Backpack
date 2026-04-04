@@ -12,8 +12,8 @@ import com.tiviacz.travelersbackpack.items.SleepingBagItem;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.items.upgrades.*;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.item.Item;
@@ -134,7 +134,7 @@ public class ModItems {
     public static final List<Item> COMPATIBLE_NETHER_BACKPACK_ENTRIES = new ArrayList<>();
 
     public static void registerCapability(RegisterCapabilitiesEvent event) {
-        event.registerItem(Capabilities.Item.ITEM, (stack, context) -> new BackpackItemAccess(ItemAccess.forStack(stack), BackpackWrapper.fromStack(stack), ModDataComponents.BACKPACK_CONTAINER.get()),
+        event.registerItem(Capabilities.Item.ITEM, (stack, access) -> new BackpackItemAccess(ItemAccess.forStack(stack), BackpackWrapper.fromStack(stack), ModDataComponents.BACKPACK_CONTAINER.get()),
                 ModItems.STANDARD_TRAVELERS_BACKPACK.get(),
                 ModItems.NETHERITE_TRAVELERS_BACKPACK.get(),
                 ModItems.DIAMOND_TRAVELERS_BACKPACK.get(),
@@ -186,10 +186,10 @@ public class ModItems {
                 ModItems.IRON_GOLEM_TRAVELERS_BACKPACK.get());
 
         event.registerItem(Capabilities.Fluid.ITEM, (stack, context) -> {
-                    //BackpackWrapper wrapper = BackpackWrapper.fromStack(stack);
-                    //if(wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).isPresent()) {
-                        //return new ItemFluidTankWrapper(stack, wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).get());
-                   // }
+                    BackpackWrapper wrapper = BackpackWrapper.fromStack(stack);
+                    if(wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).isPresent()) {
+                        return new ItemFluidTankWrapper(stack, wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).get());
+                    }
                     return null;
                 }, ModItems.STANDARD_TRAVELERS_BACKPACK.get(),
                 ModItems.NETHERITE_TRAVELERS_BACKPACK.get(),

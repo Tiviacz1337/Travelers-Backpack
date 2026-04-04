@@ -5,7 +5,10 @@
       "id": "travelersbackpack:hose",
       "count": 1,
       "components": {
-        "travelersbackpack:hose_modes": [3, 1]
+        "travelersbackpack:hose_modes": [
+          3,
+          1
+        ]
       }
     },
     "title": {

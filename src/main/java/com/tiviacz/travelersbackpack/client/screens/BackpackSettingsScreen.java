@@ -11,9 +11,10 @@ import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackSettingsMenu;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.util.Reference;
+import com.tiviacz.travelersbackpack.util.StacksHandlerUtils;
 import com.tiviacz.travelersbackpack.util.Supporters;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -21,11 +22,12 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
 import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -86,21 +88,21 @@ public class BackpackSettingsScreen extends AbstractBackpackScreen<BackpackSetti
     }
 
     @Override
-    protected void renderSlotContents(GuiGraphics guiGraphics, ItemStack itemstack, Slot slot, @Nullable String countString) {
+    protected void renderSlotContents(GuiGraphicsExtractor guiGraphics, ItemStack itemstack, Slot slot, @Nullable String countString) {
         int i = slot.x;
         int j = slot.y;
         int j1 = slot.x + slot.y * this.imageWidth;
         if(slot.isFake()) {
-            guiGraphics.renderFakeItem(itemstack, i, j, j1);
+            guiGraphics.fakeItem(itemstack, i, j, j1);
         } else {
-            guiGraphics.renderItem(itemstack, i, j, j1);
+            guiGraphics.item(itemstack, i, j, j1);
         }
     }
 
     public void recalculate() {
         this.clearWidgets();
 
-        this.slotCount = getWrapper().getStorage().getSlots();
+        this.slotCount = StacksHandlerUtils.getSlots(getWrapper().getStorage());
         this.visibleSlots = this.slotCount;
         this.slotsHeight = calculateSlotHeight(slotCount > 81);
 
@@ -132,7 +134,7 @@ public class BackpackSettingsScreen extends AbstractBackpackScreen<BackpackSetti
     }
 
     @Override
-    public void renderScreen(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY, float partialTicks) {
+    public void renderScreen(GuiGraphicsExtractor guiGraphics, int x, int y, int mouseX, int mouseY, float partialTicks) {
         //Render Widgets underBg
         this.children().stream().filter(w -> w instanceof WidgetBase).forEach(w -> ((WidgetBase)w).renderBg(guiGraphics, x, y, mouseX, mouseY));
 
@@ -201,19 +203,19 @@ public class BackpackSettingsScreen extends AbstractBackpackScreen<BackpackSetti
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        super.render(guiGraphics, mouseX, mouseY, partialTicks);
-        this.renderTooltip(guiGraphics, mouseX, mouseY);
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
+        this.extractTooltip(guiGraphics, mouseX, mouseY);
     }
 
     @Override
-    protected void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        super.renderTooltip(guiGraphics, mouseX, mouseY);
+    protected void extractTooltip(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+        super.extractTooltip(guiGraphics, mouseX, mouseY);
         this.children().stream().filter(w -> w instanceof WidgetBase).forEach(w -> ((WidgetBase)w).renderTooltip(guiGraphics, mouseX, mouseY));
     }
 
     @Override
-    public void drawUnsortableSlots(GuiGraphics guiGraphics) {
+    public void drawUnsortableSlots(GuiGraphicsExtractor guiGraphics) {
         if(this.unsortablesWidget.isTabOpened()) {
             if(!this.unsortableSlots.isEmpty()) {
                 this.unsortableSlots.forEach(i -> guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BackpackScreen.ICONS, this.getGuiLeft() + getMenu().getSlot(i).x, this.getGuiTop() + getMenu().getSlot(i).y, 25, 55, 16, 16, 256, 256));
@@ -226,7 +228,7 @@ public class BackpackSettingsScreen extends AbstractBackpackScreen<BackpackSetti
     }
 
     @Override
-    public void drawMemorySlots(GuiGraphics guiGraphics) {
+    public void drawMemorySlots(GuiGraphicsExtractor guiGraphics) {
         if(this.memoryWidget.isTabOpened()) {
             if(!this.memorySlots.isEmpty()) {
                 this.memorySlots.forEach(pair -> {
@@ -238,7 +240,7 @@ public class BackpackSettingsScreen extends AbstractBackpackScreen<BackpackSetti
 
                     if(getMenu().getSlot(pair.getFirst()).getItem().isEmpty()) {
                         ItemStack itemstack = pair.getSecond().getFirst();
-                        guiGraphics.renderFakeItem(itemstack, this.getGuiLeft() + getMenu().getSlot(pair.getFirst()).x, this.getGuiTop() + getMenu().getSlot(pair.getFirst()).y);
+                        guiGraphics.fakeItem(itemstack, this.getGuiLeft() + getMenu().getSlot(pair.getFirst()).x, this.getGuiTop() + getMenu().getSlot(pair.getFirst()).y);
                         guiGraphics.fill(this.getGuiLeft() + getMenu().getSlot(pair.getFirst()).x, this.getGuiTop() + getMenu().getSlot(pair.getFirst()).y, this.getGuiLeft() + getMenu().getSlot(pair.getFirst()).x + 16, this.getGuiTop() + getMenu().getSlot(pair.getFirst()).y + 16, 822083583);
                     }
                 });
@@ -248,7 +250,7 @@ public class BackpackSettingsScreen extends AbstractBackpackScreen<BackpackSetti
                 this.lastMemorySlots.forEach(pair -> {
                     if(getMenu().getSlot(pair.getFirst()).getItem().isEmpty()) {
                         ItemStack itemstack = pair.getSecond().getFirst();
-                        guiGraphics.renderFakeItem(itemstack, this.getGuiLeft() + getMenu().getSlot(pair.getFirst()).x, this.getGuiTop() + getMenu().getSlot(pair.getFirst()).y);
+                        guiGraphics.fakeItem(itemstack, this.getGuiLeft() + getMenu().getSlot(pair.getFirst()).x, this.getGuiTop() + getMenu().getSlot(pair.getFirst()).y);
                         guiGraphics.fill(this.getGuiLeft() + getMenu().getSlot(pair.getFirst()).x, this.getGuiTop() + getMenu().getSlot(pair.getFirst()).y, this.getGuiLeft() + getMenu().getSlot(pair.getFirst()).x + 16, this.getGuiTop() + getMenu().getSlot(pair.getFirst()).y + 16, 822083583);
                     }
                 });
@@ -257,7 +259,7 @@ public class BackpackSettingsScreen extends AbstractBackpackScreen<BackpackSetti
     }
 
     @Override
-    protected void slotClicked(Slot slot, int slotId, int button, ClickType type) {
+    protected void slotClicked(Slot slot, int slotId, int button, ContainerInput type) {
         //Selecting or unselecting unsortable slots by clicking the single slot
         if(selectSlots(slot, button)) {
             return;
@@ -276,7 +278,7 @@ public class BackpackSettingsScreen extends AbstractBackpackScreen<BackpackSetti
     }
 
     public boolean selectSlots(Slot slot, int button) {
-        if(slot != null && slot.index >= 0 && slot.index < wrapper.getStorage().getSlots()) {
+        if(slot != null && slot.index >= 0 && slot.index < StacksHandlerUtils.getSlots(wrapper.getStorage())) {
             if(selectSlotsIndex(this.unsortableSlots, this.unsortablesWidget.isTabOpened(), slot, button)) {
                 return true;
             }

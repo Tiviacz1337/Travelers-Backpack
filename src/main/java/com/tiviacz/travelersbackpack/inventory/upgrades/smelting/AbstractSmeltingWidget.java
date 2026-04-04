@@ -6,7 +6,7 @@ import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetElement;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.inventory.upgrades.ResultArrowElement;
 import com.tiviacz.travelersbackpack.util.Reference;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 
@@ -20,14 +20,14 @@ public class AbstractSmeltingWidget<T> extends UpgradeWidgetBase<AbstractSmeltin
     }
 
     @Override
-    public void renderBg(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY) {
+    public void renderBg(GuiGraphicsExtractor guiGraphics, int x, int y, int mouseX, int mouseY) {
         super.renderBg(guiGraphics, x, y, mouseX, mouseY);
         this.resultArrowElement.renderBg(guiGraphics, x, y, mouseX, mouseY);
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        super.render(guiGraphics, mouseX, mouseY, partialTicks);
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
 
         if(isTabOpened() && screen.getWrapper().getScreenID() != Reference.ITEM_SCREEN_ID) {
             long gameTime = upgrade.getUpgradeManager().getWrapper().getLevel().getGameTime();
@@ -51,7 +51,7 @@ public class AbstractSmeltingWidget<T> extends UpgradeWidgetBase<AbstractSmeltin
     }
 
     @Override
-    public void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    public void renderTooltip(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         super.renderTooltip(guiGraphics, mouseX, mouseY);
         this.resultArrowElement.renderTooltip(guiGraphics, mouseX, mouseY);
     }

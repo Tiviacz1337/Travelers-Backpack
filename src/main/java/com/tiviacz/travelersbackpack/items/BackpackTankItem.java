@@ -14,6 +14,6 @@ public class BackpackTankItem extends Item {
         if(TravelersBackpackConfig.serverSpec.isLoaded()) {
             return TravelersBackpackConfig.SERVER.backpackUpgrades.enableTanksUpgrade.get() && super.isEnabled(enabledFeatures);
         }
-        return super.isEnabled(enabledFeatures); //&& TravelersBackpackConfig.SERVER.backpackUpgrades.enableTanksUpgrade.get();
+        return super.isEnabled(enabledFeatures);
     }
 }

@@ -11,7 +11,6 @@ import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
 import com.tiviacz.travelersbackpack.handlers.ModClientEventHandler;
 import com.tiviacz.travelersbackpack.init.*;
-import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.Supporters;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
@@ -99,17 +98,16 @@ public class TravelersBackpack {
         Supporters.fetchSupporters();
     }
 
-    private void setup(final FMLCommonSetupEvent event) {
+    private void setup(FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
             TravelersBackpackBlock.registerDispenserBehaviour();
             EffectFluidRegistry.initEffects();
-            TravelersBackpackItem.registerCauldronInteraction();
             if(accessoriesLoaded) TravelersBackpackAccessory.init();
             if(craftingTweaksLoaded) CraftingTweaksCompat.registerCraftingTweaksAddition();
         });
     }
 
-    private void doClientStuff(final FMLClientSetupEvent event) {
+    private void doClientStuff(FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
             ModClientEventHandler.registerUpgradeWidgets();
             if(craftingTweaksLoaded) CraftingTweaksCompat.registerCraftingTweaksAdditionClient();

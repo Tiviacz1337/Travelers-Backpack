@@ -3,12 +3,13 @@ package com.tiviacz.travelersbackpack.inventory;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
-import com.tiviacz.travelersbackpack.inventory.transfer.BackpackResourceHandler;
 import com.tiviacz.travelersbackpack.inventory.upgrades.IEnable;
 import com.tiviacz.travelersbackpack.inventory.upgrades.ITickableUpgrade;
 import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
 import com.tiviacz.travelersbackpack.items.upgrades.UpgradeItem;
+import com.tiviacz.travelersbackpack.util.StacksHandlerUtils;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +18,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class UpgradeManager {
     public final BackpackWrapper wrapper;
-    public final BackpackResourceHandler upgradesHandler;
+    public final ItemStacksResourceHandler upgradesHandler;
     public BiMap<Integer, Optional<UpgradeBase<?>>> mappedUpgrades;
     public List<UpgradeBase<?>> upgrades = new ArrayList<>();
 
@@ -34,7 +35,7 @@ public class UpgradeManager {
         return this.wrapper;
     }
 
-    public BackpackResourceHandler getUpgradesHandler() {
+    public ItemStacksResourceHandler getUpgradesHandler() {
         return this.upgradesHandler;
     }
 
@@ -80,8 +81,8 @@ public class UpgradeManager {
         boolean needsUpdate = applyUpgrade(slot);
 
         //Update if tab changed status
-        boolean changedTabStatus = getTabStatus(previousStack) != getTabStatus(getUpgradesHandler().getStackInSlot(slot));
-        boolean isTagSelector = isTagSelector(getUpgradesHandler().getStackInSlot(slot), previousStack);
+        boolean changedTabStatus = getTabStatus(previousStack) != getTabStatus(StacksHandlerUtils.getStackInSlot(getUpgradesHandler(), slot));
+        boolean isTagSelector = isTagSelector(StacksHandlerUtils.getStackInSlot(getUpgradesHandler(), slot), previousStack);
 
         //Update if tab changed status
         if(changedTabStatus || isTagSelector) {
@@ -92,7 +93,7 @@ public class UpgradeManager {
         }
 
         if(mappedUpgrades.containsKey(slot)) {
-            if(!(getUpgradesHandler().getStackInSlot(slot).getItem() instanceof UpgradeItem)) {
+            if(!(StacksHandlerUtils.getStackInSlot(getUpgradesHandler(), slot).getItem() instanceof UpgradeItem)) {
                 needsUpdate = this.invalidateUpgrade(slot);
                 updatePosition = false;
             }
@@ -113,7 +114,7 @@ public class UpgradeManager {
 
     public boolean applyUpgrade(int slot) {
         AtomicBoolean atomic = new AtomicBoolean(false);
-        ItemStack upgradeStack = getUpgradesHandler().getStackInSlot(slot);
+        ItemStack upgradeStack = StacksHandlerUtils.getStackInSlot(getUpgradesHandler(), slot);
         if(upgradeStack.getItem() instanceof UpgradeItem upgradeItem) {
             if(canAddUpgrade(upgradeItem)) {
                 upgradeItem.getUpgrade().apply(this, slot, upgradeStack).ifPresent(upgrade -> {

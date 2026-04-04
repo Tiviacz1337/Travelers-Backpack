@@ -29,12 +29,4 @@ public class BackpackEntityLayer extends RenderLayer<HumanoidRenderState, Humano
             BackpackLayer.renderBackpackLayer(getParentModel(), poseStack, sumbitNodeCollector, packedLightIn, state, this.backpackRenderState, this.tools, backpack);
         }
     }
-
-   /* @Override
-    public void render(PoseStack pPoseStack, MultiBufferSource pBuffer, int pPackedLight, HumanoidRenderState pLivingEntity, float p_117353_, float p_117354_) {
-        ItemStack backpack = pLivingEntity.chestEquipment;
-        if(backpack.getItem() instanceof TravelersBackpackItem) {
-            BackpackLayer.renderBackpackLayer(getParentModel(), pPoseStack, pBuffer, pPackedLight, pLivingEntity, backpack);
-        }
-    } */
 }

@@ -20,7 +20,6 @@ import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.init.ModTags;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
-import com.tiviacz.travelersbackpack.inventory.Tiers;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.BackpackSlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.upgrades.pickup.AutoPickupUpgrade;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
@@ -28,10 +27,7 @@ import com.tiviacz.travelersbackpack.items.upgrades.TanksUpgradeItem;
 import com.tiviacz.travelersbackpack.network.ClientboundSendMessagePacket;
 import com.tiviacz.travelersbackpack.network.ClientboundSyncAttachmentPacket;
 import com.tiviacz.travelersbackpack.network.SupporterBadgePacket;
-import com.tiviacz.travelersbackpack.util.BackpackDeathHelper;
-import com.tiviacz.travelersbackpack.util.LogHelper;
-import com.tiviacz.travelersbackpack.util.Reference;
-import com.tiviacz.travelersbackpack.util.Supporters;
+import com.tiviacz.travelersbackpack.util.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
@@ -41,7 +37,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.TriState;
 import net.minecraft.world.Containers;
@@ -52,15 +47,12 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.entity.npc.villager.VillagerProfession;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.DyedItemColor;
 import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.item.trading.ItemCost;
-import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -80,7 +72,6 @@ import net.neoforged.neoforge.event.entity.player.*;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
-import net.neoforged.neoforge.event.village.VillagerTradesEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.server.command.ConfigCommand;
 
@@ -147,12 +138,6 @@ public class NeoForgeEventHandler {
                                     data.synchronise();
                                 });
                             }
-                            /*level.playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER.value(), SoundSource.PLAYERS, 1.05F, (1.0F + (level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.2F) * 0.7F);
-                            AttachmentUtils.getAttachment(player).ifPresent(data -> {
-                                data.remove();
-                                data.synchronise();
-                            });*/
-
                             event.setCanceled(true);
                             event.setCancellationResult(InteractionResult.SUCCESS);
                             return;
@@ -174,7 +159,7 @@ public class NeoForgeEventHandler {
                 Containers.dropItemStack(level, pos.getX(), pos.above().getY(), pos.getZ(), oldSleepingBag);
                 player.getMainHandItem().shrink(1);
             }
-            level.playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER.value(), SoundSource.PLAYERS, 1.0F, (1.0F + (level.random.nextFloat() - level.random.nextFloat()) * 0.2F) * 0.7F);
+            level.playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER.value(), SoundSource.PLAYERS, 1.0F, (1.0F + (level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.2F) * 0.7F);
 
             event.setCancellationResult(InteractionResult.SUCCESS);
             event.setCanceled(true);
@@ -210,20 +195,20 @@ public class NeoForgeEventHandler {
 
         if(player.isShiftKeyDown() && player.getMainHandItem().getItem() == ModItems.BLANK_UPGRADE.get() && level.getBlockEntity(pos) instanceof BackpackBlockEntity blockEntity) {
             NonNullList<ItemStack> list = NonNullList.create();
-            for(int i = 0; i < blockEntity.getWrapper().getStorage().getSlots(); i++) {
-                ItemStack stackInSlot = blockEntity.getWrapper().getStorage().getStackInSlot(i);
+            for(int i = 0; i < StacksHandlerUtils.getSlots(blockEntity.getWrapper().getStorage()); i++) {
+                ItemStack stackInSlot = StacksHandlerUtils.getStackInSlot(blockEntity.getWrapper().getStorage(), i);
                 if(!stackInSlot.isEmpty()) {
                     list.add(stackInSlot);
                 }
             }
-            for(int i = 0; i < blockEntity.getWrapper().getTools().getSlots(); i++) {
-                ItemStack stackInSlot = blockEntity.getWrapper().getTools().getStackInSlot(i);
+            for(int i = 0; i < StacksHandlerUtils.getSlots(blockEntity.getWrapper().getTools()); i++) {
+                ItemStack stackInSlot = StacksHandlerUtils.getStackInSlot(blockEntity.getWrapper().getTools(), i);
                 if(!stackInSlot.isEmpty()) {
                     list.add(stackInSlot);
                 }
             }
-            for(int i = 0; i < blockEntity.getWrapper().getUpgrades().getSlots(); i++) {
-                ItemStack stackInSlot = blockEntity.getWrapper().getUpgrades().getStackInSlot(i);
+            for(int i = 0; i < StacksHandlerUtils.getSlots(blockEntity.getWrapper().getUpgrades()); i++) {
+                ItemStack stackInSlot = StacksHandlerUtils.getStackInSlot(blockEntity.getWrapper().getUpgrades(), i);
                 if(!stackInSlot.isEmpty()) {
                     list.add(stackInSlot);
                 }
@@ -279,7 +264,7 @@ public class NeoForgeEventHandler {
                 if(!level.isClientSide() && level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState())) {
                     player.setItemInHand(InteractionHand.MAIN_HAND, backpack);
                     backpackBlockEntity.removeSleepingBag(level, direction);
-                    level.playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER.value(), SoundSource.PLAYERS, 1.0F, (1.0F + (level.random.nextFloat() - level.random.nextFloat()) * 0.2F) * 0.7F);
+                    level.playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER.value(), SoundSource.PLAYERS, 1.0F, (1.0F + (level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.2F) * 0.7F);
 
                     event.setCanceled(true);
                     event.setCancellationResult(InteractionResult.SUCCESS);
@@ -290,7 +275,7 @@ public class NeoForgeEventHandler {
         //Grant achievement for washing backpack
         if(level.getBlockState(pos).getBlock() instanceof LayeredCauldronBlock) {
             ItemStack stack = player.getItemInHand(hand);
-            if(stack.getItem() == ModItems.STANDARD_TRAVELERS_BACKPACK.get() && stack.is(ItemTags.DYEABLE) && stack.has(DataComponents.DYED_COLOR)) {
+            if(stack.getItem() == ModItems.STANDARD_TRAVELERS_BACKPACK.get() && stack.has(DataComponents.DYED_COLOR)) {
                 if(player instanceof ServerPlayer serverPlayer) {
                     ModAdvancements.ACTION_TRIGGER.get().trigger(serverPlayer, ActionTypeTrigger.UNDYE_BACKPACK);
                 }
@@ -310,14 +295,6 @@ public class NeoForgeEventHandler {
             list.add(UPGRADES.get(i).get().getDefaultInstance());
         }
         return list;
-    }
-
-    public static void initializeDefaultSize(ItemStack stack) {
-        Tiers.Tier tier = Tiers.LEATHER;
-        stack.set(ModDataComponents.TIER, tier.getOrdinal());
-        stack.set(ModDataComponents.STORAGE_SLOTS, tier.getStorageSlots());
-        stack.set(ModDataComponents.UPGRADE_SLOTS, tier.getUpgradeSlots());
-        stack.set(ModDataComponents.TOOL_SLOTS, tier.getToolSlots());
     }
 
     @SubscribeEvent
@@ -362,6 +339,7 @@ public class NeoForgeEventHandler {
         if(event.getEntity() instanceof Player player) {
             if(BackpackAbilities.ABILITIES.checkBackpack(player, ModItems.CREEPER_TRAVELERS_BACKPACK.get())) {
                 if(BackpackAbilities.creeperAbility(event)) {
+
                 }
             }
         }
@@ -418,17 +396,17 @@ public class NeoForgeEventHandler {
     }
 
     @SubscribeEvent
-    public static void playerChangeDimension(final PlayerEvent.PlayerChangedDimensionEvent event) {
+    public static void playerChangeDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
         AttachmentUtils.synchronise(event.getEntity());
     }
 
     @SubscribeEvent
-    public static void playerJoin(final PlayerEvent.PlayerLoggedInEvent event) {
+    public static void playerJoin(PlayerEvent.PlayerLoggedInEvent event) {
         AttachmentUtils.synchronise(event.getEntity());
     }
 
     @SubscribeEvent
-    public static void playerJoin(final PlayerEvent.PlayerRespawnEvent event) {
+    public static void playerJoin(PlayerEvent.PlayerRespawnEvent event) {
         AttachmentUtils.synchronise(event.getEntity());
     }
 
@@ -477,7 +455,7 @@ public class NeoForgeEventHandler {
     }
 
     @SubscribeEvent
-    public static void playerTracking(final PlayerEvent.StartTracking event) {
+    public static void playerTracking(PlayerEvent.StartTracking event) {
         if(event.getTarget() instanceof ServerPlayer target && !target.level().isClientSide()) {
             AttachmentUtils.getAttachment(target).ifPresent(data ->
                     PacketDistributor.sendToPlayer((ServerPlayer)event.getEntity(), new ClientboundSyncAttachmentPacket(target.getId(), data.getBackpack())));
@@ -487,7 +465,7 @@ public class NeoForgeEventHandler {
     private static boolean checkAbilitiesForRemoval = true;
 
     @SubscribeEvent
-    public static void playerTick(final PlayerTickEvent.Post event) {
+    public static void playerTick(PlayerTickEvent.Post event) {
         if(AttachmentUtils.isWearingBackpack(event.getEntity())) {
             BackpackWrapper.tick(AttachmentUtils.getWearingBackpack(event.getEntity()), event.getEntity(), false);
         }
@@ -562,14 +540,6 @@ public class NeoForgeEventHandler {
         ConfigCommand.register(event.getDispatcher());
     }
 
-    @SubscribeEvent
-    public static void addVillagerTrade(final VillagerTradesEvent event) {
-        if(TravelersBackpackConfig.COMMON.enableVillagerTrade.get() && event.getType() == VillagerProfession.LIBRARIAN) {
-            event.getTrades().get(3).add((trader, entity, random) -> new MerchantOffer(new ItemCost(Items.EMERALD, random.nextInt(64) + 48),
-                    new ItemStack(ModItems.VILLAGER_TRAVELERS_BACKPACK.get().asItem(), 1), 1, 50, 0.5F));
-        }
-    }
-
     /**
      * UPGRADES
      */
@@ -589,21 +559,8 @@ public class NeoForgeEventHandler {
             wrapper.getUpgradeManager().getUpgrade(AutoPickupUpgrade.class).ifPresent(pickupUpgrade -> {
                 if(pickupUpgrade.canPickup(itemEntity.getItem()) && pickupUpgrade.tryPickup(itemEntity, level, player.blockPosition())) {
                     event.setCanPickup(TriState.FALSE);
-                }});
-
-        /*if(AttachmentUtils.isWearingBackpack(player)) {
-            BackpackWrapper wrapper = AttachmentUtils.getBackpackWrapper(player);
-            if(wrapper.getUpgradeManager().getUpgrade(AutoPickupUpgrade.class).isPresent() && wrapper.getUpgradeManager().getUpgrade(AutoPickupUpgrade.class).get().canPickup(itemEntity.getItem())) {
-                ItemStack stackCopy = itemEntity.getItem().copy();
-                //ItemStack remainingStack = ItemUtil.insertItemReturnRemaining(new StorageAccessWrapper(wrapper, wrapper.getStorage()), itemEntity.getItem(), false, null);
-                int inserted = ResourceHandlerUtil.insertStacking(wrapper.getStorageForInputOutput(), ItemResource.of(stackCopy), stackCopy.getCount(), null);
-                if(inserted > 0) {
-                    stackCopy.shrink(inserted);
-                    level.playSound(null, player.blockPosition(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 0.2F, (level.random.nextFloat() - level.random.nextFloat()) * 1.4F + 2.0F);
-                    itemEntity.setItem(stackCopy);
-                    event.setCanPickup(TriState.FALSE);
                 }
-            } */
+            });
         }
     }
 }

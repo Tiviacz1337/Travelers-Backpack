@@ -2,6 +2,7 @@ package com.tiviacz.travelersbackpack.inventory.menu;
 
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.BackpackSlotItemHandler;
+import com.tiviacz.travelersbackpack.util.StacksHandlerUtils;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -38,7 +39,7 @@ public abstract class AbstractBackpackMenu extends AbstractContainerMenu {
 
         for(int i = 0; i < wrapper.getRows(); i++) {
             for(int j = 0; j < wrapper.getSlotsInRow(); j++) {
-                if(slot >= wrapper.getStorage().getSlots()) break;
+                if(slot >= StacksHandlerUtils.getSlots(wrapper.getStorage())) break;
                 this.addSlot(new BackpackSlotItemHandler(wrapper.getStorage(), slot, this.extendedScreenOffset + 8 + j * 18, 18 + i * 18));
                 slot++;
             }

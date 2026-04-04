@@ -41,6 +41,7 @@ import net.neoforged.neoforge.model.data.ModelData;
 import net.neoforged.neoforge.model.data.ModelProperty;
 
 import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -85,7 +86,7 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider {
         requestModelDataUpdate();
     }
 
-    public void setBackpack(ItemStack backpack, HolderLookup.Provider registryAccess) {
+    public void setBackpack(ItemStack backpack) {
         if(backpack.getItem() instanceof TravelersBackpackItem) {
             if(this.wrapper == BackpackWrapper.DUMMY) {
                 this.wrapper = new BackpackWrapper(backpack.copy(), Reference.BLOCK_ENTITY_SCREEN_ID, null, getLevel());
@@ -111,8 +112,7 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider {
     }
 
     private void setBackpackFromNbt(ValueInput valueInput) {
-        setBackpack(valueInput.read(BACKPACK, ItemStack.OPTIONAL_CODEC).orElse(new ItemStack(Items.AIR, 0)), valueInput.lookup());
-        //setBackpack(ItemStack.parse(pRegistries, nbt.getCompoundOrEmpty(BACKPACK)).orElseGet(() -> new ItemStack(Items.AIR, 0)), pRegistries);
+        setBackpack(valueInput.read(BACKPACK, ItemStack.OPTIONAL_CODEC).orElse(new ItemStack(Items.AIR, 0)));
     }
 
     @Override
@@ -332,12 +332,6 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider {
     }
 
     //Forge
-
-  /*  @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt, HolderLookup.Provider pRegistries) {
-        super.onDataPacket(net, pkt, pRegistries);
-        this.handleUpdateTag(pkt.getTag(), pRegistries);
-    }*/
 
     public void openBackpack(Player player, MenuProvider containerSupplier, BlockPos pos) {
         if(!player.level().isClientSide()) {

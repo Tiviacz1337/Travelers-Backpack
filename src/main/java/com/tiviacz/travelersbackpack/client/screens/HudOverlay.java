@@ -6,17 +6,18 @@ import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.items.HoseItem;
 import com.tiviacz.travelersbackpack.util.RenderHelper;
+import com.tiviacz.travelersbackpack.util.StacksHandlerUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
+import net.neoforged.neoforge.transfer.fluid.FluidStacksResourceHandler;
 
 public class HudOverlay {
     public static final Identifier OVERLAY = Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "textures/gui/overlay.png");
 
-    public static void renderOverlay(ItemStack stack, Minecraft mc, GuiGraphics guiGraphics) {
+    public static void renderOverlay(ItemStack stack, Minecraft mc, GuiGraphicsExtractor guiGraphics) {
         if(mc == null) return;
 
         var player = mc.player;
@@ -30,14 +31,14 @@ public class HudOverlay {
         if(info.isEmpty()) return;
 
         if(!info.getRightFluidStack().isEmpty()) {
-            FluidTank right = new FluidTank(info.getCapacity());
-            right.setFluid(info.getRightFluidStack());
+            FluidStacksResourceHandler right = new FluidStacksResourceHandler(1, info.getCapacity());
+            StacksHandlerUtils.setFluid(right, info.getRightFluidStack());
             drawGuiTank(guiGraphics, right, x + 1, y, 21, 8);
         }
 
         if(!info.getLeftFluidStack().isEmpty()) {
-            FluidTank left = new FluidTank(info.getCapacity());
-            left.setFluid(info.getLeftFluidStack());
+            FluidStacksResourceHandler left = new FluidStacksResourceHandler(1, info.getCapacity());
+            StacksHandlerUtils.setFluid(left, info.getLeftFluidStack());
             drawGuiTank(guiGraphics, left, x - 11, y, 21, 8);
         }
 
@@ -50,7 +51,7 @@ public class HudOverlay {
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, OVERLAY, x - 12, y, (tankSel == 1) ? 0 : 10, 0, 10, 23, 256, 256);
     }
 
-    public static void drawGuiTank(GuiGraphics guiGraphics, FluidTank tank, int startX, int startY, int height, int width) {
+    public static void drawGuiTank(GuiGraphicsExtractor guiGraphics, FluidStacksResourceHandler tank, int startX, int startY, int height, int width) {
         RenderHelper.renderScreenTank(guiGraphics, tank, startX, startY, 0, height, width);
     }
 }

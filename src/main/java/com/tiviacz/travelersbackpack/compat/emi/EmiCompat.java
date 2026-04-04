@@ -22,6 +22,7 @@ import dev.emi.emi.api.widget.Bounds;
 import net.minecraft.world.inventory.Slot;
 
 import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,7 +55,7 @@ public class EmiCompat implements EmiPlugin {
 
         emiRegistry.addRecipeHandler(ModMenuTypes.BACKPACK_BLOCK_MENU.get(), new GridMenuInfo<>());
         emiRegistry.addRecipeHandler(ModMenuTypes.BACKPACK_MENU.get(), new GridMenuInfo<>());
-        emiRegistry.addDragDropHandler(BackpackScreen.class, new DragDropHandler());
+        //emiRegistry.addDragDropHandler(BackpackScreen.class, new DragDropHandler());
     }
 
     private static class GridMenuInfo<T extends BackpackBaseMenu> implements StandardRecipeHandler<T> {

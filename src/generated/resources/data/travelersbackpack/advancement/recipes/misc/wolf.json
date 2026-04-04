@@ -1,16 +1,6 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_bone": {
-      "conditions": {
-        "items": [
-          {
-            "items": "#c:bones"
-          }
-        ]
-      },
-      "trigger": "minecraft:inventory_changed"
-    },
     "has_the_recipe": {
       "conditions": {
         "recipe": "travelersbackpack:wolf"
@@ -20,8 +10,7 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
-      "has_bone"
+      "has_the_recipe"
     ]
   ],
   "rewards": {

@@ -18,9 +18,10 @@ import com.tiviacz.travelersbackpack.items.upgrades.TanksUpgradeItem;
 import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
 import com.tiviacz.travelersbackpack.util.KeyHelper;
 import com.tiviacz.travelersbackpack.util.Reference;
+import com.tiviacz.travelersbackpack.util.StacksHandlerUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -94,7 +95,7 @@ public class BackpackScreen extends AbstractBackpackScreen<BackpackBaseMenu> imp
         this.clearWidgets();
         upgradeSlots.clear();
 
-        this.slotCount = getWrapper().getStorage().getSlots();
+        this.slotCount = StacksHandlerUtils.getSlots(getWrapper().getStorage());
         this.visibleSlots = this.slotCount;
         this.slotsHeight = calculateSlotHeight(slotCount > 81);
         this.tanksVisible = getWrapper().tanksVisible();
@@ -154,7 +155,7 @@ public class BackpackScreen extends AbstractBackpackScreen<BackpackBaseMenu> imp
     }
 
     @Override
-    public void renderScreen(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY, float partialTicks) {
+    public void renderScreen(GuiGraphicsExtractor guiGraphics, int x, int y, int mouseX, int mouseY, float partialTicks) {
         //Render widgets below inventory
         renderUpgradeSlots(guiGraphics, x, y);
 
@@ -191,16 +192,23 @@ public class BackpackScreen extends AbstractBackpackScreen<BackpackBaseMenu> imp
 
         renderSlots(guiGraphics, x + slotsXOffset, y + TOP_BAR_OFFSET, this.slotCount);
         renderLockedBackpackSlot(guiGraphics);
+
+        //Render Buttons
+        this.buttons.forEach(button -> {
+            if(getWrapper().showMoreButtons() || button instanceof MoreButton || button instanceof EquipButton) {
+                button.render(guiGraphics, mouseX, mouseY, partialTicks);
+            }
+        });
     }
 
-    public void renderUpgradeSlots(GuiGraphics guiGraphics, int x, int y) {
+    public void renderUpgradeSlots(GuiGraphicsExtractor guiGraphics, int x, int y) {
         for(UpgradeSlot slot : upgradeSlots) {
             slot.render(guiGraphics, x, y);
         }
     }
 
     public void initializeUpgradeSlots() {
-        for(int i = 0; i < getWrapper().getUpgrades().getSlots(); i++) {
+        for(int i = 0; i < StacksHandlerUtils.getSlots(getWrapper().getUpgrades()); i++) {
             int x = menu.upgradeSlot.get(i).x - 4;
             int y = menu.upgradeSlot.get(i).y - 4;
             upgradeSlots.add(new UpgradeSlot(getWrapper(), new Point(getGuiLeft() + x, getGuiTop() + y), i, x, y, menu.upgradeSlot.get(i).isHidden));
@@ -290,23 +298,19 @@ public class BackpackScreen extends AbstractBackpackScreen<BackpackBaseMenu> imp
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        super.render(guiGraphics, mouseX, mouseY, partialTicks);
-
-        this.buttons.forEach(button -> {
-            if(getWrapper().showMoreButtons() || button instanceof MoreButton || button instanceof EquipButton) {
-                button.render(guiGraphics, mouseX, mouseY, partialTicks);
-            }
-        });
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        this.extractContents(guiGraphics, mouseX, mouseY, partialTicks);
+        this.extractCarriedItem(guiGraphics, mouseX, mouseY);
+        this.extractSnapbackItem(guiGraphics);
 
         this.children().stream().filter(w -> w instanceof WidgetBase).forEach(w -> ((WidgetBase)w).renderUnderTooltip(guiGraphics, mouseX, mouseY, partialTicks));
-        this.renderTooltip(guiGraphics, mouseX, mouseY);
+        this.extractTooltip(guiGraphics, mouseX, mouseY);
         this.children().stream().filter(w -> w instanceof WidgetBase).forEach(w -> ((WidgetBase)w).renderOnTop(guiGraphics, mouseX, mouseY, partialTicks));
     }
 
     @Override
-    protected void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        super.renderTooltip(guiGraphics, mouseX, mouseY);
+    protected void extractTooltip(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+        super.extractTooltip(guiGraphics, mouseX, mouseY);
         this.buttons.forEach(button -> {
             if(getWrapper().showMoreButtons() || button instanceof MoreButton || button instanceof EquipButton) {
                 button.renderTooltip(guiGraphics, mouseX, mouseY);
@@ -318,19 +322,19 @@ public class BackpackScreen extends AbstractBackpackScreen<BackpackBaseMenu> imp
     }
 
     @Override
-    public void drawUnsortableSlots(GuiGraphics guiGraphics) {
+    public void drawUnsortableSlots(GuiGraphicsExtractor guiGraphics) {
         if(!getWrapper().getUnsortableSlots().isEmpty()) {
             getWrapper().getUnsortableSlots().forEach(i -> guiGraphics.blit(RenderPipelines.GUI_TEXTURED, ICONS, this.getGuiLeft() + getMenu().getSlot(i).x, this.getGuiTop() + getMenu().getSlot(i).y, 25, 55, 16, 16, 256, 256));
         }
     }
 
     @Override
-    public void drawMemorySlots(GuiGraphics guiGraphics) {
+    public void drawMemorySlots(GuiGraphicsExtractor guiGraphics) {
         if(!getWrapper().getMemorySlots().isEmpty()) {
             getWrapper().getMemorySlots().forEach(pair -> {
                 if(getMenu().getSlot(pair.getFirst()).getItem().isEmpty()) {
                     ItemStack itemstack = pair.getSecond().getFirst();
-                    guiGraphics.renderFakeItem(itemstack, this.getGuiLeft() + getMenu().getSlot(pair.getFirst()).x, this.getGuiTop() + getMenu().getSlot(pair.getFirst()).y);
+                    guiGraphics.fakeItem(itemstack, this.getGuiLeft() + getMenu().getSlot(pair.getFirst()).x, this.getGuiTop() + getMenu().getSlot(pair.getFirst()).y);
                     guiGraphics.fill(this.getGuiLeft() + getMenu().getSlot(pair.getFirst()).x, this.getGuiTop() + getMenu().getSlot(pair.getFirst()).y, this.getGuiLeft() + getMenu().getSlot(pair.getFirst()).x + 16, this.getGuiTop() + getMenu().getSlot(pair.getFirst()).y + 16, 822083583);
                 }
             });
@@ -414,7 +418,7 @@ public class BackpackScreen extends AbstractBackpackScreen<BackpackBaseMenu> imp
 
     //Forge
 
-    public void renderFluidWarningTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    public void renderFluidWarningTooltip(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         if(warningTicks > 0) {
             if(!(menu.getCarried().getItem() instanceof TanksUpgradeItem)) {
                 warningTicks = 0;

@@ -28,7 +28,7 @@ public class ToughAsNailsWaterCanteenEffect extends EffectFluid {
                 float drink_poison_chance = 0.25F;
                 thirst.drink(drink_thirst, drink_hydration);
 
-                if(level.random.nextFloat() < drink_poison_chance) {
+                if(level.getRandom().nextFloat() < drink_poison_chance) {
                     player.addEffect(new MobEffectInstance(TANEffects.THIRST, 600));
                 }
             }

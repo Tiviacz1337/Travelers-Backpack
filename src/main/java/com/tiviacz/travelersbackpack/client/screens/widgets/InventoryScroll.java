@@ -2,7 +2,7 @@ package com.tiviacz.travelersbackpack.client.screens.widgets;
 
 import com.tiviacz.travelersbackpack.client.screens.AbstractBackpackScreen;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.neoforged.neoforge.client.gui.widget.ScrollPanel;
@@ -50,7 +50,7 @@ public class InventoryScroll extends ScrollPanel {
     }
 
     @Override
-    protected void drawPanel(GuiGraphics guiGraphics, int entryRight, int relativeY, int mouseX, int mouseY) {
+    protected void drawPanel(GuiGraphicsExtractor guiGraphics, int entryRight, int relativeY, int mouseX, int mouseY) {
     }
 
     @Override

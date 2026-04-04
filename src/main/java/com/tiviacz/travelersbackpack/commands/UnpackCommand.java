@@ -5,8 +5,8 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
 import com.tiviacz.travelersbackpack.capability.AttachmentUtils;
-import com.tiviacz.travelersbackpack.inventory.transfer.BackpackResourceHandler;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
+import com.tiviacz.travelersbackpack.util.StacksHandlerUtils;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
@@ -18,6 +18,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.permissions.Permissions;
 import net.minecraft.world.Containers;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -90,13 +91,13 @@ public class UnpackCommand {
         return stacks;
     }
 
-    public NonNullList<ItemStack> collectItems(BackpackResourceHandler handler) {
+    public NonNullList<ItemStack> collectItems(ItemStacksResourceHandler handler) {
         NonNullList<ItemStack> stacks = NonNullList.create();
-        for(int i = 0; i < handler.getSlots(); i++) {
-            ItemStack stackInSlot = handler.getStackInSlot(i);
+        for(int i = 0; i < StacksHandlerUtils.getSlots(handler); i++) {
+            ItemStack stackInSlot = StacksHandlerUtils.getStackInSlot(handler, i);
             if(!stackInSlot.isEmpty()) {
                 stacks.add(stackInSlot);
-                handler.setStackInSlot(i, ItemStack.EMPTY);
+                StacksHandlerUtils.setStackInSlot(handler, i, ItemStack.EMPTY);
             }
         }
         return stacks;

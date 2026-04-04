@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:crafting_dye",
+  "category": "misc",
+  "dye": "#minecraft:dyes",
+  "group": "dyed_backpack",
+  "result": {
+    "id": "travelersbackpack:standard"
+  },
+  "target": "travelersbackpack:standard"
+}

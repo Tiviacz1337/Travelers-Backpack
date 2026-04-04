@@ -1,8 +1,8 @@
 package com.tiviacz.travelersbackpack.inventory.upgrades.crafting;
 
-import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
 import com.tiviacz.travelersbackpack.util.InventoryHelper;
+import com.tiviacz.travelersbackpack.util.StacksHandlerUtils;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.StackedItemContents;
@@ -23,12 +23,12 @@ public class CraftingContainerImproved implements CraftingContainer {
 
     @Override
     public int getContainerSize() {
-        return this.craftingUpgrade.crafting.getSlots();
+        return StacksHandlerUtils.getSlots(this.craftingUpgrade.crafting);
     }
 
     public NonNullList<ItemStack> getStackList() {
         NonNullList<ItemStack> stacks = NonNullList.create();
-        for(int i = 0; i < craftingUpgrade.crafting.getSlots(); i++) {
+        for(int i = 0; i < StacksHandlerUtils.getSlots(craftingUpgrade.crafting); i++) {
             stacks.add(i, getItem(i));
         }
         return stacks;
@@ -37,7 +37,7 @@ public class CraftingContainerImproved implements CraftingContainer {
     @Override
     public boolean isEmpty() {
         for(int i = 0; i < getContainerSize(); i++) {
-            if(!craftingUpgrade.crafting.getStackInSlot(i).isEmpty()) {
+            if(!StacksHandlerUtils.getStackInSlot(craftingUpgrade.crafting, i).isEmpty()) {
                 return false;
             }
         }
@@ -46,7 +46,7 @@ public class CraftingContainerImproved implements CraftingContainer {
 
     @Override
     public ItemStack getItem(int slot) {
-        return slot >= this.getContainerSize() ? ItemStack.EMPTY : this.craftingUpgrade.crafting.getStackInSlot(slot);
+        return slot >= this.getContainerSize() ? ItemStack.EMPTY : StacksHandlerUtils.getStackInSlot(craftingUpgrade.crafting, slot);
     }
 
     @Override
@@ -64,7 +64,7 @@ public class CraftingContainerImproved implements CraftingContainer {
 
     @Override
     public ItemStack removeItem(int slot, int amount) {
-        ItemStack stack = this.craftingUpgrade.crafting.extractItem(slot, amount, false);
+        ItemStack stack = StacksHandlerUtils.extractItem(craftingUpgrade.crafting, slot, amount, false);
         if(!stack.isEmpty()) {
             if(checkChanges) {
                 this.menu.slotsChanged(this);
@@ -75,7 +75,7 @@ public class CraftingContainerImproved implements CraftingContainer {
 
     @Override
     public void setItem(int slot, ItemStack stack) {
-        this.craftingUpgrade.crafting.setStackInSlot(slot, stack);
+        StacksHandlerUtils.setStackInSlot(craftingUpgrade.crafting, slot, stack);
         if(checkChanges) {
             this.menu.slotsChanged(this);
         }
@@ -87,7 +87,7 @@ public class CraftingContainerImproved implements CraftingContainer {
     }
 
     @Override
-    public boolean stillValid(Player p_39340_) {
+    public boolean stillValid(Player player) {
         return true;
     }
 

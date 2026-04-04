@@ -1,13 +1,15 @@
 package com.tiviacz.travelersbackpack.items.upgrades;
 
-import com.tiviacz.travelersbackpack.components.BackpackContainerContents;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.UpgradeManager;
 import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
 import com.tiviacz.travelersbackpack.inventory.upgrades.smelting.SmokerUpgrade;
+import com.tiviacz.travelersbackpack.util.ContainerContentsHelper;
+import net.minecraft.core.NonNullList;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.ItemContainerContents;
 import org.apache.commons.lang3.function.TriFunction;
 
 import java.util.Optional;
@@ -22,7 +24,7 @@ public class SmokerUpgradeItem extends UpgradeItem {
         if(TravelersBackpackConfig.serverSpec.isLoaded()) {
             return TravelersBackpackConfig.SERVER.backpackUpgrades.enableSmokerUpgrade.get() && super.isEnabled(enabledFeatures);
         }
-        return super.isEnabled(enabledFeatures);//return TravelersBackpackConfig.SERVER.backpackUpgrades.enableCraftingUpgrade.get() && super.isEnabled(enabledFeatures);
+        return super.isEnabled(enabledFeatures);
     }
 
     @Override
@@ -38,8 +40,9 @@ public class SmokerUpgradeItem extends UpgradeItem {
     @Override
     public TriFunction<UpgradeManager, Integer, ItemStack, Optional<? extends UpgradeBase<?>>> getUpgrade() {
         return (upgradeManager, dataHolderSlot, provider) -> {
-            BackpackContainerContents contents = provider.getOrDefault(ModDataComponents.BACKPACK_CONTAINER.get(), new BackpackContainerContents(3));
-            return Optional.of(new SmokerUpgrade(upgradeManager, dataHolderSlot, contents.getItems()));
+            ItemContainerContents contents = provider.getOrDefault(ModDataComponents.BACKPACK_CONTAINER.get(), ItemContainerContents.EMPTY);
+            NonNullList<ItemStack> items = ContainerContentsHelper.getItems(contents, 3);
+            return Optional.of(new SmokerUpgrade(upgradeManager, dataHolderSlot, items));
         };
     }
 }

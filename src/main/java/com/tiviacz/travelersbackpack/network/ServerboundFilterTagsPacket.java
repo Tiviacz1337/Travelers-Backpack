@@ -5,6 +5,7 @@ import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
 import com.tiviacz.travelersbackpack.inventory.upgrades.FilterUpgradeBase;
+import com.tiviacz.travelersbackpack.util.StacksHandlerUtils;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -26,17 +27,17 @@ public record ServerboundFilterTagsPacket(int slot, List<String> tags) implement
             ServerboundFilterTagsPacket::new
     );
 
-    public static void handle(final ServerboundFilterTagsPacket message, IPayloadContext ctx) {
+    public static void handle(ServerboundFilterTagsPacket message, IPayloadContext ctx) {
         ctx.enqueueWork(() -> {
             Player player = ctx.player();
 
             if(player instanceof ServerPlayer serverPlayer && serverPlayer.containerMenu instanceof BackpackBaseMenu menu) {
                 BackpackWrapper wrapper = menu.getWrapper();
-                if(!wrapper.getUpgrades().getStackInSlot(message.slot).isEmpty()) {
+                if(!StacksHandlerUtils.getStackInSlot(wrapper.getUpgrades(), message.slot).isEmpty()) {
 
-                    ItemStack upgradeStack = wrapper.getUpgrades().getStackInSlot(message.slot).copy();
+                    ItemStack upgradeStack = StacksHandlerUtils.getStackInSlot(wrapper.getUpgrades(), message.slot).copy();
                     upgradeStack.set(ModDataComponents.FILTER_TAGS, message.tags);
-                    wrapper.getUpgrades().setStackInSlot(message.slot, upgradeStack);
+                    StacksHandlerUtils.setStackInSlot(wrapper.getUpgrades(), message.slot, upgradeStack);
 
                     if(wrapper.getUpgradeManager().mappedUpgrades.get(message.slot).isPresent()) {
                         if(wrapper.getUpgradeManager().mappedUpgrades.get(message.slot).get() instanceof FilterUpgradeBase<?, ?> filterUpgrade) {

@@ -3,6 +3,7 @@ package com.tiviacz.travelersbackpack.inventory.upgrades;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.UpgradeManager;
 import com.tiviacz.travelersbackpack.inventory.upgrades.filter.IFilterSlots;
+import com.tiviacz.travelersbackpack.util.StacksHandlerUtils;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.world.item.ItemStack;
 
@@ -29,11 +30,11 @@ public abstract class UpgradeBase<T> implements IUpgrade<T> {
 
     @Override
     public boolean isTabOpened() {
-        return this.upgradeManager.getUpgradesHandler().getStackInSlot(this.dataHolderSlot).getOrDefault(ModDataComponents.TAB_OPEN, false);
+        return StacksHandlerUtils.getStackInSlot(this.upgradeManager.getUpgradesHandler(), this.dataHolderSlot).getOrDefault(ModDataComponents.TAB_OPEN, false);
     }
 
     public ItemStack getDataHolderStack() {
-        return this.upgradeManager.getUpgradesHandler().getStackInSlot(this.dataHolderSlot);
+        return StacksHandlerUtils.getStackInSlot(this.upgradeManager.getUpgradesHandler(), this.dataHolderSlot);
     }
 
     @Override
@@ -58,7 +59,7 @@ public abstract class UpgradeBase<T> implements IUpgrade<T> {
         if(dataHolderStack.isEmpty()) return;
 
         updater.accept(dataHolderStack);
-        getUpgradeManager().getUpgradesHandler().setStackInSlot(getDataHolderSlot(), dataHolderStack);
+        StacksHandlerUtils.setStackInSlot(getUpgradeManager().getUpgradesHandler(), getDataHolderSlot(), dataHolderStack);
     }
 
     public <D> void updateDataHolderUnchecked(DataComponentType<D> dataKey, D value) {
@@ -68,13 +69,13 @@ public abstract class UpgradeBase<T> implements IUpgrade<T> {
         if(dataHolderStack.isEmpty()) return;
 
         dataHolderStack.set(dataKey, value);
-        getUpgradeManager().getUpgradesHandler().setStackInSlot(getDataHolderSlot(), dataHolderStack);
+        StacksHandlerUtils.setStackInSlot(getUpgradeManager().getUpgradesHandler(), getDataHolderSlot(), dataHolderStack);
     }
 
     public void setCooldown(int cooldown) {
         ItemStack dataHolderStack = getDataHolderStack().copy();
         dataHolderStack.set(ModDataComponents.COOLDOWN, cooldown);
-        getUpgradeManager().getUpgradesHandler().setStackInSlot(getDataHolderSlot(), dataHolderStack);
+        StacksHandlerUtils.setStackInSlot(getUpgradeManager().getUpgradesHandler(), getDataHolderSlot(), dataHolderStack);
     }
 
     public int getCooldown() {

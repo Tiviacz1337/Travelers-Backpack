@@ -49,14 +49,14 @@ public class BackpackTooltipComponent implements TooltipComponent {
 
     public List<ItemStack> loadStorage(ItemStack stack) {
         if(stack.has(ModDataComponents.BACKPACK_CONTAINER.get())) {
-            return new ArrayList<>(stack.get(ModDataComponents.BACKPACK_CONTAINER.get()).getItems().stream().filter(itemStack -> !itemStack.isEmpty()).toList());
+            return new ArrayList<>(stack.get(ModDataComponents.BACKPACK_CONTAINER.get()).nonEmptyItemCopyStream().toList());
         }
         return new ArrayList<>();
     }
 
     public List<ItemStack> loadUpgrades(ItemStack stack) {
         if(stack.has(ModDataComponents.UPGRADES.get())) {
-            return new ArrayList<>(stack.get(ModDataComponents.UPGRADES.get()).getItems().stream().filter(itemStack -> !itemStack.isEmpty()).toList());
+            return new ArrayList<>(stack.get(ModDataComponents.UPGRADES.get()).nonEmptyItemCopyStream().toList());
         }
         return new ArrayList<>();
     }
@@ -106,7 +106,7 @@ public class BackpackTooltipComponent implements TooltipComponent {
 
     public List<ItemStack> loadTools(ItemStack stack) {
         if(stack.has(ModDataComponents.TOOLS_CONTAINER.get())) {
-            return new ArrayList<>(stack.get(ModDataComponents.TOOLS_CONTAINER.get()).getItems().stream().filter(itemStack -> !itemStack.isEmpty()).toList());
+            return new ArrayList<>(stack.get(ModDataComponents.TOOLS_CONTAINER.get()).nonEmptyItemCopyStream().toList());
         }
         return new ArrayList<>();
     }

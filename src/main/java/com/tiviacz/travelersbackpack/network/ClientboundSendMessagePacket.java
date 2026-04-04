@@ -22,13 +22,12 @@ public record ClientboundSendMessagePacket(boolean drop, BlockPos pos) implement
             ClientboundSendMessagePacket::new
     );
 
-    public static void handle(final ClientboundSendMessagePacket message, IPayloadContext ctx) {
+    public static void handle(ClientboundSendMessagePacket message, IPayloadContext ctx) {
         if(ctx.flow().isClientbound()) {
             ctx.enqueueWork(() -> {
                 if(TravelersBackpackConfig.CLIENT.sendBackpackCoordinatesMessage.get()) {
                     if(Minecraft.getInstance().player != null) {
-                        Minecraft.getInstance().gui.getChat().addMessage(Component.translatable(message.drop ? "information.travelersbackpack.backpack_drop" : "information.travelersbackpack.backpack_coords", message.pos().getX(), message.pos().getY(), message.pos().getZ()));
-                        //Minecraft.getInstance().player.sendSystemMessage(Component.translatable(message.drop ? "information.travelersbackpack.backpack_drop" : "information.travelersbackpack.backpack_coords", message.pos().getX(), message.pos().getY(), message.pos().getZ()));
+                        Minecraft.getInstance().gui.getChat().addClientSystemMessage(Component.translatable(message.drop ? "information.travelersbackpack.backpack_drop" : "information.travelersbackpack.backpack_coords", message.pos().getX(), message.pos().getY(), message.pos().getZ()));
                     }
                 }
             });

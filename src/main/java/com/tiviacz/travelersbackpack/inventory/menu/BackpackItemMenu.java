@@ -10,7 +10,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
@@ -47,8 +47,8 @@ public class BackpackItemMenu extends BackpackBaseMenu {
     }
 
     @Override
-    public void clicked(int slotId, int dragType, ClickType clickType, Player player) {
-        if(getWrapper().getScreenID() == Reference.ITEM_SCREEN_ID && clickType == ClickType.SWAP) {
+    public void clicked(int slotId, int dragType, ContainerInput containerInput, Player player) {
+        if(getWrapper().getScreenID() == Reference.ITEM_SCREEN_ID && containerInput == ContainerInput.SWAP) {
             ItemStack stack = player.getInventory().getItem(dragType);
             ItemStack currentItem = player.getInventory().getSelectedItem();
 
@@ -56,7 +56,7 @@ public class BackpackItemMenu extends BackpackBaseMenu {
                 return;
             }
         }
-        super.clicked(slotId, dragType, clickType, player);
+        super.clicked(slotId, dragType, containerInput, player);
     }
 
     @Override

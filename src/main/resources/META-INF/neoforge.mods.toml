@@ -15,7 +15,7 @@ description = '''${mod_description}'''
 file = "META-INF/accesstransformer.cfg"
 
 [[mixins]]
-config="META-INF/travelersbackpack.mixins.json"
+config = "META-INF/travelersbackpack.mixins.json"
 
 [[dependencies.${ mod_id }]] #optional
 modId = "neoforge" #mandatory

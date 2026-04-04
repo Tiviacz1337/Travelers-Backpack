@@ -8,8 +8,9 @@ import com.tiviacz.travelersbackpack.inventory.upgrades.voiding.VoidUpgrade;
 import com.tiviacz.travelersbackpack.inventory.upgrades.voiding.VoidWidget;
 import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
 import com.tiviacz.travelersbackpack.util.RenderHelper;
+import com.tiviacz.travelersbackpack.util.StacksHandlerUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.language.I18n;
@@ -19,12 +20,14 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.PotionItem;
 import net.minecraft.world.item.alchemy.PotionContents;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.FluidUtil;
-import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.fluid.FluidStacksResourceHandler;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class TankWidget extends UpgradeWidgetBase<TanksUpgrade> {
     public final WidgetElement leftTankElement;
@@ -44,7 +47,7 @@ public class TankWidget extends UpgradeWidgetBase<TanksUpgrade> {
     }
 
     @Override
-    public void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    public void renderTooltip(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         super.renderTooltip(guiGraphics, mouseX, mouseY);
 
         if(inTank(this.leftTankElement, mouseX, mouseY)) {
@@ -57,7 +60,7 @@ public class TankWidget extends UpgradeWidgetBase<TanksUpgrade> {
     }
 
     @Override
-    public void renderAboveBg(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY, float partialTicks) {
+    public void renderAboveBg(GuiGraphicsExtractor guiGraphics, int x, int y, int mouseX, int mouseY, float partialTicks) {
         int rows = upgrade.getUpgradeManager().getWrapper().getRows();
         RenderHelper.renderScreenTank(guiGraphics, this.upgrade.leftTank, this.leftTankPos.x() + 1, this.leftTankPos.y() + 1, 0, getTankHeight(rows), 16);
         renderTank(guiGraphics, this.leftTankElement, 0, mouseX, mouseY, rows, this.leftTankPos.x(), this.leftTankPos.y());
@@ -97,10 +100,10 @@ public class TankWidget extends UpgradeWidgetBase<TanksUpgrade> {
     }
 
     public boolean isValid(ItemStack stack) {
-        return FluidUtil.getFluidHandler(stack).isPresent() || stack.getItem() instanceof PotionItem || stack.getItem() == Items.GLASS_BOTTLE;
+        return Optional.ofNullable(ItemAccess.forStack(stack).getCapability(Capabilities.Fluid.ITEM)).isPresent() || stack.getItem() instanceof PotionItem || stack.getItem() == Items.GLASS_BOTTLE;
     }
 
-    public void renderTank(GuiGraphics guiGraphics, WidgetElement tankElement, int tankIndex, int mouseX, int mouseY, int rows, int x, int y) {
+    public void renderTank(GuiGraphicsExtractor guiGraphics, WidgetElement tankElement, int tankIndex, int mouseX, int mouseY, int rows, int x, int y) {
         //Render red highlight if hovering with trash bin
         if(screen.mappedWidgets.get(VoidUpgrade.class) instanceof VoidWidget voidWidget) {
             voidWidget.drawRedTankHighlight(guiGraphics, x + 1, y + 1, inTank(tankElement, mouseX, mouseY), getTankHeight(rows), tankIndex);
@@ -118,11 +121,11 @@ public class TankWidget extends UpgradeWidgetBase<TanksUpgrade> {
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BackpackScreen.ICONS, x, y + (18 * ((screen.isScrollable ? screen.visibleRows : rows) - 1)), 0, 131, 18, 18, 256, 256);
     }
 
-    public static List<Component> getTankTooltip(FluidTank tank) {
-        FluidStack fluidStack = tank.getFluid();
+    public static List<Component> getTankTooltip(FluidStacksResourceHandler tank) {
+        FluidStack fluidStack = StacksHandlerUtils.getFluid(tank);
         List<Component> tankTips = new ArrayList<>();
         String fluidName = !fluidStack.isEmpty() ? fluidStack.getHoverName().getString() : I18n.get("screen.travelersbackpack.none");
-        String fluidAmount = !fluidStack.isEmpty() ? fluidStack.getAmount() + "/" + tank.getCapacity() : I18n.get("screen.travelersbackpack.empty");
+        String fluidAmount = !fluidStack.isEmpty() ? fluidStack.getAmount() + "/" + StacksHandlerUtils.getCapacity(tank) : I18n.get("screen.travelersbackpack.empty");
 
         if(!fluidStack.isEmpty()) {
             if(fluidStack.has(DataComponents.POTION_CONTENTS)) {

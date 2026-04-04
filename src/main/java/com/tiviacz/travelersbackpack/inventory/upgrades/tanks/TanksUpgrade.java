@@ -1,28 +1,32 @@
 package com.tiviacz.travelersbackpack.inventory.upgrades.tanks;
 
 import com.mojang.datafixers.util.Pair;
-import com.tiviacz.travelersbackpack.components.BackpackContainerContents;
 import com.tiviacz.travelersbackpack.components.Fluids;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
-import com.tiviacz.travelersbackpack.inventory.transfer.BackpackResourceHandler;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
-import com.tiviacz.travelersbackpack.inventory.InventoryActions;
 import com.tiviacz.travelersbackpack.inventory.UpgradeManager;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.FluidSlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
+import com.tiviacz.travelersbackpack.util.ContainerContentsHelper;
+import com.tiviacz.travelersbackpack.util.StacksHandlerUtils;
+import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.PotionItem;
+import net.minecraft.world.item.component.ItemContainerContents;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.FluidUtil;
-import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
-import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.fluid.FluidStacksResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
 import net.neoforged.neoforge.transfer.item.ResourceHandlerSlot;
 
 import java.util.ArrayList;
@@ -30,55 +34,52 @@ import java.util.List;
 import java.util.Optional;
 
 public class TanksUpgrade extends UpgradeBase<TanksUpgrade> {
-    private final BackpackResourceHandler fluidSlotsHandler = createTemporaryHandler();
-    protected final FluidTank leftTank = createFluidHandler(1000);
-    protected final FluidTank rightTank = createFluidHandler(1000);
+    private final ItemStacksResourceHandler fluidSlotsHandler = createTemporaryHandler();
+    protected final FluidStacksResourceHandler leftTank;
+    protected final FluidStacksResourceHandler rightTank;
 
     public TanksUpgrade(UpgradeManager manager, int dataHolderSlot, Fluids fluids) {
         super(manager, dataHolderSlot, new Point(51, 72));
-        this.setTanksCapacity();
-        this.setFluids(fluids);
+        this.leftTank = createFluidHandler(fluids.leftFluidStack(), getUpgradeManager().getWrapper().getBackpackTankCapacity());
+        this.rightTank = createFluidHandler(fluids.rightFluidStack(), getUpgradeManager().getWrapper().getBackpackTankCapacity());
 
         //Update Render data
         getUpgradeManager().getWrapper().setRenderInfo(writeToRenderData());
     }
 
-    public FluidTank getLeftTank() {
+    public FluidStacksResourceHandler getLeftTank() {
         return leftTank;
     }
 
-    public FluidTank getRightTank() {
+    public FluidStacksResourceHandler getRightTank() {
         return rightTank;
     }
 
-    public BackpackResourceHandler getFluidSlotsHandler() {
+    public ItemStacksResourceHandler getFluidSlotsHandler() {
         return this.fluidSlotsHandler;
     }
 
-    public void setTanksCapacity() {
-        this.leftTank.setCapacity(getUpgradeManager().getWrapper().getBackpackTankCapacity());
-        this.rightTank.setCapacity(getUpgradeManager().getWrapper().getBackpackTankCapacity());
-    }
-
     public void setFluids(Fluids tanks) {
-        this.leftTank.setFluid(tanks.leftFluidStack());
-        this.rightTank.setFluid(tanks.rightFluidStack());
+        StacksHandlerUtils.setFluid(this.leftTank, tanks.leftFluidStack());
+        StacksHandlerUtils.setFluid(this.rightTank, tanks.rightFluidStack());
     }
 
     public void syncClients(ItemStack backpack) {
         int slot = getDataHolderSlot();
-        BackpackContainerContents contents = backpack.get(ModDataComponents.UPGRADES);
+        ItemContainerContents contents = backpack.get(ModDataComponents.UPGRADES);
+        int upgradesSize = backpack.get(ModDataComponents.UPGRADE_SLOTS);
         if(contents == null) return;
-        if(slot >= contents.getItems().size()) return;
-        ItemStack stack = contents.getItems().get(slot);
+        NonNullList<ItemStack> stacks = ContainerContentsHelper.getItems(contents, upgradesSize);
+        if(slot >= stacks.size()) return;
+        ItemStack stack = stacks.get(slot);
         setFluids(stack.getOrDefault(ModDataComponents.FLUIDS, Fluids.empty()));
     }
 
-    private FluidTank createFluidHandler(int capacity) {
-        return new FluidTank(capacity) {
+    private FluidStacksResourceHandler createFluidHandler(FluidStack fluidStack, int capacity) {
+        return new FluidStacksResourceHandler(NonNullList.withSize(1, fluidStack), capacity) {
             @Override
-            protected void onContentsChanged() {
-                updateDataHolderUnchecked(ModDataComponents.FLUIDS.get(), new Fluids(leftTank.getFluid(), rightTank.getFluid()));
+            protected void onContentsChanged(int slot, FluidStack previousStack) {
+                updateDataHolderUnchecked(ModDataComponents.FLUIDS.get(), new Fluids(StacksHandlerUtils.getFluid(leftTank), StacksHandlerUtils.getFluid(rightTank)));
 
                 //Update Render data
                 getUpgradeManager().getWrapper().setRenderInfo(writeToRenderData());
@@ -91,11 +92,11 @@ public class TanksUpgrade extends UpgradeBase<TanksUpgrade> {
 
     public CompoundTag writeToRenderData() {
         CompoundTag tag = new CompoundTag();
-        Tag leftFluid = FluidStack.CODEC.encodeStart(NbtOps.INSTANCE, leftTank.getFluid()).result().orElseGet(CompoundTag::new);
-        Tag rightFluid = FluidStack.CODEC.encodeStart(NbtOps.INSTANCE, rightTank.getFluid()).result().orElseGet(CompoundTag::new);
+        Tag leftFluid = FluidStack.CODEC.encodeStart(NbtOps.INSTANCE, StacksHandlerUtils.getFluid(leftTank)).result().orElseGet(CompoundTag::new);
+        Tag rightFluid = FluidStack.CODEC.encodeStart(NbtOps.INSTANCE, StacksHandlerUtils.getFluid(rightTank)).result().orElseGet(CompoundTag::new);
         tag.put("LeftTank", leftFluid);
         tag.put("RightTank", rightFluid);
-        tag.putInt("Capacity", leftTank.getCapacity());
+        tag.putInt("Capacity", StacksHandlerUtils.getCapacity(leftTank));
         return tag;
     }
 
@@ -124,30 +125,18 @@ public class TanksUpgrade extends UpgradeBase<TanksUpgrade> {
         return slots;
     }
 
-    public BackpackResourceHandler createTemporaryHandler() {
-        return new BackpackResourceHandler(4) {
-            @Override
-            protected void onContentsChanged(int slot, ItemStack previousStack) {
-                if(ItemStack.isSameItemSameComponents(previousStack, getStackInSlot(slot))) {
-                    if(slot == 0) {
-                        InventoryActions.transferContainerTank(TanksUpgrade.this, getLeftTank(), 0);
-                    }
-                    if(slot == 2) {
-                        InventoryActions.transferContainerTank(TanksUpgrade.this, getRightTank(), 2);
-                    }
-                }
-            }
-
+    public ItemStacksResourceHandler createTemporaryHandler() {
+        return new ItemStacksResourceHandler(4) {
             @Override
             public boolean isValid(int slot, ItemResource stack) {
-                Optional<IFluidHandlerItem> container = FluidUtil.getFluidHandler(stack.toStack());
+                Optional<ResourceHandler<FluidResource>> handler = Optional.ofNullable(ItemAccess.forStack(stack.toStack()).getCapability(Capabilities.Fluid.ITEM));
                 if(slot == 1 || slot == 3) {
                     return false;
                 }
                 if(stack.getItem() instanceof PotionItem || stack.getItem() == Items.GLASS_BOTTLE) {
                     return true;
                 }
-                return container.isPresent();
+                return handler.isPresent();
             }
         };
     }

@@ -18,5 +18,7 @@
 📚 Updated ko_kr - Thanks kjh1022abc!  
 📚 Updated zh_cn - Thanks EmptyDreams!  
 
+🔧 Villager Backpack can be found in Wandering Trader trades instead of Librarian  
+
 ⭐ Want to receive **Supporter Star Badge** for a **lifetime**? - [visit my Ko-Fi page](https://ko-fi.com/tiviacz1337)!  
 ![Banner](https://i.imgur.com/SSrFv58.png)

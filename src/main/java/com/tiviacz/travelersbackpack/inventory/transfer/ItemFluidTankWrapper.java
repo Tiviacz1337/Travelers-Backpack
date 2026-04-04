@@ -2,9 +2,9 @@ package com.tiviacz.travelersbackpack.inventory.transfer;
 
 import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 public class ItemFluidTankWrapper implements ResourceHandler<FluidResource> {
@@ -24,34 +24,33 @@ public class ItemFluidTankWrapper implements ResourceHandler<FluidResource> {
     @Override
     public FluidResource getResource(int index) {
         if(index == 0) {
-            return FluidResource.of(upgrade.getLeftTank().getFluid());
+            return upgrade.getLeftTank().getResource(index);
         }
-        return FluidResource.of(upgrade.getRightTank().getFluid());
+        return upgrade.getRightTank().getResource(index);
     }
 
     @Override
     public long getAmountAsLong(int index) {
         if(index == 0) {
-            return upgrade.getLeftTank().getFluidAmount();
+            return upgrade.getLeftTank().getAmountAsLong(index);
         }
-        return upgrade.getRightTank().getFluidAmount();
+        return upgrade.getRightTank().getAmountAsLong(index);
     }
 
     @Override
     public long getCapacityAsLong(int index, FluidResource resource) {
         if(index == 0) {
-            return upgrade.getLeftTank().getCapacity();
+            return upgrade.getLeftTank().getCapacityAsLong(index, resource);
         }
-        return upgrade.getRightTank().getCapacity();
+        return upgrade.getRightTank().getCapacityAsLong(index, resource);
     }
 
     @Override
     public boolean isValid(int index, FluidResource resource) {
         if(index == 0) {
-            return upgrade.getLeftTank().isFluidValid(index, resource.toStack(getAmountAsInt(index)));
+            return upgrade.getLeftTank().isValid(index, resource);
         }
-        return upgrade.getRightTank().isFluidValid(index, resource.toStack(getAmountAsInt(index)));
-       //return parent.isFluidValid(index, resource.toStack(getAmountAsInt(index)));
+        return upgrade.getRightTank().isValid(index, resource);
     }
 
     @Override
@@ -59,10 +58,20 @@ public class ItemFluidTankWrapper implements ResourceHandler<FluidResource> {
         if(this.backpack.getCount() > 1) {
             return 0;
         }
-        if(upgrade.getLeftTank().fill(resource.toStack(amount), IFluidHandler.FluidAction.SIMULATE) > 0) {
-            return upgrade.getLeftTank().fill(resource.toStack(amount), IFluidHandler.FluidAction.EXECUTE);
+        try(var tx = Transaction.open(transaction)) {
+            int moved = upgrade.getLeftTank().insert(index, resource, amount, tx);
+            if(moved > 0) {
+                tx.commit();
+                return moved;
+            } else {
+                moved = upgrade.getRightTank().insert(index, resource, amount, tx);
+                if(moved > 0) {
+                    tx.commit();
+                    return moved;
+                }
+            }
         }
-        return upgrade.getRightTank().fill(resource.toStack(amount), IFluidHandler.FluidAction.EXECUTE);
+        return 0;
     }
 
     @Override
@@ -70,9 +79,19 @@ public class ItemFluidTankWrapper implements ResourceHandler<FluidResource> {
         if(this.backpack.getCount() > 1) {
             return 0;
         }
-        if(!upgrade.getLeftTank().drain(amount, IFluidHandler.FluidAction.SIMULATE).isEmpty()) {
-            return upgrade.getLeftTank().drain(amount, IFluidHandler.FluidAction.EXECUTE).getAmount();
+        try(var tx = Transaction.open(transaction)) {
+            int moved = upgrade.getLeftTank().extract(index, resource, amount, tx);
+            if(moved > 0) {
+                tx.commit();
+                return moved;
+            } else {
+                moved = upgrade.getRightTank().extract(index, resource, amount, tx);
+                if(moved > 0) {
+                    tx.commit();
+                    return moved;
+                }
+            }
         }
-        return upgrade.getRightTank().drain(amount, IFluidHandler.FluidAction.EXECUTE).getAmount();
+        return 0;
     }
 }

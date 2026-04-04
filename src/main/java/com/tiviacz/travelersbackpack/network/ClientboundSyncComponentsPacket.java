@@ -2,7 +2,6 @@ package com.tiviacz.travelersbackpack.network;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.capability.AttachmentUtils;
-import com.tiviacz.travelersbackpack.capability.ITravelersBackpack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -23,14 +22,11 @@ public record ClientboundSyncComponentsPacket(int entityID, DataComponentMap map
             ClientboundSyncComponentsPacket::new
     );
 
-    public static void handle(final ClientboundSyncComponentsPacket message, IPayloadContext ctx) {
+    public static void handle(ClientboundSyncComponentsPacket message, IPayloadContext ctx) {
         if(ctx.flow().isClientbound()) {
             ctx.enqueueWork(() -> {
-                final Player playerEntity = (Player)Minecraft.getInstance().player.level().getEntity(message.entityID);
-                ITravelersBackpack data = AttachmentUtils.getAttachment(playerEntity).orElseThrow(() -> new RuntimeException("No player attachment data found!"));
-                if(data != null) {
-                    data.applyComponents(message.map());
-                }
+                Player player = (Player)Minecraft.getInstance().player.level().getEntity(message.entityID());
+                AttachmentUtils.getAttachment(player).ifPresent(attachment -> attachment.applyComponents(message.map()));
             });
         }
     }

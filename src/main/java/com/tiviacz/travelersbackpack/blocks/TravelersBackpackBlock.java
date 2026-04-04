@@ -3,7 +3,6 @@ package com.tiviacz.travelersbackpack.blocks;
 import com.google.common.collect.Lists;
 import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
-import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModBlockEntityTypes;
 import com.tiviacz.travelersbackpack.init.ModBlocks;
 import com.tiviacz.travelersbackpack.init.ModItems;
@@ -13,6 +12,7 @@ import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.BackpackDeathHelper;
 import com.tiviacz.travelersbackpack.util.Reference;
+import com.tiviacz.travelersbackpack.util.StacksHandlerUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.dispenser.ShulkerBoxDispenseBehavior;
@@ -53,10 +53,9 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-
 import org.jetbrains.annotations.Nullable;
+
 import java.util.Queue;
 import java.util.function.BiConsumer;
 import java.util.stream.Stream;
@@ -156,14 +155,14 @@ public class TravelersBackpackBlock extends Block implements EntityBlock {
         } else {
             float f = 0.0F;
 
-            for(int i = 0; i < backpack.getWrapper().getStorage().getSlots(); i++) {
-                ItemStack itemstack = backpack.getWrapper().getStorage().getStackInSlot(i);
+            for(int i = 0; i < StacksHandlerUtils.getSlots(backpack.getWrapper().getStorage()); i++) {
+                ItemStack itemstack = StacksHandlerUtils.getStackInSlot(backpack.getWrapper().getStorage(), i);
                 if(!itemstack.isEmpty()) {
-                    f += (float)itemstack.getCount() / (float)Math.min(backpack.getWrapper().getStorage().getCapacityAsInt(i, ItemResource.of(itemstack)), backpack.getWrapper().getStorage().getStackInSlot(i).getMaxStackSize());
+                    f += (float)itemstack.getCount() / (float)Math.min(backpack.getWrapper().getStorage().getCapacityAsInt(i, ItemResource.of(itemstack)), StacksHandlerUtils.getStackInSlot(backpack.getWrapper().getStorage(), i).getMaxStackSize());
                 }
             }
 
-            f /= (float)backpack.getWrapper().getStorage().getSlots();
+            f /= (float)StacksHandlerUtils.getSlots(backpack.getWrapper().getStorage());
             return Mth.lerpDiscrete(f, 0, 15);
         }
     }
@@ -248,7 +247,7 @@ public class TravelersBackpackBlock extends Block implements EntityBlock {
         if(level.getBlockEntity(pos) instanceof BackpackBlockEntity backpackBlockEntity) {
             backpackBlockEntity.getWrapper().getUpgradeManager().getUpgrade(TanksUpgrade.class).ifPresent(tanksUpgrade -> {
                 if(backpackBlockEntity.getWrapper().isAbilityEnabled()) {
-                    if((tanksUpgrade.getLeftTank().isEmpty() || (tanksUpgrade.getLeftTank().getFluid().getFluid().isSame(Fluids.WATER) && tanksUpgrade.getLeftTank().getFluidAmount() < tanksUpgrade.getLeftTank().getCapacity())) || (tanksUpgrade.getRightTank().isEmpty() || (tanksUpgrade.getRightTank().getFluid().getFluid().isSame(Fluids.WATER) && tanksUpgrade.getRightTank().getFluidAmount() < tanksUpgrade.getRightTank().getCapacity()))) {
+                    if((StacksHandlerUtils.isEmpty(tanksUpgrade.getLeftTank()) || (StacksHandlerUtils.getFluid(tanksUpgrade.getLeftTank()).getFluid().isSame(Fluids.WATER) && StacksHandlerUtils.getFluidAmount(tanksUpgrade.getLeftTank()) < StacksHandlerUtils.getCapacity(tanksUpgrade.getLeftTank()))) || (StacksHandlerUtils.isEmpty(tanksUpgrade.getRightTank()) || (StacksHandlerUtils.getFluid(tanksUpgrade.getRightTank()).getFluid().isSame(Fluids.WATER) && StacksHandlerUtils.getFluidAmount(tanksUpgrade.getRightTank()) < StacksHandlerUtils.getCapacity(tanksUpgrade.getRightTank())))) {
                         if(this.removeWaterBreadthFirstSearch(level, pos, tanksUpgrade)) {
                             level.levelEvent(2001, pos, Block.getId(Blocks.WATER.defaultBlockState()));
                         }
@@ -275,11 +274,11 @@ public class TravelersBackpackBlock extends Block implements EntityBlock {
                 if(fluidstate.is(FluidTags.WATER)) {
                     if(blockstate.getBlock() instanceof BucketPickup && !((BucketPickup)blockstate.getBlock()).pickupBlock(null, level, blockpos1, blockstate).isEmpty()) {
                         ++i;
-                        if(tanksUpgrade.getLeftTank().isEmpty() || (tanksUpgrade.getLeftTank().getFluid().getFluid().isSame(Fluids.WATER) && tanksUpgrade.getLeftTank().getFluidAmount() < tanksUpgrade.getLeftTank().getCapacity())) {
-                            tanksUpgrade.getLeftTank().fill(new FluidStack(Fluids.WATER, Reference.BUCKET), IFluidHandler.FluidAction.EXECUTE);
+                        if(StacksHandlerUtils.isEmpty(tanksUpgrade.getLeftTank()) || (StacksHandlerUtils.getFluid(tanksUpgrade.getLeftTank()).getFluid().isSame(Fluids.WATER) && StacksHandlerUtils.getFluidAmount(tanksUpgrade.getLeftTank()) < StacksHandlerUtils.getCapacity(tanksUpgrade.getLeftTank()))) {
+                            StacksHandlerUtils.fill(tanksUpgrade.getLeftTank(), new FluidStack(Fluids.WATER, Reference.BUCKET), false);
                         } else {
-                            if(tanksUpgrade.getRightTank().isEmpty() || (tanksUpgrade.getRightTank().getFluid().getFluid().isSame(Fluids.WATER) && tanksUpgrade.getRightTank().getFluidAmount() < tanksUpgrade.getRightTank().getCapacity())) {
-                                tanksUpgrade.getRightTank().fill(new FluidStack(Fluids.WATER, Reference.BUCKET), IFluidHandler.FluidAction.EXECUTE);
+                            if(StacksHandlerUtils.isEmpty(tanksUpgrade.getRightTank()) || (StacksHandlerUtils.getFluid(tanksUpgrade.getRightTank()).getFluid().isSame(Fluids.WATER) && StacksHandlerUtils.getFluidAmount(tanksUpgrade.getRightTank()) < StacksHandlerUtils.getCapacity(tanksUpgrade.getRightTank()))) {
+                                StacksHandlerUtils.fill(tanksUpgrade.getRightTank(), new FluidStack(Fluids.WATER, Reference.BUCKET), false);
                             }
                         }
                         if(j < 6) {

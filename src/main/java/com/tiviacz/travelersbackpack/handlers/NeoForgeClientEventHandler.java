@@ -19,7 +19,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.player.ClientInput;
@@ -59,7 +59,7 @@ public class NeoForgeClientEventHandler {
         Player player = mc.player;
         if(player == null) return;
 
-        GuiGraphics guiGraphics = event.getGuiGraphics();
+        GuiGraphicsExtractor guiGraphics = event.getGuiGraphics();
 
         //Draw + and - for items that can be inserted to backpack
         if(mc.screen instanceof AbstractContainerScreen<?> screen) {
@@ -76,7 +76,7 @@ public class NeoForgeClientEventHandler {
                     if(carried.getItem() instanceof TravelersBackpackItem) {
                         tooltip = Optional.of(new BackpackTooltipComponent(carried, true));
                         if(!slotStack.isEmpty() && slot.mayPickup(player) && BackpackSlotItemHandler.isItemValid(slotStack)) {
-                            guiGraphics.drawString(mc.font, Component.literal("-").withStyle(ChatFormatting.YELLOW), slot.x + 2, slot.y - 1, -1); //16109090
+                            guiGraphics.text(mc.font, Component.literal("-").withStyle(ChatFormatting.YELLOW), slot.x + 2, slot.y - 1, -1); //16109090
                             if(slot == hoveredSlot) {
                                 guiGraphics.setTooltipForNextFrame(mc.font, List.of(Component.translatable("screen.travelersbackpack.add_to_backpack").withStyle(ChatFormatting.YELLOW)), tooltip, event.getMouseX(), event.getMouseY());
                             }
@@ -84,7 +84,7 @@ public class NeoForgeClientEventHandler {
                     } else if(!carried.isEmpty() && BackpackSlotItemHandler.isItemValid(carried)) {
                         if(slotStack.getItem() instanceof TravelersBackpackItem && slot.allowModification(player)) {
                             tooltip = Optional.of(new BackpackTooltipComponent(slotStack, true));
-                            guiGraphics.drawString(mc.font, Component.literal("+").withStyle(ChatFormatting.YELLOW), slot.x + 9, slot.y + 8, -1); //16109090
+                            guiGraphics.text(mc.font, Component.literal("+").withStyle(ChatFormatting.YELLOW), slot.x + 9, slot.y + 8, -1); //16109090
                             if(slot == hoveredSlot) {
                                 guiGraphics.setTooltipForNextFrame(mc.font, List.of(Component.translatable("screen.travelersbackpack.add_to_backpack").withStyle(ChatFormatting.YELLOW)), tooltip, event.getMouseX(), event.getMouseY());
                             }
@@ -102,7 +102,7 @@ public class NeoForgeClientEventHandler {
         Player player = mc.player;
         if(player == null) return;
 
-        GuiGraphics guiGraphics = event.getGuiGraphics();
+        GuiGraphicsExtractor guiGraphics = event.getGuiGraphics();
 
         //Render Backpack Icon if Backpack is equipped in Capability but Integration is enabled to easily retrieve the backpack
         if(mc.screen instanceof InventoryScreen screen && AttachmentUtils.getAttachment(player).isPresent()) {
@@ -111,7 +111,7 @@ public class NeoForgeClientEventHandler {
                 if(event.getMouseX() >= screen.getGuiLeft() + 77 && event.getMouseX() < screen.getGuiLeft() + 77 + 16 && event.getMouseY() >= screen.getGuiTop() + 62 - 18 && event.getMouseY() < screen.getGuiTop() + 62 - 18 + 16) {
                     renderSlotHighlightBack(guiGraphics, screen.getGuiLeft() + 77, screen.getGuiTop() + 62 - 18);
                 }
-                guiGraphics.renderItem(backpack, screen.getGuiLeft() + 77, screen.getGuiTop() + 62 - 18);
+                guiGraphics.item(backpack, screen.getGuiLeft() + 77, screen.getGuiTop() + 62 - 18);
 
                 if(event.getMouseX() >= screen.getGuiLeft() + 77 && event.getMouseX() < screen.getGuiLeft() + 77 + 16 && event.getMouseY() >= screen.getGuiTop() + 62 - 18 && event.getMouseY() < screen.getGuiTop() + 62 - 18 + 16) {
                     List<Component> components = new ArrayList<>();
@@ -131,7 +131,7 @@ public class NeoForgeClientEventHandler {
             if(event.getMouseX() >= screen.getGuiLeft() + 77 && event.getMouseX() < screen.getGuiLeft() + 77 + 16 && event.getMouseY() >= screen.getGuiTop() + 62 - 18 && event.getMouseY() < screen.getGuiTop() + 62 - 18 + 16) {
                 renderSlotHighlightBack(guiGraphics, screen.getGuiLeft() + 77, screen.getGuiTop() + 62 - 18);
             }
-            guiGraphics.renderItem(backpack, screen.getGuiLeft() + 77, screen.getGuiTop() + 62 - 18);
+            guiGraphics.item(backpack, screen.getGuiLeft() + 77, screen.getGuiTop() + 62 - 18);
 
             if(event.getMouseX() >= screen.getGuiLeft() + 77 && event.getMouseX() < screen.getGuiLeft() + 77 + 16 && event.getMouseY() >= screen.getGuiTop() + 62 - 18 && event.getMouseY() < screen.getGuiTop() + 62 - 18 + 16) {
                 String button = ModClientEventHandler.OPEN_BACKPACK.getKey().getDisplayName().getString();
@@ -150,11 +150,11 @@ public class NeoForgeClientEventHandler {
     private static final Identifier SLOT_HIGHLIGHT_BACK_SPRITE = Identifier.withDefaultNamespace("container/slot_highlight_back");
     private static final Identifier SLOT_HIGHLIGHT_FRONT_SPRITE = Identifier.withDefaultNamespace("container/slot_highlight_front");
 
-    private static void renderSlotHighlightBack(GuiGraphics guiGraphics, int x, int y) {
+    private static void renderSlotHighlightBack(GuiGraphicsExtractor guiGraphics, int x, int y) {
         guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, SLOT_HIGHLIGHT_BACK_SPRITE, x - 4, y - 4, 24, 24);
     }
 
-    private static void renderSlotHighlightFront(GuiGraphics guiGraphics, int x, int y) {
+    private static void renderSlotHighlightFront(GuiGraphicsExtractor guiGraphics, int x, int y) {
         guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, SLOT_HIGHLIGHT_FRONT_SPRITE, x - 4, y - 4, 24, 24);
     }
 
@@ -185,7 +185,7 @@ public class NeoForgeClientEventHandler {
                 }
                 if(event.getButton() == GLFW.GLFW_MOUSE_BUTTON_2) {
                     if(InputConstants.isKeyDown(Minecraft.getInstance().getWindow(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
-                        Minecraft.getInstance().gui.getChat().addMessage(Component.translatable("screen.travelersbackpack.hide_icon_info"));
+                        Minecraft.getInstance().gui.getChat().addClientSystemMessage(Component.translatable("screen.travelersbackpack.hide_icon_info"));
                     }
                 }
             }
@@ -224,7 +224,7 @@ public class NeoForgeClientEventHandler {
                 if(BackpackAbilities.ALLOWED_ABILITIES.contains(AttachmentUtils.getWearingBackpack(player).getItem())) {
                     boolean ability = AttachmentUtils.getBackpackWrapperArtificial(player).isAbilityEnabled();
                     ServerboundActionTagPacket.create(ServerboundActionTagPacket.ABILITY_SLIDER, !ability);
-                    player.displayClientMessage(Component.translatable(ability ? "screen.travelersbackpack.ability_disabled" : "screen.travelersbackpack.ability_enabled"), true);
+                    player.sendOverlayMessage(Component.translatable(ability ? "screen.travelersbackpack.ability_disabled" : "screen.travelersbackpack.ability_enabled"));
                 }
             }
             while(ModClientEventHandler.SWAP_TOOL.consumeClick()) {
@@ -270,7 +270,7 @@ public class NeoForgeClientEventHandler {
             ClientInput eInput = event.getInput();
             eInput.keyPresses = new Input(isKeyDown(settings.keyUp), isKeyDown(settings.keyDown), isKeyDown(settings.keyLeft), isKeyDown(settings.keyRight), isKeyDown(settings.keyJump), isKeyDown(settings.keyShift), isKeyDown(settings.keySprint));
             eInput.moveVector = new Vec2(eInput.keyPresses.left() == eInput.keyPresses.right() ? 0.0F : (eInput.keyPresses.left() ? 1.0F : -1.0F), eInput.keyPresses.forward() == eInput.keyPresses.backward() ? 0.0F : (eInput.keyPresses.forward() ? 1.0F : -1.0F));
-            if (Minecraft.getInstance().player.isMovingSlowly()) {
+            if(Minecraft.getInstance().player.isMovingSlowly()) {
                 eInput.moveVector = new Vec2((float)((double)eInput.moveVector.x * 0.3), (float)((double)eInput.moveVector.y * 0.3));
             }
         }
@@ -281,8 +281,7 @@ public class NeoForgeClientEventHandler {
             return false;
         }
         return switch(keybind.getKey().getType()) {
-            case KEYSYM ->
-                    InputConstants.isKeyDown(Minecraft.getInstance().getWindow(), keybind.getKey().getValue());
+            case KEYSYM -> InputConstants.isKeyDown(Minecraft.getInstance().getWindow(), keybind.getKey().getValue());
             case MOUSE ->
                     GLFW.glfwGetMouseButton(Minecraft.getInstance().getWindow().handle(), keybind.getKey().getValue()) == GLFW.GLFW_PRESS;
             default -> keybind.isDown();

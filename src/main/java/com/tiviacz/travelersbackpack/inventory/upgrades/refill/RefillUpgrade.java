@@ -3,7 +3,6 @@ package com.tiviacz.travelersbackpack.inventory.upgrades.refill;
 import com.mojang.datafixers.util.Pair;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
-import com.tiviacz.travelersbackpack.inventory.transfer.BackpackResourceHandler;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.UpgradeManager;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
@@ -22,11 +21,13 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -136,7 +137,7 @@ public class RefillUpgrade extends UpgradeBase<RefillUpgrade> implements IEnable
         //Load storage if not loaded in artificial wrapper
         getUpgradeManager().getWrapper().loadAdditionally(BackpackWrapper.STORAGE_ID);
         //Extract the missing count from backpack
-        BackpackResourceHandler backpackStorage = upgradeManager.getWrapper().getStorage();
+        ItemStacksResourceHandler backpackStorage = upgradeManager.getWrapper().getStorage();
         ItemStack extracted = InventoryHelper.extractFromBackpack(backpackStorage, filterStack, missingCount, true);
 
         if(extracted.isEmpty()) {
@@ -190,7 +191,7 @@ public class RefillUpgrade extends UpgradeBase<RefillUpgrade> implements IEnable
         return new FilterHandler(stacks, size) {
             @Override
             protected void onContentsChanged(int slot, ItemStack previousStack) {
-                updateDataHolderUnchecked(ModDataComponents.BACKPACK_CONTAINER.get(), InventoryHelper.itemsToList(size, filter));
+                updateDataHolderUnchecked(ModDataComponents.BACKPACK_CONTAINER.get(), ItemContainerContents.fromItems(filter.copyToList()));
             }
         };
     }

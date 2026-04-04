@@ -2,7 +2,6 @@ package com.tiviacz.travelersbackpack.inventory.upgrades;
 
 import com.mojang.datafixers.util.Pair;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
-import com.tiviacz.travelersbackpack.inventory.transfer.BackpackResourceHandler;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.UpgradeManager;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
@@ -10,15 +9,17 @@ import com.tiviacz.travelersbackpack.inventory.menu.slot.FilterSlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.upgrades.filter.FilterHandler;
 import com.tiviacz.travelersbackpack.inventory.upgrades.filter.IFilter;
 import com.tiviacz.travelersbackpack.inventory.upgrades.filter.IFilterSlots;
+import com.tiviacz.travelersbackpack.util.StacksHandlerUtils;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class FilterUpgradeBase<T, F extends FilterSettingsBase> extends UpgradeBase<T> implements IFilter, IFilterSlots {
-    protected final BackpackResourceHandler filter;
+    protected final ItemStacksResourceHandler filter;
     protected final List<Runnable> changeListeners = new ArrayList<>();
     private final int filterSlotCount;
     private final int slotsInRow;
@@ -68,7 +69,7 @@ public abstract class FilterUpgradeBase<T, F extends FilterSettingsBase> extends
     }
 
     public ItemStack getFirstFilterStack() {
-        return this.filter.getStackInSlot(0);
+        return StacksHandlerUtils.getStackInSlot(this.filter, 0);
     }
 
     public void addChangeListener(Runnable listener) {

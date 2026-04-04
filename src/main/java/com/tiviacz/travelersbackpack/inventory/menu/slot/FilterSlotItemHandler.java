@@ -1,9 +1,9 @@
 package com.tiviacz.travelersbackpack.inventory.menu.slot;
 
-import com.tiviacz.travelersbackpack.inventory.transfer.BackpackResourceHandler;
 import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
 import net.neoforged.neoforge.transfer.item.ResourceHandlerSlot;
 
 import java.util.Optional;
@@ -13,7 +13,7 @@ public class FilterSlotItemHandler extends ResourceHandlerSlot {
     protected final int activeSlotCount;
     protected final int index;
 
-    public FilterSlotItemHandler(UpgradeBase upgrade, BackpackResourceHandler itemHandler, int index, int xPosition, int yPosition, int activeSlotCount) {
+    public FilterSlotItemHandler(UpgradeBase upgrade, ItemStacksResourceHandler itemHandler, int index, int xPosition, int yPosition, int activeSlotCount) {
         super(itemHandler, itemHandler::set, index, xPosition, yPosition);
         this.upgrade = upgrade;
         this.activeSlotCount = activeSlotCount;

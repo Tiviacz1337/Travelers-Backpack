@@ -89,7 +89,7 @@ public class ResultSlotExt extends ResultSlot {
                     ItemStack current = this.craftSlots.getItem(realIdx);
                     ItemStack remainder = remaining.get(x + y * input.width());
                     if(!current.isEmpty()) {
-                        //Replaced method here #TODO find fix
+                        //Replaced method here #TODO Persistent
                         ((CraftingContainerImproved)this.craftSlots).removeItemShiftClick(realIdx, 1);
                         current = this.craftSlots.getItem(realIdx);
                     }

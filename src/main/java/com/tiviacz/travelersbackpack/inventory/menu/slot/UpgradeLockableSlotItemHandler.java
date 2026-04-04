@@ -1,14 +1,15 @@
 package com.tiviacz.travelersbackpack.inventory.menu.slot;
 
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
-import com.tiviacz.travelersbackpack.inventory.transfer.BackpackResourceHandler;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
 import com.tiviacz.travelersbackpack.items.upgrades.TanksUpgradeItem;
 import com.tiviacz.travelersbackpack.items.upgrades.UpgradeItem;
+import com.tiviacz.travelersbackpack.util.StacksHandlerUtils;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
 import net.neoforged.neoforge.transfer.item.ResourceHandlerSlot;
 
 public class UpgradeLockableSlotItemHandler extends ResourceHandlerSlot {
@@ -17,13 +18,13 @@ public class UpgradeLockableSlotItemHandler extends ResourceHandlerSlot {
     public boolean isHidden = false;
     public final int containerIndex;
 
-    public UpgradeLockableSlotItemHandler(BackpackBaseMenu menu, BackpackResourceHandler handler, int index, int xPosition, int yPosition) {
+    public UpgradeLockableSlotItemHandler(BackpackBaseMenu menu, ItemStacksResourceHandler handler, int index, int xPosition, int yPosition) {
         super(handler, handler::set, index, xPosition, yPosition);
         this.menu = menu;
         this.containerIndex = index;
 
         //If item in slot is not an Upgrade Item - do not lock
-        if(handler.getStackInSlot(index).getItem() instanceof UpgradeItem && menu.getWrapper().getUpgradeManager().hasUpgradeInSlot(index)) {
+        if(StacksHandlerUtils.getStackInSlot(handler, index).getItem() instanceof UpgradeItem && menu.getWrapper().getUpgradeManager().hasUpgradeInSlot(index)) {
             setLocked(true);
         }
     }

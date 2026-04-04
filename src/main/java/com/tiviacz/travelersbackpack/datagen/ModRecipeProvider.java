@@ -10,18 +10,20 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.DyeRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.Tags;
-
 import org.jetbrains.annotations.Nullable;
+
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
@@ -62,7 +64,6 @@ public class ModRecipeProvider extends RecipeProvider {
         createBackpackSmallGrid(ModItems.WOLF_TRAVELERS_BACKPACK.get(), ofTag(Tags.Items.BONES), getHasName(Items.BONE), has(Tags.Items.BONES)).save(output);
         createBackpackSmallGrid(ModItems.FOX_TRAVELERS_BACKPACK.get(), Ingredient.of(Items.SWEET_BERRIES), getHasName(Items.SWEET_BERRIES), has(Items.SWEET_BERRIES)).save(output);
         createBackpackSmallGrid(ModItems.OCELOT_TRAVELERS_BACKPACK.get(), Ingredient.of(Items.COD), getHasName(Items.COD), has(Items.COD)).save(output);
-        //createBackpackSmallGrid(ModItems.SQUID_TRAVELERS_BACKPACK.get(), Ingredient.of(Items.INK_SAC), getHasName(Items.INK_SAC), has(Items.INK_SAC)).save(output);
 
         createBackpackFullGrid(ModItems.REDSTONE_TRAVELERS_BACKPACK.get(), ofTag(Tags.Items.DUSTS_REDSTONE), getHasName(Items.REDSTONE), has(Tags.Items.DUSTS_REDSTONE)).save(output);
         createBackpackFullGrid(ModItems.COAL_TRAVELERS_BACKPACK.get(), ofTag(ItemTags.COALS), getHasName(Items.COAL), has(ItemTags.COALS)).save(output);
@@ -341,6 +342,18 @@ public class ModRecipeProvider extends RecipeProvider {
         List<Item> list = List.of(Items.BLACK_DYE, Items.BLUE_DYE, Items.BROWN_DYE, Items.CYAN_DYE, Items.GRAY_DYE, Items.GREEN_DYE, Items.LIGHT_BLUE_DYE, Items.LIGHT_GRAY_DYE, Items.LIME_DYE, Items.MAGENTA_DYE, Items.ORANGE_DYE, Items.PINK_DYE, Items.PURPLE_DYE, Items.RED_DYE, Items.YELLOW_DYE, Items.WHITE_DYE);
         List<Item> list2 = List.of(ModItems.BLACK_SLEEPING_BAG.get(), ModItems.BLUE_SLEEPING_BAG.get(), ModItems.BROWN_SLEEPING_BAG.get(), ModItems.CYAN_SLEEPING_BAG.get(), ModItems.GRAY_SLEEPING_BAG.get(), ModItems.GREEN_SLEEPING_BAG.get(), ModItems.LIGHT_BLUE_SLEEPING_BAG.get(), ModItems.LIGHT_GRAY_SLEEPING_BAG.get(), ModItems.LIME_SLEEPING_BAG.get(), ModItems.MAGENTA_SLEEPING_BAG.get(), ModItems.ORANGE_SLEEPING_BAG.get(), ModItems.PINK_SLEEPING_BAG.get(), ModItems.PURPLE_SLEEPING_BAG.get(), ModItems.RED_SLEEPING_BAG.get(), ModItems.YELLOW_SLEEPING_BAG.get(), ModItems.WHITE_SLEEPING_BAG.get());
         colorWithDye(output, list, list2, null, "sleeping_bag");
+
+        dyedItem(ModItems.STANDARD_TRAVELERS_BACKPACK.get(), "dyed_backpack");
+    }
+
+    protected void dyedItem(Item target, String group) {
+        CustomCraftingRecipeBuilder.customCrafting(
+                        RecipeCategory.MISC,
+                        (commonInfo, bookInfo) -> new DyeRecipe(commonInfo, bookInfo, Ingredient.of(target), this.tag(ItemTags.DYES), new ItemStackTemplate(target))
+                )
+                .unlockedBy(getHasName(target), this.has(target))
+                .group(group)
+                .save(this.output, ResourceKey.create(Registries.RECIPE, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, getItemName(target) + "_dyed")));
     }
 
     public Ingredient ofTag(TagKey<Item> tag) {

@@ -9,32 +9,34 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-public record ClientboundUpdateRecipePacket(ItemStack output) implements CustomPacketPayload {
+public record ClientboundUpdateRecipePacket(ItemStack output,
+                                            RecipeHolder<?> recipeHolder) implements CustomPacketPayload {
     public static final Identifier ID = Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "update_recipe");
     public static final Type<ClientboundUpdateRecipePacket> TYPE = new Type<>(ID);
 
     public static final StreamCodec<RegistryFriendlyByteBuf, ClientboundUpdateRecipePacket> STREAM_CODEC = StreamCodec.composite(
-            // RecipeHolder.STREAM_CODEC, ClientboundUpdateRecipePacket::holder,
             ItemStack.OPTIONAL_STREAM_CODEC, ClientboundUpdateRecipePacket::output,
+            StreamCodec.of((buf, holder) -> {
+                        buf.writeBoolean(holder != null);
+                        if(holder != null) {
+                            RecipeHolder.STREAM_CODEC.encode(buf, holder);
+                        }
+                    },
+                    buf -> buf.readBoolean() ? RecipeHolder.STREAM_CODEC.decode(buf) : null), ClientboundUpdateRecipePacket::recipeHolder,
             ClientboundUpdateRecipePacket::new
     );
 
-    //public static final Identifier NULL = Identifier.fromNamespaceAndPath("null", "null");
-
-    //public ClientboundUpdateRecipePacket(@Nullable RecipeHolder<CraftingRecipe> recipe, ItemStack output) {
-    //     this(recipe == null ? NULL : recipe.id().location(), output);
-    // }
-
-    public static void handle(final ClientboundUpdateRecipePacket message, IPayloadContext ctx) {
+    public static void handle(ClientboundUpdateRecipePacket message, IPayloadContext ctx) {
         if(ctx.flow().isClientbound()) {
             ctx.enqueueWork(() -> {
-                //RecipeHolder<?> recipe = message.holder(); //(RecipeHolder<CraftingRecipe>)Minecraft.getInstance().level.recipeAccess().byKey(message.id()).orElse(null);
+                RecipeHolder<?> recipe = message.recipeHolder();
                 if(Minecraft.getInstance().screen instanceof BackpackScreen screen) {
                     screen.getMenu().getWrapper().getUpgradeManager().getUpgrade(CraftingUpgrade.class).ifPresent(upgrade -> {
-                        //screen.getMenu().getWrapper().getUpgradeManager().craftingUpgrade.get().resultSlots.setRecipeUsed(recipe);
-                        screen.getMenu().getWrapper().getUpgradeManager().getUpgrade(CraftingUpgrade.class).get().resultSlots.setItem(0, message.output());
+                        upgrade.resultSlots.setRecipeUsed(recipe);
+                        upgrade.resultSlots.setItem(0, message.output());
                     });
                 }
             });

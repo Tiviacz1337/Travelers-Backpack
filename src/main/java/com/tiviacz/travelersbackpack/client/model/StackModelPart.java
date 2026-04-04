@@ -28,7 +28,7 @@ public class StackModelPart extends BackpackModelPart {
 
     public List<ItemStack> prepare(ItemStack stack) {
         if(stack.has(ModDataComponents.TOOLS_CONTAINER)) {
-            return new ArrayList<>(stack.get(ModDataComponents.TOOLS_CONTAINER).getItems()).stream().filter(itemStack -> !itemStack.isEmpty()).toList();
+            return new ArrayList<>(stack.get(ModDataComponents.TOOLS_CONTAINER).nonEmptyItemCopyStream().filter(itemStack -> !itemStack.isEmpty()).toList());
         } else {
             return new ArrayList<>();
         }
@@ -63,7 +63,6 @@ public class StackModelPart extends BackpackModelPart {
 
             resolver.updateForTopItem(upper, toolUpper, getDisplayContext(toolUpper), null, null, 0);
             upper.submit(poseStack, collector, pPackedLight, pPackedOverlay, 0);
-            //Minecraft.getInstance().getItemRenderer().renderStatic(toolUpper, ItemDisplayContext.NONE, pPackedLight, pPackedOverlay, poseStack, buffer, null, 0);
 
             poseStack.popPose();
         }
@@ -80,7 +79,6 @@ public class StackModelPart extends BackpackModelPart {
 
             resolver.updateForTopItem(lower, toolLower, getDisplayContext(toolLower), null, null, 0);
             lower.submit(poseStack, collector, pPackedLight, pPackedOverlay, 0);
-            //Minecraft.getInstance().getItemRenderer().renderStatic(toolLower, ItemDisplayContext.NONE, pPackedLight, pPackedOverlay, poseStack, buffer, null, 0);
 
             poseStack.popPose();
         }

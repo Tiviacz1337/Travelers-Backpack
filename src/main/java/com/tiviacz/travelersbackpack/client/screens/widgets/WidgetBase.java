@@ -2,7 +2,7 @@ package com.tiviacz.travelersbackpack.client.screens.widgets;
 
 import com.tiviacz.travelersbackpack.client.screens.AbstractBackpackScreen;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
@@ -28,27 +28,27 @@ public class WidgetBase<T extends AbstractBackpackScreen<?>> implements Renderab
         return this.pos;
     }
 
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
 
     }
 
-    public void renderBg(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY) {
+    public void renderBg(GuiGraphicsExtractor guiGraphics, int x, int y, int mouseX, int mouseY) {
 
     }
 
-    public void renderUnderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void renderUnderTooltip(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
 
     }
 
-    public void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    public void renderTooltip(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
 
     }
 
-    public void renderAboveBg(GuiGraphics guiGraphics, int xPos, int yPos, int mouseX, int mouseY, float partialTicks) {
+    public void renderAboveBg(GuiGraphicsExtractor guiGraphics, int xPos, int yPos, int mouseX, int mouseY, float partialTicks) {
 
     }
 
-    public void renderOnTop(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void renderOnTop(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
 
     }
 
