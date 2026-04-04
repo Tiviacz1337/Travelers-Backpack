@@ -3,11 +3,11 @@ name: Publish on CurseForge & Modrinth
 on: [ workflow_dispatch ]
 
 env:
-  MINECRAFT_VERSION: 1.21.11
-  JAVA_VERSION: 21
-  VERSION: 1.21.11-10.11.4
-  RELEASE_NAME_CURSEFORGE: "travelersbackpack-neoforge-1.21.11-10.11.4"
-  RELEASE_NAME_MODRINTH: "[1.21.11] Traveler's Backpack 10.11.4"
+  MINECRAFT_VERSION: 26.1.1
+  JAVA_VERSION: 25
+  VERSION: 26.1.1-11.1.0
+  RELEASE_NAME_CURSEFORGE: "travelersbackpack-neoforge-26.1.1-11.1.0"
+  RELEASE_NAME_MODRINTH: "[26.1.1] Traveler's Backpack 11.1.0"
   MODRINTH_TOKEN: ${{ secrets.MODRINTH }}
   CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE }}
 
@@ -30,7 +30,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: "temurin"
-          java-version: 21
+          java-version: 25
 
       - name: Make Gradle Wrapper Executable
         if: ${{ runner.os != 'Windows' }}

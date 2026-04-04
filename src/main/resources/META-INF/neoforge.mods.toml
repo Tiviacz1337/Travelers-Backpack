@@ -1,32 +1,30 @@
-modLoader = "javafml" #mandatory
-loaderVersion = "${loader_version_range}" #mandatory
 license = "${mod_license}"
 
-[[mods]] #mandatory
-modId = "${mod_id}" #mandatory
-version = "${mod_version}" #mandatory
-displayName = "${mod_display_name}" #mandatory
-updateJSONURL = "https://gist.githubusercontent.com/Tiviacz1337/906937677aa472285dff9d6c2a189d5e/raw"
-displayURL = "https://www.curseforge.com/minecraft/mc-mods/travelers-backpack"
-authors = "${mod_authors}" #optional
-description = '''${mod_description}'''
+[[mods]]
+    modId = "${mod_id}"
+    version = "${mod_version}"
+    displayName = "${mod_display_name}"
+    displayURL = "${mod_display_url}"
+    authors = "${mod_authors}"
+    description = '''${mod_description}'''
+    logoFile = "assets/${mod_id}/textures/logo.png"
 
 [[accessTransformers]]
-file = "META-INF/accesstransformer.cfg"
+    file = "META-INF/accesstransformer.cfg"
 
 [[mixins]]
-config = "META-INF/travelersbackpack.mixins.json"
-
-[[dependencies.${ mod_id }]] #optional
-modId = "neoforge" #mandatory
-type = "required" #mandatory
-versionRange = "${neo_version_range}" #mandatory
-ordering = "NONE"
-side = "BOTH"
+    config = "META-INF/travelersbackpack.mixins.json"
 
 [[dependencies.${ mod_id }]]
-modId = "minecraft"
-type = "required"
-versionRange = "${minecraft_version_range}"
-ordering = "NONE"
-side = "BOTH"
+    modId = "neoforge"
+    type = "required"
+    versionRange="[${neo_version},)"
+    ordering = "NONE"
+    side = "BOTH"
+
+[[dependencies.${ mod_id }]]
+    modId = "minecraft"
+    type = "required"
+    versionRange = "${minecraft_version_range}"
+    ordering = "NONE"
+    side = "BOTH"

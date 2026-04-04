@@ -39,7 +39,7 @@ public class BackpackCraftingGridProvider implements CraftingGridProvider {
     @Override
     public void buildCraftingGrids(CraftingGridBuilder craftingGridBuilder, AbstractContainerMenu abstractContainerMenu) {
         if(abstractContainerMenu instanceof BackpackBaseMenu backpackMenu) {
-            craftingGridBuilder.addGrid(backpackMenu.CRAFTING_GRID_START, 9).setButtonAlignment(ButtonAlignment.RIGHT)
+            craftingGridBuilder.addGrid(backpackMenu.CRAFTING_GRID_START, 3, 3).setButtonAlignment(ButtonAlignment.RIGHT)
                     .clearHandler(this::clearGrid).rotateHandler(this::rotateGrid)
                     .balanceHandler(new BackpackBalanceGridHandler()).transferHandler(new BackpackTransferGridHandler())
                     .hideAllTweakButtons();
