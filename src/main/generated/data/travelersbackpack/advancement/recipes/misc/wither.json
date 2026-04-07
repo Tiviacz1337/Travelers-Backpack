@@ -6,22 +6,11 @@
         "recipe": "travelersbackpack:wither"
       },
       "trigger": "minecraft:recipe_unlocked"
-    },
-    "has_wither_skeleton_skull": {
-      "conditions": {
-        "items": [
-          {
-            "items": "minecraft:wither_skeleton_skull"
-          }
-        ]
-      },
-      "trigger": "minecraft:inventory_changed"
     }
   },
   "requirements": [
     [
-      "has_the_recipe",
-      "has_wither_skeleton_skull"
+      "has_the_recipe"
     ]
   ],
   "rewards": {

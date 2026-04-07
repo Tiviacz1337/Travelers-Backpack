@@ -1,16 +1,6 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_magma_cream": {
-      "conditions": {
-        "items": [
-          {
-            "items": "minecraft:magma_cream"
-          }
-        ]
-      },
-      "trigger": "minecraft:inventory_changed"
-    },
     "has_the_recipe": {
       "conditions": {
         "recipe": "travelersbackpack:magma_cube"
@@ -20,8 +10,7 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
-      "has_magma_cream"
+      "has_the_recipe"
     ]
   ],
   "rewards": {
