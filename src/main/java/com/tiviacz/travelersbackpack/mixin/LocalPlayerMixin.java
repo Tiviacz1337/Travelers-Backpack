@@ -26,7 +26,7 @@ public abstract class LocalPlayerMixin {
             Options settings = Minecraft.getInstance().options;
             input.keyPresses = new Input(KeybindHandler.isKeyDown(settings.keyUp), KeybindHandler.isKeyDown(settings.keyDown), KeybindHandler.isKeyDown(settings.keyLeft), KeybindHandler.isKeyDown(settings.keyRight), KeybindHandler.isKeyDown(settings.keyJump), KeybindHandler.isKeyDown(settings.keyShift), KeybindHandler.isKeyDown(settings.keySprint));
             input.moveVector = new Vec2(input.keyPresses.left() == input.keyPresses.right() ? 0.0F : (input.keyPresses.left() ? 1.0F : -1.0F), input.keyPresses.forward() == input.keyPresses.backward() ? 0.0F : (input.keyPresses.forward() ? 1.0F : -1.0F));
-            if (Minecraft.getInstance().player.isMovingSlowly()) {
+            if(Minecraft.getInstance().player.isMovingSlowly()) {
                 input.moveVector = new Vec2((float)((double)input.moveVector.x * 0.3), (float)((double)input.moveVector.y * 0.3));
             }
         }

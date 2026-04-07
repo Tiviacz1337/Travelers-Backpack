@@ -3,7 +3,6 @@ package com.tiviacz.travelersbackpack.inventory.upgrades.tanks;
 import com.mojang.datafixers.util.Pair;
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetBase;
-import com.tiviacz.travelersbackpack.components.BackpackContainerContents;
 import com.tiviacz.travelersbackpack.components.Fluids;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
@@ -15,16 +14,19 @@ import com.tiviacz.travelersbackpack.inventory.menu.slot.FluidSlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.SlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
+import com.tiviacz.travelersbackpack.util.ContainerContentsHelper;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.PotionItem;
+import net.minecraft.world.item.component.ItemContainerContents;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,10 +69,12 @@ public class TanksUpgrade extends UpgradeBase<TanksUpgrade> {
 
     public void syncClients(ItemStack backpack) {
         int slot = getDataHolderSlot();
-        BackpackContainerContents contents = backpack.get(ModDataComponents.UPGRADES);
+        ItemContainerContents contents = backpack.get(ModDataComponents.UPGRADES);
+        int upgradesSize = backpack.get(ModDataComponents.UPGRADE_SLOTS);
         if(contents == null) return;
-        if(slot >= contents.getItems().size()) return;
-        ItemStack stack = contents.getItems().get(slot);
+        NonNullList<ItemStack> stacks = ContainerContentsHelper.getItems(contents, upgradesSize);
+        if(slot >= stacks.size()) return;
+        ItemStack stack = stacks.get(slot);
         setFluids(stack.getOrDefault(ModDataComponents.FLUIDS, Fluids.empty()));
     }
 

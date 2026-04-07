@@ -1,31 +1,6 @@
 package com.tiviacz.travelersbackpack.compat.accessories;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.tiviacz.travelersbackpack.client.model.StackModelPart;
-import com.tiviacz.travelersbackpack.client.renderer.BackpackLayer;
-import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
-import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
-import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
-import io.wispforest.accessories.api.AccessoriesAPI;
-import io.wispforest.accessories.api.client.AccessoriesRenderStateKeys;
-import io.wispforest.accessories.api.client.AccessoriesRendererRegistry;
-import io.wispforest.accessories.api.client.AccessoryRenderState;
-import io.wispforest.accessories.api.client.renderers.SimpleAccessoryRenderer;
-import io.wispforest.accessories.api.core.Accessory;
-import io.wispforest.accessories.api.slot.SlotReference;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.model.player.PlayerModel;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.entity.state.AvatarRenderState;
-import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
-import net.minecraft.client.renderer.item.ItemStackRenderState;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-
-public class TravelersBackpackAccessory implements Accessory {
+/*public class TravelersBackpackAccessory implements Accessory {
     public static void init() {
         BuiltInRegistries.ITEM.stream()
                 .filter(item -> item instanceof TravelersBackpackItem)
@@ -75,4 +50,4 @@ public class TravelersBackpackAccessory implements Accessory {
 
         }
     }
-}
+}*/

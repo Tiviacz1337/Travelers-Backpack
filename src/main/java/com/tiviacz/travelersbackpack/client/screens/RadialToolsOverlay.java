@@ -10,7 +10,7 @@ import com.tiviacz.travelersbackpack.item.BackpackTankItem;
 import com.tiviacz.travelersbackpack.item.HoseItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
@@ -35,7 +35,7 @@ public final class RadialToolsOverlay {
     //Client only indicator to draw or nah
     public static boolean drawCrosshair = true;
 
-    public static int renderRadial(GuiGraphics guiGraphics, ItemStack backpack, ItemStack heldItem, NonNullList<ItemStack> tools, boolean canAdd, int centerX, int centerY, int mouseX, int mouseY, float partialTick, float openProgress) {
+    public static int renderRadial(GuiGraphicsExtractor guiGraphics, ItemStack backpack, ItemStack heldItem, NonNullList<ItemStack> tools, boolean canAdd, int centerX, int centerY, int mouseX, int mouseY, float partialTick, float openProgress) {
         drawCrosshair = true;
         if(tools == null) return -1;
 
@@ -72,7 +72,7 @@ public final class RadialToolsOverlay {
         return result;
     }
 
-    public static int renderRadialItems(GuiGraphics guiGraphics, ItemStack backpack, NonNullList<ItemStack> tools, boolean canAdd, boolean handEmpty, ArrayList<Integer> segToSlot, int plusSlot, int centerX, int centerY, int mouseX, int mouseY) {
+    public static int renderRadialItems(GuiGraphicsExtractor guiGraphics, ItemStack backpack, NonNullList<ItemStack> tools, boolean canAdd, boolean handEmpty, ArrayList<Integer> segToSlot, int plusSlot, int centerX, int centerY, int mouseX, int mouseY) {
         Minecraft mc = Minecraft.getInstance();
         Font font = mc.font;
 
@@ -113,8 +113,8 @@ public final class RadialToolsOverlay {
                 renderPlusButton(guiGraphics, font, x, y);
             } else {
                 ItemStack stack = tools.get(slot);
-                guiGraphics.renderItem(stack, x, y);
-                guiGraphics.renderItemDecorations(font, stack, x, y);
+                guiGraphics.item(stack, x, y);
+                guiGraphics.itemDecorations(font, stack, x, y);
             }
         }
 
@@ -214,7 +214,7 @@ public final class RadialToolsOverlay {
         return idx;
     }
 
-    private static void renderCenteredText(GuiGraphics guiGraphics, Component text, int centerX, int centerY) {
+    private static void renderCenteredText(GuiGraphicsExtractor guiGraphics, Component text, int centerX, int centerY) {
         drawCrosshair = false;
         Font textRenderer = Minecraft.getInstance().font;
         int textWidth = textRenderer.width(text);
@@ -224,11 +224,11 @@ public final class RadialToolsOverlay {
         int textY = centerY - textHeight / 2;
 
         guiGraphics.enableScissor(textX, textY, textX + 40, textY + 40);
-        guiGraphics.drawString(Minecraft.getInstance().font, text, textX, textY, 0xFFFFFFFF, true);
+        guiGraphics.text(Minecraft.getInstance().font, text, textX, textY, 0xFFFFFFFF, true);
         guiGraphics.disableScissor();
     }
 
-    private static void renderPlusButton(GuiGraphics guiGraphics, Font font, int x, int y) {
+    private static void renderPlusButton(GuiGraphicsExtractor guiGraphics, Font font, int x, int y) {
         String plus = "+";
         float s = 1.25F;
 
@@ -247,19 +247,19 @@ public final class RadialToolsOverlay {
         guiGraphics.pose().pushMatrix();
         guiGraphics.pose().translate(0.5F, 1.5F);
         guiGraphics.enableScissor(px, py, px + 8, py + 8);
-        guiGraphics.drawString(font, plus, px, py, 0xFFFFFFFF, false);
+        guiGraphics.text(font, plus, px, py, 0xFFFFFFFF, false);
         guiGraphics.disableScissor();
         guiGraphics.pose().popMatrix();
 
         guiGraphics.pose().popMatrix();
     }
 
-    private static void renderCenteredItem(GuiGraphics guiGraphics, Font font, ItemStack stack, int centerX, int centerY, float scale) {
+    private static void renderCenteredItem(GuiGraphicsExtractor guiGraphics, Font font, ItemStack stack, int centerX, int centerY, float scale) {
         guiGraphics.pose().pushMatrix();
         guiGraphics.pose().translate(centerX, centerY);
         guiGraphics.pose().scale(scale, scale);
-        guiGraphics.renderItem(stack, -8, -8);
-        guiGraphics.renderItemDecorations(font, stack, -8, -8);
+        guiGraphics.item(stack, -8, -8);
+        guiGraphics.itemDecorations(font, stack, -8, -8);
         guiGraphics.pose().popMatrix();
     }
 

@@ -25,9 +25,7 @@ public record ClientboundSyncComponentsPacket(int entityID, DataComponentMap map
     public static void handle(ClientboundSyncComponentsPacket message, ClientPlayNetworking.Context ctx) {
         ctx.client().execute(() -> {
             Player player = (Player)Minecraft.getInstance().player.level().getEntity(message.entityID);
-            AttachmentUtils.getAttachment(player).ifPresent(attachment -> {
-                attachment.applyComponents(message.map());
-            });
+            AttachmentUtils.getAttachment(player).ifPresent(attachment -> attachment.applyComponents(message.map()));
         });
     }
 

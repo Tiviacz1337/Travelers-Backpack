@@ -4,7 +4,7 @@ import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
 import com.tiviacz.travelersbackpack.init.ModScreenHandlerTypes;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackSettingsMenu;
 import com.tiviacz.travelersbackpack.util.Reference;
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
+import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -15,7 +15,7 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 public record BackpackSettingsContainer(ItemStack stack, Player player, int screenID,
-                                        int index) implements ExtendedScreenHandlerFactory<ModScreenHandlerTypes.SettingsScreenData> {
+                                        int index) implements ExtendedMenuProvider<ModScreenHandlerTypes.SettingsScreenData> {
     @Override
     public ModScreenHandlerTypes.SettingsScreenData getScreenOpeningData(ServerPlayer serverPlayer) {
         return new ModScreenHandlerTypes.SettingsScreenData(false, screenID, BlockPos.ZERO, index);

@@ -1,18 +1,6 @@
 package com.tiviacz.travelersbackpack.compat.toughasnails;
 
-import com.tiviacz.travelersbackpack.api.fluids.EffectFluid;
-import com.tiviacz.travelersbackpack.inventory.FluidVariantWrapper;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.material.Fluids;
-import toughasnails.api.potion.TANEffects;
-import toughasnails.api.thirst.IThirst;
-import toughasnails.api.thirst.ThirstHelper;
-import toughasnails.init.ModConfig;
-
-public class ToughAsNailsWaterCanteenEffect extends EffectFluid {
+/*public class ToughAsNailsWaterCanteenEffect extends EffectFluid {
     public ToughAsNailsWaterCanteenEffect() {
         super("toughasnails:water_canteen", Fluids.WATER, 200);
     }
@@ -28,7 +16,7 @@ public class ToughAsNailsWaterCanteenEffect extends EffectFluid {
                 float drink_poison_chance = 0.25F;
                 thirst.drink(drink_thirst, drink_hydration);
 
-                if(level.random.nextFloat() < drink_poison_chance) {
+                if(level.getRandom().nextFloat() < drink_poison_chance) {
                     player.addEffect(new MobEffectInstance(TANEffects.THIRST, 600));
                 }
             }
@@ -41,3 +29,4 @@ public class ToughAsNailsWaterCanteenEffect extends EffectFluid {
     }
 }
 
+*/

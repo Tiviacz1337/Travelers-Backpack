@@ -2,13 +2,10 @@ package com.tiviacz.travelersbackpack.inventory.upgrades.feeding;
 
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.client.screens.widgets.FilterUpgradeWidgetBase;
-import com.tiviacz.travelersbackpack.client.screens.widgets.UpgradeWidgetBase;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.inventory.upgrades.filter.ButtonStates;
 import com.tiviacz.travelersbackpack.inventory.upgrades.filter.FilterButton;
-import com.tiviacz.travelersbackpack.network.ServerboundFilterSettingsPacket;
-import com.tiviacz.travelersbackpack.util.PacketDistributor;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 
 import java.util.List;
@@ -27,7 +24,7 @@ public class FeedingWidget extends FilterUpgradeWidgetBase<FeedingWidget, Feedin
     }
 
     @Override
-    public void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    public void renderTooltip(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         super.renderTooltip(guiGraphics, mouseX, mouseY);
 
         if(isTabOpened()) {

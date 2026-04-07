@@ -3,7 +3,6 @@ package com.tiviacz.travelersbackpack.compat.jei;
 import com.tiviacz.travelersbackpack.common.recipes.BackpackUpgradeRecipe;
 import mezz.jei.api.gui.builder.IIngredientAcceptor;
 import mezz.jei.api.recipe.category.extensions.vanilla.smithing.ISmithingCategoryExtension;
-import mezz.jei.library.util.RecipeUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.ItemStack;
@@ -40,23 +39,23 @@ public class BackpackUpgradeCategoryExtension implements ISmithingCategoryExtens
         Ingredient baseIngredient = recipe.baseIngredient();
         Optional<Ingredient> additionIngredient = recipe.additionIngredient();
         Minecraft minecraft = Minecraft.getInstance();
-        ContextMap contextmap = SlotDisplayContext.fromLevel((Level)Objects.requireNonNull(minecraft.level));
-        List<ItemStack> templateStacks = (List)templateIngredient.map((i) -> i.display().resolveForStacks(contextmap)).orElse(List.of(ItemStack.EMPTY));
-        if (templateStacks.isEmpty()) {
+        ContextMap contextmap = SlotDisplayContext.fromLevel(Objects.requireNonNull(minecraft.level));
+        List<ItemStack> templateStacks = templateIngredient.map((i) -> i.display().resolveForStacks(contextmap)).orElse(List.of(ItemStack.EMPTY));
+        if(templateStacks.isEmpty()) {
             templateStacks = List.of(ItemStack.EMPTY);
         }
 
         List<ItemStack> baseStacks = baseIngredient.display().resolveForStacks(contextmap);
-        if (baseStacks.isEmpty()) {
+        if(baseStacks.isEmpty()) {
             baseStacks = List.of(ItemStack.EMPTY);
         }
 
-        ItemStack addition = (ItemStack)additionIngredient.map((i) -> i.display().resolveForFirstStack(contextmap)).orElse(ItemStack.EMPTY);
+        ItemStack addition = additionIngredient.map((i) -> i.display().resolveForFirstStack(contextmap)).orElse(ItemStack.EMPTY);
 
         for(ItemStack template : templateStacks) {
             for(ItemStack base : baseStacks) {
                 SmithingRecipeInput recipeInput = new SmithingRecipeInput(template, base, addition);
-                ItemStack output = RecipeUtil.assembleResultItem(recipeInput, recipe);
+                ItemStack output = recipe.assemble(recipeInput);
                 ingredientAcceptor.add(output);
             }
         }

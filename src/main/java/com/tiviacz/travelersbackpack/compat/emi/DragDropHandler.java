@@ -1,23 +1,6 @@
 package com.tiviacz.travelersbackpack.compat.emi;
 
-import com.google.common.collect.Maps;
-import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
-import com.tiviacz.travelersbackpack.common.ServerActions;
-import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
-import com.tiviacz.travelersbackpack.inventory.menu.slot.FilterSlotItemHandler;
-import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
-import dev.emi.emi.api.EmiDragDropHandler;
-import dev.emi.emi.api.stack.EmiIngredient;
-import dev.emi.emi.api.stack.EmiStack;
-import dev.emi.emi.api.widget.Bounds;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.world.item.ItemStack;
-
-import java.util.Map;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-
-public class DragDropHandler implements EmiDragDropHandler<BackpackScreen> {
+/*public class DragDropHandler implements EmiDragDropHandler<BackpackScreen> {
     private final BiFunction<BackpackScreen, EmiIngredient, Map<Bounds, Consumer<EmiIngredient>>> bounds;
 
     public DragDropHandler() {
@@ -57,9 +40,9 @@ public class DragDropHandler implements EmiDragDropHandler<BackpackScreen> {
     }
 
     @Override
-    public void render(BackpackScreen screen, EmiIngredient dragged, GuiGraphics draw, int mouseX, int mouseY, float delta) {
+    public void render(BackpackScreen screen, EmiIngredient dragged, GuiGraphicsExtractor draw, int mouseX, int mouseY, float delta) {
         for(Bounds b : this.bounds.apply(screen, dragged).keySet()) {
             draw.fill(b.x(), b.y(), b.x() + b.width(), b.y() + b.height(), 0x8822BB33);
         }
     }
-}
+}*/

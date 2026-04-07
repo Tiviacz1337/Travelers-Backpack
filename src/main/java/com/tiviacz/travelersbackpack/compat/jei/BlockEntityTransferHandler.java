@@ -16,8 +16,6 @@ import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Optional;
-
 public class BlockEntityTransferHandler extends BasicRecipeTransferHandler<BackpackBlockEntityMenu, RecipeHolder<CraftingRecipe>> {
     public BlockEntityTransferHandler(IConnectionToServer serverConnection, IStackHelper stackHelper, IRecipeTransferHandlerHelper handlerHelper, IRecipeTransferInfo<BackpackBlockEntityMenu, RecipeHolder<CraftingRecipe>> transferInfo) {
         super(serverConnection, stackHelper, handlerHelper, transferInfo);

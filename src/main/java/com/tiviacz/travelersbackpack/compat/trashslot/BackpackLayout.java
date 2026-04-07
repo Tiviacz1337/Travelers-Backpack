@@ -1,19 +1,6 @@
 package com.tiviacz.travelersbackpack.compat.trashslot;
 
-import com.google.common.collect.Lists;
-import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
-import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetBase;
-import net.blay09.mods.balm.mixin.AbstractContainerScreenAccessor;
-import net.blay09.mods.trashslot.api.SlotRenderStyle;
-import net.blay09.mods.trashslot.api.Snap;
-import net.blay09.mods.trashslot.client.gui.layout.SimpleGuiContainerLayout;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.renderer.Rect2i;
-
-import java.util.ArrayList;
-import java.util.List;
-
-public class BackpackLayout extends SimpleGuiContainerLayout {
+/*public class BackpackLayout extends SimpleGuiContainerLayout {
     public static final int PLAYER_INVENTORY_WIDTH = 14 + 18 * 9;
 
     public BackpackLayout() {
@@ -174,4 +161,4 @@ public class BackpackLayout extends SimpleGuiContainerLayout {
         }
         return super.getContainerId(screen);
     }
-}
+}*/

@@ -3,7 +3,6 @@ package com.tiviacz.travelersbackpack.client.screens;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.datafixers.util.Pair;
 import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
-import com.tiviacz.travelersbackpack.components.BackpackContainerContents;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.handlers.KeybindHandler;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
@@ -12,8 +11,9 @@ import com.tiviacz.travelersbackpack.inventory.Tiers;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.ToolSlotItemHandler;
 import com.tiviacz.travelersbackpack.item.HoseItem;
 import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
+import com.tiviacz.travelersbackpack.util.ContainerContentsHelper;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.core.NonNullList;
@@ -21,6 +21,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.ItemContainerContents;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.List;
@@ -53,12 +54,12 @@ public class ToolsScreen extends Screen {
     }
 
     @Override
-    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    public void extractBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
         //Skip
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         Minecraft mc = Minecraft.getInstance();
         Player player = mc.player;
 
@@ -79,7 +80,7 @@ public class ToolsScreen extends Screen {
             return;
         }
 
-        NonNullList<ItemStack> tools = backpack.getOrDefault(ModDataComponents.TOOLS_CONTAINER, new BackpackContainerContents(backpack.getOrDefault(ModDataComponents.TOOL_SLOTS, Tiers.LEATHER.getToolSlots()))).getItems();
+        NonNullList<ItemStack> tools = ContainerContentsHelper.getItems(backpack.getOrDefault(ModDataComponents.TOOLS_CONTAINER, ItemContainerContents.EMPTY), backpack.getOrDefault(ModDataComponents.TOOL_SLOTS, Tiers.LEATHER.getToolSlots()));
         int nonEmptyCount = getNonEmptyTools(tools).size();
 
         boolean canAdd = ToolSlotItemHandler.isValid(heldItem) && nonEmptyCount < tools.size();
@@ -123,12 +124,12 @@ public class ToolsScreen extends Screen {
             if(hoveredResult == 1) mode = 3;
             if(hoveredResult == 4) mode = 2;
             ServerboundActionTagPacket.create(ServerboundActionTagPacket.SWITCH_HOSE_MODE, mode);
-            player.displayClientMessage(getNextModeMessage(0, mode), true);
+            player.sendOverlayMessage(getNextModeMessage(0, mode));
         }
         if(hoveredResult == 2 || hoveredResult == 3) {
             int tank = hoveredResult == 2 ? 2 : 1;
             ServerboundActionTagPacket.create(ServerboundActionTagPacket.SWITCH_HOSE_TANK, tank);
-            player.displayClientMessage(getNextModeMessage(1, tank), true);
+            player.sendOverlayMessage(getNextModeMessage(1, tank));
         }
     }
 

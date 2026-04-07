@@ -7,7 +7,10 @@ import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.UpgradeManager;
 import com.tiviacz.travelersbackpack.inventory.handler.ItemStackHandler;
-import com.tiviacz.travelersbackpack.inventory.upgrades.*;
+import com.tiviacz.travelersbackpack.inventory.upgrades.FilterUpgradeBase;
+import com.tiviacz.travelersbackpack.inventory.upgrades.IEnable;
+import com.tiviacz.travelersbackpack.inventory.upgrades.ITickableUpgrade;
+import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.inventory.upgrades.filter.FilterHandler;
 import com.tiviacz.travelersbackpack.util.InventoryHelper;
 import com.tiviacz.travelersbackpack.util.Reference;
@@ -26,6 +29,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.Nullable;
@@ -75,9 +79,8 @@ public class FeedingUpgrade extends FilterUpgradeBase<FeedingUpgrade, FeedingFil
         return new FilterHandler(stacks, size) {
             @Override
             protected void onContentsChanged(int slot) {
-                updateDataHolderUnchecked(ModDataComponents.BACKPACK_CONTAINER, InventoryHelper.itemsToList(size, filter));
-
-                getFilterSettings().updateFilter(getDataHolderStack().get(ModDataComponents.BACKPACK_CONTAINER).getItems());
+                updateDataHolderUnchecked(ModDataComponents.BACKPACK_CONTAINER, ItemContainerContents.fromItems(filter.stacks));
+                getFilterSettings().updateFilter(filter.stacks);
             }
 
             @Override
@@ -155,9 +158,9 @@ public class FeedingUpgrade extends FilterUpgradeBase<FeedingUpgrade, FeedingFil
                 player.getInventory().getNonEquipmentItems().set(player.getInventory().getSelectedSlot(), mainHandItem);
 
                 stack.shrink(1);
-                backpackStorage.setStackInSlot(slot, stack); //#TODO?
+                backpackStorage.setStackInSlot(slot, stack);
 
-                ItemStack resultItem = singleItemCopy.finishUsingItem(level, player); //EventHooks.onItemUseFinish(player, singleItemCopy, 0, singleItemCopy.getItem().finishUsingItem(singleItemCopy, level, player));
+                ItemStack resultItem = singleItemCopy.finishUsingItem(level, player);
                 if(!resultItem.isEmpty()) {
                     ItemStack insertResult = InventoryHelper.addItemStackToHandler(backpackStorage, resultItem, false);
                     if(!insertResult.isEmpty()) {

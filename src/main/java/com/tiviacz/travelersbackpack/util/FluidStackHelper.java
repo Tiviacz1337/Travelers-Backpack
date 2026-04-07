@@ -54,7 +54,7 @@ public class FluidStackHelper {
     }
 
     public static PotionContents getPotionTypeFromFluidVariant(FluidVariant variant) {
-        return variant.getComponents().get(DataComponents.POTION_CONTENTS).get();
+        return variant.getComponents().get(DataComponents.POTION_CONTENTS);
     }
 
     public static ItemStack getItemStackFromFluidStack(FluidVariant variant) {

@@ -7,7 +7,7 @@ import com.tiviacz.travelersbackpack.compat.craftingtweaks.BackpackCraftingGridA
 import com.tiviacz.travelersbackpack.compat.craftingtweaks.ICraftingTweaks;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.inventory.upgrades.ResultArrowElement;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 
@@ -26,7 +26,7 @@ public class CraftingWidget extends UpgradeWidgetBase<CraftingUpgrade> {
     }
 
     @Override
-    public void renderBg(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY) {
+    public void renderBg(GuiGraphicsExtractor guiGraphics, int x, int y, int mouseX, int mouseY) {
         if(isTabOpened()) {
             if(isCraftingTweaksAdditionEnabled()) {
                 guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BackpackScreen.TABS, pos.x(), pos.y(), tabUv.x(), tabUv.y(), width - 19, height, 256, 256);
@@ -34,13 +34,13 @@ public class CraftingWidget extends UpgradeWidgetBase<CraftingUpgrade> {
             } else {
                 guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BackpackScreen.TABS, pos.x(), pos.y(), tabUv.x(), tabUv.y(), width, height, 256, 256);
             }
-            guiGraphics.renderItem(screen.getWrapper().getUpgrades().getStackInSlot(this.dataHolderSlot), pos.x() + 4, pos.y() + 4);
+            guiGraphics.item(screen.getWrapper().getUpgrades().getStackInSlot(this.dataHolderSlot), pos.x() + 4, pos.y() + 4);
         }
         this.resultArrowElement.renderBg(guiGraphics, x, y, mouseX, mouseY);
     }
 
     @Override
-    public void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    public void renderTooltip(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         super.renderTooltip(guiGraphics, mouseX, mouseY);
         this.resultArrowElement.renderTooltip(guiGraphics, mouseX, mouseY);
     }

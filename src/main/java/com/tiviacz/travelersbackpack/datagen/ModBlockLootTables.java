@@ -3,8 +3,8 @@ package com.tiviacz.travelersbackpack.datagen;
 import com.tiviacz.travelersbackpack.blocks.SleepingBagBlock;
 import com.tiviacz.travelersbackpack.init.ModBlocks;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootSubProvider;
 import net.minecraft.advancements.criterion.StatePropertiesPredicate;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
@@ -21,8 +21,8 @@ import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 
 import java.util.concurrent.CompletableFuture;
 
-public class ModBlockLootTables extends FabricBlockLootTableProvider {
-    protected ModBlockLootTables(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> holderLookupProvidr) {
+public class ModBlockLootTables extends FabricBlockLootSubProvider {
+    protected ModBlockLootTables(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> holderLookupProvidr) {
         super(output, holderLookupProvidr);
     }
 

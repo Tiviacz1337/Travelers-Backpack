@@ -27,7 +27,7 @@ public class InventoryScroll extends ScrollPanel {
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
         boolean ret = super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
-        screen.setScrollAmount((int)scrollDistance / 18); //.scrollAmount = (int)scrollDistance / 18;
+        screen.setScrollAmount((int)scrollDistance / 18);
         screen.updateBackpackSlotsPosition();
         return ret;
     }
@@ -35,7 +35,7 @@ public class InventoryScroll extends ScrollPanel {
     @Override
     public boolean mouseDragged(MouseButtonEvent event, double deltaX, double deltaY) {
         boolean ret = super.mouseDragged(event, deltaX, deltaY);
-        screen.setScrollAmount((int)scrollDistance / 18); // = (int)scrollDistance / 18;
+        screen.setScrollAmount((int)scrollDistance / 18);
         screen.updateBackpackSlotsPosition();
         return ret;
     }

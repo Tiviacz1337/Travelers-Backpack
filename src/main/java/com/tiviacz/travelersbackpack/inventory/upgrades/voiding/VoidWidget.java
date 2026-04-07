@@ -17,7 +17,7 @@ import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;
 import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
 import com.tiviacz.travelersbackpack.util.TextUtils;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
@@ -28,7 +28,6 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class VoidWidget extends FilterUpgradeWidgetBase<VoidWidget, VoidUpgrade> {
     private static final Identifier TRASH_UPGRADE = Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "textures/item/void_upgrade.png");
@@ -56,7 +55,7 @@ public class VoidWidget extends FilterUpgradeWidgetBase<VoidWidget, VoidUpgrade>
     }
 
     @Override
-    public void renderBg(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY) {
+    public void renderBg(GuiGraphicsExtractor guiGraphics, int x, int y, int mouseX, int mouseY) {
         super.renderBg(guiGraphics, x, y, mouseX, mouseY);
         this.renderMatchContentsSlotOverlay(guiGraphics, upgrade.getFilter(), VoidFilterSettings.ALLOW_MODE, VoidFilterSettings.MATCH_CONTENTS, TravelersBackpackConfig.SERVER.backpackUpgrades.voidUpgradeSettings.filterSlotCount.get());
 
@@ -73,7 +72,7 @@ public class VoidWidget extends FilterUpgradeWidgetBase<VoidWidget, VoidUpgrade>
     }
 
     @Override
-    public void renderUnderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void renderUnderTooltip(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.renderUnderTooltip(guiGraphics, mouseX, mouseY, partialTicks);
 
         //Highlight slot under mouse
@@ -87,7 +86,7 @@ public class VoidWidget extends FilterUpgradeWidgetBase<VoidWidget, VoidUpgrade>
     }
 
     @Override
-    public void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    public void renderTooltip(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         super.renderTooltip(guiGraphics, mouseX, mouseY);
 
         if(isTabOpened()) {
@@ -116,7 +115,7 @@ public class VoidWidget extends FilterUpgradeWidgetBase<VoidWidget, VoidUpgrade>
     }
 
     @Override
-    public void renderOnTop(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void renderOnTop(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.renderOnTop(guiGraphics, mouseX, mouseY, partialTicks);
         if(isTabOpened()) {
             this.tickAnimation = isHoveringWithTrashBin() || isWithinTrashBinSlot(mouseX, mouseY);
@@ -184,9 +183,7 @@ public class VoidWidget extends FilterUpgradeWidgetBase<VoidWidget, VoidUpgrade>
                     return true;
                 }
             }
-            if(!isWithinTrashBinSlot(event.x(), event.y())) {
-                return true;
-            }
+            return !isWithinTrashBinSlot(event.x(), event.y());
         }
         return false;
     }
@@ -216,15 +213,13 @@ public class VoidWidget extends FilterUpgradeWidgetBase<VoidWidget, VoidUpgrade>
                 return false;
             }
             if(canSelectSlot(slot)) {
-                if(BackpackSettingsScreen.selectSlotsIndex(this.selectedSlots, this.hoveringTrashBin, slot, button)) {
-                    return true;
-                }
+                return BackpackSettingsScreen.selectSlotsIndex(this.selectedSlots, this.hoveringTrashBin, slot, button);
             }
         }
         return false;
     }
 
-    public void drawRedTankHighlight(GuiGraphics guiGraphics, int x, int y, boolean inTank, int height, int tankIndex) {
+    public void drawRedTankHighlight(GuiGraphicsExtractor guiGraphics, int x, int y, boolean inTank, int height, int tankIndex) {
         //Render red highlight if hovering with trash bin
         if(isHoveringWithTrashBin()) {
             boolean flag = inTank;
@@ -237,21 +232,21 @@ public class VoidWidget extends FilterUpgradeWidgetBase<VoidWidget, VoidUpgrade>
         }
     }
 
-    public void drawRedHighlight(GuiGraphics guiGraphics, Slot slot) {
+    public void drawRedHighlight(GuiGraphicsExtractor guiGraphics, Slot slot) {
         guiGraphics.fill(screen.getGuiLeft() + slot.x, screen.getGuiTop() + slot.y, screen.getGuiLeft() + slot.x + 16, screen.getGuiTop() + slot.y + 16, RED_HIGHLIGHT_COLOR);
     }
 
-    public void renderRedDownArrow(GuiGraphics guiGraphics, int x, int y) {
+    public void renderRedDownArrow(GuiGraphicsExtractor guiGraphics, int x, int y) {
         guiGraphics.fill(x, y + 2, x + 2, y + 5, RED_ARROW_COLOR);
         guiGraphics.fill(x - 2, y + 5, x + 4, y + 6, RED_ARROW_COLOR);
         guiGraphics.fill(x - 1, y + 6, x + 3, y + 7, RED_ARROW_COLOR);
         guiGraphics.fill(x, y + 7, x + 2, y + 8, RED_ARROW_COLOR);
     }
 
-    public void renderTrashBinAnimation(GuiGraphics guiGraphics, int x, int y, int color) {
+    public void renderTrashBinAnimation(GuiGraphicsExtractor guiGraphics, int x, int y, int color) {
         this.tickAnimation();
         float time = (float)(System.currentTimeMillis() % 2000) / 1000.0F;
-        float f = (float) (Math.sin(time * Math.PI) * 1.0F + 1.0F);
+        float f = (float)(Math.sin(time * Math.PI) * 1.0F + 1.0F);
         guiGraphics.pose().pushMatrix();
         if(isHoveringWithTrashBin()) {
             guiGraphics.pose().rotateAbout(Axis.ZP.rotationDegrees(-12.5F + (f * 12.5F)).angle(), x, y);
@@ -260,7 +255,7 @@ public class VoidWidget extends FilterUpgradeWidgetBase<VoidWidget, VoidUpgrade>
         guiGraphics.pose().popMatrix();
     }
 
-    public void renderTrashBin(GuiGraphics guiGraphics, int x, int y, int color, float progress) {
+    public void renderTrashBin(GuiGraphicsExtractor guiGraphics, int x, int y, int color, float progress) {
         guiGraphics.pose().pushMatrix();
         guiGraphics.pose().rotateAbout(Axis.ZP.rotationDegrees(progress * 7.5F).angle(), x, y);
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TRASH_UPGRADE, x, y - (int)(1 * progress), 6, 4, 4, 1, 16, 16, color); //Top

@@ -21,6 +21,7 @@
   ],
   "client": [
     "AbstractContainerScreenMixin",
+    "GuiMixin",
     "HumanoidRenderStateMixin",
     "HumoanoidMobRenderer",
     "LocalPlayerMixin"

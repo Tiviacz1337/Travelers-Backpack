@@ -2,12 +2,11 @@ package com.tiviacz.travelersbackpack.item;
 
 import com.google.common.collect.Multimap;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
+import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
 import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
 import com.tiviacz.travelersbackpack.client.screens.tooltip.BackpackTooltipComponent;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.common.ServerActions;
-import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
-import com.tiviacz.travelersbackpack.components.BackpackContainerContents;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.entity.BackpackItemEntity;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
@@ -26,14 +25,11 @@ import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.cauldron.CauldronInteraction;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -52,12 +48,12 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
+import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
@@ -78,8 +74,6 @@ public class TravelersBackpackItem extends BlockItem {
 
     @Override
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
-        ItemStack itemstack = player.getItemInHand(hand);
-
         if(hand == InteractionHand.OFF_HAND || player.isCrouching()) {
             return InteractionResult.FAIL;
         }
@@ -131,7 +125,7 @@ public class TravelersBackpackItem extends BlockItem {
                         blockstate1.getBlock().setPlacedBy(level, blockpos, blockstate1, player, itemstack);
 
                         if(level.getBlockEntity(blockpos) instanceof BackpackBlockEntity blockEntity) {
-                            blockEntity.setBackpack(itemstack, level.registryAccess());
+                            blockEntity.setBackpack(itemstack);
                         }
 
                         if(player instanceof ServerPlayer serverPlayer) {
@@ -316,14 +310,16 @@ public class TravelersBackpackItem extends BlockItem {
     }
 
     public boolean hasCustomData(ItemStack stack) {
-        if(stack.getOrDefault(ModDataComponents.BACKPACK_CONTAINER, BackpackContainerContents.fromItems(0, List.of())).getItems().stream().anyMatch(itemStack -> !itemStack.isEmpty())) {
+        if(!stack.getOrDefault(ModDataComponents.BACKPACK_CONTAINER, ItemContainerContents.EMPTY).nonEmptyItemCopyStream().toList().isEmpty()) {
             return true;
         }
-        NonNullList<ItemStack> upgrades = stack.getOrDefault(ModDataComponents.UPGRADES, BackpackContainerContents.fromItems(0, List.of())).getItems();
+        List<ItemStack> list = stack.getOrDefault(ModDataComponents.UPGRADES, ItemContainerContents.EMPTY).nonEmptyItemCopyStream().toList();
+        NonNullList<ItemStack> upgrades = NonNullList.create();
+        upgrades.addAll(list);
         if(upgrades.stream().anyMatch(itemStack -> !itemStack.isEmpty() && !itemStack.is(ModItems.TANKS_UPGRADE)) && upgrades.stream().anyMatch(itemStack -> itemStack.is(ModItems.TANKS_UPGRADE))) {
             return true;
         }
-        if(stack.getOrDefault(ModDataComponents.TOOLS_CONTAINER, BackpackContainerContents.fromItems(0, List.of())).getItems().stream().anyMatch(itemStack -> !itemStack.isEmpty())) {
+        if(!stack.getOrDefault(ModDataComponents.TOOLS_CONTAINER, ItemContainerContents.EMPTY).nonEmptyItemCopyStream().toList().isEmpty()) {
             return true;
         }
         return stack.getOrDefault(ModDataComponents.TIER, 0) >= Tiers.DIAMOND.getOrdinal();
@@ -352,26 +348,5 @@ public class TravelersBackpackItem extends BlockItem {
     @Override
     public boolean canFitInsideContainerItems() {
         return false;
-    }
-
-    public static void registerCauldronInteraction() {
-        CauldronInteraction.WATER.map().put(ModItems.STANDARD_TRAVELERS_BACKPACK, TravelersBackpackItem::dyedItemIteration);
-    }
-
-    private static InteractionResult dyedItemIteration(
-            BlockState p_364488_, Level p_363832_, BlockPos p_363503_, Player p_362213_, InteractionHand p_360757_, ItemStack p_360363_
-    ) {
-        if(!p_360363_.is(ItemTags.DYEABLE)) {
-            return InteractionResult.TRY_WITH_EMPTY_HAND;
-        } else if(!p_360363_.has(DataComponents.DYED_COLOR)) {
-            return InteractionResult.TRY_WITH_EMPTY_HAND;
-        } else {
-            if(!p_363832_.isClientSide()) {
-                p_360363_.remove(DataComponents.DYED_COLOR);
-                LayeredCauldronBlock.lowerFillLevel(p_364488_, p_363832_, p_363503_);
-            }
-
-            return InteractionResult.SUCCESS;
-        }
     }
 }

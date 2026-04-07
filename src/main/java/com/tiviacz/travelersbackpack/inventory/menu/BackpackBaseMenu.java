@@ -2,7 +2,6 @@ package com.tiviacz.travelersbackpack.inventory.menu;
 
 import com.mojang.datafixers.util.Pair;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
-import com.tiviacz.travelersbackpack.compat.polymorph.PolymorphCompat;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.handler.ItemStackHandler;
@@ -23,7 +22,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.StackedItemContents;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -363,17 +362,17 @@ public class BackpackBaseMenu extends AbstractBackpackMenu {
     }
 
     @Override
-    protected void doClick(int pSlotId, int pButton, ClickType pClickType, Player pPlayer) {
+    protected void doClick(int pSlotId, int pButton, ContainerInput containerInput, Player pPlayer) {
         if(pSlotId >= 0 && pSlotId < this.slots.size() && this.slots.get(pSlotId) instanceof FilterSlotItemHandler filterSlot) {
-            if(getCarried().isEmpty() && pClickType == ClickType.PICKUP && pButton == 0) { //Remove item from filter slot
-                super.doClick(pSlotId, pButton, pClickType, pPlayer);
+            if(getCarried().isEmpty() && containerInput == ContainerInput.PICKUP && pButton == 0) { //Remove item from filter slot
+                super.doClick(pSlotId, pButton, containerInput, pPlayer);
             } else if(!getCarried().isEmpty() && filterSlot.mayPlace(getCarried())) { //Add item to filter slot
                 if(!filterSlot.hasItem()) {
                     filterSlot.set(getCarried().copyWithCount(1));
                 }
             }
         } else {
-            super.doClick(pSlotId, pButton, pClickType, pPlayer);
+            super.doClick(pSlotId, pButton, containerInput, pPlayer);
         }
     }
 
@@ -592,7 +591,7 @@ public class BackpackBaseMenu extends AbstractBackpackMenu {
             upgrade.craftSlots.checkChanges = false;
             RecipeHolder<CraftingRecipe> recipe = (RecipeHolder<CraftingRecipe>)upgrade.resultSlots.getRecipeUsed();
             while(recipe != null && recipe.value().matches(input, player.level())) {
-                ItemStack recipeOutput = recipe.value().assemble(input, player.level().registryAccess());
+                ItemStack recipeOutput = recipe.value().assemble(input);
                 if(recipeOutput.isEmpty()) {
                     throw new RuntimeException("A recipe matched but produced an empty output - Offending Recipe : " + recipe.id() + " - This is NOT a bug in Traveler's Backpack!");
                 }
@@ -649,27 +648,26 @@ public class BackpackBaseMenu extends AbstractBackpackMenu {
             RecipeHolder<CraftingRecipe> recipe = oldRecipe;
 
             if(TravelersBackpack.polymorphLoaded) {
-                if(PolymorphCompat.shouldResetRecipe(recipe, this, upgrade.craftSlots, world, player)) {
+                /*if(PolymorphCompat.shouldResetRecipe(recipe, this, upgrade.craftSlots, world, player)) {
                     recipe = null;
-                }
+                }*/
             }
 
             if(recipe == null || !recipe.value().matches(input, world)) {
                 if(TravelersBackpack.polymorphLoaded) {
-                    recipe = PolymorphCompat.getPolymorphedRecipe(this, upgrade.craftSlots, world, player);
+                    //recipe = PolymorphCompat.getPolymorphedRecipe(this, upgrade.craftSlots, world, player);
                 } else {
                     recipe = ((ServerLevel)world).recipeAccess().getRecipeFor(RecipeType.CRAFTING, input, world).orElse(null);
                 }
             }
 
-            if(recipe != null) itemstack = recipe.value().assemble(input, world.registryAccess());
+            if(recipe != null) itemstack = recipe.value().assemble(input);
 
             // Need to check if the output is empty, because if the recipe book is being used, the recipe will already be set.
             if(oldRecipe != recipe || upgrade.resultSlots.getItem(0).isEmpty()) {
                 for(Player user : getWrapper().getPlayersUsing().stream().filter(p -> p instanceof ServerPlayer).toList()) {
-                    PacketDistributor.sendToPlayer((ServerPlayer)user, new ClientboundUpdateRecipePacket(itemstack));
+                    PacketDistributor.sendToPlayer((ServerPlayer)user, new ClientboundUpdateRecipePacket(itemstack, recipe));
                 }
-                //PacketDistributor.sendToPlayer((ServerPlayer) player, new ClientboundUpdateRecipePacket(recipe, itemstack)); //(SeverPlayer)player
                 upgrade.resultSlots.setItem(0, itemstack);
                 upgrade.resultSlots.setRecipeUsed(recipe);
             } else if(recipe != null) {
@@ -677,9 +675,8 @@ public class BackpackBaseMenu extends AbstractBackpackMenu {
                 // annoying but... bleh
                 if(recipe.value().isSpecial() || !recipe.getClass().getName().startsWith("net.minecraft") && !ItemStack.matches(itemstack, upgrade.resultSlots.getItem(0))) {
                     for(Player user : getWrapper().getPlayersUsing().stream().filter(p -> p instanceof ServerPlayer).toList()) {
-                        PacketDistributor.sendToPlayer((ServerPlayer)user, new ClientboundUpdateRecipePacket(itemstack));
+                        PacketDistributor.sendToPlayer((ServerPlayer)user, new ClientboundUpdateRecipePacket(itemstack, recipe));
                     }
-                    //PacketDistributor.sendToPlayer((ServerPlayer) player, new ClientboundUpdateRecipePacket(recipe, itemstack)); //(SeverPlayer)player
                     upgrade.resultSlots.setItem(0, itemstack);
                     upgrade.resultSlots.setRecipeUsed(recipe);
                 }

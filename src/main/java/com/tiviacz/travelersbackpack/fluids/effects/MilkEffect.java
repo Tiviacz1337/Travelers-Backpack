@@ -16,7 +16,6 @@ public class MilkEffect extends EffectFluid {
     public void affectDrinker(FluidVariantWrapper fluidStack, Level level, Entity entity) {
         if(entity instanceof Player player) {
             player.removeAllEffects();
-            //player.removeEffectsCuredBy(EffectCures.MILK);
         }
     }
 

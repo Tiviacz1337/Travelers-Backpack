@@ -3,9 +3,8 @@ package com.tiviacz.travelersbackpack.common;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
-import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
-import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
 import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
+import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
 import com.tiviacz.travelersbackpack.config.BackpackEffect;
 import com.tiviacz.travelersbackpack.config.Cooldown;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
@@ -65,34 +64,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.*;
 
 public class BackpackAbilities {
-    /**
-     * Main class for all available abilities
-     * connects to few events and block methods to execute/remove proper abilities
-     * It's such a mess right now, I might create better system for all of that in the future.
-     * <p>
-     * //Connecting abilities to player, abilities removals
-     * {@link NeoForgeEventHandler#playerTick(PlayerTickEvent.Post)}
-     * <p>
-     * //Connecting abilities to block entity
-     * {@link BackpackBlockEntity#tick(Level, BlockPos, BlockState, BackpackBlockEntity)}
-     * <p>
-     * //Ability removals
-     * {@link ServerActions#switchAbilitySlider(BackpackWrapper, boolean)} (Player, boolean)}
-     * <p>
-     * //Cosmetic only
-     * {@link TravelersBackpackBlock#animateTick(BlockState, Level, BlockPos, RandomSource)}
-     * <p>
-     * //Few uses of block abilities
-     * {@link TravelersBackpackBlock}
-     * <p>
-     * //Creeper ability
-     * {@link NeoForgeEventHandler#playerDeath(LivingDeathEvent)}
-     */
     public static final BackpackAbilities ABILITIES = new BackpackAbilities();
 
-    /**
-     * Return TRUE to enable ability cooldown decreasing
-     */
     public boolean abilityTick(@Nullable ItemStack backpack, @Nullable Player player) {
         boolean tickCooldown = false;
         if(backpack != null) {
@@ -375,9 +348,9 @@ public class BackpackAbilities {
             }
             for(int o = 0; o < 4; o++) {
                 backpackBlockEntity.getLevel().addParticle(ParticleTypes.ENCHANT, enchanting.getX() + 0.5D, enchanting.getY() + 2.0D, enchanting.getZ() + 0.5D,
-                        ((backpackBlockEntity.getBlockPos().getX() - enchanting.getX()) + backpackBlockEntity.getLevel().random.nextFloat()) - 0.5D,
-                        ((backpackBlockEntity.getBlockPos().getY() - enchanting.getY()) - backpackBlockEntity.getLevel().random.nextFloat() - 1.0F),
-                        ((backpackBlockEntity.getBlockPos().getZ() - enchanting.getZ()) + backpackBlockEntity.getLevel().random.nextFloat()) - 0.5D);
+                        ((backpackBlockEntity.getBlockPos().getX() - enchanting.getX()) + backpackBlockEntity.getLevel().getRandom().nextFloat()) - 0.5D,
+                        ((backpackBlockEntity.getBlockPos().getY() - enchanting.getY()) - backpackBlockEntity.getLevel().getRandom().nextFloat() - 1.0F),
+                        ((backpackBlockEntity.getBlockPos().getZ() - enchanting.getZ()) + backpackBlockEntity.getLevel().getRandom().nextFloat()) - 0.5D);
             }
         }
     }
@@ -388,14 +361,14 @@ public class BackpackAbilities {
             if(!tanksUpgrade.getLeftTank().isEmpty() && !tanksUpgrade.getRightTank().isEmpty()) {
                 if(tanksUpgrade.getLeftTank().getFluid().fluidVariant().getFluid().isSame(Fluids.WATER) && tanksUpgrade.getRightTank().getFluid().fluidVariant().getFluid().isSame(Fluids.WATER)) {
                     if(tanksUpgrade.getLeftTank().getFluidAmount() == tanksUpgrade.getLeftTank().getCapacity() && tanksUpgrade.getRightTank().getFluidAmount() == tanksUpgrade.getRightTank().getCapacity()) {
-                        float f = backpackBlockEntity.getLevel().random.nextFloat() * (float)Math.PI * 2.0F;
-                        float f1 = backpackBlockEntity.getLevel().random.nextFloat() * 0.5F + 0.5F;
+                        float f = backpackBlockEntity.getLevel().getRandom().nextFloat() * (float)Math.PI * 2.0F;
+                        float f1 = backpackBlockEntity.getLevel().getRandom().nextFloat() * 0.5F + 0.5F;
                         float f2 = Mth.sin(f) * 0.5F * f1;
                         float f3 = Mth.cos(f) * 0.5F * f1;
                         backpackBlockEntity.getLevel().addParticle(ParticleTypes.SPLASH,
                                 backpackBlockEntity.getBlockPos().getX() + f2 + 0.5F,
-                                backpackBlockEntity.getBlockPos().getY() + backpackBlockEntity.getLevel().random.nextFloat(),
-                                backpackBlockEntity.getBlockPos().getZ() + f3 + 0.5F, (double)(float)Math.pow(2.0D, (backpackBlockEntity.getLevel().random.nextInt(169) - 12) / 12.0D) / 24.0D, -1.0D, 0.0D);
+                                backpackBlockEntity.getBlockPos().getY() + backpackBlockEntity.getLevel().getRandom().nextFloat(),
+                                backpackBlockEntity.getBlockPos().getZ() + f3 + 0.5F, (double)(float)Math.pow(2.0D, (backpackBlockEntity.getLevel().getRandom().nextInt(169) - 12) / 12.0D) / 24.0D, -1.0D, 0.0D);
                     }
                 }
             }
@@ -407,18 +380,18 @@ public class BackpackAbilities {
         if(!hasCooldown(backpack)) {
             player.getFoodData().eat(20, 0.1F);
             player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 10 * 20));
-            player.level().playSound(null, player.blockPosition(), SoundEvents.GENERIC_EAT.value(), SoundSource.AMBIENT, 0.6F, (player.level().random.nextFloat() - player.level().random.nextFloat()) * 0.3F + 1.0F);
+            player.level().playSound(null, player.blockPosition(), SoundEvents.GENERIC_EAT.value(), SoundSource.AMBIENT, 0.6F, (player.level().getRandom().nextFloat() - player.level().getRandom().nextFloat()) * 0.3F + 1.0F);
 
             if(player.level() instanceof ServerLevel server) {
                 for(int i = 0; i < 3; i++) {
-                    float f = server.random.nextFloat() * (float)Math.PI * 2.0F;
-                    float f1 = server.random.nextFloat() * 0.5F + 0.5F;
+                    float f = server.getRandom().nextFloat() * (float)Math.PI * 2.0F;
+                    float f1 = server.getRandom().nextFloat() * 0.5F + 0.5F;
                     float f2 = Mth.sin(f) * 0.5F * f1;
                     float f3 = Mth.cos(f) * 0.5F * f1;
                     server.sendParticles(ParticleTypes.HEART,
                             player.position().x + f2,
-                            player.getBoundingBox().minY + player.level().random.nextFloat() + 0.5F,
-                            player.position().z + f3, 3, (double)(float)Math.pow(2.0D, (player.level().random.nextInt(169) - 12) / 12.0D) / 24.0D, -1.0D, 0.0D, 0);
+                            player.getBoundingBox().minY + player.level().getRandom().nextFloat() + 0.5F,
+                            player.position().z + f3, 3, (double)(float)Math.pow(2.0D, (player.level().getRandom().nextInt(169) - 12) / 12.0D) / 24.0D, -1.0D, 0.0D, 0);
                 }
             }
             if(getCooldowns().containsKey(backpack.getItem())) {
@@ -438,7 +411,7 @@ public class BackpackAbilities {
         }
         if(!hasCooldown(backpack)) {
             BackpackWrapper wrapper = AttachmentUtils.getBackpackWrapperArtificial(player);
-            player.level().playSound(null, player.blockPosition(), SoundEvents.CHICKEN_EGG, SoundSource.AMBIENT, 1.0F, (player.level().random.nextFloat() - player.level().random.nextFloat()) * 0.3F + 1.0F);
+            player.level().playSound(null, player.blockPosition(), SoundEvents.CHICKEN_EGG, SoundSource.AMBIENT, 1.0F, (player.level().getRandom().nextFloat() - player.level().getRandom().nextFloat()) * 0.3F + 1.0F);
             if(player.level().isClientSide()) return;
             if(player.level() instanceof ServerLevel serverLevel) {
                 player.spawnAtLocation(serverLevel, Items.EGG);
@@ -459,8 +432,8 @@ public class BackpackAbilities {
                 FluidTank rightTank = upgrade.getRightTank();
                 FluidVariantWrapper water = new FluidVariantWrapper(FluidVariant.of(Fluids.WATER), FluidConstants.BUCKET);
                 if(!player.level().isClientSide()) {
-                    leftTank.fill(water, true);
-                    rightTank.fill(water, true);
+                    leftTank.fill(water, false);
+                    rightTank.fill(water, false);
                 }
 
                 if(player.level().isClientSide()) return;
@@ -499,8 +472,8 @@ public class BackpackAbilities {
                 FluidTank leftTank = upgrade.getLeftTank();
                 FluidTank rightTank = upgrade.getRightTank();
                 FluidVariantWrapper water = new FluidVariantWrapper(FluidVariant.of(Fluids.WATER), FluidConstants.BUCKET);
-                leftTank.fill(water, true);
-                rightTank.fill(water, true);
+                leftTank.fill(water, false);
+                rightTank.fill(water, false);
                 wrapper.setCooldown(0);
             } else {
                 return;
@@ -523,7 +496,7 @@ public class BackpackAbilities {
 
     public static void melonAbility(BackpackBlockEntity backpackBlockEntity) {
         if(backpackBlockEntity.getWrapper().isAbilityEnabled() && backpackBlockEntity.getWrapper().getCooldown() <= 0) {
-            Block.popResource(backpackBlockEntity.getLevel(), backpackBlockEntity.getBlockPos(), new ItemStack(Items.MELON_SLICE, backpackBlockEntity.getLevel().random.nextInt(0, 3)));
+            Block.popResource(backpackBlockEntity.getLevel(), backpackBlockEntity.getBlockPos(), new ItemStack(Items.MELON_SLICE, backpackBlockEntity.getLevel().getRandom().nextInt(0, 3)));
             setCooldown(backpackBlockEntity.getWrapper(), backpackBlockEntity.getWrapper().getBackpackStack().getItem());
         }
     }
@@ -565,7 +538,7 @@ public class BackpackAbilities {
 
     public static void blazeAbility(EntityHitResult result, SmallFireball fireball, CallbackInfo ci) {
         if(result.getEntity() instanceof Player player && ABILITIES.checkBackpack(player, ModItems.BLAZE_TRAVELERS_BACKPACK)) {
-            player.level().playSound(null, player.blockPosition(), SoundEvents.SHIELD_BLOCK.value(), SoundSource.PLAYERS, 1.0F, 0.8F + player.level().random.nextFloat() * 0.4F);
+            player.level().playSound(null, player.blockPosition(), SoundEvents.SHIELD_BLOCK.value(), SoundSource.PLAYERS, 1.0F, 0.8F + player.level().getRandom().nextFloat() * 0.4F);
             sendParticlesPacket(ParticleTypes.FLAME, player, 3);
 
             fireball.discard();
@@ -597,9 +570,9 @@ public class BackpackAbilities {
                 Level level = player.level();
                 BlockState state = level.getBlockState(player.blockPosition().relative(player.getDirection()));
                 player.level().addParticle(new BlockParticleOption(ParticleTypes.BLOCK, state),
-                        player.getX() + (level.random.nextDouble() - 0.5D) * (double)player.getDimensions(Pose.STANDING).width(),
+                        player.getX() + (level.getRandom().nextDouble() - 0.5D) * (double)player.getDimensions(Pose.STANDING).width(),
                         player.getY() + 0.1D,
-                        player.getZ() + (level.random.nextDouble() - 0.5D) * (double)player.getDimensions(Pose.STANDING).width(),
+                        player.getZ() + (level.getRandom().nextDouble() - 0.5D) * (double)player.getDimensions(Pose.STANDING).width(),
                         0.0D, 1.5D, 0.0D);
             }
         }
@@ -712,9 +685,9 @@ public class BackpackAbilities {
 
     public static void sendParticlesPacket(ParticleOptions type, Player player, int count) {
         for(int i = 0; i < count; i++) {
-            double d0 = player.level().random.nextGaussian() * 0.02D;
-            double d1 = player.level().random.nextGaussian() * 0.02D;
-            double d2 = player.level().random.nextGaussian() * 0.02D;
+            double d0 = player.level().getRandom().nextGaussian() * 0.02D;
+            double d1 = player.level().getRandom().nextGaussian() * 0.02D;
+            double d2 = player.level().getRandom().nextGaussian() * 0.02D;
             if(player.level() instanceof ServerLevel server) {
                 server.sendParticles(type, player.getRandomX(1.0D), player.getRandomY() + 0.5D, player.getRandomZ(1.0D), 1, d0, d1, d2, 0.0F);
             }

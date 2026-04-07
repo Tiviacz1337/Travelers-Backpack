@@ -4,8 +4,6 @@ import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.init.ModAttachmentTypes;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
-import dev.emi.trinkets.api.TrinketsApi;
-import io.wispforest.accessories.api.AccessoriesCapability;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -37,7 +35,7 @@ public class AttachmentUtils {
     }
 
     public static boolean isWearingBackpack(Player player) {
-        if(TravelersBackpack.enableIntegration()) {
+        /*if(TravelersBackpack.enableIntegration()) {
             if(TravelersBackpack.enableTrinkets()) {
                 if(TrinketsApi.getTrinketComponent(player).isPresent()) {
                     return TrinketsApi.getTrinketComponent(player).get().isEquipped(t -> t.getItem() instanceof TravelersBackpackItem);
@@ -48,7 +46,7 @@ public class AttachmentUtils {
                 }
             }
             return false;
-        }
+        }*/
         if(getAttachment(player).isPresent()) {
             return getAttachment(player).get().hasBackpack() && getAttachment(player).get().getBackpack().getItem() instanceof TravelersBackpackItem;
         }
@@ -56,7 +54,7 @@ public class AttachmentUtils {
     }
 
     public static ItemStack getWearingBackpack(Player player) {
-        if(TravelersBackpack.enableIntegration()) {
+        /*if(TravelersBackpack.enableIntegration()) {
             if(TravelersBackpack.enableTrinkets()) {
                 return isWearingBackpack(player) ? TrinketsApi.getTrinketComponent(player).get().getEquipped(t -> t.getItem() instanceof TravelersBackpackItem).getFirst().getB() : ItemStack.EMPTY;
             } else {
@@ -67,14 +65,14 @@ public class AttachmentUtils {
                 }
             }
             return ItemStack.EMPTY;
-        }
+        }*/
         return isWearingBackpack(player) ? getAttachment(player).get().getBackpack() : ItemStack.EMPTY;
     }
 
     public static void equipBackpack(Player player, ItemStack stack) {
         if(getAttachment(player).isPresent() && !isWearingBackpack(player)) {
             getAttachment(player).ifPresent(attachment -> attachment.equipBackpack(stack, player));
-            player.level().playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER.value(), SoundSource.PLAYERS, 1.0F, (1.0F + (player.level().random.nextFloat() - player.level().random.nextFloat()) * 0.2F) * 0.7F);
+            player.level().playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER.value(), SoundSource.PLAYERS, 1.0F, (1.0F + (player.level().getRandom().nextFloat() - player.level().getRandom().nextFloat()) * 0.2F) * 0.7F);
 
             //Sync
             synchronise(player);

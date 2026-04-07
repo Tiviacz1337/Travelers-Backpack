@@ -4,7 +4,7 @@ import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBlockEntityMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackItemMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackSettingsMenu;
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType;
+import net.fabricmc.fabric.api.menu.v1.ExtendedMenuType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -14,9 +14,9 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 
 public class ModScreenHandlerTypes {
-    public static ExtendedScreenHandlerType<BackpackItemMenu, ItemScreenData> BACKPACK_MENU = new ExtendedScreenHandlerType<>(BackpackItemMenu::new, ItemScreenData.PACKET_CODEC);
-    public static ExtendedScreenHandlerType<BackpackBlockEntityMenu, BlockEntityScreenData> BACKPACK_BLOCK_MENU = new ExtendedScreenHandlerType<>(BackpackBlockEntityMenu::new, BlockEntityScreenData.PACKET_CODEC);
-    public static ExtendedScreenHandlerType<BackpackSettingsMenu, SettingsScreenData> BACKPACK_SETTINGS_MENU = new ExtendedScreenHandlerType<>(BackpackSettingsMenu::new, SettingsScreenData.PACKET_CODEC);
+    public static ExtendedMenuType<BackpackItemMenu, ItemScreenData> BACKPACK_MENU = new ExtendedMenuType<>(BackpackItemMenu::new, ItemScreenData.PACKET_CODEC);
+    public static ExtendedMenuType<BackpackBlockEntityMenu, BlockEntityScreenData> BACKPACK_BLOCK_MENU = new ExtendedMenuType<>(BackpackBlockEntityMenu::new, BlockEntityScreenData.PACKET_CODEC);
+    public static ExtendedMenuType<BackpackSettingsMenu, SettingsScreenData> BACKPACK_SETTINGS_MENU = new ExtendedMenuType<>(BackpackSettingsMenu::new, SettingsScreenData.PACKET_CODEC);
 
     public static void init() {
         Registry.register(BuiltInRegistries.MENU, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "backpack_item"), BACKPACK_MENU);

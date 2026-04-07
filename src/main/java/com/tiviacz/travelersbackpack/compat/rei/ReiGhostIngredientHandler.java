@@ -1,25 +1,6 @@
 package com.tiviacz.travelersbackpack.compat.rei;
 
-import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
-import com.tiviacz.travelersbackpack.common.ServerActions;
-import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
-import com.tiviacz.travelersbackpack.inventory.menu.slot.FilterSlotItemHandler;
-import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
-import me.shedaniel.math.Point;
-import me.shedaniel.math.Rectangle;
-import me.shedaniel.rei.api.client.gui.drag.*;
-import me.shedaniel.rei.api.common.entry.type.VanillaEntryTypes;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.shapes.VoxelShape;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Stream;
-
-public class ReiGhostIngredientHandler implements DraggableStackVisitor<BackpackScreen> {
+/*public class ReiGhostIngredientHandler implements DraggableStackVisitor<BackpackScreen> {
     @Override
     public DraggedAcceptorResult acceptDraggedStack(DraggingContext<BackpackScreen> context, DraggableStack stack) {
         Point cursor = context.getCurrentPosition();
@@ -83,4 +64,4 @@ public class ReiGhostIngredientHandler implements DraggableStackVisitor<Backpack
             return box.contains(x, y, box.minZ);
         }
     }
-}
+}*/

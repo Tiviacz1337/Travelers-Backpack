@@ -1,11 +1,11 @@
 package com.tiviacz.travelersbackpack.inventory.upgrades.jukebox;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
+import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.client.screens.widgets.UpgradeWidgetBase;
 import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetElement;
 import com.tiviacz.travelersbackpack.common.ServerActions;
-import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
 import com.tiviacz.travelersbackpack.compat.vinurl.ServerboundVinURLStartPacket;
 import com.tiviacz.travelersbackpack.compat.vinurl.ServerboundVinURLStopPacket;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
@@ -15,7 +15,7 @@ import com.tiviacz.travelersbackpack.util.Reference;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
@@ -37,8 +37,8 @@ public class JukeboxWidget extends UpgradeWidgetBase<JukeboxUpgrade> {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        super.render(guiGraphics, mouseX, mouseY, partialTicks);
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
 
         if(isTabOpened()) {
             if(isMouseOverPlayButton(mouseX, mouseY)) {
@@ -51,7 +51,7 @@ public class JukeboxWidget extends UpgradeWidgetBase<JukeboxUpgrade> {
     }
 
     @Override
-    public void renderBg(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY) {
+    public void renderBg(GuiGraphicsExtractor guiGraphics, int x, int y, int mouseX, int mouseY) {
         super.renderBg(guiGraphics, x, y, mouseX, mouseY);
 
         if(isTabOpened()) {
@@ -104,7 +104,7 @@ public class JukeboxWidget extends UpgradeWidgetBase<JukeboxUpgrade> {
     @Nullable
     public JukeboxSong getFromDisk(ItemStack stack) {
         if(stack.has(DataComponents.JUKEBOX_PLAYABLE)) {
-            return JukeboxSong.fromStack(screen.getMenu().getPlayerInventory().player.registryAccess(), stack).get().value();
+            return JukeboxSong.fromStack(stack).get().value();
         }
         return null;
     }

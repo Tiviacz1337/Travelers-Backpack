@@ -2,7 +2,9 @@ package com.tiviacz.travelersbackpack.init;
 
 import com.mojang.serialization.Codec;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
-import com.tiviacz.travelersbackpack.components.*;
+import com.tiviacz.travelersbackpack.components.Fluids;
+import com.tiviacz.travelersbackpack.components.RenderInfo;
+import com.tiviacz.travelersbackpack.components.Slots;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -29,9 +31,9 @@ public class ModDataComponents {
     public static final DataComponentType<Integer> COOLDOWN = DataComponentType.<Integer>builder().persistent(Codec.INT).networkSynchronized(ByteBufCodecs.INT).build();
     public static final DataComponentType<ItemContainerContents> STARTER_UPGRADES = DataComponentType.<ItemContainerContents>builder().persistent(ItemContainerContents.CODEC).networkSynchronized(ItemContainerContents.STREAM_CODEC).build();
     public static final DataComponentType<RenderInfo> RENDER_INFO = DataComponentType.<RenderInfo>builder().persistent(RenderInfo.CODEC).networkSynchronized(RenderInfo.STREAM_CODEC).build();
-    public static final DataComponentType<BackpackContainerContents> BACKPACK_CONTAINER = DataComponentType.<BackpackContainerContents>builder().persistent(BackpackContainerContents.CODEC).networkSynchronized(BackpackContainerContents.STREAM_CODEC).build();
-    public static final DataComponentType<BackpackContainerContents> UPGRADES = DataComponentType.<BackpackContainerContents>builder().persistent(BackpackContainerContents.CODEC).networkSynchronized(BackpackContainerContents.STREAM_CODEC).build();
-    public static final DataComponentType<BackpackContainerContents> TOOLS_CONTAINER = DataComponentType.<BackpackContainerContents>builder().persistent(BackpackContainerContents.CODEC).networkSynchronized(BackpackContainerContents.STREAM_CODEC).build();
+    public static final DataComponentType<ItemContainerContents> BACKPACK_CONTAINER = DataComponentType.<ItemContainerContents>builder().persistent(ItemContainerContents.CODEC).networkSynchronized(ItemContainerContents.STREAM_CODEC).build();
+    public static final DataComponentType<ItemContainerContents> UPGRADES = DataComponentType.<ItemContainerContents>builder().persistent(ItemContainerContents.CODEC).networkSynchronized(ItemContainerContents.STREAM_CODEC).build();
+    public static final DataComponentType<ItemContainerContents> TOOLS_CONTAINER = DataComponentType.<ItemContainerContents>builder().persistent(ItemContainerContents.CODEC).networkSynchronized(ItemContainerContents.STREAM_CODEC).build();
     public static final DataComponentType<Integer> SLEEPING_BAG_COLOR = DataComponentType.<Integer>builder().persistent(Codec.INT).networkSynchronized(ByteBufCodecs.INT).build();
     public static final DataComponentType<Integer> SORT_TYPE = DataComponentType.<Integer>builder().persistent(Codec.INT).networkSynchronized(ByteBufCodecs.INT).build();
     public static final DataComponentType<Boolean> ABILITY_ENABLED = DataComponentType.<Boolean>builder().persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL).build();

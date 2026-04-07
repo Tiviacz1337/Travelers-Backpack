@@ -1,16 +1,16 @@
 package com.tiviacz.travelersbackpack.client.screens.widgets;
 
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
-import com.tiviacz.travelersbackpack.inventory.upgrades.filter.IFilter;
 import com.tiviacz.travelersbackpack.common.ServerActions;
 import com.tiviacz.travelersbackpack.inventory.upgrades.IEnable;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
+import com.tiviacz.travelersbackpack.inventory.upgrades.filter.IFilter;
 import com.tiviacz.travelersbackpack.inventory.upgrades.filter.IFilterSlots;
 import com.tiviacz.travelersbackpack.item.upgrades.UpgradeItem;
 import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
 import com.tiviacz.travelersbackpack.util.Reference;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
@@ -46,7 +46,7 @@ public class UpgradeWidgetBase<U extends UpgradeBase> extends WidgetBase<Backpac
     }
 
     @Override
-    public void renderBg(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY) {
+    public void renderBg(GuiGraphicsExtractor guiGraphics, int x, int y, int mouseX, int mouseY) {
         if(isTabOpened()) {
             if(upgrade instanceof IFilterSlots filter) {
                 int sizeX = width;
@@ -92,12 +92,12 @@ public class UpgradeWidgetBase<U extends UpgradeBase> extends WidgetBase<Backpac
             } else {
                 guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BackpackScreen.TABS, pos.x(), pos.y(), tabUv.x(), tabUv.y(), width, height, 256, 256);
             }
-            guiGraphics.renderItem(screen.getWrapper().getUpgrades().getStackInSlot(this.dataHolderSlot), pos.x() + 4, pos.y() + 4);
+            guiGraphics.item(screen.getWrapper().getUpgrades().getStackInSlot(this.dataHolderSlot), pos.x() + 4, pos.y() + 4);
         }
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         renderEnableButton(guiGraphics, mouseX, mouseY, partialTicks);
 
         if(isBackpackOwner()) {
@@ -106,7 +106,7 @@ public class UpgradeWidgetBase<U extends UpgradeBase> extends WidgetBase<Backpac
     }
 
     @Override
-    public void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    public void renderTooltip(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         if(isMouseOverIcon(mouseX, mouseY)) {
             List<Component> tooltips = new ArrayList<>();
             tooltips.add(Component.translatable(this.upgradeIconTooltip));
@@ -161,7 +161,7 @@ public class UpgradeWidgetBase<U extends UpgradeBase> extends WidgetBase<Backpac
         return isWithinBounds(mouseX, mouseY, this.enableElement);
     }
 
-    public void renderMatchContentsSlotOverlay(GuiGraphics guiGraphics, List<Integer> filter, int settingType, int settingValue, int activeSlots) {
+    public void renderMatchContentsSlotOverlay(GuiGraphicsExtractor guiGraphics, List<Integer> filter, int settingType, int settingValue, int activeSlots) {
         if(isTabOpened() && getUpgrade() instanceof IFilterSlots filterSlots) {
             if(filter.get(settingType) == settingValue) {
                 for(int i = 0; i < filterSlots.getRows(); i++) {
@@ -175,7 +175,7 @@ public class UpgradeWidgetBase<U extends UpgradeBase> extends WidgetBase<Backpac
         }
     }
 
-    public void renderRemoveButton(GuiGraphics guiGraphics, double mouseX, double mouseY) {
+    public void renderRemoveButton(GuiGraphicsExtractor guiGraphics, double mouseX, double mouseY) {
         if(isTabOpened()) {
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BackpackScreen.ICONS, pos.x() + this.removeElement.pos().x(), pos.y() + this.removeElement.pos().y(), 42, 36, this.removeElement.size().x(), this.removeElement.size().y(), 256, 256);
         }
@@ -195,7 +195,7 @@ public class UpgradeWidgetBase<U extends UpgradeBase> extends WidgetBase<Backpac
         return false;
     }
 
-    public void renderEnableButton(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void renderEnableButton(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         if(this.upgrade instanceof IEnable e && !this.upgrade.isTabOpened()) {
             if(e.isEnabled(this.upgrade)) {
                 guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BackpackScreen.ICONS, pos.x() + this.enableElement.pos().x(), pos.y() + this.enableElement.pos().y(), 18, 24, this.enableElement.size().x(), this.enableElement.size().y(), 256, 256);
@@ -211,7 +211,7 @@ public class UpgradeWidgetBase<U extends UpgradeBase> extends WidgetBase<Backpac
         }
     }
 
-    public void renderEnableButtonTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    public void renderEnableButtonTooltip(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         if(this.upgrade instanceof IEnable e && !this.upgrade.isTabOpened()) {
             if(isMouseOverEnableButton(mouseX, mouseY)) {
                 if(e.isEnabled(this.upgrade)) {

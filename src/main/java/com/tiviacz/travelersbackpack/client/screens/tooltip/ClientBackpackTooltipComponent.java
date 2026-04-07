@@ -7,7 +7,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -79,7 +79,7 @@ public class ClientBackpackTooltipComponent implements ClientTooltipComponent {
     }
 
     @Override
-    public void renderText(GuiGraphics guiGraphics, Font pFont, int pMouseX, int pMouseY) {
+    public void extractText(GuiGraphicsExtractor guiGraphics, Font pFont, int pMouseX, int pMouseY) {
         if(show()) {
             int yOffset = 0;
 
@@ -94,19 +94,19 @@ public class ClientBackpackTooltipComponent implements ClientTooltipComponent {
             }
 
             if(!component.upgrades.isEmpty()) {
-                guiGraphics.drawString(pFont, Component.translatable("screen.travelersbackpack.upgrades").withStyle(ChatFormatting.YELLOW), pMouseX, pMouseY + yOffset, -1);
+                guiGraphics.text(pFont, Component.translatable("screen.travelersbackpack.upgrades").withStyle(ChatFormatting.YELLOW), pMouseX, pMouseY + yOffset, -1);
                 yOffset += 10;
                 yOffset += 18;
             }
 
             if(!component.storage.isEmpty()) {
-                guiGraphics.drawString(pFont, Component.translatable("screen.travelersbackpack.inventory").withStyle(ChatFormatting.YELLOW), pMouseX, pMouseY + yOffset, -1);
+                guiGraphics.text(pFont, Component.translatable("screen.travelersbackpack.inventory").withStyle(ChatFormatting.YELLOW), pMouseX, pMouseY + yOffset, -1);
                 yOffset += 10;
                 yOffset += (int)(Math.ceil((float)component.storage.size() / 9) * 18);
             }
 
             if(!component.tools.isEmpty()) {
-                guiGraphics.drawString(pFont, Component.translatable("screen.travelersbackpack.tools").withStyle(ChatFormatting.YELLOW), pMouseX, pMouseY + yOffset, -1);
+                guiGraphics.text(pFont, Component.translatable("screen.travelersbackpack.tools").withStyle(ChatFormatting.YELLOW), pMouseX, pMouseY + yOffset, -1);
                 yOffset += 10;
                 yOffset += 18;
             }
@@ -114,7 +114,7 @@ public class ClientBackpackTooltipComponent implements ClientTooltipComponent {
     }
 
     @Override
-    public void renderImage(Font pFont, int pX, int pY, int k, int k1, GuiGraphics pGuiGraphics) {
+    public void extractImage(Font pFont, int pX, int pY, int k, int k1, GuiGraphicsExtractor pGuiGraphics) {
         int yOffset = 0;
 
         if(show()) {
@@ -171,9 +171,9 @@ public class ClientBackpackTooltipComponent implements ClientTooltipComponent {
         }
     }
 
-    private void renderItem(ItemStack stack, int pX, int pY, Font pFont, GuiGraphics guiGraphics) {
-        guiGraphics.renderFakeItem(stack, pX, pY);
-        guiGraphics.renderItemDecorations(pFont, stack, pX, pY);
+    private void renderItem(ItemStack stack, int pX, int pY, Font pFont, GuiGraphicsExtractor guiGraphics) {
+        guiGraphics.fakeItem(stack, pX, pY);
+        guiGraphics.itemDecorations(pFont, stack, pX, pY);
     }
 
     //Fabric
@@ -185,17 +185,7 @@ public class ClientBackpackTooltipComponent implements ClientTooltipComponent {
         return MutableComponent.create(c.getContents()).append(c1).append(c2);
     }
 
-    public void renderFluidTankTooltip(FluidVariantWrapper fluidStack, GuiGraphics guiGraphics, Font font, int mouseX, int mouseY) {
-        guiGraphics.drawString(font, getFluidTankTooltip(fluidStack), mouseX, mouseY, -1);
+    public void renderFluidTankTooltip(FluidVariantWrapper fluidStack, GuiGraphicsExtractor guiGraphics, Font font, int mouseX, int mouseY) {
+        guiGraphics.text(font, getFluidTankTooltip(fluidStack), mouseX, mouseY, -1);
     }
-
-    /*public void renderFluidTankTooltip(FluidVariantWrapper fluidStack, Font font, int mouseX, int mouseY, Matrix4f matrix, MultiBufferSource bufferSource) {
-        Component c = CommonFluid.getFluidName(fluidStack);
-        Component c1 = Component.literal(": ");
-        Component c2 = Component.literal(fluidStack.getAmount() + "mB");
-
-        font.drawInBatch(c, (float)mouseX, (float)mouseY, -1, true, matrix, bufferSource, Font.DisplayMode.NORMAL, 0, 15728880);
-        font.drawInBatch(c1, (float)mouseX + font.width(c), (float)mouseY, -1, true, matrix, bufferSource, Font.DisplayMode.NORMAL, 0, 15728880);
-        font.drawInBatch(c2, (float)mouseX + font.width(c) + font.width(c1), (float)mouseY, 5592575, true, matrix, bufferSource, Font.DisplayMode.NORMAL, 0, 15728880);
-    }*/
 }

@@ -13,7 +13,7 @@ public class ModRecipeSerializers {
     public static RecipeSerializer<BackpackUpgradeRecipe> BACKPACK_UPGRADE;
 
     public static void init() {
-        BACKPACK_SHAPED = Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "backpack_shaped"), new ShapedBackpackRecipe.Serializer());
-        BACKPACK_UPGRADE = Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "backpack_upgrade"), new BackpackUpgradeRecipe.Serializer());
+        BACKPACK_SHAPED = Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "backpack_shaped"), ShapedBackpackRecipe.SERIALIZER);
+        BACKPACK_UPGRADE = Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "backpack_upgrade"), BackpackUpgradeRecipe.SERIALIZER);
     }
 }

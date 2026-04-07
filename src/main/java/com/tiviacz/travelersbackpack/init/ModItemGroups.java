@@ -3,14 +3,14 @@ package com.tiviacz.travelersbackpack.init;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.components.RenderInfo;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
-import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
-import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
+import net.fabricmc.fabric.api.creativetab.v1.FabricCreativeModeTab;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemContainerContents;
@@ -22,7 +22,7 @@ public class ModItemGroups {
     public static final ResourceKey<CreativeModeTab> TRAVELERS_BACKPACK = ResourceKey.create(Registries.CREATIVE_MODE_TAB, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "travelers_backpack"));
 
     public static void registerItemGroup() {
-        Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, TRAVELERS_BACKPACK, FabricItemGroup.builder()
+        Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, TRAVELERS_BACKPACK, FabricCreativeModeTab.builder()
                 .icon(ModItemGroups::createTabStack)
                 .title(Component.translatable("itemGroup.travelersbackpack")).build());
     }
@@ -34,7 +34,7 @@ public class ModItemGroups {
     }
 
     public static void addItemGroup() {
-        ItemGroupEvents.modifyEntriesEvent(TRAVELERS_BACKPACK).register(output ->
+        CreativeModeTabEvents.modifyOutputEvent(TRAVELERS_BACKPACK).register(output ->
         {
             output.accept(ModItems.BACKPACK_TANK);
             output.accept(ModItems.HOSE_NOZZLE);

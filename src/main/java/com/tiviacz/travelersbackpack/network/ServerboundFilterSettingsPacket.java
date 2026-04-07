@@ -1,10 +1,10 @@
 package com.tiviacz.travelersbackpack.network;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
-import com.tiviacz.travelersbackpack.inventory.upgrades.filter.IFilter;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
+import com.tiviacz.travelersbackpack.inventory.upgrades.filter.IFilter;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -26,7 +26,7 @@ public record ServerboundFilterSettingsPacket(int slot, List<Integer> settings) 
             ServerboundFilterSettingsPacket::new
     );
 
-    public static void handle(final ServerboundFilterSettingsPacket message, ServerPlayNetworking.Context ctx) {
+    public static void handle(ServerboundFilterSettingsPacket message, ServerPlayNetworking.Context ctx) {
         ctx.server().execute(() -> {
 
             Player player = ctx.player();

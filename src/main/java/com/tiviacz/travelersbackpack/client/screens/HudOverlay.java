@@ -11,7 +11,7 @@ import com.tiviacz.travelersbackpack.item.HoseItem;
 import com.tiviacz.travelersbackpack.util.RenderHelper;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
@@ -21,7 +21,7 @@ import net.minecraft.world.level.GameType;
 public class HudOverlay {
     public static final Identifier OVERLAY = Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "textures/gui/overlay.png");
 
-    public static void renderOverlay(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
+    public static void renderOverlay(GuiGraphicsExtractor guiGraphics, DeltaTracker deltaTracker) {
         if(!TravelersBackpackConfig.CLIENT.overlay.enableOverlay.get()) return;
 
         Minecraft mc = Minecraft.getInstance();
@@ -60,7 +60,7 @@ public class HudOverlay {
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, OVERLAY, x - 12, y, (tankSel == 1) ? 0 : 10, 0, 10, 23, 256, 256);
     }
 
-    public static void drawGuiTank(GuiGraphics guiGraphics, FluidTank tank, int startX, int startY, int height, int width) {
+    public static void drawGuiTank(GuiGraphicsExtractor guiGraphics, FluidTank tank, int startX, int startY, int height, int width) {
         RenderHelper.renderScreenTank(guiGraphics, tank, startX, startY, 0, height, width);
     }
 }

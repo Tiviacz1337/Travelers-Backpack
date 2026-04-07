@@ -1,9 +1,9 @@
 package com.tiviacz.travelersbackpack.common;
 
 import com.tiviacz.travelersbackpack.advancements.ActionTypeTrigger;
+import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
 import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
 import com.tiviacz.travelersbackpack.blocks.SleepingBagBlock;
-import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
 import com.tiviacz.travelersbackpack.init.ModAdvancements;
@@ -265,7 +265,7 @@ public class ServerActions {
                     boolean isEnabled = enable.isEnabled(upgrade);
                     modifyUpgradeTab(wrapper, slot, !isEnabled, UPGRADE_ENABLED);
                     Component upgradeName = upgrade.getDataHolderStack().getItem().getName(upgrade.getDataHolderStack());
-                    player.displayClientMessage(Component.translatable(isEnabled ? "screen.travelersbackpack.upgrade_disabled" : "screen.travelersbackpack.upgrade_enabled", upgradeName), true);
+                    player.sendOverlayMessage(Component.translatable(isEnabled ? "screen.travelersbackpack.upgrade_disabled" : "screen.travelersbackpack.upgrade_enabled", upgradeName));
                 }
             });
         }
@@ -344,7 +344,6 @@ public class ServerActions {
 
     public static void showToolSlots(ServerPlayer player, boolean show) {
         if(player.containerMenu instanceof BackpackBaseMenu menu) {
-            //menu.getWrapper().setShowToolSlots(show);
             menu.getWrapper().setDataAndSync(ModDataComponents.SHOW_TOOL_SLOTS, show);
         }
     }
@@ -359,7 +358,6 @@ public class ServerActions {
         if(player.containerMenu instanceof BackpackSettingsMenu menu) {
             boolean visibility = menu.getWrapper().getBackpackStack().getOrDefault(ModDataComponents.IS_VISIBLE, true);
             menu.getWrapper().setDataAndSync(ModDataComponents.IS_VISIBLE, !visibility);
-            //menu.getWrapper().setVisibility(!visibility);
         }
     }
 
@@ -367,7 +365,6 @@ public class ServerActions {
         if(player.containerMenu instanceof BackpackBaseMenu menu) {
             boolean current = menu.getWrapper().showMoreButtons();
             menu.getWrapper().setDataAndSync(ModDataComponents.SHOW_MORE_BUTTONS, !current);
-            //menu.getWrapper().setShowMoreButtons(!current);
         }
     }
 
@@ -389,7 +386,7 @@ public class ServerActions {
                 if(player instanceof ServerPlayer serverPlayer) {
                     player.startSleepInBed(pos.relative(player.getDirection())).ifLeft(bedSleepingProblem -> {
                         if(bedSleepingProblem.message() != null) {
-                            player.displayClientMessage(bedSleepingProblem.message(), true);
+                            player.sendOverlayMessage(bedSleepingProblem.message());
                             if(level.getBlockState(sleepingBagPos1).getBlock() instanceof SleepingBagBlock) {
                                 level.setBlockAndUpdate(sleepingBagPos1, Blocks.AIR.defaultBlockState());
                             }

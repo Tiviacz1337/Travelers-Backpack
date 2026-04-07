@@ -26,7 +26,7 @@ public class BackpackManager {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy-HH.mm.ss");
             String formattedDeathTime = deathTime.format(formatter);
 
-            String datedBackpackName = stack.getItemHolder().getRegisteredName().replace(":", ".") + "_" + formattedDeathTime + ".dat";
+            String datedBackpackName = stack.typeHolder().getRegisteredName().replace(":", ".") + "_" + formattedDeathTime + ".dat";
             File backpackFile = getBackpackFile(player, datedBackpackName);
             backpackFile.getParentFile().mkdirs();
             CompoundTag stackTag = (CompoundTag)ItemStack.CODEC.encodeStart(player.registryAccess().createSerializationContext(NbtOps.INSTANCE), stack).result().orElseGet(CompoundTag::new);

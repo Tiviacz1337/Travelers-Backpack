@@ -116,12 +116,10 @@ public class SleepingBagBlock extends BedBlock {
                     blockEntity.setSleepingBagDeployed(false);
                 }
 
-                //Vec3 vec3 = pPos.getCenter();
-                //pLevel.explode(null, pLevel.damageSources().badRespawnPointExplosion(vec3), null, vec3, 5.0F, true, Level.ExplosionInteraction.BLOCK);
                 return InteractionResult.SUCCESS;
             } else if(pState.getValue(OCCUPIED)) {
                 if(!this.kickVillagerOutOfBed(pLevel, pPos)) {
-                    pPlayer.displayClientMessage(Component.translatable("block.minecraft.bed.occupied"), true);
+                    pPlayer.sendOverlayMessage(Component.translatable("block.minecraft.bed.occupied"));
                 }
 
                 return InteractionResult.SUCCESS;
@@ -133,7 +131,7 @@ public class SleepingBagBlock extends BedBlock {
                 }
                 pPlayer.startSleepInBed(pPos).ifLeft(p_49477_ -> {
                     if(p_49477_.message() != null) {
-                        pPlayer.displayClientMessage(p_49477_.message(), true);
+                        pPlayer.sendOverlayMessage(p_49477_.message());
                     }
                 });
                 return InteractionResult.SUCCESS;

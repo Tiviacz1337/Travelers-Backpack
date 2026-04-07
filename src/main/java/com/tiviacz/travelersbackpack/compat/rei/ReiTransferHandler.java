@@ -1,20 +1,6 @@
 package com.tiviacz.travelersbackpack.compat.rei;
 
-import com.tiviacz.travelersbackpack.common.ServerActions;
-import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
-import com.tiviacz.travelersbackpack.inventory.menu.slot.DisabledSlot;
-import com.tiviacz.travelersbackpack.inventory.upgrades.crafting.CraftingUpgrade;
-import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
-import com.tiviacz.travelersbackpack.util.Reference;
-import me.shedaniel.rei.api.client.registry.transfer.simple.SimpleTransferHandler;
-import me.shedaniel.rei.api.common.transfer.info.stack.SlotAccessor;
-import me.shedaniel.rei.plugin.common.BuiltinPlugin;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.IntStream;
-
-public class ReiTransferHandler implements SimpleTransferHandler {
+/*public class ReiTransferHandler implements SimpleTransferHandler {
     @Override
     public ApplicabilityResult checkApplicable(Context context) {
         if(!BackpackBaseMenu.class.isInstance(context.getMenu())
@@ -71,4 +57,4 @@ public class ReiTransferHandler implements SimpleTransferHandler {
         }
         return handleSimpleTransfer(context, getMissingInputRenderer(), getInputsIndexed(context), getInputSlots(context), getInventorySlots(context));
     }
-}
+}*/

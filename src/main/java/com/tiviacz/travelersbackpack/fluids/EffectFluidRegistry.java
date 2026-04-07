@@ -5,9 +5,6 @@ import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableMap;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.api.fluids.EffectFluid;
-import com.tiviacz.travelersbackpack.compat.toughasnails.ToughAsNailsPotionEffect;
-import com.tiviacz.travelersbackpack.compat.toughasnails.ToughAsNailsWaterCanteenEffect;
-import com.tiviacz.travelersbackpack.compat.toughasnails.ToughAsNailsWaterEffect;
 import com.tiviacz.travelersbackpack.fluids.effects.LavaEffect;
 import com.tiviacz.travelersbackpack.fluids.effects.MilkEffect;
 import com.tiviacz.travelersbackpack.fluids.effects.PotionEffect;
@@ -52,9 +49,9 @@ public class EffectFluidRegistry {
         MILK_EFFECT = new MilkEffect();
 
         if(TravelersBackpack.toughasnailsLoaded) {
-            TAN_POTION_EFFECT = new ToughAsNailsPotionEffect();
-            TAN_WATER_CANTEEN_EFFECT = new ToughAsNailsWaterCanteenEffect();
-            TAN_WATER_EFFECT = new ToughAsNailsWaterEffect();
+            //TAN_POTION_EFFECT = new ToughAsNailsPotionEffect();
+            //TAN_WATER_CANTEEN_EFFECT = new ToughAsNailsWaterCanteenEffect();
+            //TAN_WATER_EFFECT = new ToughAsNailsWaterEffect();
         }
     }
 

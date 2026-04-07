@@ -2,11 +2,12 @@ package com.tiviacz.travelersbackpack.inventory;
 
 import com.mojang.datafixers.util.Pair;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
+import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
 import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
-import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
-import com.tiviacz.travelersbackpack.components.*;
+import com.tiviacz.travelersbackpack.components.RenderInfo;
+import com.tiviacz.travelersbackpack.components.Slots;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.init.ModItems;
@@ -25,12 +26,11 @@ import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;
 import com.tiviacz.travelersbackpack.item.upgrades.TanksUpgradeItem;
 import com.tiviacz.travelersbackpack.item.upgrades.UpgradeItem;
 import com.tiviacz.travelersbackpack.network.ClientboundSyncItemStackPacket;
-import com.tiviacz.travelersbackpack.util.ItemStackUtils;
-import com.tiviacz.travelersbackpack.util.PacketDistributor;
-import com.tiviacz.travelersbackpack.util.Reference;
-import com.tiviacz.travelersbackpack.util.RegistryHelper;
+import com.tiviacz.travelersbackpack.util.*;
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.*;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
@@ -46,7 +46,6 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BiFunction;
@@ -122,7 +121,7 @@ public class BackpackWrapper {
             if(stack.has(ModDataComponents.STARTER_UPGRADES)) {
                 ItemContainerContents upgrades = stack.get(ModDataComponents.STARTER_UPGRADES);
                 if(upgrades != null) {
-                    upgrades.nonEmptyItems().forEach(this::setStarterUpgrade);
+                    upgrades.nonEmptyItemCopyStream().forEach(this::setStarterUpgrade);
                     stack.remove(ModDataComponents.STARTER_UPGRADES);
                 }
             }
@@ -184,32 +183,13 @@ public class BackpackWrapper {
         return null;
     }
 
-    public ItemStackHandler loadHandler(DataComponentType<BackpackContainerContents> data, int defaultSize, int dataId, BiFunction<NonNullList<ItemStack>, Integer, ItemStackHandler> handlerFunction) {
+    public ItemStackHandler loadHandler(DataComponentType<ItemContainerContents> data, int defaultSize, int dataId, BiFunction<NonNullList<ItemStack>, Integer, ItemStackHandler> handlerFunction) {
         if(this.stack.has(data)) {
-            BackpackContainerContents contents = this.stack.get(data);
-            if(contents.getItems().size() < defaultSize) {
-                contents = expandContents(contents, defaultSize, this.stack, data);
-            }
-
-            NonNullList<ItemStack> stacks = NonNullList.withSize(contents.getItems().size(), ItemStack.EMPTY);
-            contents.copyInto(stacks);
+            NonNullList<ItemStack> stacks = ContainerContentsHelper.getItems(this.stack.get(data), defaultSize);
             return handlerFunction.apply(stacks, dataId);
         }
         return handlerFunction.apply(NonNullList.withSize(defaultSize, ItemStack.EMPTY), dataId);
     }
-
-   /* public void loadHandler(DataComponentType<BackpackContainerContents> data, int defaultSize, ItemStackHandler... handlers) {
-        if(this.stack.has(data)) {
-            BackpackContainerContents contents = this.stack.get(data);
-            if(contents.getItems().size() < defaultSize) {
-                contents = expandContents(contents, defaultSize, this.stack, data);
-            }
-            for(ItemStackHandler handler : handlers) {
-                handler.deserialize(TagValueInput.create(ProblemReporter.DISCARDING, this.registriesAccess, contents.toNbt(this.registriesAccess)));
-                //handler.deserializeNBT(this.registriesAccess, contents.toNbt(this.registriesAccess));
-            }
-        }
-    }*/
 
     public void loadHandlers() {
         if(this.dataLoad[STORAGE_ID] == 1) {
@@ -244,25 +224,6 @@ public class BackpackWrapper {
             if(type == TOOLS_ID) loadTools();
             dataLoad[type] = 1;
         }
-    }
-
-    public BackpackContainerContents expandContents(BackpackContainerContents contents, int size, ItemStack backpack, DataComponentType type) {
-        if(contents.getItems().size() < size) {
-            List<ItemStack> oldItems = contents.getItems();
-            //Populate expanded items list with empty stacks
-            ArrayList<ItemStack> itemList = new ArrayList<>(Collections.nCopies(size, ItemStack.EMPTY));
-
-            for(int i = 0; i < oldItems.size(); i++) {
-                if(!oldItems.get(i).isEmpty()) {
-                    itemList.set(i, oldItems.get(i));
-                }
-            }
-            //Expanded items
-            BackpackContainerContents expandedContents = BackpackContainerContents.fromItems(size, itemList);
-            backpack.set(type, expandedContents);
-            return expandedContents;
-        }
-        return contents;
     }
 
     public void setStarterUpgrade(ItemStack upgrade) {
@@ -521,7 +482,7 @@ public class BackpackWrapper {
         //Sync stack in slot or hand
         if(getScreenID() == Reference.ITEM_SCREEN_ID && !getPlayersUsing().stream().filter(p -> !p.level().isClientSide()).toList().isEmpty()) {
             int slotIndex = this.index == -1 ? getPlayersUsing().get(0).getInventory().getSelectedSlot() : this.index;
-            PacketDistributor.sendToPlayer((ServerPlayer)this.getPlayersUsing().get(0), new ClientboundSyncItemStackPacket(getPlayersUsing().get(0).getId(), slotIndex, getBackpackStack(), ItemStackUtils.createDataComponentMap(getBackpackStack(), dataComponentTypes)));
+            PacketDistributor.sendToPlayer((ServerPlayer)this.getPlayersUsing().get(0), new ClientboundSyncItemStackPacket(getPlayersUsing().get(0).getId(), slotIndex, getBackpackStack().typeHolder(), ItemStackUtils.createDataComponentMap(getBackpackStack(), dataComponentTypes)));
             return;
         }
         //Sync stack equipped in back slot
@@ -530,7 +491,7 @@ public class BackpackWrapper {
             if(getScreenID() == Reference.WEARABLE_SCREEN_ID && !getPlayersUsing().stream().filter(p -> !p.level().isClientSide()).toList().isEmpty()) {
                 for(Player player : getPlayersUsing()) {
                     if(((ServerPlayer)player).connection == null) continue; //?
-                    PacketDistributor.sendToPlayer((ServerPlayer)player, new ClientboundSyncItemStackPacket(player.getId(), -1, getBackpackStack(), ItemStackUtils.createDataComponentMap(getBackpackStack(), dataComponentTypes)));
+                    PacketDistributor.sendToPlayer((ServerPlayer)player, new ClientboundSyncItemStackPacket(player.getId(), -1, getBackpackStack().typeHolder(), ItemStackUtils.createDataComponentMap(getBackpackStack(), dataComponentTypes)));
                 }
             }
             return;
@@ -584,13 +545,13 @@ public class BackpackWrapper {
     public void setSlotChanged(int index, ItemStack stack, int dataId) {
         switch(dataId) {
             case STORAGE_ID:
-                this.stack.update(ModDataComponents.BACKPACK_CONTAINER, new BackpackContainerContents(this.getStorage().getSlots()), new BackpackContainerContents.Slot(index, stack), BackpackContainerContents::updateSlot);
+                this.stack.update(ModDataComponents.BACKPACK_CONTAINER, ItemContainerContents.EMPTY, currentContents -> ContainerContentsHelper.updateStack(currentContents, getStorageSize(), stack, index));
                 break;
             case UPGRADES_ID:
-                this.stack.update(ModDataComponents.UPGRADES, new BackpackContainerContents(this.getUpgrades().getSlots()), new BackpackContainerContents.Slot(index, stack), BackpackContainerContents::updateSlot);
+                this.stack.update(ModDataComponents.UPGRADES, ItemContainerContents.EMPTY, currentContents -> ContainerContentsHelper.updateStack(currentContents, getUpgradesSize(), stack, index));
                 break;
             case TOOLS_ID:
-                this.stack.update(ModDataComponents.TOOLS_CONTAINER, new BackpackContainerContents(this.getTools().getSlots()), new BackpackContainerContents.Slot(index, stack), BackpackContainerContents::updateSlot);
+                this.stack.update(ModDataComponents.TOOLS_CONTAINER, ItemContainerContents.EMPTY, currentContents -> ContainerContentsHelper.updateStack(currentContents, getToolSize(), stack, index));
                 break;
         }
     }

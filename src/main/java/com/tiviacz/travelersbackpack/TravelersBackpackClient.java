@@ -15,11 +15,8 @@ import com.tiviacz.travelersbackpack.client.screens.HudOverlay;
 import com.tiviacz.travelersbackpack.client.screens.tooltip.BackpackTooltipComponent;
 import com.tiviacz.travelersbackpack.client.screens.tooltip.ClientBackpackTooltipComponent;
 import com.tiviacz.travelersbackpack.commands.BackpackIconCommands;
-import com.tiviacz.travelersbackpack.compat.accessories.TravelersBackpackAccessory;
 import com.tiviacz.travelersbackpack.compat.craftingtweaks.CraftingTweaksCompat;
-import com.tiviacz.travelersbackpack.compat.polymorph.PolymorphCompat;
 import com.tiviacz.travelersbackpack.compat.trashslot.TrashSlotCompat;
-import com.tiviacz.travelersbackpack.compat.trinkets.TravelersBackpackTrinket;
 import com.tiviacz.travelersbackpack.components.RenderInfo;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.fluids.potion.PotionFluidVariantAttributeHandler;
@@ -35,22 +32,33 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.model.loading.v1.*;
-import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
-import net.fabricmc.fabric.api.client.render.fluid.v1.SimpleFluidRenderHandler;
-import net.fabricmc.fabric.api.client.rendering.v1.*;
+import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderingRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.BlockColorRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.ClientTooltipComponentCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityRenderLayerRegistrationCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
+import net.fabricmc.fabric.api.recipe.v1.sync.RecipeSynchronization;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
+import net.minecraft.client.color.block.BlockTintSource;
 import net.minecraft.client.color.item.ItemTintSource;
 import net.minecraft.client.color.item.ItemTintSources;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.FluidModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.entity.ItemEntityRenderer;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.player.AvatarRenderer;
 import net.minecraft.client.renderer.item.ItemModels;
+import net.minecraft.client.resources.model.sprite.Material;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackType;
@@ -59,9 +67,13 @@ import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.DyedItemColor;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluids;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 @Environment(EnvType.CLIENT)
 public class TravelersBackpackClient implements ClientModInitializer {
@@ -70,9 +82,6 @@ public class TravelersBackpackClient implements ClientModInitializer {
         //Register client config
         ConfigRegistry.INSTANCE.register(TravelersBackpack.MODID, ModConfig.Type.CLIENT, TravelersBackpackConfig.clientSpec);
         ConfigScreenFactoryRegistry.INSTANCE.register(TravelersBackpack.MODID, ConfigurationScreen::new);
-
-        //Load render types
-        BackpackDynamicModel.Loader.loadVanillaRenderTypes();
 
         //Handled Screens
         MenuScreens.register(ModScreenHandlerTypes.BACKPACK_MENU, BackpackScreen::new);
@@ -108,7 +117,7 @@ public class TravelersBackpackClient implements ClientModInitializer {
         registerClientCommands();
 
         //Polymorph Integration
-        if(TravelersBackpack.polymorphLoaded) PolymorphCompat.registerWidget();
+        //if(TravelersBackpack.polymorphLoaded) PolymorphCompat.registerWidget();
         if(TravelersBackpack.trashSlotLoaded) TrashSlotCompat.register();
 
         //Backpack Model Deserializer
@@ -128,9 +137,12 @@ public class TravelersBackpackClient implements ClientModInitializer {
 
         //Crafting Tweaks Integration
         if(TravelersBackpack.craftingTweaksLoaded) CraftingTweaksCompat.registerCraftingTweaksAdditionClient();
-        if(TravelersBackpack.accessoriesLoaded) TravelersBackpackAccessory.initClient();
-        if(TravelersBackpack.trinketsLoaded && !TravelersBackpack.accessoriesLoaded)
-            TravelersBackpackTrinket.initClient();
+        //if(TravelersBackpack.accessoriesLoaded) TravelersBackpackAccessory.initClient();
+        //if(TravelersBackpack.trinketsLoaded && !TravelersBackpack.accessoriesLoaded)
+        //    TravelersBackpackTrinket.initClient();
+
+        RecipeSynchronization.synchronizeRecipeSerializer(ModRecipeSerializers.BACKPACK_SHAPED);
+        RecipeSynchronization.synchronizeRecipeSerializer(ModRecipeSerializers.BACKPACK_UPGRADE);
     }
 
     public static final Identifier STAR_MODEL = Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "block/supporter_star");
@@ -183,42 +195,8 @@ public class TravelersBackpackClient implements ClientModInitializer {
     }
 
     public static void registerBlockColorProvider() {
-        ColorProviderRegistry.BLOCK.register((state, level, pos, tintIndex) -> {
-            if(pos == null) {
-                return -1;
-            }
-            if(level.getBlockEntity(pos) instanceof BackpackBlockEntity backpack) {
-                if(tintIndex == 0) {
-                    RenderInfo info = backpack.getWrapper().getRenderInfo();
-                    return FluidVariantRendering.getColor(info.getLeftFluidStack().fluidVariant()) | -16777216;
-                }
-                if(tintIndex == 1) {
-                    RenderInfo info = backpack.getWrapper().getRenderInfo();
-                    return FluidVariantRendering.getColor(info.getRightFluidStack().fluidVariant()) | -16777216;
-                }
-                if(tintIndex == 2 && backpack.getWrapper().getBackpackStack().has(DataComponents.DYED_COLOR)) {
-                    return ARGB.opaque(backpack.getWrapper().getBackpackStack().get(DataComponents.DYED_COLOR).rgb());
-                }
-            }
-            return -1;
-        }, ModBlocks.STANDARD_TRAVELERS_BACKPACK);
-
-        ColorProviderRegistry.BLOCK.register((state, level, pos, tintIndex) -> {
-            if(pos == null) {
-                return -1;
-            }
-            if(level.getBlockEntity(pos) instanceof BackpackBlockEntity backpack) {
-                if(tintIndex == 0) {
-                    RenderInfo info = backpack.getWrapper().getRenderInfo();
-                    return FluidVariantRendering.getColor(info.getLeftFluidStack().fluidVariant()) | -16777216;
-                }
-                if(tintIndex == 1) {
-                    RenderInfo info = backpack.getWrapper().getRenderInfo();
-                    return FluidVariantRendering.getColor(info.getRightFluidStack().fluidVariant()) | -16777216;
-                }
-            }
-            return -1;
-        }, ModBlocks.NETHERITE_TRAVELERS_BACKPACK,
+        BlockColorRegistry.register(List.of(new BackpackTintSources.LeftFluidBlockTintSource(), new BackpackTintSources.RightFluidBlockTintSource(), new BackpackTintSources.BackpackBlockTintSource()), ModBlocks.STANDARD_TRAVELERS_BACKPACK);
+        BlockColorRegistry.register(List.of(new BackpackTintSources.LeftFluidBlockTintSource(), new BackpackTintSources.RightFluidBlockTintSource()), ModBlocks.NETHERITE_TRAVELERS_BACKPACK,
                 ModBlocks.DIAMOND_TRAVELERS_BACKPACK,
                 ModBlocks.GOLD_TRAVELERS_BACKPACK,
                 ModBlocks.EMERALD_TRAVELERS_BACKPACK,
@@ -269,9 +247,9 @@ public class TravelersBackpackClient implements ClientModInitializer {
     }
 
     public static void registerItemColorProvider() {
-        ItemTintSources.ID_MAPPER.put(Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "backpack_dye"), BackpackTintSource.MAP_CODEC);
-        ItemTintSources.ID_MAPPER.put(Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "left_fluid"), LeftFluidTintSource.MAP_CODEC);
-        ItemTintSources.ID_MAPPER.put(Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "right_fluid"), RightFluidTintSource.MAP_CODEC);
+        ItemTintSources.ID_MAPPER.put(Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "backpack_dye"), BackpackTintSources.BackpackItemTintSource.MAP_CODEC);
+        ItemTintSources.ID_MAPPER.put(Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "left_fluid"), BackpackTintSources.LeftFluidItemTintSource.MAP_CODEC);
+        ItemTintSources.ID_MAPPER.put(Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "right_fluid"), BackpackTintSources.RightFluidItemTintSource.MAP_CODEC);
     }
 
     public static void registerBackpackItemEntityRenderer() {
@@ -283,7 +261,7 @@ public class TravelersBackpackClient implements ClientModInitializer {
     }
 
     public static void registerFeatureRenderers() {
-        LivingEntityFeatureRendererRegistrationCallback.EVENT.register((entityType, entityRenderer, registrationHelper, context) ->
+        LivingEntityRenderLayerRegistrationCallback.EVENT.register((entityType, entityRenderer, registrationHelper, context) ->
         {
             if(entityRenderer instanceof AvatarRenderer renderer) {
                 registrationHelper.register(new BackpackLayer(renderer));
@@ -296,15 +274,13 @@ public class TravelersBackpackClient implements ClientModInitializer {
     }
 
     public static void registerHudOverlay() {
-        HudRenderCallback.EVENT.register(HudOverlay::renderOverlay);
+        HudElementRegistry.attachElementBefore(VanillaHudElements.HOTBAR, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "overlay"), HudOverlay::renderOverlay);
     }
 
+    private static final FluidModel.Unbaked POTION_MODEL = new FluidModel.Unbaked(new Material(Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "block/potion_still")), new Material(Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "block/potion_flow")), null, null);
+
     public static void setupFluidRendering() {
-        FluidRenderHandlerRegistry.INSTANCE.register(ModFluids.POTION_STILL, ModFluids.POTION_FLOWING, new SimpleFluidRenderHandler(
-                Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "block/potion_still"),
-                Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "block/potion_flow"),
-                13458603
-        ));
+        FluidRenderingRegistry.register(ModFluids.POTION_STILL, ModFluids.POTION_FLOWING, POTION_MODEL);
 
         FluidVariantAttributes.register(ModFluids.POTION_STILL, new PotionFluidVariantAttributeHandler());
         FluidVariantAttributes.register(ModFluids.POTION_FLOWING, new PotionFluidVariantAttributeHandler());
@@ -313,7 +289,7 @@ public class TravelersBackpackClient implements ClientModInitializer {
     }
 
     public static void registerTooltipComponent() {
-        TooltipComponentCallback.EVENT.register((data ->
+        ClientTooltipComponentCallback.EVENT.register((data ->
         {
             if(data instanceof BackpackTooltipComponent) {
                 return new ClientBackpackTooltipComponent((BackpackTooltipComponent)data);
@@ -326,63 +302,128 @@ public class TravelersBackpackClient implements ClientModInitializer {
         ClientCommandRegistrationCallback.EVENT.register(BackpackIconCommands::new);
     }
 
-    public record BackpackTintSource(int defaultColor) implements ItemTintSource {
-        public static final MapCodec<BackpackTintSource> MAP_CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-                ExtraCodecs.ARGB_COLOR_CODEC.fieldOf("default").forGetter(BackpackTintSource::defaultColor)
-        ).apply(instance, BackpackTintSource::new));
-
-        @Override
-        public int calculate(ItemStack itemStack, @Nullable ClientLevel clientLevel, @Nullable LivingEntity livingEntity) {
-            DyedItemColor color = itemStack.get(DataComponents.DYED_COLOR);
-            if(itemStack.getItem() == ModItems.STANDARD_TRAVELERS_BACKPACK && color != null) {
-                return ARGB.opaque(color.rgb());
+    private static class BackpackTintSources {
+        private static class BackpackBlockTintSource implements BlockTintSource {
+            @Override
+            public int color(BlockState state) {
+                return -1;
             }
-            return defaultColor;
-        }
 
-        @Override
-        public MapCodec<? extends ItemTintSource> type() {
-            return MAP_CODEC;
-        }
-    }
-
-    public record LeftFluidTintSource(int defaultColor) implements ItemTintSource {
-        public static final MapCodec<LeftFluidTintSource> MAP_CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-                ExtraCodecs.ARGB_COLOR_CODEC.fieldOf("default").forGetter(LeftFluidTintSource::defaultColor)
-        ).apply(instance, LeftFluidTintSource::new));
-
-        @Override
-        public int calculate(ItemStack itemStack, @Nullable ClientLevel clientLevel, @Nullable LivingEntity livingEntity) {
-            if(itemStack.getItem() instanceof TravelersBackpackItem) {
-                RenderInfo info = itemStack.getOrDefault(ModDataComponents.RENDER_INFO, RenderInfo.EMPTY);
-                return FluidVariantRendering.getColor(info.getLeftFluidStack().fluidVariant()) | -16777216;
+            @Override
+            public int colorInWorld(BlockState state, BlockAndTintGetter level, BlockPos pos) {
+                if(level.getBlockEntity(pos) instanceof BackpackBlockEntity backpack) {
+                    if(backpack.getWrapper().getBackpackStack().has(DataComponents.DYED_COLOR)) {
+                        return ARGB.opaque(backpack.getWrapper().getBackpackStack().get(DataComponents.DYED_COLOR).rgb());
+                    }
+                }
+                return -1;
             }
-            return defaultColor;
         }
 
-        @Override
-        public MapCodec<? extends ItemTintSource> type() {
-            return MAP_CODEC;
-        }
-    }
-
-    public record RightFluidTintSource(int defaultColor) implements ItemTintSource {
-        public static final MapCodec<RightFluidTintSource> MAP_CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-                ExtraCodecs.ARGB_COLOR_CODEC.fieldOf("default").forGetter(RightFluidTintSource::defaultColor)
-        ).apply(instance, RightFluidTintSource::new));
-
-        @Override
-        public int calculate(ItemStack itemStack, @Nullable ClientLevel clientLevel, @Nullable LivingEntity livingEntity) {
-            if(itemStack.getItem() instanceof TravelersBackpackItem) {
-                RenderInfo info = itemStack.getOrDefault(ModDataComponents.RENDER_INFO, RenderInfo.EMPTY);
-                return FluidVariantRendering.getColor(info.getRightFluidStack().fluidVariant()) | -16777216;
+        private static class LeftFluidBlockTintSource implements BlockTintSource {
+            @Override
+            public int color(BlockState state) {
+                if(state.getFluidState().is(Fluids.WATER)) {
+                    return 0xFF3F76E4;
+                }
+                return -1;
             }
-            return defaultColor;
+
+            @Override
+            public int colorInWorld(BlockState state, BlockAndTintGetter level, BlockPos pos) {
+                if(level.getBlockEntity(pos) instanceof BackpackBlockEntity backpack) {
+                    RenderInfo info = backpack.getWrapper().getRenderInfo();
+                    return FluidVariantRendering.getColor(info.getLeftFluidStack().fluidVariant(), level, pos) | -16777216;
+                }
+                return -1;
+            }
         }
 
-        @Override
-        public MapCodec<? extends ItemTintSource> type() {
-            return MAP_CODEC;
+        private static class RightFluidBlockTintSource implements BlockTintSource {
+            @Override
+            public int color(BlockState state) {
+                if(state.getFluidState().is(Fluids.WATER)) {
+                    return 0xFF3F76E4;
+                }
+                return -1;
+            }
+
+            @Override
+            public int colorInWorld(BlockState state, BlockAndTintGetter level, BlockPos pos) {
+                if(level.getBlockEntity(pos) instanceof BackpackBlockEntity backpack) {
+                    RenderInfo info = backpack.getWrapper().getRenderInfo();
+                    return FluidVariantRendering.getColor(info.getRightFluidStack().fluidVariant(), level, pos) | -16777216;
+                }
+                return -1;
+            }
+        }
+
+        public record BackpackItemTintSource(int defaultColor) implements ItemTintSource {
+            public static final MapCodec<BackpackItemTintSource> MAP_CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+                    ExtraCodecs.ARGB_COLOR_CODEC.fieldOf("default").forGetter(BackpackItemTintSource::defaultColor)
+            ).apply(instance, BackpackItemTintSource::new));
+
+            @Override
+            public int calculate(ItemStack itemStack, @Nullable ClientLevel clientLevel, @Nullable LivingEntity livingEntity) {
+                DyedItemColor color = itemStack.get(DataComponents.DYED_COLOR);
+                if(itemStack.getItem() == ModItems.STANDARD_TRAVELERS_BACKPACK && color != null) {
+                    return ARGB.opaque(color.rgb());
+                }
+                return defaultColor;
+            }
+
+            @Override
+            public MapCodec<? extends ItemTintSource> type() {
+                return MAP_CODEC;
+            }
+        }
+
+        public record LeftFluidItemTintSource(int defaultColor) implements ItemTintSource {
+            public static final MapCodec<LeftFluidItemTintSource> MAP_CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+                    ExtraCodecs.ARGB_COLOR_CODEC.fieldOf("default").forGetter(LeftFluidItemTintSource::defaultColor)
+            ).apply(instance, LeftFluidItemTintSource::new));
+
+            @Override
+            public int calculate(ItemStack itemStack, @Nullable ClientLevel clientLevel, @Nullable LivingEntity livingEntity) {
+                if(itemStack.getItem() instanceof TravelersBackpackItem) {
+                    RenderInfo info = itemStack.getOrDefault(ModDataComponents.RENDER_INFO, RenderInfo.EMPTY);
+                    FluidVariant variant = info.getLeftFluidStack().fluidVariant();
+                    if(variant.getFluid().isSame(Fluids.WATER)) {
+                        return 0xFF3F76E4;
+                    }
+                    return FluidVariantRendering.getColor(variant) | -16777216;
+                }
+                return defaultColor;
+            }
+
+            @Override
+            public MapCodec<? extends ItemTintSource> type() {
+                return MAP_CODEC;
+            }
+        }
+
+        public record RightFluidItemTintSource(int defaultColor) implements ItemTintSource {
+            public static final MapCodec<RightFluidItemTintSource> MAP_CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+                    ExtraCodecs.ARGB_COLOR_CODEC.fieldOf("default").forGetter(RightFluidItemTintSource::defaultColor)
+            ).apply(instance, RightFluidItemTintSource::new));
+
+            @Override
+            public int calculate(ItemStack itemStack, @Nullable ClientLevel clientLevel, @Nullable LivingEntity livingEntity) {
+                if(itemStack.getItem() instanceof TravelersBackpackItem) {
+                    RenderInfo info = itemStack.getOrDefault(ModDataComponents.RENDER_INFO, RenderInfo.EMPTY);
+                    FluidVariant variant = info.getRightFluidStack().fluidVariant();
+                    if(variant.getFluid().isSame(Fluids.WATER)) {
+                        return 0xFF3F76E4;
+                    }
+                    return FluidVariantRendering.getColor(variant) | -16777216;
+                }
+                return defaultColor;
+            }
+
+            @Override
+            public MapCodec<? extends ItemTintSource> type() {
+                return MAP_CODEC;
+            }
         }
     }
 }

@@ -102,7 +102,7 @@ public abstract class FilterSettingsBase {
             stack = filterItems.get(0);
         }
         if(!stack.isEmpty()) {
-            stack.getTags().forEach(tag -> addableTags.add(tag.location().toString()));
+            stack.tags().forEach(tag -> addableTags.add(tag.location().toString()));
         }
         addableTags.removeAll(this.filterTags);
         return addableTags;

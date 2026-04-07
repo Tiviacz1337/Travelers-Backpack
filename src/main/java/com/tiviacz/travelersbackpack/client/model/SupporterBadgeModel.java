@@ -2,14 +2,18 @@ package com.tiviacz.travelersbackpack.client.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import net.fabricmc.fabric.api.renderer.v1.render.RenderLayerHelper;
+import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.BlockModelRenderState;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.EmptyBlockAndTintGetter;
 import net.minecraft.world.level.block.Blocks;
+import org.joml.Matrix4f;
+import org.joml.Matrix4fc;
 import org.joml.Quaternionf;
 
 public class SupporterBadgeModel {
@@ -65,8 +69,19 @@ public class SupporterBadgeModel {
     }
 
     //Fabric
+    private static final Matrix4fc IDENTITY_MATRIX4FC = new Matrix4f();
 
     private void renderModel(PoseStack matrixStack, SubmitNodeCollector collector, BlockStateModel model, int packedLightIn) {
-        collector.order(0).submitBlockStateModel(matrixStack, RenderLayerHelper::getEntityBlockLayer, model, 1, 1, 1, packedLightIn, OverlayTexture.NO_OVERLAY, 0, EmptyBlockAndTintGetter.INSTANCE, BlockPos.ZERO, Blocks.AIR.defaultBlockState());
+        BlockModelRenderState renderState = new BlockModelRenderState();
+        QuadEmitter emitter = renderState.setupMesh(IDENTITY_MATRIX4FC, model.hasMaterialFlag(BakedQuad.FLAG_TRANSLUCENT));
+        model.emitQuads(
+                emitter,
+                BlockAndTintGetter.EMPTY,
+                BlockPos.ZERO,
+                Blocks.AIR.defaultBlockState(),
+                renderState.scratchRandomSource(42L),
+                _ -> false
+        );
+        renderState.submit(matrixStack, collector, packedLightIn, OverlayTexture.NO_OVERLAY, 0);
     }
 }

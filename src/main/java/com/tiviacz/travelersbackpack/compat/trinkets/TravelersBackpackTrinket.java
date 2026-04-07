@@ -1,30 +1,6 @@
 package com.tiviacz.travelersbackpack.compat.trinkets;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.tiviacz.travelersbackpack.client.model.StackModelPart;
-import com.tiviacz.travelersbackpack.client.renderer.BackpackLayer;
-import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
-import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
-import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
-import dev.emi.trinkets.api.SlotReference;
-import dev.emi.trinkets.api.Trinket;
-import dev.emi.trinkets.api.TrinketsApi;
-import dev.emi.trinkets.api.client.TrinketRenderer;
-import dev.emi.trinkets.api.client.TrinketRendererRegistry;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.model.player.PlayerModel;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
-import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
-import net.minecraft.client.renderer.item.ItemStackRenderState;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-
-public class TravelersBackpackTrinket implements Trinket {
+/*public class TravelersBackpackTrinket implements Trinket {
     public static void init() {
         BuiltInRegistries.ITEM.stream()
                 .filter(item -> item instanceof TravelersBackpackItem)
@@ -67,4 +43,4 @@ public class TravelersBackpackTrinket implements Trinket {
             }
         }
     }
-}
+}*/

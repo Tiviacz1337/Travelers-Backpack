@@ -12,7 +12,7 @@ import com.tiviacz.travelersbackpack.util.ItemStackUtils;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage;
+import net.fabricmc.fabric.api.transfer.v1.item.ContainerStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.SlottedStorage;
@@ -21,7 +21,7 @@ import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
-import net.fabricmc.fabric.impl.transfer.item.InventoryStorageImpl;
+import net.fabricmc.fabric.impl.transfer.item.ContainerStorageImpl;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -139,7 +139,7 @@ public class ModBlockEntityTypes {
         if(blockEntity.getWrapper() != BackpackWrapper.DUMMY) {
             return new BackpackStorage(blockEntity.getWrapper().getStorageForInputOutput());
         }
-        return InventoryStorageImpl.of(new ItemStackHandler(0), null);
+        return ContainerStorageImpl.of(new ItemStackHandler(0), null);
     }
 
     public static class BackpackStorage implements Storage<ItemVariant> {
@@ -147,7 +147,7 @@ public class ModBlockEntityTypes {
         private final StorageAccessWrapper backingStorage;
 
         public BackpackStorage(StorageAccessWrapper backingStorage) {
-            this.storage = InventoryStorage.of(backingStorage, null);
+            this.storage = ContainerStorage.of(backingStorage, null);
             this.backingStorage = backingStorage;
         }
 

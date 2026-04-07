@@ -10,7 +10,6 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -85,7 +84,7 @@ public class ContainerSorter {
                         continue;
                     CustomWrapper wrapper = new CustomWrapper(backpackWrapper, backpackWrapper.getStorage());
                     ItemStack extSimulate = playerStacks.extractItem(i, Integer.MAX_VALUE, true);
-                    ItemStack ext = ItemStack.EMPTY; //playerStacks.extractItem(i, Integer.MAX_VALUE, false);
+                    ItemStack ext = ItemStack.EMPTY;
                     if(pair.getSecond().getSecond() ? ItemStackUtils.isSameItemSameTags(pair.getSecond().getFirst(), extSimulate) : ItemStack.isSameItem(pair.getSecond().getFirst(), extSimulate)) {
                         ext = playerStacks.extractItem(i, Integer.MAX_VALUE, false);
                         ext = wrapper.insertItem(pair.getFirst(), ext, false);

@@ -2,8 +2,8 @@ package com.tiviacz.travelersbackpack.handlers;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
-import com.tiviacz.travelersbackpack.client.screens.tooltip.BackpackTooltipComponent;
 import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
+import com.tiviacz.travelersbackpack.client.screens.tooltip.BackpackTooltipComponent;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.BackpackSlotItemHandler;
 import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
@@ -15,7 +15,7 @@ import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.network.chat.Component;
@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class ScreenRenderHandler {
-    public static void renderAboveContents(AbstractContainerScreen<?> screen, GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    public static void renderAboveContents(AbstractContainerScreen<?> screen, GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         Minecraft mc = Minecraft.getInstance();
         Player player = mc.player;
         if(player == null) return;
@@ -53,7 +53,7 @@ public class ScreenRenderHandler {
                 if(carried.getItem() instanceof TravelersBackpackItem) {
                     tooltip = Optional.of(new BackpackTooltipComponent(carried, true));
                     if(!slotStack.isEmpty() && slot.mayPickup(player) && BackpackSlotItemHandler.isItemValid(slotStack)) {
-                        guiGraphics.drawString(mc.font, Component.literal("-").withStyle(ChatFormatting.YELLOW), slot.x + 2, slot.y - 1, -1); //16109090
+                        guiGraphics.text(mc.font, Component.literal("-").withStyle(ChatFormatting.YELLOW), slot.x + 2, slot.y - 1, -1); //16109090
                         if(slot == hoveredSlot) {
                             guiGraphics.setTooltipForNextFrame(mc.font, List.of(Component.translatable("screen.travelersbackpack.add_to_backpack").withStyle(ChatFormatting.YELLOW)), tooltip, mouseX, mouseY);
                         }
@@ -61,7 +61,7 @@ public class ScreenRenderHandler {
                 } else if(!carried.isEmpty() && BackpackSlotItemHandler.isItemValid(carried)) {
                     if(slotStack.getItem() instanceof TravelersBackpackItem && slot.allowModification(player)) {
                         tooltip = Optional.of(new BackpackTooltipComponent(slotStack, true));
-                        guiGraphics.drawString(mc.font, Component.literal("+").withStyle(ChatFormatting.YELLOW), slot.x + 9, slot.y + 8, -1); //16109090
+                        guiGraphics.text(mc.font, Component.literal("+").withStyle(ChatFormatting.YELLOW), slot.x + 9, slot.y + 8, -1); //16109090
                         if(slot == hoveredSlot) {
                             guiGraphics.setTooltipForNextFrame(mc.font, List.of(Component.translatable("screen.travelersbackpack.add_to_backpack").withStyle(ChatFormatting.YELLOW)), tooltip, mouseX, mouseY);
                         }
@@ -80,7 +80,7 @@ public class ScreenRenderHandler {
                     if(highlighted) {
                         RenderHelper.renderSlotHighlightBack(guiGraphics, screen.leftPos + 77, screen.topPos + 62 - 18);
                     }
-                    guiGraphics.renderItem(backpack, screen.leftPos + 77, screen.topPos + 62 - 18);
+                    guiGraphics.item(backpack, screen.leftPos + 77, screen.topPos + 62 - 18);
 
                     if(highlighted) {
                         List<Component> components = new ArrayList<>();
@@ -100,7 +100,7 @@ public class ScreenRenderHandler {
                 if(highlighted) {
                     RenderHelper.renderSlotHighlightBack(guiGraphics, screen.leftPos + 77, screen.topPos + 62 - 18);
                 }
-                guiGraphics.renderItem(backpack, screen.leftPos + 77, screen.topPos + 62 - 18);
+                guiGraphics.item(backpack, screen.leftPos + 77, screen.topPos + 62 - 18);
 
                 if(highlighted) {
                     String button = KeybindHandler.OPEN_BACKPACK.getTranslatedKeyMessage().getString();
@@ -149,7 +149,7 @@ public class ScreenRenderHandler {
                             }
                             if(mouseButtonEvent.button() == GLFW.GLFW_MOUSE_BUTTON_2) {
                                 if(InputConstants.isKeyDown(Minecraft.getInstance().getWindow(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
-                                    Minecraft.getInstance().gui.getChat().addMessage(Component.translatable("screen.travelersbackpack.hide_icon_info"));
+                                    Minecraft.getInstance().gui.getChat().addClientSystemMessage(Component.translatable("screen.travelersbackpack.hide_icon_info"));
                                     return true;
                                 }
                             }

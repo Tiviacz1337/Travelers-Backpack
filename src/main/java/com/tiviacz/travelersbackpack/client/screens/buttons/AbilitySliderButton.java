@@ -1,12 +1,12 @@
 package com.tiviacz.travelersbackpack.client.screens.buttons;
 
+import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
-import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
 import com.tiviacz.travelersbackpack.util.TextUtils;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -24,7 +24,7 @@ public class AbilitySliderButton extends Button {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void render(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         if(isBlock) {
             drawButton(guiGraphics, mouseX, mouseY, BackpackScreen.ICONS);
         } else {
@@ -34,7 +34,7 @@ public class AbilitySliderButton extends Button {
         }
     }
 
-    public void drawButton(GuiGraphics guiGraphics, int mouseX, int mouseY, Identifier texture) {
+    public void drawButton(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, Identifier texture) {
         if(screen.getWrapper().isAbilityEnabled()) {
             this.drawButton(guiGraphics, mouseX, mouseY, texture, 44, 56, 78, 82);
         } else {
@@ -43,7 +43,7 @@ public class AbilitySliderButton extends Button {
     }
 
     @Override
-    public void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    public void renderTooltip(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         if(inButton(mouseX, mouseY)) {
             //If disabled in config
             if(!BackpackAbilities.isAbilityEnabledInConfig(screen.getWrapper().getBackpackStack())) {

@@ -26,12 +26,6 @@
     "client": [
       "com.tiviacz.travelersbackpack.TravelersBackpackClient"
     ],
-    "emi": [
-      "com.tiviacz.travelersbackpack.compat.emi.EmiCompat"
-    ],
-    "rei_client": [
-      "com.tiviacz.travelersbackpack.compat.rei.ReiClientCompat"
-    ],
     "jei_mod_plugin": [
       "com.tiviacz.travelersbackpack.compat.jei.TravelersBackpackPlugin"
     ]
@@ -42,7 +36,7 @@
   "depends": {
     "fabricloader": ">=0.15.11",
     "fabric-api": ">=0.120.0",
-    "minecraft": "~1.21.6",
+    "minecraft": "~26.1",
     "java": ">=21",
     "forgeconfigapiport": "*"
   },

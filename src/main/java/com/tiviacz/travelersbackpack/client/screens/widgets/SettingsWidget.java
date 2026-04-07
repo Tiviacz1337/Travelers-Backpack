@@ -6,7 +6,7 @@ import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
 import com.tiviacz.travelersbackpack.util.Reference;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.BlockPos;
@@ -25,7 +25,7 @@ public class SettingsWidget extends WidgetBase<AbstractBackpackScreen<?>> {
     }
 
     @Override
-    public void renderBg(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY) {
+    public void renderBg(GuiGraphicsExtractor guiGraphics, int x, int y, int mouseX, int mouseY) {
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BackpackScreen.ICONS, pos.x(), pos.y(), emptyTabUv.x(), emptyTabUv.y(), width, height, 256, 256);
         if(this.isSettingsScreen) {
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BackpackScreen.ICONS, pos.x() + 3, pos.y() + 3, tabUvReturn.x(), tabUvReturn.y(), iconSize.x(), iconSize.y(), 256, 256);
@@ -45,7 +45,7 @@ public class SettingsWidget extends WidgetBase<AbstractBackpackScreen<?>> {
     }
 
     @Override
-    public void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    public void renderTooltip(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         if(isMouseOver(mouseX, mouseY)) {
             if(this.isSettingsScreen) {
                 guiGraphics.setTooltipForNextFrame(screen.getScreenFont(), Component.translatable("screen.travelersbackpack.settings_back"), mouseX, mouseY);

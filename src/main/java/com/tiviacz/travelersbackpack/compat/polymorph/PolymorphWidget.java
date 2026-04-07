@@ -1,12 +1,6 @@
 package com.tiviacz.travelersbackpack.compat.polymorph;
 
-import com.illusivesoulworks.polymorph.api.client.widgets.PlayerRecipesWidget;
-import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
-import com.tiviacz.travelersbackpack.inventory.upgrades.crafting.CraftingUpgrade;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.world.inventory.Slot;
-
-public class PolymorphWidget extends PlayerRecipesWidget {
+/*public class PolymorphWidget extends PlayerRecipesWidget {
     private final BackpackScreen screen;
 
     public PolymorphWidget(BackpackScreen screen, Slot outputSlot) {
@@ -33,7 +27,7 @@ public class PolymorphWidget extends PlayerRecipesWidget {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float renderPartialTicks) {
+    public void render(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float renderPartialTicks) {
         screen.getMenu().getWrapper().getUpgradeManager().getUpgrade(CraftingUpgrade.class).ifPresent(crafting -> {
             if(crafting.isTabOpened()) {
                 super.render(guiGraphics, mouseX, mouseY, renderPartialTicks);
@@ -51,3 +45,4 @@ public class PolymorphWidget extends PlayerRecipesWidget {
         return false;
     }
 }
+*/

@@ -10,16 +10,14 @@ import com.tiviacz.travelersbackpack.item.upgrades.*;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.item.Item;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.tiviacz.travelersbackpack.init.ModBlocks.SKELETON_TRAVELERS_BACKPACK;
 
 public class ModItems {
     //Backpacks

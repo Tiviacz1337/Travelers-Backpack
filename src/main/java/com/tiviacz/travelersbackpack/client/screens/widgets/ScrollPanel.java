@@ -1,11 +1,12 @@
 package com.tiviacz.travelersbackpack.client.screens.widgets;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.AbstractContainerEventHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.MouseButtonEvent;
 
 import java.util.Collections;
@@ -56,7 +57,7 @@ public abstract class ScrollPanel extends AbstractContainerEventHandler implemen
 
     protected abstract int getContentHeight();
 
-    //protected abstract void drawPanel(GuiGraphics guiGraphics, int entryRight, int relativeY, Tesselator tess, int mouseX, int mouseY);
+    //protected abstract void drawPanel(GuiGraphicsExtractor guiGraphics, int entryRight, int relativeY, Tesselator tess, int mouseX, int mouseY);
 
     protected boolean clickPanel(double mouseX, double mouseY, MouseButtonEvent event) {
         return false;
@@ -104,23 +105,23 @@ public abstract class ScrollPanel extends AbstractContainerEventHandler implemen
 
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
-        if (super.mouseClicked(event, doubleClick))
+        if(super.mouseClicked(event, doubleClick))
             return true;
 
         this.scrolling = event.button() == 0 && event.x() >= barLeft && event.x() < right && event.y() >= top && event.y() < bottom;
-        if (this.scrolling) {
+        if(this.scrolling) {
             return true;
         }
-        int mouseListY = ((int) event.y()) - this.top - this.getContentHeight() + (int) this.scrollDistance - border;
-        if (event.x() >= left && event.x() < right && mouseListY < 0) {
-            return this.clickPanel(event.x() - left, event.y() - this.top + (int) this.scrollDistance - border, event);
+        int mouseListY = ((int)event.y()) - this.top - this.getContentHeight() + (int)this.scrollDistance - border;
+        if(event.x() >= left && event.x() < right && mouseListY < 0) {
+            return this.clickPanel(event.x() - left, event.y() - this.top + (int)this.scrollDistance - border, event);
         }
         return false;
     }
 
     @Override
     public boolean mouseReleased(MouseButtonEvent event) {
-        if (super.mouseReleased(event))
+        if(super.mouseReleased(event))
             return true;
         boolean ret = this.scrolling;
         this.scrolling = false;
@@ -140,7 +141,7 @@ public abstract class ScrollPanel extends AbstractContainerEventHandler implemen
 
     @Override
     public boolean mouseDragged(MouseButtonEvent event, double deltaX, double deltaY) {
-        if (this.scrolling) {
+        if(this.scrolling) {
             int maxScroll = height - getBarHeight();
             double moved = deltaY / maxScroll;
             this.scrollDistance += getMaxScroll() * moved;
@@ -151,8 +152,10 @@ public abstract class ScrollPanel extends AbstractContainerEventHandler implemen
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
         guiGraphics.enableScissor(this.left, this.top, this.right, this.bottom);
+
+        Screen.extractMenuBackgroundTexture(guiGraphics, Screen.MENU_BACKGROUND, this.left, this.top, 0f, 0f, this.width, this.height);
 
         int extraHeight = (this.getContentHeight() + border) - height;
         if(extraHeight > 0) {

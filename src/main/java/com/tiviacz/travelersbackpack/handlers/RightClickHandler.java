@@ -2,16 +2,15 @@ package com.tiviacz.travelersbackpack.handlers;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.advancements.ActionTypeTrigger;
+import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
 import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
 import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
 import com.tiviacz.travelersbackpack.common.recipes.ShapedBackpackRecipe;
-import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModAdvancements;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.init.ModTags;
-import com.tiviacz.travelersbackpack.inventory.Tiers;
 import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.core.BlockPos;
@@ -26,7 +25,6 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -61,16 +59,12 @@ public class RightClickHandler {
                             if(item.place(new BlockPlaceContext(context)) == (level.isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER)) {
                                 player.swing(hand, true);
                                 if(!level.isClientSide()) {
-                                    //level.playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER.value(), SoundSource.PLAYERS, 1.05F, (1.0F + (level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.2F) * 0.7F);
                                     AttachmentUtils.getAttachment(player).ifPresent(data -> {
                                         data.remove(player);
                                         data.synchronise(player);
                                     });
                                 }
                                 return InteractionResult.SUCCESS;
-                                //event.setCanceled(true);
-                                //event.setCancellationResult(InteractionResult.SUCCESS);
-                                //return;
                             }
                         }
                     }
@@ -89,11 +83,8 @@ public class RightClickHandler {
                     Containers.dropItemStack(level, pos.getX(), pos.above().getY(), pos.getZ(), oldSleepingBag);
                     player.getMainHandItem().shrink(1);
                 }
-                level.playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER.value(), SoundSource.PLAYERS, 1.0F, (1.0F + (level.random.nextFloat() - level.random.nextFloat()) * 0.2F) * 0.7F);
+                level.playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER.value(), SoundSource.PLAYERS, 1.0F, (1.0F + (level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.2F) * 0.7F);
                 return InteractionResult.SUCCESS;
-                //event.setCancellationResult(InteractionResult.SUCCESS);
-                //event.setCanceled(true);
-                //return;
             }
 
             //Remove custom backpack design (go back to standard)
@@ -118,9 +109,6 @@ public class RightClickHandler {
                         player.getMainHandItem().hurtAndBreak(1, player, hand.asEquipmentSlot());
                     }
                     return InteractionResult.SUCCESS;
-                    //event.setCancellationResult(InteractionResult.SUCCESS);
-                    // event.setCanceled(true);
-                    //return;
                 }
             }
 
@@ -176,9 +164,6 @@ public class RightClickHandler {
                         backpackBlockEntity.removeSleepingBag(level, direction);
 
                         return InteractionResult.SUCCESS;
-                        //event.setCanceled(true);
-                        //event.setCancellationResult(InteractionResult.SUCCESS);
-                        //return;
                     }
                 }
             }
@@ -197,12 +182,9 @@ public class RightClickHandler {
                     if(!level.isClientSide() && level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState())) {
                         player.setItemInHand(InteractionHand.MAIN_HAND, backpack);
                         backpackBlockEntity.removeSleepingBag(level, direction);
-                        level.playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER.value(), SoundSource.PLAYERS, 1.0F, (1.0F + (level.random.nextFloat() - level.random.nextFloat()) * 0.2F) * 0.7F);
+                        level.playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER.value(), SoundSource.PLAYERS, 1.0F, (1.0F + (level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.2F) * 0.7F);
 
                         return InteractionResult.SUCCESS;
-                        //
-                        // event.setCanceled(true);
-                        //event.setCancellationResult(InteractionResult.SUCCESS);
                     }
                 }
             }
@@ -210,7 +192,7 @@ public class RightClickHandler {
             //Grant achievement for washing backpack
             if(level.getBlockState(pos).getBlock() instanceof LayeredCauldronBlock) {
                 ItemStack stack = player.getItemInHand(hand);
-                if(stack.getItem() == ModItems.STANDARD_TRAVELERS_BACKPACK && stack.is(ItemTags.DYEABLE) && stack.has(DataComponents.DYED_COLOR)) {
+                if(stack.getItem() == ModItems.STANDARD_TRAVELERS_BACKPACK && stack.is(ItemTags.CAULDRON_CAN_REMOVE_DYE) && stack.has(DataComponents.DYED_COLOR)) {
                     if(player instanceof ServerPlayer serverPlayer) {
                         ModAdvancements.ACTION_TRIGGER.trigger(serverPlayer, ActionTypeTrigger.UNDYE_BACKPACK);
                     }
@@ -233,13 +215,5 @@ public class RightClickHandler {
             list.add(UPGRADES.get(i).get().getDefaultInstance());
         }
         return list;
-    }
-
-    public static void initializeDefaultSize(ItemStack stack) {
-        Tiers.Tier tier = Tiers.LEATHER;
-        stack.set(ModDataComponents.TIER, tier.getOrdinal());
-        stack.set(ModDataComponents.STORAGE_SLOTS, tier.getStorageSlots());
-        stack.set(ModDataComponents.UPGRADE_SLOTS, tier.getUpgradeSlots());
-        stack.set(ModDataComponents.TOOL_SLOTS, tier.getToolSlots());
     }
 }

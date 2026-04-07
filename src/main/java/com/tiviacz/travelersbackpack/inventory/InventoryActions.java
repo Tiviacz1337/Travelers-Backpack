@@ -9,7 +9,7 @@ import com.tiviacz.travelersbackpack.util.*;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
-import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage;
+import net.fabricmc.fabric.api.transfer.v1.item.ContainerStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
@@ -23,7 +23,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.PotionItem;
-import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
@@ -38,7 +37,7 @@ public class InventoryActions {
         ItemStackHandler itemStackHandlerCopy = new ItemStackHandler(itemStackHandler.getSlots());
         itemStackHandlerCopy.setStackInSlot(slotIn, itemStackHandler.getStackInSlot(slotIn).copyWithCount(1));
 
-        SingleSlotStorage<ItemVariant> slotStorage = InventoryStorage.of(itemStackHandlerCopy, null).getSlot(slotIn);
+        SingleSlotStorage<ItemVariant> slotStorage = ContainerStorage.of(itemStackHandlerCopy, null).getSlot(slotIn);
 
         ItemStack stackIn = itemStackHandler.getStackInSlot(slotIn);
         int slotOut = slotIn + 1;
@@ -232,8 +231,6 @@ public class InventoryActions {
             if(user.containerMenu instanceof BackpackItemMenu menu && menu.getWrapper().getScreenID() == Reference.ITEM_SCREEN_ID && !menu.player.level().isClientSide()) {
                 var vec3 = menu.player.blockPosition().getCenter();
                 menu.player.level().playSound(null, vec3.x(), vec3.y(), vec3.z(), soundEvent, SoundSource.BLOCKS, 1.0F, 1.0F);
-                //menu.player.getSoundSource().playSound().playNotifySound(soundEvent, SoundSource.BLOCKS, 1.0F, 1.0F);
-                //menu.player.level().playLocalSound(menu.player.position().x(), menu.player.position().y() + 0.5, menu.player.position().z(), soundEvent, SoundSource.BLOCKS, 1.0F, 1.0F, false);
             }
         }
     }

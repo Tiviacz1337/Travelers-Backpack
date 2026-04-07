@@ -10,7 +10,7 @@ import com.tiviacz.travelersbackpack.network.ServerboundFilterTagsPacket;
 import com.tiviacz.travelersbackpack.util.PacketDistributor;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
@@ -62,10 +62,10 @@ public class FilterUpgradeWidgetBase<W extends FilterUpgradeWidgetBase<W, U>, U 
     }
 
     @Override
-    public void renderBg(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY) {
+    public void renderBg(GuiGraphicsExtractor guiGraphics, int x, int y, int mouseX, int mouseY) {
         if(getUpgrade().isTagSelector() && isTabOpened()) {
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BackpackScreen.TABS, pos.x(), pos.y(), 66, 149, 87, 103, 256, 256);
-            guiGraphics.renderItem(screen.getWrapper().getUpgrades().getStackInSlot(this.dataHolderSlot), pos.x() + 4, pos.y() + 4);
+            guiGraphics.item(screen.getWrapper().getUpgrades().getStackInSlot(this.dataHolderSlot), pos.x() + 4, pos.y() + 4);
             int j = 0;
 
             //Scissors
@@ -79,7 +79,7 @@ public class FilterUpgradeWidgetBase<W extends FilterUpgradeWidgetBase<W, U>, U 
                 if(j >= 5) return;
                 guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BackpackScreen.TABS, pos.x() + 7, calculateTagBoxY(getTags().indexOf(tag)), 153, 149, 73, 13, 256, 256);
                 guiGraphics.enableScissor(posX, posY, maxX, maxY);
-                guiGraphics.drawString(screen.getFont(), getTrimmedText(tag), pos.x() + 9, calculateTagBoxY(getTags().indexOf(tag)) + 3, 0xFFFFFFFF, false);
+                guiGraphics.text(screen.getFont(), getTrimmedText(tag), pos.x() + 9, calculateTagBoxY(getTags().indexOf(tag)) + 3, 0xFFFFFFFF, false);
                 guiGraphics.disableScissor();
             }
         } else {
@@ -88,8 +88,8 @@ public class FilterUpgradeWidgetBase<W extends FilterUpgradeWidgetBase<W, U>, U 
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        super.render(guiGraphics, mouseX, mouseY, partialTicks);
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
 
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BackpackScreen.ICONS, this.tagIconElement.pos().x(), this.tagIconElement.pos().y(), 0, 186, this.tagIconElement.size().x(), this.tagIconElement.size().y(), 256, 256);
 
@@ -106,7 +106,7 @@ public class FilterUpgradeWidgetBase<W extends FilterUpgradeWidgetBase<W, U>, U 
     }
 
     @Override
-    public void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    public void renderTooltip(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         super.renderTooltip(guiGraphics, mouseX, mouseY);
 
         if(isTabOpened()) {

@@ -1,19 +1,21 @@
 package com.tiviacz.travelersbackpack.item.upgrades;
 
-import com.tiviacz.travelersbackpack.components.BackpackContainerContents;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.UpgradeManager;
 import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
 import com.tiviacz.travelersbackpack.inventory.upgrades.magnet.MagnetUpgrade;
+import com.tiviacz.travelersbackpack.util.ContainerContentsHelper;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.item.component.TooltipDisplay;
 import org.apache.commons.lang3.function.TriFunction;
 
@@ -55,9 +57,10 @@ public class MagnetUpgradeItem extends UpgradeItem {
     @Override
     public TriFunction<UpgradeManager, Integer, ItemStack, Optional<? extends UpgradeBase<?>>> getUpgrade() {
         return (upgradeManager, dataHolderSlot, provider) -> {
-            BackpackContainerContents filter = provider.getOrDefault(ModDataComponents.BACKPACK_CONTAINER, new BackpackContainerContents(9));
+            ItemContainerContents contents = provider.getOrDefault(ModDataComponents.BACKPACK_CONTAINER, ItemContainerContents.EMPTY);
+            NonNullList<ItemStack> items = ContainerContentsHelper.getItems(contents, 9);
             List<String> filterTags = new ArrayList<>(provider.getOrDefault(ModDataComponents.FILTER_TAGS, new ArrayList<>()));
-            return Optional.of(new MagnetUpgrade(upgradeManager, dataHolderSlot, filter.getItems(), filterTags));
+            return Optional.of(new MagnetUpgrade(upgradeManager, dataHolderSlot, items, filterTags));
         };
     }
 }

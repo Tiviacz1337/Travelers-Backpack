@@ -32,9 +32,7 @@ public class TankActions {
                     long result = FluidUtil.tryEmptyContainerAtCursor(tank, wrapper.getBackpackTankCapacity(), fluidStorage, true);
                     if(result > 0) {
                         //Play client only sound for item
-                        //if(wrapper.getScreenID() == Reference.ITEM_SCREEN_ID) {
                         InventoryActions.playFluidSound(wrapper.getBackpackOwner(), wrapper.getPlayersUsing(), fluidSound, FluidTypeHelper.BUCKET_EMPTY);
-                        //}
                         handled.set(true);
                     }
                 } else if(!handled.get() && fluidStorage.supportsInsertion()) {
@@ -56,9 +54,7 @@ public class TankActions {
                                 menu.setCarried(fullBucket.getDefaultInstance());
                             }
                             //Play client only sound for item
-                            //if(wrapper.getScreenID() == Reference.ITEM_SCREEN_ID) {
                             InventoryActions.playFluidSound(wrapper.getBackpackOwner(), wrapper.getPlayersUsing(), fluidSound, FluidTypeHelper.BUCKET_FILL);
-                            //}
                             handled.set(true);
                         }
                     } else if(!handled.get() && carried.getItem() == Items.GLASS_BOTTLE) {
@@ -73,9 +69,7 @@ public class TankActions {
                         long result = FluidUtil.tryFillContainerAtCursor(tank, wrapper.getBackpackTankCapacity(), fluidStorage, true);
                         if(result > 0) {
                             //Play client only sound for item
-                            //if(wrapper.getScreenID() == Reference.ITEM_SCREEN_ID) {
                             InventoryActions.playFluidSound(wrapper.getBackpackOwner(), wrapper.getPlayersUsing(), fluidSound, FluidTypeHelper.BUCKET_FILL);
-                            //}
                             handled.set(true);
                         }
                     }
@@ -97,10 +91,9 @@ public class TankActions {
 
     public static boolean tryEmptyPotion(ItemStack carried, FluidTank tank, int potionType) {
         long amount = FluidConstants.BOTTLE;
-        //FluidVariantWrapper fluidStack = new FluidVariantWrapper(FluidVariant.of(ModFluids.POTION_STILL), amount);
         FluidVariant potionVariant = FluidStackHelper.setPotionFluidVariant(carried, potionType);
         FluidVariantWrapper potionVariantWrapper = new FluidVariantWrapper(potionVariant, amount);
-        if(tank.isEmpty() || (potionVariantWrapper.fluidVariant().isOf(tank.getFluid().fluidVariant().getFluid())) && potionVariantWrapper.fluidVariant().componentsMatch(tank.getFluid().fluidVariant().getComponents())) {
+        if(tank.isEmpty() || (potionVariantWrapper.fluidVariant().isOf(tank.getFluid().fluidVariant().getFluid())) && potionVariantWrapper.fluidVariant().equals(tank.getFluid().fluidVariant())) {
             if(tank.getFluidAmount() + amount <= tank.getCapacity()) {
                 tank.fill(potionVariantWrapper, false);
                 return true;

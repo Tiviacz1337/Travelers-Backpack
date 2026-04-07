@@ -3,16 +3,16 @@ package com.tiviacz.travelersbackpack.handlers;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
+import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
 import com.tiviacz.travelersbackpack.client.screens.ToolsScreen;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.common.ServerActions;
-import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
 import net.fabricmc.fabric.api.event.Event;
@@ -34,7 +34,6 @@ import java.util.List;
 public class KeybindHandler {
     public static final Identifier TRAVELERS_BACKPACK_PHASE = Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "phase");
     public static final KeyMapping.Category CATEGORY = new KeyMapping.Category(Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "controls"));
-   // private static final String CATEGORY = "key.travelersbackpack.category";
     public static final KeyMapping OPEN_BACKPACK = new KeyMapping("key.travelersbackpack.inventory", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_B, CATEGORY);
     public static final KeyMapping SORT_BACKPACK = new KeyMapping("key.travelersbackpack.sort", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN, CATEGORY);
     public static final KeyMapping ABILITY = new KeyMapping("key.travelersbackpack.ability", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN, CATEGORY);
@@ -46,14 +45,14 @@ public class KeybindHandler {
     public static final List<KeyMapping> TOGGLE_UPGRADE_KEYS = ImmutableList.of(TOGGLE_UPGRADE_0, TOGGLE_UPGRADE_1, TOGGLE_UPGRADE_2, TOGGLE_UPGRADE_3);
 
     public static void initKeybinds() {
-        KeyBindingHelper.registerKeyBinding(OPEN_BACKPACK);
-        KeyBindingHelper.registerKeyBinding(SORT_BACKPACK);
-        KeyBindingHelper.registerKeyBinding(ABILITY);
-        KeyBindingHelper.registerKeyBinding(SWAP_TOOL);
-        KeyBindingHelper.registerKeyBinding(TOGGLE_UPGRADE_0);
-        KeyBindingHelper.registerKeyBinding(TOGGLE_UPGRADE_1);
-        KeyBindingHelper.registerKeyBinding(TOGGLE_UPGRADE_2);
-        KeyBindingHelper.registerKeyBinding(TOGGLE_UPGRADE_3);
+        KeyMappingHelper.registerKeyMapping(OPEN_BACKPACK);
+        KeyMappingHelper.registerKeyMapping(SORT_BACKPACK);
+        KeyMappingHelper.registerKeyMapping(ABILITY);
+        KeyMappingHelper.registerKeyMapping(SWAP_TOOL);
+        KeyMappingHelper.registerKeyMapping(TOGGLE_UPGRADE_0);
+        KeyMappingHelper.registerKeyMapping(TOGGLE_UPGRADE_1);
+        KeyMappingHelper.registerKeyMapping(TOGGLE_UPGRADE_2);
+        KeyMappingHelper.registerKeyMapping(TOGGLE_UPGRADE_3);
     }
 
     public static void registerListener() {
@@ -72,7 +71,7 @@ public class KeybindHandler {
                     if(BackpackAbilities.ALLOWED_ABILITIES.contains(AttachmentUtils.getWearingBackpack(player).getItem())) {
                         boolean ability = AttachmentUtils.getBackpackWrapperArtificial(player).isAbilityEnabled();
                         ServerboundActionTagPacket.create(ServerboundActionTagPacket.ABILITY_SLIDER, !ability);
-                        player.displayClientMessage(Component.translatable(ability ? "screen.travelersbackpack.ability_disabled" : "screen.travelersbackpack.ability_enabled"), true);
+                        player.sendOverlayMessage(Component.translatable(ability ? "screen.travelersbackpack.ability_disabled" : "screen.travelersbackpack.ability_enabled"));
                     }
                 }
                 while(KeybindHandler.SWAP_TOOL.consumeClick()) {
@@ -127,8 +126,7 @@ public class KeybindHandler {
             return false;
         }
         return switch(keybind.key.getType()) {
-            case KEYSYM ->
-                    InputConstants.isKeyDown(Minecraft.getInstance().getWindow(), keybind.key.getValue());
+            case KEYSYM -> InputConstants.isKeyDown(Minecraft.getInstance().getWindow(), keybind.key.getValue());
             case MOUSE ->
                     GLFW.glfwGetMouseButton(Minecraft.getInstance().getWindow().handle(), keybind.key.getValue()) == GLFW.GLFW_PRESS;
             default -> keybind.isDown();

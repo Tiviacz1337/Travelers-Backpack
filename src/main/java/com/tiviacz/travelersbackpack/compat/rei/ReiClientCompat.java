@@ -1,19 +1,6 @@
 package com.tiviacz.travelersbackpack.compat.rei;
 
-import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
-import com.tiviacz.travelersbackpack.client.screens.BackpackSettingsScreen;
-import com.tiviacz.travelersbackpack.client.screens.widgets.UpgradeWidgetBase;
-import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetBase;
-import me.shedaniel.math.Rectangle;
-import me.shedaniel.rei.api.client.plugins.REIClientPlugin;
-import me.shedaniel.rei.api.client.registry.screen.ExclusionZones;
-import me.shedaniel.rei.api.client.registry.screen.ScreenRegistry;
-import me.shedaniel.rei.api.client.registry.transfer.TransferHandlerRegistry;
-
-import java.util.ArrayList;
-import java.util.List;
-
-public class ReiClientCompat implements REIClientPlugin {
+/*public class ReiClientCompat implements REIClientPlugin {
     @Override
     public void registerTransferHandlers(TransferHandlerRegistry registry) {
         registry.register(new ReiTransferHandler());
@@ -53,4 +40,4 @@ public class ReiClientCompat implements REIClientPlugin {
             return ret;
         });
     }
-}
+}*/

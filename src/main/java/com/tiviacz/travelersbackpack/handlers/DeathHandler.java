@@ -1,8 +1,8 @@
 package com.tiviacz.travelersbackpack.handlers;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
-import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
+import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.network.ClientboundSendMessagePacket;
@@ -78,7 +78,6 @@ public class DeathHandler {
         ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> {
             ItemStack backpack = AttachmentUtils.getWearingBackpack(oldPlayer);
             AttachmentUtils.getAttachment(oldPlayer).ifPresent(attachment -> attachment.equipBackpack(backpack, newPlayer));
-            //AttachmentUtils.synchronise(oldPlayer);
         });
     }
 }

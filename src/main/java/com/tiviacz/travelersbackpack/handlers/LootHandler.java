@@ -67,6 +67,6 @@ public class LootHandler {
     }
 
     public static void addLootPool(LootTable.Builder builder, Item item, float chance) {
-        builder.pool(LootPool.lootPool().with(LootItem.lootTableItem(item).build()).conditionally(LootItemRandomChanceCondition.randomChance(chance).build()).build());
+        builder.pool(LootPool.lootPool().add(LootItem.lootTableItem(item).build()).when(LootItemRandomChanceCondition.randomChance(chance).build()).build());
     }
 }

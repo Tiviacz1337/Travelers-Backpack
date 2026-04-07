@@ -26,7 +26,7 @@ public record ServerboundFilterTagsPacket(int slot, List<String> tags) implement
             ServerboundFilterTagsPacket::new
     );
 
-    public static void handle(final ServerboundFilterTagsPacket message, ServerPlayNetworking.Context ctx) {
+    public static void handle(ServerboundFilterTagsPacket message, ServerPlayNetworking.Context ctx) {
         ctx.server().execute(() -> {
 
             Player player = ctx.player();

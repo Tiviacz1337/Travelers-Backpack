@@ -1,10 +1,9 @@
 package com.tiviacz.travelersbackpack.util;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
-import com.tiviacz.travelersbackpack.attachment.TravelersBackpackAttachment;
+import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
 import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
 import com.tiviacz.travelersbackpack.common.BackpackManager;
-import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.network.ClientboundSendMessagePacket;
@@ -103,11 +102,7 @@ public class BackpackDeathHelper {
 
         TravelersBackpackItem.updateCustomBlockEntityTag(level, player, targetPos, stack);
         level.getBlockState(targetPos).getBlock().setPlacedBy(level, targetPos, level.getBlockState(targetPos), player, stack);
-        ((BackpackBlockEntity)level.getBlockEntity(targetPos)).setBackpack(stack, level.registryAccess());
-
-        //if(stack.has(DataComponents.CUSTOM_NAME)) {
-        //    ((BackpackBlockEntity)level.getBlockEntity(targetPos)).setCustomName(stack.getHoverName());
-        //}
+        ((BackpackBlockEntity)level.getBlockEntity(targetPos)).setBackpack(stack);
 
         if(AttachmentUtils.isWearingBackpack(player) && !level.isClientSide()) {
             AttachmentUtils.getAttachment(player).ifPresent(attachment -> attachment.remove(player));

@@ -4,14 +4,16 @@ import com.tiviacz.travelersbackpack.blocks.SleepingBagBlock;
 import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
 import com.tiviacz.travelersbackpack.components.RenderInfo;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
-import com.tiviacz.travelersbackpack.init.*;
+import com.tiviacz.travelersbackpack.init.ModBlockEntityTypes;
+import com.tiviacz.travelersbackpack.init.ModBlocks;
+import com.tiviacz.travelersbackpack.init.ModScreenHandlerTypes;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBlockEntityMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackSettingsMenu;
 import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.Reference;
-import net.fabricmc.fabric.api.blockview.v2.RenderDataBlockEntity;
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
+import net.fabricmc.fabric.api.blockgetter.v2.RenderDataBlockEntity;
+import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -83,7 +85,7 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Re
         this.settingsUser = valueInput.getIntOr(SETTINGS_USER, -1);
     }
 
-    public void setBackpack(ItemStack backpack, HolderLookup.Provider registryAccess) {
+    public void setBackpack(ItemStack backpack) {
         if(backpack.getItem() instanceof TravelersBackpackItem) {
             if(this.wrapper == BackpackWrapper.DUMMY) {
                 this.wrapper = new BackpackWrapper(backpack.copy(), Reference.BLOCK_ENTITY_SCREEN_ID, null, getLevel());
@@ -108,7 +110,7 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Re
     }
 
     private void setBackpackFromNbt(ValueInput valueInput) {
-        setBackpack(valueInput.read(BACKPACK, ItemStack.OPTIONAL_CODEC).orElse(new ItemStack(Items.AIR, 0)), valueInput.lookup());
+        setBackpack(valueInput.read(BACKPACK, ItemStack.OPTIONAL_CODEC).orElse(new ItemStack(Items.AIR, 0)));
     }
 
     @Override
@@ -362,7 +364,7 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Re
     }
 
     private record ExtendedScreen<D>(MenuProvider containerSupplier,
-                                     D screenOpeningData) implements ExtendedScreenHandlerFactory<D> {
+                                     D screenOpeningData) implements ExtendedMenuProvider<D> {
         @Override
         public D getScreenOpeningData(ServerPlayer player) {
             return screenOpeningData;

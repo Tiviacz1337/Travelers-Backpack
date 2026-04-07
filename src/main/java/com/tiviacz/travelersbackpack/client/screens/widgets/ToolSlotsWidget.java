@@ -3,7 +3,7 @@ package com.tiviacz.travelersbackpack.client.screens.widgets;
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
@@ -17,7 +17,7 @@ public class ToolSlotsWidget extends WidgetBase<BackpackScreen> {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         if(isMouseOver(mouseX, mouseY)) {
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BackpackScreen.ICONS, pos.x() - 1, pos.y() - 1, 78, 82, width + 2, height + 2, 256, 256);
         }
@@ -40,7 +40,7 @@ public class ToolSlotsWidget extends WidgetBase<BackpackScreen> {
     }
 
     @Override
-    public void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    public void renderTooltip(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         if(isMouseOver(mouseX, mouseY)) {
             if(screen.getWrapper().showToolSlots()) {
                 guiGraphics.setTooltipForNextFrame(screen.getFont(), Component.translatable("screen.travelersbackpack.hide_tool_slots"), mouseX, mouseY);
@@ -50,7 +50,7 @@ public class ToolSlotsWidget extends WidgetBase<BackpackScreen> {
         }
     }
 
-    public void renderToolsAddition(GuiGraphics guiGraphics, int size, int x, int y) {
+    public void renderToolsAddition(GuiGraphicsExtractor guiGraphics, int size, int x, int y) {
         //Top bar
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BackpackScreen.ICONS, x, y, 0, 67, 23, 5, 256, 256);
 

@@ -1,8 +1,8 @@
 package com.tiviacz.travelersbackpack.item;
 
 import com.tiviacz.travelersbackpack.advancements.ActionTypeTrigger;
-import com.tiviacz.travelersbackpack.common.ServerActions;
 import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
+import com.tiviacz.travelersbackpack.common.ServerActions;
 import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
 import com.tiviacz.travelersbackpack.init.ModAdvancements;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
@@ -148,8 +148,8 @@ public class HoseItem extends Item {
             if(getHoseMode(stack) == SPILL_MODE) {
                 //Try to splash potion in the world
                 if(tank.getFluid().fluidVariant().getFluid() == ModFluids.POTION_STILL) {
-                    if(tank.getFluid().fluidVariant().getComponentMap().getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag().contains("PotionType")) {
-                        int potionType = tank.getFluid().fluidVariant().getComponentMap().get(DataComponents.CUSTOM_DATA).copyTag().getIntOr("PotionType", 0);
+                    if(tank.getFluid().fluidVariant().getComponents().getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag().contains("PotionType")) {
+                        int potionType = tank.getFluid().fluidVariant().getComponents().get(DataComponents.CUSTOM_DATA).copyTag().getIntOr("PotionType", 0);
                         if(potionType == 1) {
                             if(tank.getFluidAmount() >= FluidConstants.BOTTLE) {
                                 ItemStack potionStack = FluidStackHelper.getSplashItemStackFromFluidStack(tank.getFluid().fluidVariant());
@@ -265,8 +265,8 @@ public class HoseItem extends Item {
 
                 //Try to splash potion in the world
                 if(tank.getFluid().fluidVariant().getFluid() == ModFluids.POTION_STILL) {
-                    if(tank.getFluid().fluidVariant().getComponentMap().getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag().contains("PotionType")) {
-                        int potionType = tank.getFluid().fluidVariant().getComponentMap().get(DataComponents.CUSTOM_DATA).copyTag().getIntOr("PotionType", 0);
+                    if(tank.getFluid().fluidVariant().getComponents().getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag().contains("PotionType")) {
+                        int potionType = tank.getFluid().fluidVariant().getComponents().get(DataComponents.CUSTOM_DATA).copyTag().getIntOr("PotionType", 0);
                         if(potionType == 1) {
                             if(tank.getFluidAmount() >= FluidConstants.BOTTLE) {
                                 ItemStack potionStack = FluidStackHelper.getSplashItemStackFromFluidStack(tank.getFluid().fluidVariant());
@@ -333,7 +333,7 @@ public class HoseItem extends Item {
                     FluidVariantWrapper fluidStack = tank.getFluid();
                     if(level.getBlockState(newPos).canBeReplaced(fluid)) {
                         boolean flag = !level.getBlockState(newPos).isSolid();
-                        boolean ultraWarm = level.dimensionType().attributes().contains(EnvironmentAttributes.WATER_EVAPORATES) ? (boolean)level.dimensionType().attributes().get(EnvironmentAttributes.WATER_EVAPORATES).argument() : false;
+                        boolean ultraWarm = level.dimensionType().attributes().contains(EnvironmentAttributes.WATER_EVAPORATES) && (boolean)level.dimensionType().attributes().get(EnvironmentAttributes.WATER_EVAPORATES).argument();
                         if(ultraWarm && fluidStack.fluidVariant().getFluid().is(FluidTags.WATER)) {
                             tank.drain(FluidConstants.BUCKET, false);
                             level.playSound(null, newPos, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 0.5F, 2.6F + (level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.8F);

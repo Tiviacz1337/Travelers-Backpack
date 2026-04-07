@@ -30,9 +30,6 @@ public class UniversalGravesCompat implements GraveInventoryMask {
                 itemConsumer.addItem(stack, 0);
 
                 AttachmentUtils.getAttachment(serverPlayerEntity).ifPresent(attachment -> attachment.remove(serverPlayerEntity));
-
-                //Sync
-                //AttachmentUtils.synchronise(serverPlayerEntity);
             }
         }
     }
@@ -47,10 +44,7 @@ public class UniversalGravesCompat implements GraveInventoryMask {
                 attachment.equipBackpack(stack, serverPlayerEntity);
             });
 
-            //Sync
-            //AttachmentUtils.synchronise(serverPlayerEntity);
-
-            serverPlayerEntity.level().playSound(null, serverPlayerEntity.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER.value(), SoundSource.PLAYERS, 1.0F, (1.0F + (serverPlayerEntity.level().random.nextFloat() - serverPlayerEntity.level().random.nextFloat()) * 0.2F) * 0.7F);
+            serverPlayerEntity.level().playSound(null, serverPlayerEntity.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER.value(), SoundSource.PLAYERS, 1.0F, (1.0F + (serverPlayerEntity.level().getRandom().nextFloat() - serverPlayerEntity.level().getRandom().nextFloat()) * 0.2F) * 0.7F);
 
             itemStack.setCount(0);
             return true;

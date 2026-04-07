@@ -4,7 +4,7 @@ import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.item.upgrades.UpgradeItem;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 
 public class UpgradeSlot {
@@ -26,7 +26,7 @@ public class UpgradeSlot {
         this.isHidden = isHidden;
     }
 
-    public void render(GuiGraphics guiGraphics, int xPos, int yPos) {
+    public void render(GuiGraphicsExtractor guiGraphics, int xPos, int yPos) {
         if(isHidden) {
             return;
         }
@@ -38,7 +38,7 @@ public class UpgradeSlot {
         if(!(wrapper.getUpgrades().getStackInSlot(this.index).getItem() instanceof UpgradeItem) || !wrapper.getUpgradeManager().hasUpgradeInSlot(index)) {
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BackpackScreen.ICONS, xPos + x + 3, yPos + y + 3, 24, 0, ICON_SIZE, ICON_SIZE, 256, 256);
         } else {
-            guiGraphics.renderItem(wrapper.getUpgrades().getStackInSlot(this.index), xPos + x + 4, yPos + y + 4);
+            guiGraphics.item(wrapper.getUpgrades().getStackInSlot(this.index), xPos + x + 4, yPos + y + 4);
         }
     }
 

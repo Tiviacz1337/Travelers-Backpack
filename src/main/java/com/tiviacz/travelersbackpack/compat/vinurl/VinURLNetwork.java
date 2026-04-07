@@ -5,8 +5,8 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 
 public class VinURLNetwork {
     public static void register() {
-        PayloadTypeRegistry.playC2S().register(ServerboundVinURLStartPacket.TYPE, ServerboundVinURLStartPacket.STREAM_CODEC);
-        PayloadTypeRegistry.playC2S().register(ServerboundVinURLStopPacket.TYPE, ServerboundVinURLStopPacket.STREAM_CODEC);
+        PayloadTypeRegistry.serverboundPlay().register(ServerboundVinURLStartPacket.TYPE, ServerboundVinURLStartPacket.STREAM_CODEC);
+        PayloadTypeRegistry.serverboundPlay().register(ServerboundVinURLStopPacket.TYPE, ServerboundVinURLStopPacket.STREAM_CODEC);
 
         ServerPlayNetworking.registerGlobalReceiver(ServerboundVinURLStartPacket.TYPE, ServerboundVinURLStartPacket::handle);
         ServerPlayNetworking.registerGlobalReceiver(ServerboundVinURLStopPacket.TYPE, ServerboundVinURLStopPacket::handle);

@@ -2,17 +2,14 @@ package com.tiviacz.travelersbackpack;
 
 import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
 import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
-import com.tiviacz.travelersbackpack.compat.accessories.TravelersBackpackAccessory;
 import com.tiviacz.travelersbackpack.compat.craftingtweaks.CraftingTweaksCompat;
 import com.tiviacz.travelersbackpack.compat.pneumonogravestones.PneumonoGravestonesCompat;
-import com.tiviacz.travelersbackpack.compat.trinkets.TravelersBackpackTrinket;
 import com.tiviacz.travelersbackpack.compat.universalgraves.UniversalGravesCompat;
 import com.tiviacz.travelersbackpack.compat.vinurl.VinURLNetwork;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
 import com.tiviacz.travelersbackpack.handlers.*;
 import com.tiviacz.travelersbackpack.init.*;
-import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.Supporters;
 import fuzs.forgeconfigapiport.fabric.api.v5.ConfigRegistry;
 import fuzs.forgeconfigapiport.fabric.api.v5.ModConfigEvents;
@@ -73,7 +70,6 @@ public class TravelersBackpack implements ModInitializer {
         ModAdvancements.init();
         EntityItemHandler.registerListeners();
         LootHandler.registerListeners();
-        TradeOffersHandler.init();
         RightClickHandler.registerListeners();
         SleepHandler.registerListener();
         registerDeathHandler();
@@ -85,8 +81,6 @@ public class TravelersBackpack implements ModInitializer {
 
         ModItemGroups.addItemGroup();
 
-        TravelersBackpackItem.registerCauldronInteraction();
-
         FabricLoader fabricLoader = FabricLoader.getInstance();
 
         accessoriesLoaded = fabricLoader.isModLoaded("accessories");
@@ -94,8 +88,8 @@ public class TravelersBackpack implements ModInitializer {
         craftingTweaksLoaded = fabricLoader.isModLoaded("craftingtweaks");
         if(craftingTweaksLoaded) CraftingTweaksCompat.registerCraftingTweaksAddition();
 
-        if(accessoriesLoaded) TravelersBackpackAccessory.init();
-        if(trinketsLoaded && !accessoriesLoaded) TravelersBackpackTrinket.init();
+        //if(accessoriesLoaded) TravelersBackpackAccessory.init();
+        //if(trinketsLoaded && !accessoriesLoaded) TravelersBackpackTrinket.init();
 
         toughasnailsLoaded = fabricLoader.isModLoaded("toughasnails");
         comfortsLoaded = fabricLoader.isModLoaded("comforts");

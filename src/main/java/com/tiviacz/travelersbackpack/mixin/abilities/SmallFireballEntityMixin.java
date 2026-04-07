@@ -22,10 +22,8 @@ public class SmallFireballEntityMixin extends Fireball {
     public void onEntityHit(EntityHitResult entityHitResult, CallbackInfo ci) {
         if(TravelersBackpackConfig.SERVER.backpackAbilities.enableBackpackAbilities.get()) {
             if(!this.level().isClientSide()) {
-                if(this instanceof Object) {
-                    if((Object)this instanceof SmallFireball smallFireball) {
-                        BackpackAbilities.blazeAbility(entityHitResult, smallFireball, ci);
-                    }
+                if((Object)this instanceof SmallFireball smallFireball) {
+                    BackpackAbilities.blazeAbility(entityHitResult, smallFireball, ci);
                 }
             }
         }

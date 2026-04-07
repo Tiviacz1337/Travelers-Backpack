@@ -1,0 +1,12 @@
+{
+  "gives": {
+    "id": "travelersbackpack:villager"
+  },
+  "max_uses": 1.0,
+  "reputation_discount": 0.05,
+  "wants": {
+    "count": 50.0,
+    "id": "minecraft:emerald"
+  },
+  "xp": 50.0
+}

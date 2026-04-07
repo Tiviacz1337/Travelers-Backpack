@@ -13,15 +13,11 @@ public class PotionFluidVariantAttributeHandler implements FluidVariantAttribute
     }
 
     public String getTranslationKey(FluidVariant fluidVariant) {
-        if(fluidVariant.hasComponents() && fluidVariant.getComponents().entrySet().stream().anyMatch(entry -> entry.getKey().equals(DataComponents.POTION_CONTENTS))) {
-            PotionContents contents = fluidVariant.getComponents().get(DataComponents.POTION_CONTENTS).get();
+        if(fluidVariant.hasComponents() && fluidVariant.getComponents().has(DataComponents.POTION_CONTENTS)) {
+            PotionContents contents = fluidVariant.getComponents().getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY);
             String s = contents.customName().or(() -> contents.potion().map(p_372776_ -> p_372776_.value().name())).orElse("empty");
             return "item.minecraft.potion.effect." + s;
         }
         return "item.minecraft.potion.effect.empty";
-        /*if(fluidVariant.hasComponents() && fluidVariant.getComponents().entrySet().stream().anyMatch(entry -> entry.getKey().equals(DataComponents.POTION_CONTENTS))) {
-            return Potion.getName(fluidVariant.getComponents().get(DataComponents.POTION_CONTENTS).get().potion(), "item.minecraft.potion.effect.");
-        }
-        return Potion.getName(PotionContents.EMPTY.potion(), "item.minecraft.potion.effect."); */
     }
 }

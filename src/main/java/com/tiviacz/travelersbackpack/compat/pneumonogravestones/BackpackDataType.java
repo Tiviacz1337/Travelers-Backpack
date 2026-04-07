@@ -24,7 +24,7 @@ public class BackpackDataType extends GravestoneDataType {
         AttachmentUtils.getAttachment(player).ifPresent(component -> {
             if(component.hasBackpack()) {
                 DataResult<Tag> result = ItemStack.OPTIONAL_CODEC.encodeStart(ops, component.getBackpack());
-                nbt.put(KEY, (Tag)result.result().orElseThrow());
+                nbt.put(KEY, result.result().orElseThrow());
                 component.remove(player);
             }
         });

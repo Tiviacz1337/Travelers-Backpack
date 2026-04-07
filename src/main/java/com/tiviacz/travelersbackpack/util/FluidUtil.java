@@ -117,6 +117,6 @@ public class FluidUtil {
     }
 
     public static boolean isSameVariant(FluidVariant variant, FluidVariant other) {
-        return variant.isOf(other.getFluid()) && variant.componentsMatch(other.getComponents());
+        return variant.isOf(other.getFluid()) && variant.equals(other);
     }
 }

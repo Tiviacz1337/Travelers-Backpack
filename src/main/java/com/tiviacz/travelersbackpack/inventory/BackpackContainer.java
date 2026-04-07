@@ -6,7 +6,7 @@ import com.tiviacz.travelersbackpack.inventory.menu.BackpackItemMenu;
 import com.tiviacz.travelersbackpack.network.ClientboundSyncAttachmentPacket;
 import com.tiviacz.travelersbackpack.util.PacketDistributor;
 import com.tiviacz.travelersbackpack.util.Reference;
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
+import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
@@ -14,7 +14,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
-import org.ladysnake.cca.api.v3.component.ComponentProvider;
 
 public record BackpackContainer(ItemStack stack, Player player, int screenID, int index) {
     public BackpackContainer(ItemStack stack, Player player, int screenID) {
@@ -32,7 +31,7 @@ public record BackpackContainer(ItemStack stack, Player player, int screenID, in
     //Component
     public static void openBackpack(ServerPlayer serverPlayerEntity, ItemStack stack, int screenID) {
         if(!serverPlayerEntity.level().isClientSide()) {
-            serverPlayerEntity.openMenu(new ExtendedScreenHandlerFactory<ModScreenHandlerTypes.ItemScreenData>() {
+            serverPlayerEntity.openMenu(new ExtendedMenuProvider<ModScreenHandlerTypes.ItemScreenData>() {
                 @Override
                 public Component getDisplayName() {
                     return Component.translatable("screen.travelersbackpack.item");
@@ -58,7 +57,7 @@ public record BackpackContainer(ItemStack stack, Player player, int screenID, in
     //Item
     public static void openBackpack(ServerPlayer serverPlayerEntity, ItemStack stack, int screenID, int index) {
         if(!serverPlayerEntity.level().isClientSide()) {
-            serverPlayerEntity.openMenu(new ExtendedScreenHandlerFactory<ModScreenHandlerTypes.ItemScreenData>() {
+            serverPlayerEntity.openMenu(new ExtendedMenuProvider<ModScreenHandlerTypes.ItemScreenData>() {
                 @Override
                 public Component getDisplayName() {
                     return Component.translatable("screen.travelersbackpack.item");
@@ -84,7 +83,7 @@ public record BackpackContainer(ItemStack stack, Player player, int screenID, in
     public static void openAnotherPlayerBackpack(ServerPlayer opener, ServerPlayer targetPlayer, ItemStack stack, int screenID) {
         if(!opener.level().isClientSide()) {
             synchroniseToOpener(opener, targetPlayer);
-            opener.openMenu(new ExtendedScreenHandlerFactory<ModScreenHandlerTypes.ItemScreenData>() {
+            opener.openMenu(new ExtendedMenuProvider<ModScreenHandlerTypes.ItemScreenData>() {
                 @Override
                 public Component getDisplayName() {
                     return Component.translatable("screen.travelersbackpack.item");

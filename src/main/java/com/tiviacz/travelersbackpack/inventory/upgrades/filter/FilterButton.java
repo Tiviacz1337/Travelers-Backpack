@@ -3,7 +3,7 @@ package com.tiviacz.travelersbackpack.inventory.upgrades.filter;
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetBase;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 
@@ -38,7 +38,7 @@ public class FilterButton<T extends WidgetBase> {
         this.hidden = hidden;
     }
 
-    public void renderButton(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    public void renderButton(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         if(hidden) {
             return;
         }

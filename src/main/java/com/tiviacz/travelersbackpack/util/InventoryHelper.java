@@ -1,12 +1,9 @@
 package com.tiviacz.travelersbackpack.util;
 
-import com.tiviacz.travelersbackpack.components.BackpackContainerContents;
 import com.tiviacz.travelersbackpack.inventory.handler.ItemStackHandler;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 
@@ -43,18 +40,6 @@ public class InventoryHelper {
             }
         }
         return true;
-    }
-
-    public static BackpackContainerContents itemsToList(int size, ItemStackHandler handler) {
-        List<ItemStack> list = new ArrayList<>(size);
-
-        for(int i = 0; i < handler.getSlots(); i++) {
-            list.add(handler.getStackInSlot(i));
-        }
-        for(int i = handler.getSlots(); i < size; i++) {
-            list.add(ItemStack.EMPTY);
-        }
-        return BackpackContainerContents.fromItems(size, list);
     }
 
     public static void iteratePlayerInv(Inventory playerInv, BiConsumer<Integer, ItemStack> consumer) {
