@@ -686,15 +686,15 @@ public class BackpackBaseMenu extends AbstractBackpackMenu {
 
     @Override
     public void removed(Player player) {
-        this.wrapper.getUpgradeManager().getUpgrade(CraftingUpgrade.class).ifPresent(craftingUpgrade -> checkHandlerAndPlaySound(craftingUpgrade.crafting, player, craftingUpgrade.crafting.getSlots()));
-        this.wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).ifPresent(tanksUpgrade -> this.clearSlotsAndPlaySound(inventory.player, tanksUpgrade.getFluidSlotsHandler(), 4));
+        this.wrapper.getUpgradeManager().getUpgrade(CraftingUpgrade.class).ifPresent(craftingUpgrade -> clearSlotsAndPlaySound(player, craftingUpgrade.crafting, craftingUpgrade.crafting.getSlots(), true));
+        this.wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).ifPresent(tanksUpgrade -> clearSlotsAndPlaySound(inventory.player, tanksUpgrade.getFluidSlotsHandler(), 4, false));
         super.removed(player);
     }
 
-    public void clearSlotsAndPlaySound(Player player, ItemStackHandler handler, int size) {
+    public static void clearSlotsAndPlaySound(Player player, ItemStackHandler handler, int size, boolean forbiddenOnly) {
         boolean playSound = false;
         for(int i = 0; i < size; i++) {
-            boolean flag = clearSlot(player, handler, i);
+            boolean flag = clearSlot(handler, player, i, forbiddenOnly);
             if(flag) playSound = true;
         }
         if(playSound) {
@@ -702,44 +702,9 @@ public class BackpackBaseMenu extends AbstractBackpackMenu {
         }
     }
 
-    public boolean clearSlot(Player player, ItemStackHandler handler, int index) {
-        if(!handler.getStackInSlot(index).isEmpty()) {
-            if(player == null) return false;
-            if(!player.isAlive()) {
-                ItemStack stack = handler.getStackInSlot(index).copy();
-                handler.setStackInSlot(index, ItemStack.EMPTY);
-                if(player instanceof ServerPlayer serverPlayer && !serverPlayer.hasDisconnected()) {
-                    player.drop(stack, false);
-                }
-                return false;
-            } else {
-                ItemStack stack = handler.getStackInSlot(index);
-                handler.setStackInSlot(index, ItemStack.EMPTY);
-                player.getInventory().placeItemBackInInventory(stack);
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public static void playSound(Player player) {
-        player.level().playSound(player, player.blockPosition(), SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 1.0F, (1.0F + (player.level().getRandom().nextFloat() - player.level().getRandom().nextFloat()) * 0.2F) * 0.7F);
-    }
-
-    //Remove forbidden items from handler, if saving enabled
-    public static void checkHandlerAndPlaySound(ItemStackHandler handler, Player player, int size) {
-        boolean playSound = false;
-        for(int i = 0; i < size; i++) {
-            boolean flag = clearSlot(handler, player, i);
-            if(flag) playSound = true;
-        }
-        if(playSound) {
-            playSound(player);
-        }
-    }
-
-    public static boolean clearSlot(ItemStackHandler handler, Player player, int index) {
-        if(!BackpackSlotItemHandler.isItemValid(handler.getStackInSlot(index))) {
+    public static boolean clearSlot(ItemStackHandler handler, Player player, int index, boolean forbiddenOnly) {
+        boolean flag = forbiddenOnly ? !BackpackSlotItemHandler.isItemValid(handler.getStackInSlot(index)) : !handler.getStackInSlot(index).isEmpty();
+        if(flag) {
             if(player == null) return false;
             if(!player.isAlive() || (player instanceof ServerPlayer serverPlayer && serverPlayer.hasDisconnected())) {
                 ItemStack stack = handler.getStackInSlot(index).copy();
@@ -755,6 +720,10 @@ public class BackpackBaseMenu extends AbstractBackpackMenu {
             }
         }
         return false;
+    }
+
+    public static void playSound(Player player) {
+        player.level().playSound(player, player.blockPosition(), SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 1.0F, (1.0F + (player.level().getRandom().nextFloat() - player.level().getRandom().nextFloat()) * 0.2F) * 0.7F);
     }
 
     @Override

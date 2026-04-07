@@ -28,12 +28,20 @@ public class FluidSlotItemHandler extends UpgradeSlotItemHandler<TanksUpgrade> {
     }
 
     //Fix for buckets bug
-    @Override
+    /*@Override
     public void set(@NotNull ItemStack stack) {
         super.set(stack);
         if(index == 0 || index == 2) {
             InventoryActions.transferContainerTank(upgrade, index == 0 ? upgrade.getLeftTank() : upgrade.getRightTank(), index);
         }
+    }*/
+
+    @Override
+    public void setByPlayer(ItemStack itemStack, ItemStack previous) {
+        if(index == 0 || index == 2) {
+            InventoryActions.transferContainerTank(upgrade, itemStack, index == 0 ? upgrade.getLeftTank() : upgrade.getRightTank(), index);
+        }
+        super.setByPlayer(itemStack, previous);
     }
 
     @Override

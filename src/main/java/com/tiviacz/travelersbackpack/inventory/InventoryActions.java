@@ -8,7 +8,6 @@ import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;
 import com.tiviacz.travelersbackpack.util.*;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.fabricmc.fabric.api.transfer.v1.item.ContainerStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
@@ -30,16 +29,8 @@ import java.util.List;
 import java.util.Optional;
 
 public class InventoryActions {
-    public static boolean transferContainerTank(TanksUpgrade upgrade, FluidTank tank, int slotIn) {
+    public static boolean transferContainerTank(TanksUpgrade upgrade, ItemStack stackIn, FluidTank tank, int slotIn) {
         ItemStackHandler itemStackHandler = upgrade.getFluidSlotsHandler();
-
-        //Copy ItemStackHandler and set stack size to 1 to not break FluidStorage for multiple buckets
-        ItemStackHandler itemStackHandlerCopy = new ItemStackHandler(itemStackHandler.getSlots());
-        itemStackHandlerCopy.setStackInSlot(slotIn, itemStackHandler.getStackInSlot(slotIn).copyWithCount(1));
-
-        SingleSlotStorage<ItemVariant> slotStorage = ContainerStorage.of(itemStackHandlerCopy, null).getSlot(slotIn);
-
-        ItemStack stackIn = itemStackHandler.getStackInSlot(slotIn);
         int slotOut = slotIn + 1;
 
         if(tank == null || stackIn.isEmpty() || stackIn.getItem() == Items.AIR) return false;
@@ -98,114 +89,95 @@ public class InventoryActions {
                 }
             }
         }
+
         // --- POTION PART ---
+        Optional<Storage<FluidVariant>> fluidStorage = FluidUtil.getFluidStorageConstant(stackIn.copyWithCount(1));
 
-        Optional<Storage<FluidVariant>> fluidStorage = FluidUtil.getFluidStorageAtSlot(slotStorage);
+        if(fluidStorage.isPresent()) {
+            ResourceAmount<FluidVariant> resource = StorageUtil.findExtractableContent(fluidStorage.get(), null);
 
-        if(!Transaction.isOpen()) {
-            try(Transaction transaction = Transaction.openOuter()) {
-                if(fluidStorage.isPresent()) {
-                    ResourceAmount<FluidVariant> fluidVariantWrapper;
-                    try(Transaction transaction1 = transaction.openNested()) {
-                        fluidVariantWrapper = StorageUtil.findExtractableContent(fluidStorage.get(), transaction1);
-                        transaction1.commit();
-                    }
-                    //ResourceAmount<FluidVariant> fluidVariantWrapper = StorageUtil.findExtractableContent(fluidStorage.get(), transaction);
+            //Container ===> Tank
 
-                    //Container ===> Tank
-                    if(fluidVariantWrapper != null && fluidVariantWrapper.resource().getFluid() != null && fluidVariantWrapper.amount() > 0) {
-                        if(tank.getAmount() > 0 && !FluidUtil.isSameVariant(fluidVariantWrapper.resource(), tank.getResource())) {
-                            transaction.close();
-                            return false;
-                        }
-                        ItemStack slotOutStack = itemStackHandler.getStackInSlot(slotOut);
-                        //Fluid sound
-                        SoundEvent fluidSound = FluidVariantAttributes.getEmptySound(fluidVariantWrapper.resource());
-
-                        if(StorageUtil.move(fluidStorage.get(), tank, f -> true, fluidVariantWrapper.amount(), transaction) > 0) {
-                            ItemStack transferResultStack = slotStorage.getResource().toStack();
-                            if(!transferResultStack.isEmpty()) {
-                                if(slotOutStack.isEmpty() || slotOutStack.getItem() == transferResultStack.getItem()) {
-                                    if(slotOutStack.getItem() == transferResultStack.getItem()) {
-                                        transferResultStack.setCount(slotOutStack.getCount() + 1);
-                                        if(transferResultStack.getCount() > slotOutStack.getMaxStackSize()) {
-                                            transaction.abort();
-                                            return false;
-                                        }
-                                    }
-                                    itemStackHandler.setStackInSlot(slotOut, transferResultStack);
-                                }
-                            }
-                            InventoryHelper.removeItem(upgrade.getFluidSlotsHandler(), slotIn, 1);
-                            playFluidSound(upgrade.getUpgradeManager().getWrapper().getBackpackOwner(), upgrade.getUpgradeManager().getWrapper().getPlayersUsing(), fluidSound, false);
-                            transaction.commit();
-                            return true;
-                        }
-                    }
+            if(resource != null) {
+                if(tank.getAmount() > 0 && !resource.resource().equals(tank.getResource())) {
+                    return false;
                 }
 
-                //Tank ===> Container
+                //Fluid Sound
+                SoundEvent fluidSound = FluidTypeHelper.getSound(tank.getFluid().fluidVariant(), FluidTypeHelper.BUCKET_EMPTY);
 
-                if(tank.isEmpty() || tank.getFluidAmount() <= 0) return false;
+                if(transferFluid(resource, itemStackHandler, tank, stackIn, slotOut, true)) {
+                    //Play fill sound
+                    playFluidSound(upgrade.getUpgradeManager().getWrapper().getBackpackOwner(), upgrade.getUpgradeManager().getWrapper().getPlayersUsing(), fluidSound, false);
+                    return true;
+                }
+            }
 
-                if(isFluidEqual(stackIn, tank, transaction)) {
-                    long amount = 0;
-                    try(Transaction transaction1 = transaction.openNested()) {
-                        amount = StorageUtil.simulateInsert(fluidStorage.get(), tank.getFluid().fluidVariant(), tank.getFluidAmount(), transaction1);
-                        transaction1.commit();
-                    }
+            //Tank ===> Container
 
-                    //Fluid sound
-                    SoundEvent fluidSound = FluidTypeHelper.getSound(tank.getFluid().fluidVariant(), FluidTypeHelper.BUCKET_FILL);
+            if(tank.isEmpty() || tank.getFluidAmount() <= 0) return false;
 
-                    long transferAmount = 0;
-                    try(Transaction transaction1 = transaction.openNested()) {
-                        transferAmount = FluidUtil.tryFillContainerAtSlot(tank, amount, fluidStorage.get(), true, transaction1);
-                    }
-                    ItemStack stackOut = slotStorage.getResource().toStack();
+            if(isSameFluid(stackIn, tank)) {
+                //Fluid sound
+                SoundEvent fluidSound = FluidTypeHelper.getSound(tank.getFluid().fluidVariant(), FluidTypeHelper.BUCKET_FILL);
 
-                    if(stackOut.isEmpty()) {
-                        transaction.abort();
-                        return false;
-                    }
-
-                    if(transferAmount > 0) {
-                        ItemStack slotOutStack = itemStackHandler.getStackInSlot(slotOut);
-
-                        if(slotOutStack.isEmpty() || slotOutStack.getItem() == stackOut.getItem()) {
-                            if(slotOutStack.getItem() == stackOut.getItem()) {
-                                stackOut.setCount(slotOutStack.getCount() + 1);
-
-                                if(stackOut.getCount() > slotOutStack.getMaxStackSize()) {
-                                    transaction.abort();
-                                    return false;
-                                }
-                            }
-
-                            playFluidSound(upgrade.getUpgradeManager().getWrapper().getBackpackOwner(), upgrade.getUpgradeManager().getWrapper().getPlayersUsing(), fluidSound, true);
-                            itemStackHandler.setStackInSlot(slotOut, stackOut);
-                            InventoryHelper.removeItem(upgrade.getFluidSlotsHandler(), slotIn, 1);
-                            transaction.commit();
-                            return true;
-                        }
-                    }
+                if(transferFluid(resource, itemStackHandler, tank, stackIn, slotOut, false)) {
+                    //Play fill sound
+                    playFluidSound(upgrade.getUpgradeManager().getWrapper().getBackpackOwner(), upgrade.getUpgradeManager().getWrapper().getPlayersUsing(), fluidSound, true);
+                    return true;
                 }
             }
         }
         return false;
     }
 
-    private static boolean isFluidEqual(ItemStack stackIn, FluidTank tank, Transaction main) {
-        if(FluidUtil.hasFluidStorageConstant(stackIn)) {
-            ResourceAmount<FluidVariant> fluidVariantWrapper = null;
-            try(Transaction transaction = main.openNested()) {
-                fluidVariantWrapper = StorageUtil.findExtractableContent(FluidUtil.getFluidStorageConstant(stackIn).get(), transaction);
-                transaction.commit();
-            }
-            if(fluidVariantWrapper == null) {
+    private static boolean transferFluid(ResourceAmount<FluidVariant> resource, ItemStackHandler handler, FluidTank tank, ItemStack stack, int slotOut, boolean isFilling) {
+        ItemStackHandler handlerCopy = new ItemStackHandler(2);
+        //0 - Input/Result
+        //1 - Current output item in slotOut
+
+        handlerCopy.setStackInSlot(0, stack.copyWithCount(1));
+        handlerCopy.setStackInSlot(1, handler.getStackInSlot(slotOut).copy());
+
+        //Slot Storage to mutate ItemStack
+        SingleSlotStorage<ItemVariant> slotStorage = ContainerStorage.of(handlerCopy, null).getSlot(0);
+        Optional<Storage<FluidVariant>> fluidStorage = FluidUtil.getFluidStorageAtSlot(slotStorage);
+
+        //Tank copy to work on
+        FluidTank tankCopy = new FluidTank(tank.getCapacity());
+        tankCopy.setFluid(tank.getFluid());
+
+        try(var tx = Transaction.openOuter()) {
+            long fill = StorageUtil.move(isFilling ? fluidStorage.get() : tankCopy, isFilling ? tankCopy : fluidStorage.get(), f -> true, isFilling ? resource.amount() : tankCopy.getFluidAmount(), tx);
+            if(fill > 0) {
+                ItemStack result = slotStorage.getResource().toStack((int)slotStorage.getAmount());
+                ItemStack insertResult = handlerCopy.insertItem(1, result, false);
+
+                if(!insertResult.isEmpty()) {
+                    tx.abort();
+                    return false;
+                }
+
+                stack.shrink(1);
+                tank.setFluid(tankCopy.getFluid());
+                tank.onContentsChanged();
+
+                //Set result stack in output slot
+                handler.setStackInSlot(slotOut, handlerCopy.getStackInSlot(1).copy());
+                tx.commit();
                 return true;
-            } else if(!fluidVariantWrapper.resource().isBlank() && fluidVariantWrapper.amount() > 0) {
-                return FluidUtil.isSameVariant(fluidVariantWrapper.resource(), tank.getFluid().fluidVariant());
+            }
+        }
+        return false;
+    }
+
+    private static boolean isSameFluid(ItemStack stackIn, FluidTank tank) {
+        if(FluidUtil.hasFluidStorageConstant(stackIn)) {
+            ResourceAmount<FluidVariant> resource = StorageUtil.findExtractableContent(FluidUtil.getFluidStorageConstant(stackIn).get(), null);
+            if(resource == null) {
+                return true;
+            } else if(!resource.resource().isBlank() && resource.amount() > 0) {
+                return FluidUtil.isSameVariant(resource.resource(), tank.getFluid().fluidVariant());
             }
         }
         return false;
