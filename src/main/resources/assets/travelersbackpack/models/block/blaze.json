@@ -1,6 +1,5 @@
 {
   "fabric:type": "travelersbackpack:backpack",
-  "render_type": "solid",
   "backpackTexture": "travelersbackpack:block/backpack/blaze",
   "particle": "minecraft:block/gold_block"
 }

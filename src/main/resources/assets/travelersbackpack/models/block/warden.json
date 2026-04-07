@@ -1,6 +1,5 @@
 {
   "fabric:type": "travelersbackpack:backpack",
-  "render_type": "cutout",
   "backpackTexture": "travelersbackpack:block/backpack/warden",
   "particle": "minecraft:block/sculk_catalyst_side"
 }

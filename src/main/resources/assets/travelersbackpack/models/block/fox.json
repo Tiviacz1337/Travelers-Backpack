@@ -1,6 +1,5 @@
 {
   "fabric:type": "travelersbackpack:backpack",
-  "render_type": "solid",
   "backpackTexture": "travelersbackpack:block/backpack/fox",
   "particle": "minecraft:block/orange_wool"
 }
