@@ -117,7 +117,7 @@ public class InventoryActions {
 
             if(tank.isEmpty() || tank.getFluidAmount() <= 0) return false;
 
-            if(isSameFluid(stackIn, tank)) {
+            if(isSameFluid(resource, tank)) {
                 //Fluid sound
                 SoundEvent fluidSound = FluidTypeHelper.getSound(tank.getFluid().fluidVariant(), FluidTypeHelper.BUCKET_FILL);
 
@@ -171,14 +171,11 @@ public class InventoryActions {
         return false;
     }
 
-    private static boolean isSameFluid(ItemStack stackIn, FluidTank tank) {
-        if(FluidUtil.hasFluidStorageConstant(stackIn)) {
-            ResourceAmount<FluidVariant> resource = StorageUtil.findExtractableContent(FluidUtil.getFluidStorageConstant(stackIn).get(), null);
-            if(resource == null) {
-                return true;
-            } else if(!resource.resource().isBlank() && resource.amount() > 0) {
-                return FluidUtil.isSameVariant(resource.resource(), tank.getFluid().fluidVariant());
-            }
+    private static boolean isSameFluid(@Nullable ResourceAmount<FluidVariant> resource, FluidTank tank) {
+        if(resource == null) {
+            return true;
+        } else if(!resource.resource().isBlank() && resource.amount() > 0) {
+            return FluidUtil.isSameVariant(resource.resource(), tank.getFluid().fluidVariant());
         }
         return false;
     }
