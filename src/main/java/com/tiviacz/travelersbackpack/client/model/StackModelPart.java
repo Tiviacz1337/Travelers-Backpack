@@ -28,7 +28,7 @@ public class StackModelPart extends BackpackModelPart {
 
     public List<ItemStack> prepare(ItemStack stack) {
         if(stack.has(ModDataComponents.TOOLS_CONTAINER)) {
-            return new ArrayList<>(stack.get(ModDataComponents.TOOLS_CONTAINER).nonEmptyItemCopyStream().filter(itemStack -> !itemStack.isEmpty()).toList());
+            return new ArrayList<>(stack.get(ModDataComponents.TOOLS_CONTAINER).nonEmptyItemCopyStream().toList());
         } else {
             return new ArrayList<>();
         }
