@@ -5,6 +5,7 @@ on: [ workflow_dispatch ]
 env:
   MINECRAFT_VERSION: |
     26.1.1
+    26.1
   JAVA_VERSION: 25
   VERSION: 26.1.1-11.1.0
   RELEASE_NAME_CURSEFORGE: "travelersbackpack-fabric-26.1.1-11.1.0"
