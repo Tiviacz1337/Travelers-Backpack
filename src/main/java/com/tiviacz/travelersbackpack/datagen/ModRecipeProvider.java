@@ -399,8 +399,8 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                         .pattern("AAA").pattern("ABA").pattern("AAA").unlockedBy(criterionName, criterion);
             }
 
-            public ShapedBackpackRecipeBuilder createFullGrid(Item result, Ingredient ingredient, Ingredient ingredient1, Item unlocker, TagKey<Item> tag) {
-                return ShapedBackpackRecipeBuilder.shaped(registries.lookupOrThrow(Registries.ITEM), RecipeCategory.MISC, result)
+            public ShapedRecipeBuilder createFullGrid(Item result, Ingredient ingredient, Ingredient ingredient1, Item unlocker, TagKey<Item> tag) {
+                return ShapedRecipeBuilder.shaped(registries.lookupOrThrow(Registries.ITEM), RecipeCategory.MISC, result)
                         .define('A', ingredient1).define('B', ingredient)
                         .pattern("AAA").pattern("ABA").pattern("AAA").unlockedBy(getHasName(unlocker), has(tag));
             }

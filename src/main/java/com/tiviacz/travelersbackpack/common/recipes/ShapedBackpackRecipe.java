@@ -9,6 +9,7 @@ import com.tiviacz.travelersbackpack.compat.comforts.ComfortsCompat;
 import com.tiviacz.travelersbackpack.components.RenderInfo;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.init.ModItems;
+import com.tiviacz.travelersbackpack.init.ModRecipeSerializers;
 import com.tiviacz.travelersbackpack.init.ModTags;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
 import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
@@ -143,7 +144,7 @@ public class ShapedBackpackRecipe extends NormalCraftingRecipe {
 
     @Override
     public RecipeSerializer<ShapedBackpackRecipe> getSerializer() {
-        return SERIALIZER;
+        return ModRecipeSerializers.BACKPACK_SHAPED;
     }
 
     @Override
