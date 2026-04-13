@@ -1,6 +1,16 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
+    "has_ender_pearl": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#c:ender_pearls"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
     "has_the_recipe": {
       "conditions": {
         "recipe": "travelersbackpack:enderman"
@@ -10,7 +20,8 @@
   },
   "requirements": [
     [
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_ender_pearl"
     ]
   ],
   "rewards": {

@@ -1,6 +1,16 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
+    "has_pumpkin": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:pumpkin"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
     "has_the_recipe": {
       "conditions": {
         "recipe": "travelersbackpack:pumpkin"
@@ -10,7 +20,8 @@
   },
   "requirements": [
     [
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_pumpkin"
     ]
   ],
   "rewards": {

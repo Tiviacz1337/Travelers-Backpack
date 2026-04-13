@@ -1,6 +1,16 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
+    "has_cactus": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:cactus"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
     "has_the_recipe": {
       "conditions": {
         "recipe": "travelersbackpack:cactus"
@@ -10,7 +20,8 @@
   },
   "requirements": [
     [
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_cactus"
     ]
   ],
   "rewards": {

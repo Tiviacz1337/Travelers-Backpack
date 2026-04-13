@@ -1,6 +1,16 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
+    "has_gunpowder": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:gunpowder"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
     "has_the_recipe": {
       "conditions": {
         "recipe": "travelersbackpack:creeper"
@@ -10,7 +20,8 @@
   },
   "requirements": [
     [
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_gunpowder"
     ]
   ],
   "rewards": {

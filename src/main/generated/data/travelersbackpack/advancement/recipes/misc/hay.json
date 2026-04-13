@@ -6,11 +6,22 @@
         "recipe": "travelersbackpack:hay"
       },
       "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_wheat": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#c:crops/wheat"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
     }
   },
   "requirements": [
     [
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_wheat"
     ]
   ],
   "rewards": {
