@@ -21,9 +21,9 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
-import net.fabricmc.fabric.api.transfer.v1.storage.base.ResourceAmount;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.ChatFormatting;
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
@@ -32,6 +32,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.stats.Stats;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -46,17 +47,20 @@ import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.component.TooltipDisplay;
-import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.BucketPickup;
 import net.minecraft.world.level.block.LiquidBlockContainer;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -115,103 +119,30 @@ public class HoseItem extends Item {
                 return InteractionResult.PASS;
             }
             FluidTank tank = this.getSelectedFluidTank(stack, wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).get());
-
-            if(getHoseMode(stack) == SUCK_MODE) {
-                //Pick fluid from block
-                BlockHitResult result = getPlayerPOVHitResult(level, player, ClipContext.Fluid.SOURCE_ONLY);
-                BlockPos blockpos = result.getBlockPos();
-                Direction direction1 = result.getDirection();
-                BlockPos blockpos1 = blockpos.relative(result.getDirection());
-
-                if(level.mayInteract(player, blockpos) && player.mayUseItemAt(blockpos1, direction1, stack)) {
-                    BlockState blockstate1 = level.getBlockState(blockpos);
-                    if(blockstate1.getBlock() instanceof BucketPickup pickup) {
-                        Fluid fluid = blockstate1.getFluidState().getType();
-                        if(fluid != Fluids.EMPTY) {
-                            FluidVariantWrapper fluidStack = new FluidVariantWrapper(FluidVariant.of(fluid), FluidConstants.BUCKET);
-                            long tankAmount = tank.isEmpty() ? 0 : tank.getFluidAmount();
-                            boolean canFill = tank.isEmpty() || FluidUtil.isSameVariant(tank.getFluid().fluidVariant(), fluidStack.fluidVariant());
-                            if(canFill && (fluidStack.getAmount() + tankAmount <= tank.getCapacity())) {
-                                ItemStack actualFluid = pickup.pickupBlock(player, level, blockpos, blockstate1);
-                                if(!actualFluid.isEmpty()) {
-                                    level.playSound(player, result.getBlockPos(), FluidTypeHelper.getSound(fluidStack.fluidVariant(), FluidTypeHelper.BUCKET_FILL) == null ? (fluid.is(FluidTags.LAVA) ? SoundEvents.BUCKET_FILL_LAVA : SoundEvents.BUCKET_FILL) : FluidTypeHelper.getSound(fluidStack.fluidVariant(), FluidTypeHelper.BUCKET_FILL), SoundSource.BLOCKS, 1.0F, 1.0F);
-                                    tank.fill(new FluidVariantWrapper(FluidVariant.of(fluid), FluidConstants.BUCKET), false);
-                                    triggerAdvancement(player, ActionTypeTrigger.HOSE_SUCK);
-                                    return InteractionResult.SUCCESS;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            if(getHoseMode(stack) == SPILL_MODE) {
-                //Try to splash potion in the world
-                if(tank.getFluid().fluidVariant().getFluid() == ModFluids.POTION_STILL) {
-                    if(tank.getFluid().fluidVariant().getComponents().getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag().contains("PotionType")) {
-                        int potionType = tank.getFluid().fluidVariant().getComponents().get(DataComponents.CUSTOM_DATA).copyTag().getIntOr("PotionType", 0);
-                        if(potionType == 1) {
-                            if(tank.getFluidAmount() >= FluidConstants.BOTTLE) {
-                                ItemStack potionStack = FluidStackHelper.getSplashItemStackFromFluidStack(tank.getFluid().fluidVariant());
-                                long drainAmount = ServerActions.throwPotion(level, player, potionStack, true);
-                                tank.drain(drainAmount, false);
-                                triggerAdvancement(player, ActionTypeTrigger.HOSE_SPILL_POTION);
-                                return InteractionResult.SUCCESS;
-                            }
-                        } else if(potionType == 2) {
-                            if(tank.getFluidAmount() >= FluidConstants.BOTTLE) {
-                                ItemStack potionStack = FluidStackHelper.getLingeringItemStackFromFluidStack(tank.getFluid().fluidVariant());
-                                long drainAmount = ServerActions.throwPotion(level, player, potionStack, false);
-                                tank.drain(drainAmount, false);
-                                triggerAdvancement(player, ActionTypeTrigger.HOSE_SPILL_POTION);
-                                return InteractionResult.SUCCESS;
-                            }
-                        }
-                    }
-                }
-            }
-
-            if(getHoseMode(stack) == DRINK_MODE) {
-                if(!tank.isEmpty()) {
-                    if(EffectFluidRegistry.hasExecutableEffects(tank.getFluid(), level, player)) {
-                        player.startUsingItem(hand);
-                        return InteractionResult.SUCCESS;
-                    }
-                }
-            }
-        }
-        return InteractionResult.PASS;
-    }
-
-    @Override
-    public InteractionResult useOn(UseOnContext context) {
-        Player player = context.getPlayer();
-        Level level = context.getLevel();
-        BlockPos pos = context.getClickedPos();
-        Direction direction = context.getClickedFace();
-        ItemStack stack = player.getItemInHand(context.getHand());
-        if(AttachmentUtils.isWearingBackpack(player) && context.getHand() == InteractionHand.MAIN_HAND) {
             Storage<FluidVariant> fluidVariantStorage = null;
-            if(!level.isClientSide()) {
-                fluidVariantStorage = FluidStorage.SIDED.find(level, pos, direction);
-            }
-            BackpackWrapper wrapper = AttachmentUtils.getBackpackWrapper(player, AttachmentUtils.UPGRADES_ONLY.get());
-            if(!wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).isPresent()) {
-                return InteractionResult.PASS;
-            }
-            FluidTank tank = this.getSelectedFluidTank(stack, wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).get());
 
-            if(getHoseMode(stack) == SUCK_MODE) {
-                //Transfer fluid from fluid handler
-                if(fluidVariantStorage != null) {
-                    try(Transaction transaction = Transaction.openOuter()) {
+            BlockHitResult hitResult = getPlayerPOVHitResult(level, player, getHoseMode(stack) == SUCK_MODE ? ClipContext.Fluid.SOURCE_ONLY : ClipContext.Fluid.NONE);
+            if(hitResult.getType() == HitResult.Type.MISS) {
+                return InteractionResult.PASS;
+            } else if(hitResult.getType() != HitResult.Type.BLOCK) {
+                return InteractionResult.PASS;
+            } else {
+                BlockPos pos = hitResult.getBlockPos();
+                Direction direction = hitResult.getDirection();
+                BlockPos directionOffsetPos = pos.relative(direction);
+
+                //Check for fluid storage like in-world tanks
+                fluidVariantStorage = FluidStorage.SIDED.find(level, pos, direction);
+
+                if(getHoseMode(stack) == SUCK_MODE) {
+                    //Transfer fluid from fluid handler
+                    if(fluidVariantStorage != null) {
+                        FluidVariant extractableResource = StorageUtil.findExtractableResource(fluidVariantStorage, null);
                         if(fluidVariantStorage.supportsExtraction()) {
-                            ResourceAmount<FluidVariant> fluidVariantResource = StorageUtil.findExtractableContent(fluidVariantStorage, transaction);
-                            if(fluidVariantResource != null && fluidVariantResource.amount() > 0 && !fluidVariantResource.resource().isBlank()) {
-                                long amountInserted = tank.insert(fluidVariantResource.resource(), Math.min(fluidVariantResource.amount(), FluidConstants.BUCKET), transaction);
-                                long amountExtracted = fluidVariantStorage.extract(fluidVariantResource.resource(), Math.min(fluidVariantResource.amount(), FluidConstants.BUCKET), transaction);
-                                if(amountExtracted == amountInserted) {
-                                    level.playSound(player, pos, FluidTypeHelper.getSound(fluidVariantResource.resource(), FluidTypeHelper.BUCKET_FILL), SoundSource.BLOCKS, 1.0F, 1.0F);
+                            try(Transaction transaction = Transaction.openOuter()) {
+                                long moved = StorageUtil.move(fluidVariantStorage, tank, f -> true, FluidConstants.BUCKET, transaction);
+                                if(moved > 0) {
+                                    level.playSound(player, pos, FluidTypeHelper.getSound(extractableResource, FluidTypeHelper.BUCKET_FILL), SoundSource.BLOCKS, 1.0F, 1.0F);
                                     transaction.commit();
                                     triggerAdvancement(player, ActionTypeTrigger.HOSE_SUCK);
                                     return InteractionResult.SUCCESS;
@@ -219,159 +150,158 @@ public class HoseItem extends Item {
                             }
                         }
                     }
-                }
-                //Pick fluid from block
-                BlockHitResult result = getPlayerPOVHitResult(level, player, ClipContext.Fluid.SOURCE_ONLY);
-                BlockPos blockpos = result.getBlockPos();
-                Direction direction1 = result.getDirection();
-                BlockPos blockpos1 = blockpos.relative(direction);
 
-                if(level.mayInteract(player, blockpos) && player.mayUseItemAt(blockpos1, direction1, stack)) {
-                    BlockState blockstate1 = level.getBlockState(blockpos);
-                    if(blockstate1.getBlock() instanceof BucketPickup pickup) {
-                        Fluid fluid = blockstate1.getFluidState().getType();
-                        if(fluid != Fluids.EMPTY) {
-                            FluidVariantWrapper fluidStack = new FluidVariantWrapper(FluidVariant.of(fluid), FluidConstants.BUCKET);
-                            long tankAmount = tank.isEmpty() ? 0 : tank.getFluidAmount();
-                            boolean canFill = tank.isEmpty() || FluidUtil.isSameVariant(tank.getFluid().fluidVariant(), fluidStack.fluidVariant());
-                            if(canFill && (fluidStack.getAmount() + tankAmount <= tank.getCapacity())) {
-                                ItemStack actualFluid = pickup.pickupBlock(player, level, blockpos, blockstate1);
-                                if(!actualFluid.isEmpty()) {
-                                    level.playSound(player, result.getBlockPos(), FluidTypeHelper.getSound(fluidStack.fluidVariant(), FluidTypeHelper.BUCKET_FILL) == null ? (fluid.is(FluidTags.LAVA) ? SoundEvents.BUCKET_FILL_LAVA : SoundEvents.BUCKET_FILL) : FluidTypeHelper.getSound(fluidStack.fluidVariant(), FluidTypeHelper.BUCKET_FILL), SoundSource.BLOCKS, 1.0F, 1.0F);
-                                    tank.fill(new FluidVariantWrapper(FluidVariant.of(fluid), FluidConstants.BUCKET), false);
-                                    triggerAdvancement(player, ActionTypeTrigger.HOSE_SUCK);
-                                    return InteractionResult.SUCCESS;
+                    //Pick fluid from block
+                    BlockHitResult result = getPlayerPOVHitResult(level, player, ClipContext.Fluid.SOURCE_ONLY);
+                    BlockPos blockpos = result.getBlockPos();
+                    Direction direction1 = result.getDirection();
+                    BlockPos blockpos1 = blockpos.relative(result.getDirection());
+                    if(level.mayInteract(player, blockpos) && player.mayUseItemAt(blockpos1, direction1, stack)) {
+                        BlockState blockState = level.getBlockState(pos);
+                        if(blockState.getBlock() instanceof BucketPickup bucketPickupBlock) {
+                            Fluid fluid = blockState.getFluidState().getType();
+                            if(fluid != Fluids.EMPTY) {
+                                FluidVariantWrapper fluidStack = new FluidVariantWrapper(FluidVariant.of(fluid), FluidConstants.BUCKET);
+                                long tankAmount = tank.isEmpty() ? 0 : tank.getFluidAmount();
+                                boolean canFill = tank.isEmpty() || FluidUtil.isSameVariant(tank.getFluid().fluidVariant(), fluidStack.fluidVariant());
+                                if(canFill && (fluidStack.getAmount() + tankAmount <= tank.getCapacity())) {
+                                    ItemStack taken = bucketPickupBlock.pickupBlock(player, level, pos, blockState);
+                                    if(!taken.isEmpty()) {
+                                        player.awardStat(Stats.ITEM_USED.get(this));
+                                        bucketPickupBlock.getPickupSound().ifPresent(soundEvent -> player.playSound(soundEvent, 1.0F, 1.0F));
+                                        level.gameEvent(player, GameEvent.FLUID_PICKUP, pos);
+                                        tank.fill(new FluidVariantWrapper(FluidVariant.of(fluid), FluidConstants.BUCKET), false);
+                                        triggerAdvancement(player, ActionTypeTrigger.HOSE_SUCK);
+                                        //ItemStack result = ItemUtils.createFilledResult(itemStack, player, taken);
+                                        if(!level.isClientSide()) {
+                                            CriteriaTriggers.FILLED_BUCKET.trigger((ServerPlayer)player, taken);
+                                        }
+
+                                        return InteractionResult.SUCCESS;
+                                    }
                                 }
                             }
                         }
                     }
                 }
-            }
-            if(getHoseMode(stack) == SPILL_MODE) {
-                //Transfer fluid to fluid handler
-                if(fluidVariantStorage != null && !tank.isEmpty()) {
-                    FluidVariantWrapper fluidStack = tank.getFluid();
-                    try(Transaction transaction = Transaction.openOuter()) {
-                        long amountExtracted = tank.extract(fluidStack.fluidVariant(), Math.min(fluidStack.amount(), FluidConstants.BUCKET), transaction);
-                        long amountInserted = fluidVariantStorage.insert(fluidStack.fluidVariant(), Math.min(fluidStack.amount(), FluidConstants.BUCKET), transaction);
-                        if(amountExtracted > 0 && amountExtracted == amountInserted) {
-                            level.playSound(player, pos, FluidTypeHelper.getSound(fluidStack.fluidVariant(), FluidTypeHelper.BUCKET_FILL), SoundSource.BLOCKS, 1.0F, 1.0F);
-                            transaction.commit();
-                            triggerAdvancement(player, ActionTypeTrigger.HOSE_SPILL);
-                            return InteractionResult.SUCCESS;
-                        }
-                    }
-                }
 
-                //Try to splash potion in the world
-                if(tank.getFluid().fluidVariant().getFluid() == ModFluids.POTION_STILL) {
-                    if(tank.getFluid().fluidVariant().getComponents().getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag().contains("PotionType")) {
-                        int potionType = tank.getFluid().fluidVariant().getComponents().get(DataComponents.CUSTOM_DATA).copyTag().getIntOr("PotionType", 0);
-                        if(potionType == 1) {
-                            if(tank.getFluidAmount() >= FluidConstants.BOTTLE) {
-                                ItemStack potionStack = FluidStackHelper.getSplashItemStackFromFluidStack(tank.getFluid().fluidVariant());
-                                long drainAmount = ServerActions.throwPotion(level, player, potionStack, true);
-                                tank.drain(drainAmount, false);
-                                triggerAdvancement(player, ActionTypeTrigger.HOSE_SPILL_POTION);
-                                return InteractionResult.SUCCESS;
-                            }
-                        } else if(potionType == 2) {
-                            if(tank.getFluidAmount() >= FluidConstants.BOTTLE) {
-                                ItemStack potionStack = FluidStackHelper.getLingeringItemStackFromFluidStack(tank.getFluid().fluidVariant());
-                                long drainAmount = ServerActions.throwPotion(level, player, potionStack, false);
-                                tank.drain(drainAmount, false);
-                                triggerAdvancement(player, ActionTypeTrigger.HOSE_SPILL_POTION);
+                if(getHoseMode(stack) == SPILL_MODE) {
+                    //Transfer fluid to fluid handler
+                    if(fluidVariantStorage != null) {
+                        FluidVariant fluidResource = tank.getFluid().fluidVariant();
+                        try(Transaction transaction = Transaction.openOuter()) {
+                            long moved = StorageUtil.move(tank, fluidVariantStorage, f -> true, FluidConstants.BUCKET, transaction);
+                            if(moved > 0) {
+                                level.playSound(player, pos, FluidTypeHelper.getSound(fluidResource, FluidTypeHelper.BUCKET_FILL), SoundSource.BLOCKS, 1.0F, 1.0F);
+                                transaction.commit();
+                                triggerAdvancement(player, ActionTypeTrigger.HOSE_SPILL);
                                 return InteractionResult.SUCCESS;
                             }
                         }
                     }
-                }
 
-                //Try to put fluid in the world
-                if(!tank.isEmpty()) {
-                    BlockState blockState = level.getBlockState(pos);
-                    Block block = blockState.getBlock();
-                    Fluid fluid = tank.getFluid().fluidVariant().getFluid();
-                    if(tank.getFluidAmount() >= FluidConstants.BUCKET && fluid instanceof FlowingFluid flowingFluid) {
-                        if(block instanceof LiquidBlockContainer container && container.canPlaceLiquid(player, level, pos, blockState, fluid)) {
-                            container.placeLiquid(level, pos, blockState, flowingFluid.getSource(false));
-                            level.playSound(player, pos, FluidTypeHelper.getSound(tank.getFluid().fluidVariant(), FluidTypeHelper.BUCKET_EMPTY), SoundSource.BLOCKS, 1.0F, 1.0F);
-                            tank.drain(FluidConstants.BUCKET, false);
-                            triggerAdvancement(player, ActionTypeTrigger.HOSE_SPILL);
-                            return InteractionResult.SUCCESS;
-                        }
-                    }
-                    int x = pos.getX();
-                    int y = pos.getY();
-                    int z = pos.getZ();
-                    if(!level.getBlockState(pos).canBeReplaced(fluid)) {
-                        switch(context.getClickedFace()) {
-                            case WEST:
-                                --x;
-                                break;
-                            case EAST:
-                                ++x;
-                                break;
-                            case NORTH:
-                                --z;
-                                break;
-                            case SOUTH:
-                                ++z;
-                                break;
-                            case UP:
-                                ++y;
-                                break;
-                            case DOWN:
-                                --y;
-                                break;
-                            default:
-                                break;
+                    //Try to splash potion in the world
+                    if(tank.getFluid().fluidVariant().getFluid() == ModFluids.POTION_STILL) {
+                        if(tank.getFluid().fluidVariant().getComponents().getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag().contains("PotionType")) {
+                            int potionType = tank.getFluid().fluidVariant().getComponents().get(DataComponents.CUSTOM_DATA).copyTag().getIntOr("PotionType", 0);
+                            if(potionType == 1) {
+                                if(tank.getFluidAmount() >= FluidConstants.BOTTLE) {
+                                    ItemStack potionStack = FluidStackHelper.getSplashItemStackFromFluidStack(tank.getFluid().fluidVariant());
+                                    long drainAmount = ServerActions.throwPotion(level, player, potionStack, true);
+                                    tank.drain(drainAmount, false);
+                                    triggerAdvancement(player, ActionTypeTrigger.HOSE_SPILL_POTION);
+                                    return InteractionResult.SUCCESS;
+                                }
+                            } else if(potionType == 2) {
+                                if(tank.getFluidAmount() >= FluidConstants.BOTTLE) {
+                                    ItemStack potionStack = FluidStackHelper.getLingeringItemStackFromFluidStack(tank.getFluid().fluidVariant());
+                                    long drainAmount = ServerActions.throwPotion(level, player, potionStack, false);
+                                    tank.drain(drainAmount, false);
+                                    triggerAdvancement(player, ActionTypeTrigger.HOSE_SPILL_POTION);
+                                    return InteractionResult.SUCCESS;
+                                }
+                            }
                         }
                     }
 
-                    BlockPos newPos = new BlockPos(x, y, z);
                     FluidVariantWrapper fluidStack = tank.getFluid();
-                    if(level.getBlockState(newPos).canBeReplaced(fluid)) {
-                        boolean flag = !level.getBlockState(newPos).isSolid();
-                        boolean ultraWarm = level.dimensionType().attributes().contains(EnvironmentAttributes.WATER_EVAPORATES) && (boolean)level.dimensionType().attributes().get(EnvironmentAttributes.WATER_EVAPORATES).argument();
-                        if(ultraWarm && fluidStack.fluidVariant().getFluid().is(FluidTags.WATER)) {
-                            tank.drain(FluidConstants.BUCKET, false);
-                            level.playSound(null, newPos, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 0.5F, 2.6F + (level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.8F);
-                            for(int i = 0; i < 3; ++i) {
-                                double d0 = newPos.getX() + level.getRandom().nextDouble();
-                                double d1 = newPos.getY() + level.getRandom().nextDouble() * 0.5D + 0.5D;
-                                double d2 = newPos.getZ() + level.getRandom().nextDouble();
-                                level.addParticle(ParticleTypes.LARGE_SMOKE, d0, d1, d2, 0.0D, 0.0D, 0.0D);
-                            }
-                            triggerAdvancement(player, ActionTypeTrigger.HOSE_SPILL);
-                            return InteractionResult.SUCCESS;
+                    Fluid fluid = fluidStack.fluidVariant().getFluid();
+                    BlockState clicked = level.getBlockState(pos);
+                    BlockPos placePos = clicked.getBlock() instanceof LiquidBlockContainer && fluid == Fluids.WATER ? pos : directionOffsetPos;
+                    if(tank.getFluidAmount() >= FluidConstants.BUCKET && this.emptyContents(fluidStack, player, level, placePos, hitResult)) {
+                        //this.checkExtraContent(player, level, itemStack, placePos);
+                        if(player instanceof ServerPlayer) {
+                            CriteriaTriggers.PLACED_BLOCK.trigger((ServerPlayer)player, placePos, stack);
                         }
-                        if(fluidStack.getAmount() >= FluidConstants.BUCKET) {
-                            if(!level.isClientSide() && flag && !level.getBlockState(newPos).liquid()) {
-                                level.destroyBlock(newPos, false);
-                            }
 
-                            if(level.setBlock(newPos, fluidStack.fluidVariant().getFluid().defaultFluidState().createLegacyBlock(), 3)) {
-                                level.playSound(player, newPos, FluidTypeHelper.getSound(fluidStack.fluidVariant(), FluidTypeHelper.BUCKET_EMPTY), SoundSource.BLOCKS, 1.0F, 1.0F);
-                                tank.drain(FluidConstants.BUCKET, false);
-                                level.updateNeighborsAt(newPos, fluidStack.fluidVariant().getFluid().defaultFluidState().createLegacyBlock().getBlock());
-                            }
-                            triggerAdvancement(player, ActionTypeTrigger.HOSE_SPILL);
-                            return InteractionResult.SUCCESS;
-                        }
-                    }
-                }
-            }
-            if(getHoseMode(stack) == DRINK_MODE) {
-                if(!tank.isEmpty()) {
-                    if(EffectFluidRegistry.hasExecutableEffects(tank.getFluid(), level, player)) {
-                        player.startUsingItem(context.getHand());
+                        player.awardStat(Stats.ITEM_USED.get(this));
+                        tank.drain(FluidConstants.BUCKET, false);
+                        triggerAdvancement(player, ActionTypeTrigger.HOSE_SPILL);
+                        //ItemStack emptyResult = ItemUtils.createFilledResult(itemStack, player, getEmptySuccessItem(itemStack, player));
                         return InteractionResult.SUCCESS;
+                    }
+                }
+
+                if(getHoseMode(stack) == DRINK_MODE) {
+                    if(!tank.isEmpty()) {
+                        if(EffectFluidRegistry.hasExecutableEffects(tank.getFluid(), level, player)) {
+                            player.startUsingItem(hand);
+                            return InteractionResult.SUCCESS;
+                        }
                     }
                 }
             }
         }
         return InteractionResult.FAIL;
+    }
+
+    public boolean emptyContents(FluidVariantWrapper fluidStack, @Nullable LivingEntity user, Level level, BlockPos pos, @Nullable BlockHitResult hitResult) {
+        Fluid fluid = fluidStack.fluidVariant().getFluid();
+        if(!(fluid instanceof FlowingFluid flowingFluid)) {
+            return false;
+        } else {
+            BlockState blockState = level.getBlockState(pos);
+            Block block = blockState.getBlock();
+            boolean mayReplace = blockState.canBeReplaced(fluid);
+            boolean shiftKeyDown = user != null && user.isShiftKeyDown();
+            boolean placeLiquid = mayReplace || block instanceof LiquidBlockContainer container && container.canPlaceLiquid(user, level, pos, blockState, fluid);
+            boolean canPlaceFluidInsideBlock = blockState.isAir() || placeLiquid && (!shiftKeyDown || hitResult == null);
+            if(!canPlaceFluidInsideBlock) {
+                return hitResult != null && this.emptyContents(fluidStack, user, level, hitResult.getBlockPos().relative(hitResult.getDirection()), null);
+            } else if(level.environmentAttributes().getValue(EnvironmentAttributes.WATER_EVAPORATES, pos) && fluid.is(FluidTags.WATER)) {
+                int x = pos.getX();
+                int y = pos.getY();
+                int z = pos.getZ();
+                RandomSource random = level.getRandom();
+                level.playSound(user, pos, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 0.5F, 2.6F + (random.nextFloat() - random.nextFloat()) * 0.8F);
+
+                for(int i = 0; i < 8; i++) {
+                    level.addParticle(ParticleTypes.LARGE_SMOKE, x + random.nextFloat(), y + random.nextFloat(), z + random.nextFloat(), 0.0, 0.0, 0.0);
+                }
+
+                return true;
+            } else if(block instanceof LiquidBlockContainer containerx && fluid == Fluids.WATER) {
+                containerx.placeLiquid(level, pos, blockState, flowingFluid.getSource(false));
+                this.playEmptySound(fluidStack, user, level, pos);
+                return true;
+            } else {
+                if(!level.isClientSide() && mayReplace && !blockState.liquid()) {
+                    level.destroyBlock(pos, true);
+                }
+
+                if(!level.setBlock(pos, fluid.defaultFluidState().createLegacyBlock(), 11) && !blockState.getFluidState().isSource()) {
+                    return false;
+                } else {
+                    this.playEmptySound(fluidStack, user, level, pos);
+                    return true;
+                }
+            }
+        }
+    }
+
+    protected void playEmptySound(FluidVariantWrapper fluidStack, @Nullable LivingEntity user, LevelAccessor level, BlockPos pos) {
+        level.playSound(user, pos, FluidTypeHelper.getSound(fluidStack.fluidVariant(), FluidTypeHelper.BUCKET_EMPTY), SoundSource.BLOCKS, 1.0F, 1.0F);
+        level.gameEvent(user, GameEvent.FLUID_PLACE, pos);
     }
 
     public void triggerAdvancement(Player player, String type) {
