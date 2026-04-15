@@ -19,6 +19,7 @@ import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
+import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 import net.fabricmc.fabric.impl.transfer.item.ContainerStorageImpl;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
@@ -141,7 +142,7 @@ public class ModBlockEntityTypes {
         return ContainerStorageImpl.of(new ItemStackHandler(0), null);
     }
 
-    public static class BackpackStorage implements Storage<ItemVariant> {
+    public static class BackpackStorage extends SnapshotParticipant<ItemStack[]> implements Storage<ItemVariant> {
         private final SlottedStorage<ItemVariant> storage;
         private final StorageAccessWrapper backingStorage;
 
@@ -153,77 +154,43 @@ public class ModBlockEntityTypes {
         @Override
         public long insert(ItemVariant resource, long maxAmount, TransactionContext transaction) {
             StoragePreconditions.notBlankNotNegative(resource, maxAmount);
-
-            long remainingToSimulate = maxAmount;
-            long totalSimulatedInsert = 0;
-            int[] insertionPlan = new int[backingStorage.getSlots()];
+            updateSnapshots(transaction);
+            long remainingToInsert = maxAmount;
+            long totalInserted = 0;
 
             for(int i = 0; i < backingStorage.getSlots(); i++) {
-                if(remainingToSimulate <= 0) break;
-                int attemptAmount = (int)Math.min(remainingToSimulate, resource.getItem().getDefaultMaxStackSize());
+                if(remainingToInsert <= 0) break;
+                int attemptAmount = (int)Math.min(remainingToInsert, resource.getItem().getDefaultMaxStackSize());
                 ItemStack insertStack = resource.toStack(attemptAmount);
-                ItemStack remainder = backingStorage.insertItem(i, insertStack, true);
+                ItemStack remainder = backingStorage.insertItem(i, insertStack, false);
                 int insertedInSlot = attemptAmount - remainder.getCount();
-
                 if(insertedInSlot > 0) {
-                    insertionPlan[i] = insertedInSlot;
-
-                    totalSimulatedInsert += insertedInSlot;
-                    remainingToSimulate -= insertedInSlot;
+                    totalInserted += insertedInSlot;
+                    remainingToInsert -= insertedInSlot;
                 }
             }
-
-            if(totalSimulatedInsert > 0) {
-                transaction.addOuterCloseCallback(result -> {
-                    if(result.wasCommitted()) {
-                        for(int i = 0; i < insertionPlan.length; i++) {
-                            int amountToInsert = insertionPlan[i];
-                            if(amountToInsert > 0) {
-                                ItemStack stackToInsert = resource.toStack(amountToInsert);
-                                backingStorage.insertItem(i, stackToInsert, false);
-                            }
-                        }
-                    }
-                });
-            }
-            return totalSimulatedInsert;
+            return totalInserted;
         }
 
         @Override
         public long extract(ItemVariant resource, long maxAmount, TransactionContext transaction) {
             StoragePreconditions.notBlankNotNegative(resource, maxAmount);
-
-            long remainingToSimulate = maxAmount;
-            long totalSimulatedExtract = 0;
-            int[] extractPlan = new int[backingStorage.getSlots()];
+            updateSnapshots(transaction);
+            long remainingToExtract = maxAmount;
+            long totalExtracted = 0;
 
             for(int i = 0; i < backingStorage.getSlots(); i++) {
-                if(remainingToSimulate <= 0) break;
-                int attemptAmount = (int)Math.min(remainingToSimulate, Integer.MAX_VALUE);
+                if(remainingToExtract <= 0) break;
+                int attemptAmount = (int)Math.min(remainingToExtract, Integer.MAX_VALUE);
                 ItemStack simulatedStack = backingStorage.extractItem(i, attemptAmount, true);
-
                 if(!simulatedStack.isEmpty() && resource.matches(simulatedStack)) {
                     int amountExtracted = simulatedStack.getCount();
-                    extractPlan[i] = amountExtracted;
-
-                    totalSimulatedExtract += amountExtracted;
-                    remainingToSimulate -= amountExtracted;
+                    backingStorage.extractItem(i, amountExtracted, false);
+                    totalExtracted += amountExtracted;
+                    remainingToExtract -= amountExtracted;
                 }
             }
-
-            if(totalSimulatedExtract > 0) {
-                transaction.addOuterCloseCallback(result -> {
-                    if(result.wasCommitted()) {
-                        for(int i = 0; i < extractPlan.length; i++) {
-                            int amountToExtract = extractPlan[i];
-                            if(amountToExtract > 0) {
-                                backingStorage.extractItem(i, amountToExtract, false);
-                            }
-                        }
-                    }
-                });
-            }
-            return totalSimulatedExtract;
+            return totalExtracted;
         }
 
         @Override
@@ -231,6 +198,22 @@ public class ModBlockEntityTypes {
             return IntStream.range(0, storage.getSlotCount())
                     .mapToObj(i -> (StorageView<ItemVariant>)new BackpackStorageView(i))
                     .iterator();
+        }
+
+        @Override
+        protected ItemStack[] createSnapshot() {
+            ItemStack[] snapshot = new ItemStack[backingStorage.getSlots()];
+            for(int i = 0; i < backingStorage.getSlots(); i++) {
+                snapshot[i] = backingStorage.getStackInSlot(i).copy();
+            }
+            return snapshot;
+        }
+
+        @Override
+        protected void readSnapshot(ItemStack[] snapshot) {
+            for(int i = 0; i < snapshot.length; i++) {
+                backingStorage.setStackInSlot(i, snapshot[i]);
+            }
         }
 
         private class BackpackStorageView implements StorageView<ItemVariant> {
