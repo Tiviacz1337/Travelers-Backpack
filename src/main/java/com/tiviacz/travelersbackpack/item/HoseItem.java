@@ -121,12 +121,10 @@ public class HoseItem extends Item {
             FluidTank tank = this.getSelectedFluidTank(stack, wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).get());
             Storage<FluidVariant> fluidVariantStorage = null;
 
-            BlockHitResult hitResult = getPlayerPOVHitResult(level, player, getHoseMode(stack) == SUCK_MODE ? ClipContext.Fluid.SOURCE_ONLY : ClipContext.Fluid.NONE);
-            if(hitResult.getType() == HitResult.Type.MISS) {
-                return InteractionResult.PASS;
-            } else if(hitResult.getType() != HitResult.Type.BLOCK) {
-                return InteractionResult.PASS;
-            } else {
+            int hoseMode = getHoseMode(stack);
+            BlockHitResult hitResult = getPlayerPOVHitResult(level, player, hoseMode == SUCK_MODE ? ClipContext.Fluid.SOURCE_ONLY : ClipContext.Fluid.NONE);
+            var hitType = hitResult.getType();
+            if(hitType == HitResult.Type.BLOCK) {
                 BlockPos pos = hitResult.getBlockPos();
                 Direction direction = hitResult.getDirection();
                 BlockPos directionOffsetPos = pos.relative(direction);
@@ -134,7 +132,7 @@ public class HoseItem extends Item {
                 //Check for fluid storage like in-world tanks
                 fluidVariantStorage = FluidStorage.SIDED.find(level, pos, direction);
 
-                if(getHoseMode(stack) == SUCK_MODE) {
+                if(hoseMode == SUCK_MODE) {
                     //Transfer fluid from fluid handler
                     if(fluidVariantStorage != null) {
                         FluidVariant extractableResource = StorageUtil.findExtractableResource(fluidVariantStorage, null);
@@ -185,7 +183,7 @@ public class HoseItem extends Item {
                     }
                 }
 
-                if(getHoseMode(stack) == SPILL_MODE) {
+                if(hoseMode == SPILL_MODE) {
                     //Transfer fluid to fluid handler
                     if(fluidVariantStorage != null) {
                         FluidVariant fluidResource = tank.getFluid().fluidVariant();
@@ -201,27 +199,8 @@ public class HoseItem extends Item {
                     }
 
                     //Try to splash potion in the world
-                    if(tank.getFluid().fluidVariant().getFluid() == ModFluids.POTION_STILL) {
-                        if(tank.getFluid().fluidVariant().getComponents().getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag().contains("PotionType")) {
-                            int potionType = tank.getFluid().fluidVariant().getComponents().get(DataComponents.CUSTOM_DATA).copyTag().getIntOr("PotionType", 0);
-                            if(potionType == 1) {
-                                if(tank.getFluidAmount() >= FluidConstants.BOTTLE) {
-                                    ItemStack potionStack = FluidStackHelper.getSplashItemStackFromFluidStack(tank.getFluid().fluidVariant());
-                                    long drainAmount = ServerActions.throwPotion(level, player, potionStack, true);
-                                    tank.drain(drainAmount, false);
-                                    triggerAdvancement(player, ActionTypeTrigger.HOSE_SPILL_POTION);
-                                    return InteractionResult.SUCCESS;
-                                }
-                            } else if(potionType == 2) {
-                                if(tank.getFluidAmount() >= FluidConstants.BOTTLE) {
-                                    ItemStack potionStack = FluidStackHelper.getLingeringItemStackFromFluidStack(tank.getFluid().fluidVariant());
-                                    long drainAmount = ServerActions.throwPotion(level, player, potionStack, false);
-                                    tank.drain(drainAmount, false);
-                                    triggerAdvancement(player, ActionTypeTrigger.HOSE_SPILL_POTION);
-                                    return InteractionResult.SUCCESS;
-                                }
-                            }
-                        }
+                    if(spillPotion(tank, level, player) == InteractionResult.SUCCESS) {
+                        return InteractionResult.SUCCESS;
                     }
 
                     FluidVariantWrapper fluidStack = tank.getFluid();
@@ -242,17 +221,64 @@ public class HoseItem extends Item {
                     }
                 }
 
-                if(getHoseMode(stack) == DRINK_MODE) {
-                    if(!tank.isEmpty()) {
-                        if(EffectFluidRegistry.hasExecutableEffects(tank.getFluid(), level, player)) {
-                            player.startUsingItem(hand);
-                            return InteractionResult.SUCCESS;
-                        }
+                if(hoseMode == DRINK_MODE) {
+                    if(drink(tank, level, player, hand) == InteractionResult.SUCCESS) {
+                        return InteractionResult.SUCCESS;
+                    }
+                }
+            } else {
+                if(hoseMode == SPILL_MODE) {
+                    //Try to splash potion in the world
+                    if(spillPotion(tank, level, player) == InteractionResult.SUCCESS) {
+                        return InteractionResult.SUCCESS;
+                    }
+                }
+                if(hoseMode == DRINK_MODE) {
+                    if(drink(tank, level, player, hand) == InteractionResult.SUCCESS) {
+                        return InteractionResult.SUCCESS;
+                    }
+                }
+                return InteractionResult.PASS;
+            }
+        }
+        return InteractionResult.FAIL;
+    }
+
+    public InteractionResult drink(FluidTank tank, Level level, Player player, InteractionHand hand) {
+        if(!tank.isEmpty()) {
+            if(EffectFluidRegistry.hasExecutableEffects(tank.getFluid(), level, player)) {
+                player.startUsingItem(hand);
+                return InteractionResult.SUCCESS;
+            }
+        }
+        return InteractionResult.PASS;
+    }
+
+    public InteractionResult spillPotion(FluidTank tank, Level level, Player player) {
+        //Try to splash potion in the world
+        if(tank.getFluid().fluidVariant().getFluid() == ModFluids.POTION_STILL) {
+            if(tank.getFluid().fluidVariant().getComponents().getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag().contains("PotionType")) {
+                int potionType = tank.getFluid().fluidVariant().getComponents().get(DataComponents.CUSTOM_DATA).copyTag().getIntOr("PotionType", 0);
+                if(potionType == 1) {
+                    if(tank.getFluidAmount() >= FluidConstants.BOTTLE) {
+                        ItemStack potionStack = FluidStackHelper.getSplashItemStackFromFluidStack(tank.getFluid().fluidVariant());
+                        long drainAmount = ServerActions.throwPotion(level, player, potionStack, true);
+                        tank.drain(drainAmount, false);
+                        triggerAdvancement(player, ActionTypeTrigger.HOSE_SPILL_POTION);
+                        return InteractionResult.SUCCESS;
+                    }
+                } else if(potionType == 2) {
+                    if(tank.getFluidAmount() >= FluidConstants.BOTTLE) {
+                        ItemStack potionStack = FluidStackHelper.getLingeringItemStackFromFluidStack(tank.getFluid().fluidVariant());
+                        long drainAmount = ServerActions.throwPotion(level, player, potionStack, false);
+                        tank.drain(drainAmount, false);
+                        triggerAdvancement(player, ActionTypeTrigger.HOSE_SPILL_POTION);
+                        return InteractionResult.SUCCESS;
                     }
                 }
             }
         }
-        return InteractionResult.FAIL;
+        return InteractionResult.PASS;
     }
 
     public boolean emptyContents(FluidVariantWrapper fluidStack, @Nullable LivingEntity user, Level level, BlockPos pos, @Nullable BlockHitResult hitResult) {
