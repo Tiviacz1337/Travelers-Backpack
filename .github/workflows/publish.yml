@@ -4,12 +4,12 @@ on: [ workflow_dispatch ]
 
 env:
   MINECRAFT_VERSION: |
+    26.1.2
     26.1.1
-    26.1
   JAVA_VERSION: 25
-  VERSION: 26.1.1-11.1.0
-  RELEASE_NAME_CURSEFORGE: "travelersbackpack-fabric-26.1.1-11.1.0"
-  RELEASE_NAME_MODRINTH: "[26.1.1] Traveler's Backpack 11.1.0"
+  VERSION: 26.1.2-11.2.0
+  RELEASE_NAME_CURSEFORGE: "travelersbackpack-fabric-26.1.2-11.2.0"
+  RELEASE_NAME_MODRINTH: "[26.1.2] Traveler's Backpack 11.2.0"
   MODRINTH_TOKEN: ${{ secrets.MODRINTH }}
   CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE }}
   GITHUB_TOKEN: ${{ secrets.TOKEN }}
@@ -62,7 +62,7 @@ jobs:
           dependencies: |
             fabric-api(required){modrinth:P7dR8mSH}{curseforge:306612}
             forge-config-api-port(required){modrinth:ohNO6lps}{curseforge:547434}
-            trinkets(optional){modrinth:5aaWibi9}{curseforge:341284}
+            trinkets(optional){modrinth:XaT8sLP6}{curseforge:1509777}
             accessories(optional){modrinth:jtmvUHXj}{curseforge:938917}
             crafting-tweaks(optional){modrinth:DMu0oBKf}{curseforge:233071}
             polymorph(optional){modrinth:tagwiZkJ}{curseforge:388800}
