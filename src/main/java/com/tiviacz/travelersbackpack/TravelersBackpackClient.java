@@ -17,7 +17,7 @@ import com.tiviacz.travelersbackpack.client.screens.tooltip.ClientBackpackToolti
 import com.tiviacz.travelersbackpack.commands.BackpackIconCommands;
 import com.tiviacz.travelersbackpack.compat.craftingtweaks.CraftingTweaksCompat;
 import com.tiviacz.travelersbackpack.compat.trashslot.TrashSlotCompat;
-import com.tiviacz.travelersbackpack.compat.trinkets.TravelersBackpackTrinket;
+import com.tiviacz.travelersbackpack.compat.trinkets.BackpackTrinketRenderer;
 import com.tiviacz.travelersbackpack.components.RenderInfo;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.fluids.potion.PotionFluidVariantAttributeHandler;
@@ -161,7 +161,7 @@ public class TravelersBackpackClient implements ClientModInitializer {
         if(TravelersBackpack.craftingTweaksLoaded) CraftingTweaksCompat.registerCraftingTweaksAdditionClient();
         //if(TravelersBackpack.accessoriesLoaded) TravelersBackpackAccessory.initClient();
         if(TravelersBackpack.trinketsLoaded /*&& !TravelersBackpack.accessoriesLoaded*/)
-            TravelersBackpackTrinket.initClient();
+            BackpackTrinketRenderer.initClient();
 
         RecipeSynchronization.synchronizeRecipeSerializer(ModRecipeSerializers.BACKPACK_SHAPED);
         RecipeSynchronization.synchronizeRecipeSerializer(ModRecipeSerializers.BACKPACK_UPGRADE);
