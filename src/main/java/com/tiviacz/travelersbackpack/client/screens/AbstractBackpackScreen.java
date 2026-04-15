@@ -266,4 +266,12 @@ public abstract class AbstractBackpackScreen<T extends AbstractBackpackMenu> ext
     public int getGuiTop() {
         return topPos;
     }
+
+    public int getImageWidth() {
+        return imageWidth;
+    }
+
+    public int getImageHeight() {
+        return imageHeight;
+    }
 }
