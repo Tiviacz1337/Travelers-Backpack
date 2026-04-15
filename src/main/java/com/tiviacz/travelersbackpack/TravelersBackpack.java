@@ -4,6 +4,7 @@ import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
 import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
 import com.tiviacz.travelersbackpack.compat.craftingtweaks.CraftingTweaksCompat;
 import com.tiviacz.travelersbackpack.compat.pneumonogravestones.PneumonoGravestonesCompat;
+import com.tiviacz.travelersbackpack.compat.trinkets.TravelersBackpackTrinket;
 import com.tiviacz.travelersbackpack.compat.universalgraves.UniversalGravesCompat;
 import com.tiviacz.travelersbackpack.compat.vinurl.VinURLNetwork;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
@@ -84,12 +85,12 @@ public class TravelersBackpack implements ModInitializer {
         FabricLoader fabricLoader = FabricLoader.getInstance();
 
         accessoriesLoaded = fabricLoader.isModLoaded("accessories");
-        trinketsLoaded = fabricLoader.isModLoaded("trinkets");
+        trinketsLoaded = fabricLoader.isModLoaded("trinkets_updated");
         craftingTweaksLoaded = fabricLoader.isModLoaded("craftingtweaks");
         if(craftingTweaksLoaded) CraftingTweaksCompat.registerCraftingTweaksAddition();
 
         //if(accessoriesLoaded) TravelersBackpackAccessory.init();
-        //if(trinketsLoaded && !accessoriesLoaded) TravelersBackpackTrinket.init();
+        if(trinketsLoaded /*&& !accessoriesLoaded*/) TravelersBackpackTrinket.init();
 
         toughasnailsLoaded = fabricLoader.isModLoaded("toughasnails");
         comfortsLoaded = fabricLoader.isModLoaded("comforts");

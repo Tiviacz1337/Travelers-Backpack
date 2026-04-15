@@ -1,4 +1,5 @@
-✨ Re-added Trash Slot optional compatibility  
+✨ Re-added optional Trinkets Updated compatibility  
+✨ Re-added optional Trash Slot compatibility  
 ✨ The vanilla "Pick Block" keybind can now retrieve the item you're looking at directly from your backpack  
 🐛 Fixed bugs preventing some recipes from unlocking or working properly  
 🐛 Fixed Hose fluid interaction to match vanilla bucket behavior  

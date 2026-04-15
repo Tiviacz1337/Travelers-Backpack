@@ -75,7 +75,7 @@ dependencies {
 	compileOnly("maven.modrinth:vinurl:AinwJJKy")
 
 	//Trinkets
-	compileOnly "maven.modrinth:trinkets-updated:up7hvrTJ" //Not Updated
+	implementation "maven.modrinth:trinkets-updated:up7hvrTJ" //Not Updated
 
 	//Accessories
 	//compileOnly("io.wispforest:accessories-fabric:${project.accessories_version}")
