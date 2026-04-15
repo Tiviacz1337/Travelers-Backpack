@@ -65,7 +65,8 @@ dependencies {
 	//modApi("net.blay09.mods:kuma-api-fabric:21.10.5+1.21.10")
 
 	//Trash Slot
-	//compileOnly "maven.modrinth:trashslot:h27RWnjv" //Not Updated
+	implementation("maven.modrinth:trashslot:AhKl6yxJ")
+	implementation("maven.modrinth:balm:CXPaGqRl")
 
 	//ModMenu
 	implementation("maven.modrinth:modmenu:jvjwXH6l")
@@ -74,7 +75,7 @@ dependencies {
 	compileOnly("maven.modrinth:vinurl:AinwJJKy")
 
 	//Trinkets
-	//compileOnly "maven.modrinth:trinkets-updated:DHE2OnLP" //Not Updated
+	compileOnly "maven.modrinth:trinkets-updated:up7hvrTJ" //Not Updated
 
 	//Accessories
 	//compileOnly("io.wispforest:accessories-fabric:${project.accessories_version}")
@@ -87,7 +88,7 @@ dependencies {
     //compileOnly("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}") //Not Updated
 
 	//JEI
-	implementation ("maven.modrinth:jei:5QFemzpl")
+	implementation ("maven.modrinth:jei:cHJ1j59c")
 
 	//Polymorph
 	//compileOnly("maven.modrinth:polymorph:j4jPy88h")
@@ -99,7 +100,7 @@ dependencies {
 	//compileOnly("dev.emi:emi-fabric:${project.emi_version}")
 
 	//Universal Graves
-    compileOnly("maven.modrinth:universal-graves:Dxdl3YiE")
+    compileOnly("maven.modrinth:universal-graves:rZHOziFD")
 
 	//Mouse Tweaks
 	//compileOnly "curse.maven:mouse-tweaks-60089:5437294"
@@ -109,7 +110,7 @@ dependencies {
 	//compileOnly("curse.maven:glitchcore-955399:5483774")
 
 	//Gravestones
-	compileOnly("maven.modrinth:pneumono_gravestones:hMXahXlU")
+	compileOnly("maven.modrinth:pneumono_gravestones:40yhXn3d")
 	//compileOnly("maven.modrinth:pneumono_core:Y03YVYzM")
 }
 
