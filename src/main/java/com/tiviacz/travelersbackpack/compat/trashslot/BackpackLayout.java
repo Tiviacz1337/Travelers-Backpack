@@ -15,14 +15,10 @@ import java.util.Optional;
 import java.util.function.Function;
 
 public class BackpackLayout implements TrashContainerLayout {
-
-    public static final String MOD_ID = TravelersBackpack.MODID;
-
     private static final Identifier DEFAULT_SNAP_ID = Identifier.withDefaultNamespace("bottom_right");
-
     private static final Identifier DEFAULT_RECT_ID = ScreenBoundsProvider.SCREEN_ID;
-    private static final Identifier EXTENDED_TOP_RECT_ID = Identifier.fromNamespaceAndPath(MOD_ID, "extended_top");
-    private static final Identifier EXTENDED_BOTTOM_RECT_ID = Identifier.fromNamespaceAndPath(MOD_ID, "extended_bottom");
+    private static final Identifier EXTENDED_TOP_RECT_ID = Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "extended_top");
+    private static final Identifier EXTENDED_BOTTOM_RECT_ID = Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "extended_bottom");
 
     private static final Function<BackpackScreen, Rect2i> EXTENDED_TOP_RECT = (screen) -> new Rect2i(
             screen.getGuiLeft(),
@@ -32,15 +28,14 @@ public class BackpackLayout implements TrashContainerLayout {
     );
 
     private static final Function<BackpackScreen, Rect2i> EXTENDED_BOTTOM_RECT = (screen) -> new Rect2i(
-            screen.getGuiLeft() + 22,
+            screen.getGuiLeft() + screen.getWidthAdditions(),
             screen.getGuiTop() + screen.getImageHeight() - 89,
-            screen.getImageWidth() - 44,
+            screen.getImageWidth() - (screen.getWidthAdditions() * 2),
             89
     );
 
-
     private static TrashContainerLayout getBackpackExtendedLayout() {
-        return TrashSlotAPI.getLayout(Identifier.fromNamespaceAndPath(MOD_ID, "backpack_extended"));
+        return TrashSlotAPI.getLayout(Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "backpack_extended"));
     }
 
     private static TrashContainerLayout getDefaultLayout() {
@@ -55,8 +50,8 @@ public class BackpackLayout implements TrashContainerLayout {
 
     @Override
     public Map<Identifier, Snap> getSnaps(TrashSlotContainerContext context) {
-        if (context.screen() instanceof BackpackScreen backpackScreen) {
-            if (backpackScreen.getWidthAdditions() > 0) {
+        if(context.screen() instanceof BackpackScreen backpackScreen) {
+            if(backpackScreen.getWidthAdditions() > 0) {
                 return getBackpackExtendedLayout().getSnaps(context);
             }
         }
@@ -65,8 +60,8 @@ public class BackpackLayout implements TrashContainerLayout {
 
     @Override
     public Optional<Snap> getSnap(TrashSlotContainerContext context, Identifier identifier) {
-        if (context.screen() instanceof BackpackScreen backpackScreen) {
-            if (backpackScreen.getWidthAdditions() > 0) {
+        if(context.screen() instanceof BackpackScreen backpackScreen) {
+            if(backpackScreen.getWidthAdditions() > 0) {
                 return getBackpackExtendedLayout().getSnap(context, identifier);
             }
         }
@@ -80,18 +75,18 @@ public class BackpackLayout implements TrashContainerLayout {
 
     @Override
     public Optional<Rect2i> getBounds(TrashSlotContainerContext context, Identifier identifier) {
-        if (context.screen() instanceof BackpackScreen backpackScreen) {
-            if (backpackScreen.getWidthAdditions() > 0) {
-                if (EXTENDED_TOP_RECT_ID.equals(identifier)) {
+        if(context.screen() instanceof BackpackScreen backpackScreen) {
+            if(backpackScreen.getWidthAdditions() > 0) {
+                if(EXTENDED_TOP_RECT_ID.equals(identifier)) {
                     return Optional.of(EXTENDED_TOP_RECT.apply(backpackScreen));
-                } else if (EXTENDED_BOTTOM_RECT_ID.equals(identifier)) {
+                } else if(EXTENDED_BOTTOM_RECT_ID.equals(identifier)) {
                     return Optional.of(EXTENDED_BOTTOM_RECT.apply(backpackScreen));
                 }
             }
         }
 
         // TODO Have to manually restrict getDefaultLayout().getBounds() call to only this ID for now due to TrashSlot bug
-        if (DEFAULT_RECT_ID.equals(identifier)) {
+        if(DEFAULT_RECT_ID.equals(identifier)) {
             return getDefaultLayout().getBounds(context, identifier);
         }
         return Optional.empty();
@@ -99,9 +94,9 @@ public class BackpackLayout implements TrashContainerLayout {
 
     @Override
     public List<Rect2i> getAllBounds(TrashSlotContainerContext context) {
-        if (context.screen() instanceof BackpackScreen backpackScreen) {
+        if(context.screen() instanceof BackpackScreen backpackScreen) {
             List<Rect2i> collisionAreas = new ArrayList<>();
-            if (backpackScreen.getWidthAdditions() > 0) {
+            if(backpackScreen.getWidthAdditions() > 0) {
                 collisionAreas.add(EXTENDED_TOP_RECT.apply(backpackScreen));
                 collisionAreas.add(getBounds(context, DEFAULT_RECT_ID)
                         .map(defaultRect -> {
@@ -115,12 +110,12 @@ public class BackpackLayout implements TrashContainerLayout {
                 collisionAreas.addAll(getDefaultLayout().getAllBounds(context));
             }
             backpackScreen.children().forEach((child) -> {
-                if (child instanceof WidgetBase<?> widget) {
+                if(child instanceof WidgetBase<?> widget) {
                     collisionAreas.add(new Rect2i(widget.getWidgetSizeAndPos()[0], widget.getWidgetSizeAndPos()[1], widget.getWidgetSizeAndPos()[2], widget.getWidgetSizeAndPos()[3]));
                 }
             });
             backpackScreen.upgradeSlots.forEach(upgradeSlot -> collisionAreas.add(new Rect2i(upgradeSlot.getUpgradeSlotSizeAndPos()[0], upgradeSlot.getUpgradeSlotSizeAndPos()[1], upgradeSlot.getUpgradeSlotSizeAndPos()[2], upgradeSlot.getUpgradeSlotSizeAndPos()[3])));
-            if (backpackScreen.getWrapper().showToolSlots()) {
+            if(backpackScreen.getWrapper().showToolSlots()) {
                 collisionAreas.add(new Rect2i(backpackScreen.toolSlotsWidget.getAdditionSizeAndPos()[0], backpackScreen.toolSlotsWidget.getAdditionSizeAndPos()[1], backpackScreen.toolSlotsWidget.getAdditionSizeAndPos()[2], backpackScreen.toolSlotsWidget.getAdditionSizeAndPos()[3]));
             }
             return collisionAreas;
@@ -128,5 +123,4 @@ public class BackpackLayout implements TrashContainerLayout {
 
         return List.of();
     }
-
 }
