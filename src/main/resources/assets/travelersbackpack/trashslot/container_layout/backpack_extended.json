@@ -1,0 +1,241 @@
+{
+  "availability": "optional",
+  "defaultSnap": "bottom_right",
+  "snaps": {
+    "top": {
+      "x": {
+        "type": "range",
+        "from": {
+          "type": "left",
+          "rect": "travelersbackpack:extended_top",
+          "offset": 12
+        },
+        "to": {
+          "type": "right",
+          "rect": "travelersbackpack:extended_top",
+          "offset": -28
+        }
+      },
+      "y": {
+        "type": "top",
+        "rect": "travelersbackpack:extended_top",
+        "offset": -15
+      },
+      "visual": "attach_top"
+    },
+    "top_right": {
+      "x": {
+        "type": "right",
+        "rect": "travelersbackpack:extended_top",
+        "offset": -24
+      },
+      "y": {
+        "type": "top",
+        "rect": "travelersbackpack:extended_top",
+        "offset": -15
+      },
+      "visual": "attach_top_right"
+    },
+    "top_left": {
+      "x": {
+        "type": "left",
+        "rect": "travelersbackpack:extended_top",
+        "offset": 8
+      },
+      "y": {
+        "type": "top",
+        "rect": "travelersbackpack:extended_top",
+        "offset": -15
+      },
+      "visual": "attach_top_left"
+    },
+    "bottom": {
+      "x": {
+        "type": "range",
+        "from": {
+          "type": "left",
+          "rect": "travelersbackpack:extended_bottom",
+          "offset": 12
+        },
+        "to": {
+          "type": "right",
+          "rect": "travelersbackpack:extended_bottom",
+          "offset": -28
+        }
+      },
+      "y": {
+        "type": "bottom",
+        "rect": "travelersbackpack:extended_bottom",
+        "offset": -1
+      },
+      "visual": "attach_bottom"
+    },
+    "bottom_right": {
+      "x": {
+        "type": "right",
+        "rect": "travelersbackpack:extended_bottom",
+        "offset": -24
+      },
+      "y": {
+        "type": "bottom",
+        "rect": "travelersbackpack:extended_bottom",
+        "offset": -1
+      },
+      "visual": "attach_bottom_right"
+    },
+    "bottom_left": {
+      "x": {
+        "type": "left",
+        "rect": "travelersbackpack:extended_bottom",
+        "offset": 8
+      },
+      "y": {
+        "type": "bottom",
+        "rect": "travelersbackpack:extended_bottom",
+        "offset": -1
+      },
+      "visual": "attach_bottom_left"
+    },
+    "extended_left": {
+      "x": {
+        "type": "left",
+        "rect": "travelersbackpack:extended_top",
+        "offset": -15
+      },
+      "y": {
+        "type": "range",
+        "from": {
+          "type": "top",
+          "rect": "travelersbackpack:extended_top",
+          "offset": 11
+        },
+        "to": {
+          "type": "bottom",
+          "rect": "travelersbackpack:extended_top",
+          "offset": -24
+        }
+      },
+      "visual": "attach_left"
+    },
+    "extended_left_top": {
+      "x": {
+        "type": "left",
+        "rect": "travelersbackpack:extended_top",
+        "offset": -15
+      },
+      "y": {
+        "type": "top",
+        "rect": "travelersbackpack:extended_top",
+        "offset": 7
+      },
+      "visual": "attach_left_top"
+    },
+    "extended_left_bottom": {
+      "x": {
+        "type": "left",
+        "rect": "travelersbackpack:extended_top",
+        "offset": -15
+      },
+      "y": {
+        "type": "bottom",
+        "rect": "travelersbackpack:extended_top",
+        "offset": -24
+      },
+      "visual": "attach_left_bottom"
+    },
+    "left": {
+      "x": {
+        "type": "left",
+        "rect": "travelersbackpack:extended_bottom",
+        "offset": -15
+      },
+      "y": {
+        "type": "range",
+        "from": {
+          "type": "top",
+          "rect": "travelersbackpack:extended_bottom",
+          "offset": 11
+        },
+        "to": {
+          "type": "bottom",
+          "rect": "travelersbackpack:extended_bottom",
+          "offset": -24
+        }
+      },
+      "visual": "attach_left"
+    },
+    "left_top": {
+      "x": {
+        "type": "left",
+        "rect": "travelersbackpack:extended_bottom",
+        "offset": -15
+      },
+      "y": {
+        "type": "top",
+        "rect": "travelersbackpack:extended_bottom",
+        "offset": 7
+      },
+      "visual": "attach_left"
+    },
+    "left_bottom": {
+      "x": {
+        "type": "left",
+        "rect": "travelersbackpack:extended_bottom",
+        "offset": -15
+      },
+      "y": {
+        "type": "bottom",
+        "rect": "travelersbackpack:extended_bottom",
+        "offset": -24
+      },
+      "visual": "attach_left_bottom"
+    },
+    "right": {
+      "x": {
+        "type": "right",
+        "rect": "travelersbackpack:extended_bottom",
+        "offset": -1
+      },
+      "y": {
+        "type": "range",
+        "from": {
+          "type": "top",
+          "rect": "travelersbackpack:extended_bottom",
+          "offset": 10
+        },
+        "to": {
+          "type": "bottom",
+          "rect": "travelersbackpack:extended_bottom",
+          "offset": -28
+        }
+      },
+      "visual": "attach_right"
+    },
+    "right_top": {
+      "x": {
+        "type": "right",
+        "rect": "travelersbackpack:extended_bottom",
+        "offset": -1
+      },
+      "y": {
+        "type": "top",
+        "rect": "travelersbackpack:extended_bottom",
+        "offset": 7
+      },
+      "visual": "attach_right"
+    },
+    "right_bottom": {
+      "x": {
+        "type": "right",
+        "rect": "travelersbackpack:extended_bottom",
+        "offset": -1
+      },
+      "y": {
+        "type": "bottom",
+        "rect": "travelersbackpack:extended_bottom",
+        "offset": -24
+      },
+      "visual": "attach_right_bottom"
+    }
+  }
+}
