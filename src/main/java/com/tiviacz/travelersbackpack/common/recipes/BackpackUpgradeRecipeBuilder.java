@@ -1,14 +1,11 @@
 package com.tiviacz.travelersbackpack.common.recipes;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
-import net.minecraft.advancements.Advancement;
-import net.minecraft.advancements.AdvancementRequirements;
-import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.Criterion;
-import net.minecraft.advancements.criterion.RecipeUnlockedTrigger;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.data.recipes.RecipeUnlockAdvancementBuilder;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
@@ -16,8 +13,6 @@ import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.Optional;
 
 public class BackpackUpgradeRecipeBuilder {
@@ -26,47 +21,31 @@ public class BackpackUpgradeRecipeBuilder {
     private final Ingredient addition;
     private final RecipeCategory category;
     private final ItemStackTemplate result;
-    private final Map<String, Criterion<?>> criteria = new LinkedHashMap<>();
+    private final RecipeUnlockAdvancementBuilder advancementBuilder = new RecipeUnlockAdvancementBuilder();
 
-    public BackpackUpgradeRecipeBuilder(Ingredient pTemplate, Ingredient pBase, Ingredient pAddition, RecipeCategory pCategory, ItemStackTemplate pResult) {
-        this.category = pCategory;
-        this.template = pTemplate;
-        this.base = pBase;
-        this.addition = pAddition;
-        this.result = pResult;
+    public BackpackUpgradeRecipeBuilder(Ingredient template, Ingredient base, Ingredient addition, RecipeCategory category, ItemStackTemplate result) {
+        this.category = category;
+        this.template = template;
+        this.base = base;
+        this.addition = addition;
+        this.result = result;
     }
 
-    public static BackpackUpgradeRecipeBuilder backpackUpgrade(Ingredient pTemplate, Ingredient pBase, Ingredient pAddition, RecipeCategory pCategory, Item pResult) {
-        return new BackpackUpgradeRecipeBuilder(pTemplate, pBase, pAddition, pCategory, new ItemStackTemplate(pResult));
+    public static BackpackUpgradeRecipeBuilder backpackUpgrade(Ingredient template, Ingredient base, Ingredient addition, RecipeCategory category, Item result) {
+        return new BackpackUpgradeRecipeBuilder(template, base, addition, category, new ItemStackTemplate(result));
     }
 
-    public BackpackUpgradeRecipeBuilder unlocks(String pKey, Criterion<?> criterion) {
-        this.criteria.put(pKey, criterion);
+    public BackpackUpgradeRecipeBuilder unlocks(String name, Criterion<?> criterion) {
+        this.advancementBuilder.unlockedBy(name, criterion);
         return this;
     }
 
-    public void save(RecipeOutput recipeOutput, String recipeId) {
-        this.save(recipeOutput, ResourceKey.create(Registries.RECIPE, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, recipeId)));
+    public void save(RecipeOutput output, String id) {
+        this.save(output, ResourceKey.create(Registries.RECIPE, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, id)));
     }
 
-    public void save(RecipeOutput output, ResourceKey<Recipe<?>> resourceKey) {
-
-        this.ensureValid(resourceKey);
-        Advancement.Builder advancement$builder = output.advancement()
-                .addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(resourceKey))
-                .rewards(AdvancementRewards.Builder.recipe(resourceKey))
-                .requirements(AdvancementRequirements.Strategy.OR);
-        this.criteria.forEach(advancement$builder::addCriterion);
-        BackpackUpgradeRecipe backpackUpgradeRecipe = new BackpackUpgradeRecipe(
-                Optional.of(this.template), this.base, Optional.of(this.addition), this.result);
-        output.accept(
-                resourceKey, backpackUpgradeRecipe, advancement$builder.build(resourceKey.identifier().withPrefix("recipes/" + this.category.getFolderName() + "/"))
-        );
-    }
-
-    private void ensureValid(ResourceKey<Recipe<?>> recipe) {
-        if(this.criteria.isEmpty()) {
-            throw new IllegalStateException("No way of obtaining recipe " + recipe.identifier());
-        }
+    public void save(RecipeOutput output, ResourceKey<Recipe<?>> id) {
+        BackpackUpgradeRecipe recipe = new BackpackUpgradeRecipe(new Recipe.CommonInfo(true), Optional.of(this.template), this.base, Optional.of(this.addition), this.result);
+        output.accept(id, recipe, this.advancementBuilder.build(output, id, this.category));
     }
 }
