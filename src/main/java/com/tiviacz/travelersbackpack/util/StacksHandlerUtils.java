@@ -2,6 +2,7 @@ package com.tiviacz.travelersbackpack.util;
 
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.fluid.FluidStacksResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
@@ -9,11 +10,11 @@ import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 public class StacksHandlerUtils {
-    public static ItemStack getStackInSlot(ItemStacksResourceHandler handler, int slot) {
+    public static ItemStack getStackInSlot(ResourceHandler<ItemResource> handler, int slot) {
         return handler.getResource(slot).toStack(handler.getAmountAsInt(slot));
     }
 
-    public static int getSlots(ItemStacksResourceHandler handler) {
+    public static int getSlots(ResourceHandler<ItemResource> handler) {
         return handler.size();
     }
 

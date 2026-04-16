@@ -52,7 +52,7 @@ public class InventoryHelper {
         }
     }
 
-    public static boolean iterate(ItemStacksResourceHandler handler, BiFunction<Integer, ItemStack, Boolean> function) {
+    public static boolean iterate(ResourceHandler<ItemResource> handler, BiFunction<Integer, ItemStack, Boolean> function) {
         for(int i = 0; i < StacksHandlerUtils.getSlots(handler); i++) {
             boolean matches = function.apply(i, StacksHandlerUtils.getStackInSlot(handler, i).copy());
             if(matches) {
