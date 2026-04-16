@@ -464,7 +464,7 @@ public class TravelersBackpackBlock extends Block implements EntityBlock {
     }
 
     @Override
-    public float getEnchantPowerBonus(BlockState state, LevelReader world, BlockPos pos) {
+    public float getEnchantPowerBonus(BlockState state, BlockGetter world, BlockPos pos) {
         if(state.getBlock() == ModBlocks.BOOKSHELF_TRAVELERS_BACKPACK.get()) {
             if(world.getBlockEntity(pos) instanceof BackpackBlockEntity backpackBlockEntity && backpackBlockEntity.getWrapper().isAbilityEnabled()) {
                 return 5.0F;

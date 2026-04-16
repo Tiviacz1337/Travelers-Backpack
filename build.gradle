@@ -76,10 +76,10 @@ dependencies {
     implementation("net.neoforged:neoforge:${neo_version}")
 
     //Curios
-    compileOnly("maven.modrinth:curios:YRKJX6vt")
+    compileOnly("maven.modrinth:curios:68gxflop")
 
     //JEI
-    implementation("maven.modrinth:jei:7BcNtNPQ")
+    implementation("maven.modrinth:jei:XkrFsbih")
 
     //EMI
     //compileOnly("maven.modrinth:emi:ouSj7NfF") //Not Updated
@@ -94,7 +94,7 @@ dependencies {
     implementation("maven.modrinth:balm:4q61ySlS")
 
     //Trash Slot
-    compileOnly("maven.modrinth:trashslot:Kq3z6gII") //Not Updated
+    compileOnly("maven.modrinth:trashslot:8qYqcrpb")
 
     //Comforts
     compileOnly("maven.modrinth:comforts:CZFrqdSy") //Not Updated
