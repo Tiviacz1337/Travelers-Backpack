@@ -6,7 +6,6 @@ import com.tiviacz.travelersbackpack.compat.accessories.TravelersBackpackAccesso
 import com.tiviacz.travelersbackpack.compat.craftingtweaks.CraftingTweaksCompat;
 import com.tiviacz.travelersbackpack.compat.curios.TravelersBackpackCurio;
 import com.tiviacz.travelersbackpack.compat.curios.TravelersBackpackCurioClient;
-import com.tiviacz.travelersbackpack.compat.trashslot.TrashSlotCompat;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
 import com.tiviacz.travelersbackpack.handlers.ModClientEventHandler;
@@ -111,7 +110,7 @@ public class TravelersBackpack {
         event.enqueueWork(() -> {
             ModClientEventHandler.registerUpgradeWidgets();
             if(craftingTweaksLoaded) CraftingTweaksCompat.registerCraftingTweaksAdditionClient();
-            if(trashSlotLoaded) TrashSlotCompat.register();
+            //if(trashSlotLoaded) TrashSlotCompat.register();
         });
         if(accessoriesLoaded) TravelersBackpackAccessoryClient.init();
         if(curiosLoaded && !accessoriesLoaded) TravelersBackpackCurioClient.registerCurioRenderer();

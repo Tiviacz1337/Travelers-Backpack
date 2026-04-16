@@ -19,6 +19,7 @@ import com.tiviacz.travelersbackpack.client.screens.tooltip.BackpackTooltipCompo
 import com.tiviacz.travelersbackpack.client.screens.tooltip.ClientBackpackTooltipComponent;
 import com.tiviacz.travelersbackpack.client.screens.widgets.UpgradeWidgetBase;
 import com.tiviacz.travelersbackpack.client.screens.widgets.UpgradeWidgetRegistry;
+import com.tiviacz.travelersbackpack.compat.trashslot.TrashSlotCompat;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.fluids.PotionFluidType;
 import com.tiviacz.travelersbackpack.init.ModBlocks;
@@ -230,6 +231,16 @@ public class ModClientEventHandler {
                 HudOverlay.renderOverlay(AttachmentUtils.getWearingBackpack(mc.player), mc, pGuiGraphicsExtractor);
             }
         });
+    }
+
+    @SubscribeEvent
+    public static void registerReloadListener(AddClientReloadListenersEvent event) {
+        if(TravelersBackpack.trashSlotLoaded) {
+            Identifier trashSlotIdentifier = Identifier.fromNamespaceAndPath("trashslot", "container_layouts");
+            Identifier backpackIdentifier = Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "client_resource_reload");
+            event.addListener(backpackIdentifier, (sharedState, taskExecutor, prepBarrier, reloadExecutor) -> prepBarrier.wait(null).thenRunAsync(TrashSlotCompat::register, reloadExecutor));
+            event.addDependency(trashSlotIdentifier, backpackIdentifier);
+        }
     }
 
     @SubscribeEvent
