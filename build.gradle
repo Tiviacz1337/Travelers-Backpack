@@ -88,11 +88,11 @@ dependencies {
     compileOnly("maven.modrinth:cloth-config:Wsus0EWg") //Not Updated
 
     //Crafting Tweaks
-    implementation("maven.modrinth:crafting-tweaks:Lnhol0EM")
-    implementation("maven.modrinth:balm:4q61ySlS")
+    compileOnly("maven.modrinth:crafting-tweaks:Lnhol0EM")
+    compileOnly("maven.modrinth:balm:4q61ySlS")
 
     //Trash Slot
-    compileOnly("maven.modrinth:trashslot:8qYqcrpb")
+    compileOnly("maven.modrinth:trashslot:trA79xXQ")
 
     //Comforts
     compileOnly("maven.modrinth:comforts:CZFrqdSy") //Not Updated
