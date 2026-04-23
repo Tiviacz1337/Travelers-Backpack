@@ -36,8 +36,8 @@ public class HayBackpackLootModifier extends LootModifier {
     private final float multiplierChance;
     private final int multiplierAmount;
 
-    protected HayBackpackLootModifier(LootItemCondition[] conditionsIn, List<ItemStack> possibleCropItems, float cropFromGrassChance, float multiplierChance, int multiplierAmount) {
-        super(conditionsIn);
+    protected HayBackpackLootModifier(LootItemCondition[] conditionsIn, int priority, List<ItemStack> possibleCropItems, float cropFromGrassChance, float multiplierChance, int multiplierAmount) {
+        super(conditionsIn, priority);
         this.possibleCropItems = possibleCropItems;
         this.cropFromGrassChance = cropFromGrassChance;
         this.multiplierChance = multiplierChance;

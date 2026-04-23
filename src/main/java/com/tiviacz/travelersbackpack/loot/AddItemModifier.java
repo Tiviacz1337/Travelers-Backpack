@@ -31,8 +31,8 @@ public class AddItemModifier extends LootModifier {
     private final Item item;
     private final float weight;
 
-    protected AddItemModifier(LootItemCondition[] conditionsIn, Item item, float weight) {
-        super(conditionsIn);
+    protected AddItemModifier(LootItemCondition[] conditionsIn, int priority, Item item, float weight) {
+        super(conditionsIn, priority);
         this.item = item;
         this.weight = weight;
     }
