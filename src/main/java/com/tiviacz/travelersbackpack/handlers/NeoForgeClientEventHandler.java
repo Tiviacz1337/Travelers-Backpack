@@ -205,6 +205,7 @@ public class NeoForgeClientEventHandler {
                 Slot slot = screen.getSlotUnderMouse();
                 if(slot != null && slot.getItem().getItem() instanceof TravelersBackpackItem && slot.allowModification(event.getScreen().getMinecraft().player) && slot.container instanceof Inventory) {
                     ServerboundActionTagPacket.create(ServerboundActionTagPacket.OPEN_BACKPACK, slot.getContainerSlot(), true);
+                    event.setCanceled(true);
                 }
             }
         }
