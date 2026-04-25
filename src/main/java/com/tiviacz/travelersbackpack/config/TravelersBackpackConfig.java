@@ -887,4 +887,28 @@ public class TravelersBackpackConfig {
             return false;
         }
     }
+
+    public static boolean isObtainTipsEnabled() {
+        try {
+            return CLIENT.obtainTips.get();
+        } catch (IllegalStateException e) {
+            return true;
+        }
+    }
+
+    public static boolean isAllowOnlyEquippedBackpack() {
+        try {
+            return SERVER.backpackSettings.allowOnlyEquippedBackpack.get();
+        } catch (IllegalStateException e) {
+            return false;
+        }
+    }
+
+    public static boolean isAllowOpeningFromSlot() {
+        try {
+            return SERVER.backpackSettings.allowOpeningFromSlot.get();
+        } catch (IllegalStateException e) {
+            return false;
+        }
+    }
 }

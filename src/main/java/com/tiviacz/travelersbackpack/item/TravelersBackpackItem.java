@@ -84,7 +84,7 @@ public class TravelersBackpackItem extends BlockItem {
             return InteractionResult.FAIL;
         }
 
-        if(!TravelersBackpackConfig.isBackSlotIntegration()) {
+        if(!TravelersBackpackConfig.isAllowOnlyEquippedBackpack()) {
             if(!level.isClientSide()) {
                 BackpackContainer.openBackpack((ServerPlayer)player, player.getInventory().getSelectedItem(), Reference.ITEM_SCREEN_ID, player.getInventory().getSelectedSlot());
             }
