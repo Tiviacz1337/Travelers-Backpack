@@ -84,7 +84,7 @@ public class TravelersBackpackItem extends BlockItem {
             return InteractionResult.FAIL;
         }
 
-        if(!TravelersBackpackConfig.SERVER.backpackSettings.allowOnlyEquippedBackpack.get()) {
+        if(!TravelersBackpackConfig.isBackSlotIntegration()) {
             if(!level.isClientSide()) {
                 BackpackContainer.openBackpack((ServerPlayer)player, player.getInventory().getSelectedItem(), Reference.ITEM_SCREEN_ID, player.getInventory().getSelectedSlot());
             }
@@ -220,7 +220,7 @@ public class TravelersBackpackItem extends BlockItem {
             componentConsumer.accept(Component.translatable("item.travelersbackpack.inventory_tooltip").withStyle(ChatFormatting.BLUE));
         }
 
-        if(TravelersBackpackConfig.CLIENT.obtainTips.get()) {
+        if(TravelersBackpackConfig.isObtainTipsEnabled()) {
             if(stack.getItem() == ModItems.BAT_TRAVELERS_BACKPACK) {
                 componentConsumer.accept(Component.translatable("obtain.travelersbackpack.bat").withStyle(ChatFormatting.BLUE));
             }
@@ -232,7 +232,7 @@ public class TravelersBackpackItem extends BlockItem {
             }
         }
         //Check if specific ability is enabled && Check if Abilities are enabled overall
-        if(BackpackAbilities.ALLOWED_ABILITIES.contains(stack.getItem()) && TravelersBackpackConfig.SERVER.backpackAbilities.enableBackpackAbilities.get()) {
+        if(BackpackAbilities.ALLOWED_ABILITIES.contains(stack.getItem()) && TravelersBackpackConfig.isBackpackAbilitiesEnabled()) {
             if(KeyHelper.isShiftPressed()) {
                 //Custom Descriptions
                 if(BackpackAbilities.CUSTOM_DESCRIPTIONS.contains(stack.getItem())) {

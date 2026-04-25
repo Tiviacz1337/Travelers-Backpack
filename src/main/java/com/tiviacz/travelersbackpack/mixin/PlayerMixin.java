@@ -56,17 +56,17 @@ public abstract class PlayerMixin extends LivingEntity {
                 if(AttachmentUtils.isWearingBackpack(player)) {
                     BackpackWrapper.tick(AttachmentUtils.getWearingBackpack(player), player, false);
                 }
-                if(TravelersBackpackConfig.SERVER.backpackAbilities.enableBackpackAbilities.get() && BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, AttachmentUtils.getWearingBackpack(player))) {
+                if(TravelersBackpackConfig.isBackpackAbilitiesEnabled() && BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, AttachmentUtils.getWearingBackpack(player))) {
                     if(!checkAbilitiesForRemoval && BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_REMOVAL_LIST, AttachmentUtils.getWearingBackpack(player)))
                         checkAbilitiesForRemoval = true;
                 }
-                if(checkAbilitiesForRemoval && !player.level().isClientSide() && (!AttachmentUtils.isWearingBackpack(player) || !TravelersBackpackConfig.SERVER.backpackAbilities.enableBackpackAbilities.get())) {
+                if(checkAbilitiesForRemoval && !player.level().isClientSide() && (!AttachmentUtils.isWearingBackpack(player) || !TravelersBackpackConfig.isBackpackAbilitiesEnabled())) {
                     ServerActions.runAbilitiesRemoval(player);
                     checkAbilitiesForRemoval = false;
                 }
 
                 //Slowness
-                if(TravelersBackpackConfig.SERVER.slownessDebuff.tooManyBackpacksSlowness.get() && !player.isCreative()) {
+                if(TravelersBackpackConfig.isTooManyBackpacksSlowness() && !player.isCreative()) {
                     if(nextBackpackCountCheck > player.level().getGameTime()) {
                         return;
                     }
@@ -77,10 +77,10 @@ public abstract class PlayerMixin extends LivingEntity {
 
                     if(numberOfBackpacks.get() == 0) return;
 
-                    int maxNumberOfBackpacks = TravelersBackpackConfig.SERVER.slownessDebuff.maxNumberOfBackpacks.get();
+                    int maxNumberOfBackpacks = TravelersBackpackConfig.getMaxNumberOfBackpacks();
 
                     if(numberOfBackpacks.get() > maxNumberOfBackpacks) {
-                        int numberOfSlownessLevels = Math.min(10, (int)Math.ceil((numberOfBackpacks.get() - maxNumberOfBackpacks) * TravelersBackpackConfig.SERVER.slownessDebuff.slownessPerExcessedBackpack.get()));
+                        int numberOfSlownessLevels = Math.min(10, (int)Math.ceil((numberOfBackpacks.get() - maxNumberOfBackpacks) * TravelersBackpackConfig.getSlownessPerExcessedBackpack()));
                         player.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, BACKPACK_COUNT_CHECK_COOLDOWN * 2, numberOfSlownessLevels - 1, false, false));
                     }
                 }
@@ -90,7 +90,7 @@ public abstract class PlayerMixin extends LivingEntity {
 
     @Inject(at = @At(value = "HEAD"), method = "attack")
     private void attack(Entity target, CallbackInfo ci) {
-        if(TravelersBackpackConfig.SERVER.backpackAbilities.enableBackpackAbilities.get()) {
+        if(TravelersBackpackConfig.isBackpackAbilitiesEnabled()) {
             if(this instanceof Object) {
                 if((Object)this instanceof Player player) {
                     BackpackAbilities.beeAbility(player, target);

@@ -827,4 +827,64 @@ public class TravelersBackpackConfig {
         clientSpec = clientSpecPair.getRight();
         CLIENT = clientSpecPair.getLeft();
     }
+
+    public static boolean isConfigLoaded() {
+        return serverSpec.isLoaded();
+    }
+
+    public static boolean isBackpackAbilitiesEnabled() {
+        try {
+            return SERVER.backpackAbilities.enableBackpackAbilities.get();
+        } catch (IllegalStateException e) {
+            return false;
+        }
+    }
+
+    public static boolean isTooManyBackpacksSlowness() {
+        try {
+            return SERVER.slownessDebuff.tooManyBackpacksSlowness.get();
+        } catch (IllegalStateException e) {
+            return false;
+        }
+    }
+
+    public static int getMaxNumberOfBackpacks() {
+        try {
+            return SERVER.slownessDebuff.maxNumberOfBackpacks.get();
+        } catch (IllegalStateException e) {
+            return 3;
+        }
+    }
+
+    public static double getWorldSpawnChance() {
+        try {
+            return SERVER.world.chance.get();
+        } catch (IllegalStateException e) {
+            return 0.005;
+        }
+    }
+
+    public static double getSlownessPerExcessedBackpack() {
+        try {
+            return SERVER.slownessDebuff.slownessPerExcessedBackpack.get();
+        } catch (IllegalStateException e) {
+            return 1.0;
+        }
+    }
+
+    public static boolean isBackSlotIntegration() {
+        try {
+            return SERVER.backpackSettings.backSlotIntegration.get();
+        } catch (IllegalStateException e) {
+            return false;
+        }
+    }
+
+    public static boolean isSpawnEntitiesWithBackpack() {
+        try {
+            return SERVER.world.spawnEntitiesWithBackpack.get();
+        } catch (IllegalStateException e) {
+            return false;
+        }
+    }
 }

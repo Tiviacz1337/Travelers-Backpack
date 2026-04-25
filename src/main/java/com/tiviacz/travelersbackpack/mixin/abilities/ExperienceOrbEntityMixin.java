@@ -20,7 +20,7 @@ public abstract class ExperienceOrbEntityMixin {
 
     @Inject(method = "playerTouch", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;take(Lnet/minecraft/world/entity/Entity;I)V", shift = At.Shift.AFTER))
     public void onPlayerCollision(Player player, CallbackInfo ci) {
-        if(TravelersBackpackConfig.SERVER.backpackAbilities.enableBackpackAbilities.get()) {
+        if(TravelersBackpackConfig.isBackpackAbilitiesEnabled()) {
             int value = this.getValue() * BackpackAbilities.ABILITIES.lapisAbility(player);
             setValue(value);
         }

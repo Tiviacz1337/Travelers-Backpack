@@ -32,9 +32,9 @@ public abstract class MobEntityMixin extends LivingEntity {
 
     @Inject(at = @At(value = "TAIL"), method = "finalizeSpawn")
     protected void initialize(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason spawnType, SpawnGroupData spawnGroupData, CallbackInfoReturnable<SpawnGroupData> cir) {
-        if(TravelersBackpackConfig.SERVER.world.spawnEntitiesWithBackpack.get()) {
+        if(TravelersBackpackConfig.isSpawnEntitiesWithBackpack()) {
             if((Object)this instanceof LivingEntity livingEntity && livingEntity.getItemBySlot(EquipmentSlot.CHEST).isEmpty() && !livingEntity.isBaby() && Reference.ALLOWED_TYPE_ENTRIES.contains(livingEntity.getType())) {
-                if(level.getRandom().nextFloat() < TravelersBackpackConfig.SERVER.world.chance.get()) {
+                if(level.getRandom().nextFloat() < TravelersBackpackConfig.getWorldSpawnChance()) {
                     boolean isNether = livingEntity.getType() == EntityType.PIGLIN || livingEntity.getType() == EntityType.WITHER_SKELETON;
                     RandomSource rand = level.getRandom();
                     ItemStack backpack = isNether ?

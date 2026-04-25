@@ -134,11 +134,17 @@ public class TravelersBackpack implements ModInitializer {
     }
 
     public static boolean enableAccessories() {
-        return accessoriesLoaded && TravelersBackpackConfig.SERVER.backpackSettings.backSlotIntegration.get();
+        if (!accessoriesLoaded) {
+            return false;
+        }
+        return TravelersBackpackConfig.isBackSlotIntegration() && !enableTrinkets();
     }
 
     public static boolean enableTrinkets() {
-        return trinketsLoaded && !enableAccessories() && TravelersBackpackConfig.SERVER.backpackSettings.backSlotIntegration.get();
+        if (!trinketsLoaded) {
+            return false;
+        }
+        return TravelersBackpackConfig.isBackSlotIntegration() && !enableAccessories();
     }
 
     public static boolean isAnyGraveModInstalled() {
