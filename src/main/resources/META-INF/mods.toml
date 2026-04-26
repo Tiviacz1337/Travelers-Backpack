@@ -3,23 +3,24 @@ loaderVersion = "${forge_loader_version}" #mandatory This is typically bumped ev
 license = "${mod_license}"
 
 [[mods]] #mandatory
-modId = "${mod_id}"
-version = "${mod_version}"
-displayName = "${mod_display_name}"
-displayURL = "${mod_url}"
-authors = "${mod_authors}"
-description = '''${mod_description}'''
+    modId = "${mod_id}"
+    version = "${mod_version}"
+    displayName = "${mod_display_name}"
+    displayURL = "${mod_url}"
+    authors = "${mod_authors}"
+    description = '''${mod_description}'''
+    logoFile = "assets/${mod_id}/textures/logo.png"
 
 [[dependencies.${ mod_id }]]
-modId = "forge"
-mandatory = true
-versionRange = "${forge_loader_version}"
-ordering = "NONE"
-side = "BOTH"
+    modId = "forge"
+    mandatory = true
+    versionRange = "${forge_loader_version}"
+    ordering = "NONE"
+    side = "BOTH"
 
 [[dependencies.${ mod_id }]]
-modId = "minecraft"
-mandatory = true
-versionRange = "${minecraft_version_range}"
-ordering = "NONE"
-side = "BOTH"
+    modId = "minecraft"
+    mandatory = true
+    versionRange = "${minecraft_version_range}"
+    ordering = "NONE"
+    side = "BOTH"
