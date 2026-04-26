@@ -30,15 +30,15 @@ jobs:
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
-          distribution: "temurin"
-          java-version: 25
+          java-version: '25'
+          distribution: 'temurin'
 
       - name: Make Gradle Wrapper Executable
         if: ${{ runner.os != 'Windows' }}
         run: chmod +x ./gradlew
 
       - name: Build
-        run: ./gradlew clean build --refresh-dependencies --no-daemon --stacktrace
+        run: ./gradlew clean build
 
       - name: Publish (CurseForge/Modrinth)
         uses: Kir-Antipov/mc-publish@v3.3
