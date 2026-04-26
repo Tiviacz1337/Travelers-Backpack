@@ -18,18 +18,18 @@ public class ClientboundSendMessagePacket {
         this.pos = pos;
     }
 
-    public static ClientboundSendMessagePacket decode(final FriendlyByteBuf buffer) {
-        final boolean drop = buffer.readBoolean();
-        final BlockPos pos = buffer.readBlockPos();
+    public static ClientboundSendMessagePacket decode(FriendlyByteBuf buffer) {
+        boolean drop = buffer.readBoolean();
+        BlockPos pos = buffer.readBlockPos();
         return new ClientboundSendMessagePacket(drop, pos);
     }
 
-    public static void encode(final ClientboundSendMessagePacket message, final FriendlyByteBuf buffer) {
+    public static void encode(ClientboundSendMessagePacket message, FriendlyByteBuf buffer) {
         buffer.writeBoolean(message.drop);
         buffer.writeBlockPos(message.pos);
     }
 
-    public static void handle(final ClientboundSendMessagePacket message, Supplier<NetworkEvent.Context> ctx) {
+    public static void handle(ClientboundSendMessagePacket message, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
             if(TravelersBackpackConfig.CLIENT.sendBackpackCoordinatesMessage.get()) {
                 if(Minecraft.getInstance().player != null) {

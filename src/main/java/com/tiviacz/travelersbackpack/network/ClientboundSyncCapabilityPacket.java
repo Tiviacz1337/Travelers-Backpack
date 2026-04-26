@@ -55,20 +55,20 @@ public class ClientboundSyncCapabilityPacket {
         this.removeData = removeData;
     }
 
-    public static ClientboundSyncCapabilityPacket decode(final FriendlyByteBuf buffer) {
-        final int entityID = buffer.readInt();
-        final ItemStack backpack = buffer.readItem();
-        final boolean removeData = buffer.readBoolean();
+    public static ClientboundSyncCapabilityPacket decode(FriendlyByteBuf buffer) {
+        int entityID = buffer.readInt();
+        ItemStack backpack = buffer.readItem();
+        boolean removeData = buffer.readBoolean();
         return new ClientboundSyncCapabilityPacket(entityID, backpack, removeData);
     }
 
-    public static void encode(final ClientboundSyncCapabilityPacket message, final FriendlyByteBuf buffer) {
+    public static void encode(ClientboundSyncCapabilityPacket message, FriendlyByteBuf buffer) {
         buffer.writeInt(message.entityID);
         buffer.writeItem(message.backpack);
         buffer.writeBoolean(message.removeData);
     }
 
-    public static void handle(final ClientboundSyncCapabilityPacket message, Supplier<NetworkEvent.Context> ctx) {
+    public static void handle(ClientboundSyncCapabilityPacket message, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
             Player playerEntity = (Player)Minecraft.getInstance().level.getEntity(message.entityID);
             LazyOptional<ITravelersBackpack> data = CapabilityUtils.getCapability(playerEntity);

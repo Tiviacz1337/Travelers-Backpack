@@ -25,8 +25,8 @@ public class ServerboundSlotPacket {
         this.slotsData = slotsData;
     }
 
-    public static ServerboundSlotPacket decode(final FriendlyByteBuf buffer) {
-        final int selectType = buffer.readInt();
+    public static ServerboundSlotPacket decode(FriendlyByteBuf buffer) {
+        int selectType = buffer.readInt();
         List<?> slotsData = new ArrayList<>();
         if(selectType == UNSORTABLES) {
             slotsData = buffer.readIntIdList().intStream().boxed().collect(Collectors.toList());
@@ -37,7 +37,7 @@ public class ServerboundSlotPacket {
         return new ServerboundSlotPacket(selectType, slotsData);
     }
 
-    public static void encode(final ServerboundSlotPacket message, final FriendlyByteBuf buffer) {
+    public static void encode(ServerboundSlotPacket message, FriendlyByteBuf buffer) {
         buffer.writeInt(message.selectType);
         List<?> slotsData = message.slotsData;
         if(message.selectType == UNSORTABLES) {
@@ -52,7 +52,7 @@ public class ServerboundSlotPacket {
     public static final int UNSORTABLES = 0;
     public static final int MEMORY = 1;
 
-    public static void handle(final ServerboundSlotPacket message, final Supplier<NetworkEvent.Context> ctx) {
+    public static void handle(ServerboundSlotPacket message, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
             Player player = ctx.get().getSender();
             if(player instanceof ServerPlayer serverPlayer && serverPlayer.containerMenu instanceof BackpackSettingsMenu menu) {

@@ -19,20 +19,20 @@ public class ClientboundSyncComponentsPacket {
         this.map = map;
     }
 
-    public static ClientboundSyncComponentsPacket decode(final FriendlyByteBuf buffer) {
-        final int entityID = buffer.readInt();
-        final CompoundTag map = buffer.readNbt();
+    public static ClientboundSyncComponentsPacket decode(FriendlyByteBuf buffer) {
+        int entityID = buffer.readInt();
+        CompoundTag map = buffer.readNbt();
         return new ClientboundSyncComponentsPacket(entityID, map);
     }
 
-    public static void encode(final ClientboundSyncComponentsPacket message, final FriendlyByteBuf buffer) {
+    public static void encode(ClientboundSyncComponentsPacket message, FriendlyByteBuf buffer) {
         buffer.writeInt(message.entityID);
         buffer.writeNbt(message.map);
     }
 
-    public static void handle(final ClientboundSyncComponentsPacket message, Supplier<NetworkEvent.Context> ctx) {
+    public static void handle(ClientboundSyncComponentsPacket message, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
-            final Player playerEntity = (Player)Minecraft.getInstance().player.level().getEntity(message.entityID);
+            Player playerEntity = (Player)Minecraft.getInstance().player.level().getEntity(message.entityID);
             ITravelersBackpack data = CapabilityUtils.getCapability(playerEntity).orElseThrow(() -> new RuntimeException("No player attachment data found!"));
             if(data != null) {
                 data.applyComponents(message.map);

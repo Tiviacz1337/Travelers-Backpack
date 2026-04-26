@@ -29,18 +29,18 @@ public class ClientboundUpdateRecipePacket {
         this.output = output;
     }
 
-    public static ClientboundUpdateRecipePacket decode(final FriendlyByteBuf buffer) {
+    public static ClientboundUpdateRecipePacket decode(FriendlyByteBuf buffer) {
         ResourceLocation recipeId = buffer.readResourceLocation();
         ItemStack output = buffer.readItem();
         return new ClientboundUpdateRecipePacket(recipeId, output);
     }
 
-    public static void encode(final ClientboundUpdateRecipePacket message, final FriendlyByteBuf buffer) {
+    public static void encode(ClientboundUpdateRecipePacket message, FriendlyByteBuf buffer) {
         buffer.writeResourceLocation(message.id);
         buffer.writeItem(message.output);
     }
 
-    public static void handle(final ClientboundUpdateRecipePacket message, final Supplier<NetworkEvent.Context> ctx) {
+    public static void handle(ClientboundUpdateRecipePacket message, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () ->
         {
             Recipe<?> recipe = Minecraft.getInstance().level.getRecipeManager().byKey(message.id).orElse(null);

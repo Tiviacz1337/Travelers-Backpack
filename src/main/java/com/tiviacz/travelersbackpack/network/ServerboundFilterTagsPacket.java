@@ -23,19 +23,19 @@ public class ServerboundFilterTagsPacket {
         this.tags = tags;
     }
 
-    public static ServerboundFilterTagsPacket decode(final FriendlyByteBuf buffer) {
-        final int slot = buffer.readInt();
-        final List<String> tags = buffer.readList(FriendlyByteBuf::readUtf);
+    public static ServerboundFilterTagsPacket decode(FriendlyByteBuf buffer) {
+        int slot = buffer.readInt();
+        List<String> tags = buffer.readList(FriendlyByteBuf::readUtf);
 
         return new ServerboundFilterTagsPacket(slot, tags);
     }
 
-    public static void encode(final ServerboundFilterTagsPacket message, final FriendlyByteBuf buffer) {
+    public static void encode(ServerboundFilterTagsPacket message, FriendlyByteBuf buffer) {
         buffer.writeInt(message.slot);
         buffer.writeCollection(message.tags, FriendlyByteBuf::writeUtf);
     }
 
-    public static void handle(final ServerboundFilterTagsPacket message, final Supplier<NetworkEvent.Context> ctx) {
+    public static void handle(ServerboundFilterTagsPacket message, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
             Player player = ctx.get().getSender();
 

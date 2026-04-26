@@ -26,7 +26,7 @@ public class ClientboundSyncItemStackPacket {
         this.map = map;
     }
 
-    public static ClientboundSyncItemStackPacket decode(final FriendlyByteBuf buffer) {
+    public static ClientboundSyncItemStackPacket decode(FriendlyByteBuf buffer) {
         int entityID = buffer.readInt();
         int slot = buffer.readInt();
         ItemStack itemStackInstance = buffer.readItem();
@@ -35,14 +35,14 @@ public class ClientboundSyncItemStackPacket {
         return new ClientboundSyncItemStackPacket(entityID, slot, itemStackInstance, map);
     }
 
-    public static void encode(final ClientboundSyncItemStackPacket message, final FriendlyByteBuf buffer) {
+    public static void encode(ClientboundSyncItemStackPacket message, FriendlyByteBuf buffer) {
         buffer.writeInt(message.entityID);
         buffer.writeInt(message.slot);
         buffer.writeItem(message.itemStackInstance);
         buffer.writeNbt(message.map);
     }
 
-    public static void handle(final ClientboundSyncItemStackPacket message, Supplier<NetworkEvent.Context> ctx) {
+    public static void handle(ClientboundSyncItemStackPacket message, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() ->
         {
             Player player = (Player)Minecraft.getInstance().player.level().getEntity(message.entityID);
