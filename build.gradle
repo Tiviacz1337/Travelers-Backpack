@@ -8,61 +8,30 @@ plugins {
 }
 
 version = "${mod_loader}-${minecraft_version}-${mod_version}"
-group = 'com.tiviacz.travelersbackpack' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+group = "${maven_group}" + "." + "${mod_id}"
 base {
-    archivesName = 'travelersbackpack'
+    archivesName = "${archives_name}"
 }
 
-// Mojang ships Java 17 to end users in 1.18+, so your mod should target Java 17.
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
-println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
 minecraft {
-    // The mappings can be changed at any time and must be in the following format.
-    // Channel:   Version:
-    // official   MCVersion             Official field/method names from Mojang mapping files
-    // parchment  YYYY.MM.DD-MCVersion  Open community-sourced parameter names and javadocs layered on top of official
-    //
-    // You must be aware of the Mojang license when using the 'official' or 'parchment' mappings.
-    // See more information here: https://github.com/MinecraftForge/MCPConfig/blob/master/Mojang.md
-    //
-    // Parchment is an unofficial project maintained by ParchmentMC, separate from MinecraftForge
-    // Additional setup is needed to use their mappings: https://github.com/ParchmentMC/Parchment/wiki/Getting-Started
-    //
-    // Use non-default mappings at your own risk. They may not always work.
-    // Simply re-run your setup task after changing the mappings to update your workspace.
     mappings channel: 'parchment', version: parachment_mappings_version
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
-    // accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg') // Currently, this location cannot be changed from the default.
-
     copyIdeResources = true
 
-    // Default run configurations.
-    // These can be tweaked, removed, or duplicated as needed.
     runs {
         client {
             workingDirectory project.file('run')
-
-            // Recommended logging data for a userdev environment
-            // The markers can be added/remove as needed separated by commas.
-            // "SCAN": For mods scan.
-            // "REGISTRIES": For firing of registry events.
-            // "REGISTRYDUMP": For getting the contents of all registries.
             property 'forge.logging.markers', 'REGISTRIES'
-
-            // Recommended logging level for the console
-            // You can set various levels here.
-            // Please read: https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
             property 'forge.logging.console.level', 'debug'
-
-            // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
-            property 'forge.enabledGameTestNamespaces', 'travelersbackpack'
+            property 'forge.enabledGameTestNamespaces', "${mod_id}"
 
             property 'mixin.env.remapRefMap', 'true'
             property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
 
             mods {
-                travelersbackpack {
+                "${mod_id}" {
                     source sourceSets.main
                 }
             }
@@ -70,40 +39,31 @@ minecraft {
 
         server {
             workingDirectory project.file('run')
-
             property 'forge.logging.markers', 'REGISTRIES'
-
             property 'forge.logging.console.level', 'debug'
-
-            property 'forge.enabledGameTestNamespaces', 'travelersbackpack'
+            property 'forge.enabledGameTestNamespaces', "${mod_id}"
 
             property 'mixin.env.remapRefMap', 'true'
             property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
 
             mods {
-                travelersbackpack {
+                "${mod_id}" {
                     source sourceSets.main
                 }
             }
         }
 
-        // This run config launches GameTestServer and runs all registered gametests, then exits.
-        // By default, the server will crash when no gametests are provided.
-        // The gametest system is also enabled by default for other run configs under the /test command.
         gameTestServer {
             workingDirectory project.file('run')
-
             property 'forge.logging.markers', 'REGISTRIES'
-
             property 'forge.logging.console.level', 'debug'
-
-            property 'forge.enabledGameTestNamespaces', 'travelersbackpack'
+            property 'forge.enabledGameTestNamespaces', "${mod_id}"
 
             property 'mixin.env.remapRefMap', 'true'
             property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
 
             mods {
-                travelersbackpack {
+                "${mod_id}" {
                     source sourceSets.main
                 }
             }
@@ -111,19 +71,16 @@ minecraft {
 
         data {
             workingDirectory project.file('run')
-
             property 'forge.logging.markers', 'REGISTRIES'
-
             property 'forge.logging.console.level', 'debug'
 
             property 'mixin.env.remapRefMap', 'true'
             property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
 
-            // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
-            args '--mod', 'travelersbackpack', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+            args '--mod', "${mod_id}", '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
 
             mods {
-                travelersbackpack {
+                "${mod_id}" {
                     source sourceSets.main
                 }
             }
@@ -131,36 +88,9 @@ minecraft {
     }
 }
 
-// Include resources generated by data generators.
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
-
-    maven {
-        url = "https://maven.shedaniel.me/"
-    }
-    maven { url "https://maven.architectury.dev/" }
-
-    maven {
-        url = "https://maven.theillusivec4.top/"
-    }
-
-    maven {
-        name = "TerraformersMC"
-        url = "https://maven.terraformersmc.com/"
-    }
-
-    maven {
-        // location of the maven that hosts JEI files
-        name = "Progwml6 maven"
-        url = "https://dvs1.progwml6.com/files/maven/"
-    }
-    maven {
-        // location of a maven mirror for JEI files, as a fallback
-        name = "ModMaven"
-        url = "https://modmaven.k-4u.nl"
-    }
-
     maven {
         url "https://cursemaven.com"
         content {
@@ -168,26 +98,18 @@ repositories {
         }
     }
 
-    maven { url 'https://api.modrinth.com/maven' }
-    // Put repositories for dependencies here
-    // ForgeGradle automatically adds the Forge maven and Maven Central for you
-
-    // If you have mod jar dependencies in ./libs, you can declare them as a repository like so:
-    // flatDir {
-    //     dir 'libs'
-    // }
+    maven {
+        url 'https://api.modrinth.com/maven'
+    }
 }
 
 dependencies {
-    // Specify the version of Minecraft to use. If this is any group other than 'net.minecraft', it is assumed
-    // that the dep is a ForgeGradle 'patcher' dependency, and its patches will be applied.
-    // The userdev artifact is a special name and will get all sorts of transformations applied to it.
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
     // Apply Mixin AP
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 
-    implementation fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
+    implementation fg.deobf("maven.modrinth:curios:IPQlZkz1")
     implementation fg.deobf("maven.modrinth:forge-config-screens:YUDLu26S")
 
     implementation fg.deobf("maven.modrinth:crafting-tweaks:umzsWJQd")
@@ -217,7 +139,6 @@ dependencies {
     //implementation fg.deobf("maven.modrinth:majruszs-progressive-difficulty:IH8yR3yr")
     //implementation fg.deobf("maven.modrinth:majrusz-library:BZzTRseC")
     compileOnly fg.deobf('curse.maven:opac-636608:6858725')
-
 
     //Comforts
     compileOnly fg.deobf("maven.modrinth:comforts:gBDsc134")
@@ -250,7 +171,9 @@ dependencies {
     compileOnly fg.deobf("maven.modrinth:amendments:luR9kOmm")
     compileOnly fg.deobf("maven.modrinth:moonlight:62CPFGur")
 
-   // runtimeOnly fg.deobf('curse.maven:terrablender-563928:5068218')
+    implementation fg.deobf("curse.maven:gregtechceu-modern-890405:7625262")
+
+    //runtimeOnly fg.deobf('curse.maven:terrablender-563928:5068218')
     //runtimeOnly fg.deobf('curse.maven:bop-220318:4764804')
     //runtimeOnly fg.deobf('curse.maven:naturecompas-252848:4712189')
 
@@ -259,85 +182,64 @@ dependencies {
     //runtimeOnly fg.deobf('curse.maven:create-328085:4835191')
     //implementation fg.deobf("curse.maven:ipn-495267:4810835")
 
-   // runtimeOnly fg.deobf("curse.maven:sleep-tight-817564:4612817")
-   // runtimeOnly fg.deobf("curse.maven:moonlight-499980:4734063")
+    //runtimeOnly fg.deobf("curse.maven:sleep-tight-817564:4612817")
+    //runtimeOnly fg.deobf("curse.maven:moonlight-499980:4734063")
     //runtimeOnly fg.deobf("curse.maven:the-hammers-mod-632142:4635811")
 
     //runtimeOnly fg.deobf("curse.maven:corpse-316582:5157034")
     //runtimeOnly fg.deobf("curse.maven:gravestone-238551:5197326")
-
-    // Real mod deobf dependency examples - these get remapped to your current mappings
-     //compileOnly fg.deobf("mezz.jei:jei-${jei_mcversion}:${jei_version}:api") // Adds JEI API as a compile dependency
-     //runtimeOnly fg.deobf("mezz.jei:jei-${jei_mcversion}:${jei_version}") // Adds the full JEI mod as a runtime dependency
-    // implementation fg.deobf("com.tterrag.registrate:Registrate:MC${mc_version}-${registrate_version}") // Adds registrate as a dependency
-
-    // Examples using mod jars from ./libs
-    // implementation fg.deobf("blank:coolmod-${mc_version}:${coolmod_version}")
-
-    // For more info...
-    // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
-    // http://www.gradle.org/docs/current/userguide/dependency_management.html
 }
 
-/*def resourceTargets = ['META-INF/mods.toml', 'pack.mcmeta']
-def replaceProperties = [
-        mod_version: mod_version
-]
 processResources {
+    var replaceProperties = [
+            minecraft_version      : minecraft_version,
+            minecraft_version_range: minecraft_version_range,
+            forge_version          : forge_version,
+            forge_loader_version   : forge_loader_version,
+            mod_id                 : mod_id,
+            mod_name               : mod_name,
+            mod_display_name       : mod_display_name,
+            mod_url                : mod_url,
+            mod_license            : mod_license,
+            mod_version            : mod_version,
+            mod_authors            : mod_authors,
+            mod_description        : mod_description
+    ]
     inputs.properties replaceProperties
-    replaceProperties.put 'project', project
 
-    filesMatching(resourceTargets) {
+    filesMatching('META-INF/mods.toml') {
         expand replaceProperties
     }
-} */
+}
 
 mixin {
     // MixinGradle Settings
-    add sourceSets.main, 'mixins.travelersbackpack.refmap.json'
-    config 'mixins.travelersbackpack.json'
+    add sourceSets.main, "mixins.${mod_id}.refmap.json"
+    config "mixins.${mod_id}.json"
 }
 
 sourceSets {
     main {
-        ext.refMap = "mixins.travelersbackpack.refmap.json"
+        ext.refMap = "mixins.${mod_id}.refmap.json"
     }
 }
 
-// Example for how to get properties into the manifest for reading at runtime.
 jar {
     manifest {
         attributes([
-                "Specification-Title"     : "Traveler's Backpack",
-                "Specification-Vendor"    : "Tiviacz",
+                "Specification-Title"     : "${mod_display_name}",
+                "Specification-Vendor"    : "${mod_authors}",
                 "Specification-Version"   : "1", // We are version 1 of ourselves
                 "Implementation-Title"    : project.name,
                 "Implementation-Version"  : project.jar.archiveVersion,
-                "Implementation-Vendor"   : "Tiviacz",
+                "Implementation-Vendor"   : "${mod_authors}",
                 "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-                "MixinConfigs": 'mixins.travelersbackpack.json'
+                "MixinConfigs": "mixins.${mod_id}.json"
         ])
     }
 }
 
-// Example configuration to allow publishing using the maven-publish plugin
-// This is the preferred method to reobfuscate your jar file
 jar.finalizedBy('reobfJar')
-// However if you are in a multi-project build, dev time needs unobfed jar files, so you can delay the obfuscation until publishing by doing
-// publish.dependsOn('reobfJar')
-
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            artifact jar
-        }
-    }
-    repositories {
-        maven {
-            url "file://${project.projectDir}/mcmodsrepo"
-        }
-    }
-}
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
