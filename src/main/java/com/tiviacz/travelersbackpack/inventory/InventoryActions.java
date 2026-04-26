@@ -59,7 +59,8 @@ public class InventoryActions {
                             }
 
                             tank.fill(wrapper, false);
-                            InventoryHelper.removeItem(upgrade.getFluidSlotsHandler(), slotIn, 1);
+                            stackIn.shrink(1);
+                            //InventoryHelper.removeItem(upgrade.getFluidSlotsHandler(), slotIn, 1);
                             if(!bottle.isEmpty()) {
                                 itemStackHandler.setStackInSlot(slotOut, bottle);
                             }
@@ -80,7 +81,8 @@ public class InventoryActions {
 
                 if(currentStackOut.isEmpty()) {
                     tank.drain(FluidConstants.BOTTLE, false);
-                    InventoryHelper.removeItem(upgrade.getFluidSlotsHandler(), slotIn, 1);
+                    stackIn.shrink(1);
+                    //InventoryHelper.removeItem(upgrade.getFluidSlotsHandler(), slotIn, 1);
                     itemStackHandler.setStackInSlot(slotOut, stackOut);
 
                     playFluidSound(upgrade.getUpgradeManager().getWrapper().getBackpackOwner(), upgrade.getUpgradeManager().getWrapper().getPlayersUsing(), SoundEvents.BREWING_STAND_BREW, false);
