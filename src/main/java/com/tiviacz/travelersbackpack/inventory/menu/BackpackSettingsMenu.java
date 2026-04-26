@@ -10,10 +10,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.ContainerInput;
-import net.minecraft.world.inventory.ContainerLevelAccess;
-import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -120,18 +117,17 @@ public class BackpackSettingsMenu extends AbstractBackpackMenu {
 
     @Override
     public void removed(Player player) {
-        if(!player.level().isClientSide()) {
-            if(getWrapper().getScreenID() == Reference.BLOCK_ENTITY_SCREEN_ID) {
+        if(getWrapper().getScreenID() == Reference.BLOCK_ENTITY_SCREEN_ID) {
+            if(!player.level().isClientSide()) {
                 BlockPos pos = getWrapper().getBackpackPos();
                 if(pos != null && player.level().getBlockEntity(pos) instanceof BackpackBlockEntity backpackBlockEntity) {
                     backpackBlockEntity.removeSettingsUser();
                 }
             }
         }
-        if(player.containerMenu instanceof BackpackSettingsMenu && player.level().isClientSide()) {
-            return;
+        if(player.containerMenu instanceof InventoryMenu || player.containerMenu instanceof BackpackSettingsMenu) {
+            this.wrapper.playersUsing.remove(player);
         }
-        this.wrapper.playersUsing.remove(player);
         super.removed(player);
     }
 

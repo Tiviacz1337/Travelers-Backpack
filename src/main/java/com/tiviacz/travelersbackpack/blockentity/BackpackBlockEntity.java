@@ -355,6 +355,18 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Re
         }
     }
 
+    @Override
+    public boolean shouldCloseCurrentScreen() {
+        if(this.wrapper == BackpackWrapper.DUMMY) {
+            return true;
+        } else {
+            if(!getWrapper().getPlayersUsing().isEmpty()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public static ModScreenHandlerTypes.SettingsScreenData saveSettingsExtraData(BlockPos pos) {
         return new ModScreenHandlerTypes.SettingsScreenData(true, Reference.BLOCK_ENTITY_SCREEN_ID, pos, -1);
     }
@@ -365,6 +377,11 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Re
 
     private record ExtendedScreen<D>(MenuProvider containerSupplier,
                                      D screenOpeningData) implements ExtendedMenuProvider<D> {
+        @Override
+        public boolean shouldCloseCurrentScreen() {
+            return containerSupplier.shouldCloseCurrentScreen();
+        }
+
         @Override
         public D getScreenOpeningData(ServerPlayer player) {
             return screenOpeningData;

@@ -16,10 +16,6 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 public record BackpackContainer(ItemStack stack, Player player, int screenID, int index) {
-    public BackpackContainer(ItemStack stack, Player player, int screenID) {
-        this(stack, player, screenID, -1);
-    }
-
     public static ModScreenHandlerTypes.ItemScreenData saveExtraData(@Nullable Player target, int screenID) {
         return new ModScreenHandlerTypes.ItemScreenData(screenID, target == null ? -1 : target.getId());
     }
@@ -58,6 +54,11 @@ public record BackpackContainer(ItemStack stack, Player player, int screenID, in
     public static void openBackpack(ServerPlayer serverPlayerEntity, ItemStack stack, int screenID, int index) {
         if(!serverPlayerEntity.level().isClientSide()) {
             serverPlayerEntity.openMenu(new ExtendedMenuProvider<ModScreenHandlerTypes.ItemScreenData>() {
+                @Override
+                public boolean shouldCloseCurrentScreen() {
+                    return false;
+                }
+
                 @Override
                 public Component getDisplayName() {
                     return Component.translatable("screen.travelersbackpack.item");
