@@ -42,7 +42,6 @@ import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.fabricmc.fabric.api.recipe.v1.sync.RecipeSynchronization;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
-import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
@@ -64,7 +63,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackType;
-import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.entity.LivingEntity;
@@ -76,7 +74,6 @@ import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
 import java.util.List;
 
 @Environment(EnvType.CLIENT)
@@ -122,7 +119,7 @@ public class TravelersBackpackClient implements ClientModInitializer {
 
         //Polymorph Integration
         //if(TravelersBackpack.polymorphLoaded) PolymorphCompat.registerWidget();
-        //if(TravelersBackpack.trashSlotLoaded) TrashSlotCompat.register();
+        if(TravelersBackpack.trashSlotLoaded) TrashSlotCompat.register();
 
         //Backpack Model Deserializer
         UnbakedModelDeserializer.register(Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "backpack"), BackpackDynamicModel.Loader.INSTANCE);
@@ -135,24 +132,6 @@ public class TravelersBackpackClient implements ClientModInitializer {
 
         //Load Supporter Star Model
         ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(StarModelReloadListener.INSTANCE);
-
-        if(TravelersBackpack.trashSlotLoaded) {
-            ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(new SimpleSynchronousResourceReloadListener() {
-                @Override
-                public void onResourceManagerReload(ResourceManager resourceManager) {
-                    TrashSlotCompat.register();
-                }
-
-                public Collection<Identifier> getFabricDependencies() {
-                    return List.of(Identifier.fromNamespaceAndPath("trashslot", "container_layouts"));
-                }
-
-                @Override
-                public Identifier getFabricId() {
-                    return Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "client_resource_reload");
-                }
-            });
-        }
 
         //Screen Handlers
         ScreenRenderHandler.registerScreenEvents();

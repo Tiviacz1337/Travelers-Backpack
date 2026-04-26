@@ -65,7 +65,7 @@ dependencies {
 	//modApi("net.blay09.mods:kuma-api-fabric:21.10.5+1.21.10")
 
 	//Trash Slot
-	implementation("maven.modrinth:trashslot:AhKl6yxJ")
+	implementation("maven.modrinth:trashslot:QRkC87Rb")
 	implementation("maven.modrinth:balm:CXPaGqRl")
 
 	//ModMenu
@@ -75,7 +75,7 @@ dependencies {
 	compileOnly("maven.modrinth:vinurl:AinwJJKy")
 
 	//Trinkets
-	implementation "maven.modrinth:trinkets-updated:up7hvrTJ" //Not Updated
+	implementation "maven.modrinth:trinkets-updated:ObfwZi0X"
 
 	//Accessories
 	//compileOnly("io.wispforest:accessories-fabric:${project.accessories_version}")

@@ -39,8 +39,7 @@ public class BackpackLayout implements TrashContainerLayout {
     }
 
     private static TrashContainerLayout getDefaultLayout() {
-        // TODO Will be available as TrashSlotAPI.getDefaultLayout() in next TrashSlot version
-        return TrashSlotAPI.getLayout(Identifier.fromNamespaceAndPath("trashslot", "default"));
+        return TrashSlotAPI.getDefaultLayout();
     }
 
     @Override
@@ -84,12 +83,7 @@ public class BackpackLayout implements TrashContainerLayout {
                 }
             }
         }
-
-        // TODO Have to manually restrict getDefaultLayout().getBounds() call to only this ID for now due to TrashSlot bug
-        if(DEFAULT_RECT_ID.equals(identifier)) {
-            return getDefaultLayout().getBounds(context, identifier);
-        }
-        return Optional.empty();
+        return getDefaultLayout().getBounds(context, identifier);
     }
 
     @Override
