@@ -63,7 +63,6 @@ repositories {
 	}
 
 	maven { url "https://api.modrinth.com/maven" }
-	maven { url "https://server.bbkr.space/artifactory/libs-release" }  // LibGUI
 	maven { url "https://mvn.devos.one/releases/" } // Porting Lib
 
 	maven {
