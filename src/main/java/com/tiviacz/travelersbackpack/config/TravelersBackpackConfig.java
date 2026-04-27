@@ -564,13 +564,15 @@ public class TravelersBackpackConfig {
             }
         }
 
-        public void loadEntityTypesFromConfig(List<? extends String> configList, List<EntityType> targetList) {
+        public void loadEntityTypesFromConfig(List<EntityType> targetList, List<? extends String>... configList) {
             targetList.clear();
-            for(String registryName : configList) {
-                ResourceLocation res = ResourceLocation.tryParse(registryName);
+            for(List<? extends String> list : configList) {
+                for(String registryName : list) {
+                    ResourceLocation res = ResourceLocation.tryParse(registryName);
 
-                if(BuiltInRegistries.ENTITY_TYPE.containsKey(res)) {
-                    targetList.add(BuiltInRegistries.ENTITY_TYPE.get(res));
+                    if(BuiltInRegistries.ENTITY_TYPE.containsKey(res)) {
+                        targetList.add(BuiltInRegistries.ENTITY_TYPE.get(res));
+                    }
                 }
             }
         }
@@ -651,8 +653,7 @@ public class TravelersBackpackConfig {
             loadItemsFromConfig(TravelersBackpackConfig.SERVER.backpackAbilities.allowedAbilities.get(), com.tiviacz.travelersbackpack.common.BackpackAbilities.ALLOWED_ABILITIES);
 
             //Entities
-            loadEntityTypesFromConfig(TravelersBackpackConfig.SERVER.world.possibleOverworldEntityTypes.get(), Reference.ALLOWED_TYPE_ENTRIES);
-            loadEntityTypesFromConfig(TravelersBackpackConfig.SERVER.world.possibleNetherEntityTypes.get(), Reference.ALLOWED_TYPE_ENTRIES);
+            loadEntityTypesFromConfig(Reference.ALLOWED_TYPE_ENTRIES, TravelersBackpackConfig.SERVER.world.possibleOverworldEntityTypes.get(), TravelersBackpackConfig.SERVER.world.possibleNetherEntityTypes.get());
 
             //Backpack Effects
             loadBackpackEffectsFromConfig(TravelersBackpackConfig.SERVER.backpackAbilities.backpackEffects.get(), com.tiviacz.travelersbackpack.common.BackpackAbilities.BACKPACK_EFFECTS);
