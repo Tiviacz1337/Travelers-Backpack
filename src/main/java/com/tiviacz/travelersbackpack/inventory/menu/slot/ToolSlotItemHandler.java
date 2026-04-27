@@ -56,6 +56,10 @@ public class ToolSlotItemHandler extends SlotItemHandler {
             }
         }
 
+        if(stack.getMaxStackSize() == 1) {
+            return true; //Accept all possible tools
+        }
+
         //Vanilla tools
         return stack.getItem() instanceof TieredItem ||
                 stack.getItem() instanceof HoeItem ||
