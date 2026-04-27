@@ -24,33 +24,33 @@ public class ItemFluidTankWrapper implements ResourceHandler<FluidResource> {
     @Override
     public FluidResource getResource(int index) {
         if(index == 0) {
-            return upgrade.getLeftTank().getResource(index);
+            return upgrade.getLeftTank().getResource(0);
         }
-        return upgrade.getRightTank().getResource(index);
+        return upgrade.getRightTank().getResource(0);
     }
 
     @Override
     public long getAmountAsLong(int index) {
         if(index == 0) {
-            return upgrade.getLeftTank().getAmountAsLong(index);
+            return upgrade.getLeftTank().getAmountAsLong(0);
         }
-        return upgrade.getRightTank().getAmountAsLong(index);
+        return upgrade.getRightTank().getAmountAsLong(0);
     }
 
     @Override
     public long getCapacityAsLong(int index, FluidResource resource) {
         if(index == 0) {
-            return upgrade.getLeftTank().getCapacityAsLong(index, resource);
+            return upgrade.getLeftTank().getCapacityAsLong(0, resource);
         }
-        return upgrade.getRightTank().getCapacityAsLong(index, resource);
+        return upgrade.getRightTank().getCapacityAsLong(0, resource);
     }
 
     @Override
     public boolean isValid(int index, FluidResource resource) {
         if(index == 0) {
-            return upgrade.getLeftTank().isValid(index, resource);
+            return upgrade.getLeftTank().isValid(0, resource);
         }
-        return upgrade.getRightTank().isValid(index, resource);
+        return upgrade.getRightTank().isValid(0, resource);
     }
 
     @Override
@@ -59,12 +59,12 @@ public class ItemFluidTankWrapper implements ResourceHandler<FluidResource> {
             return 0;
         }
         try(var tx = Transaction.open(transaction)) {
-            int moved = upgrade.getLeftTank().insert(index, resource, amount, tx);
+            int moved = upgrade.getLeftTank().insert(0, resource, amount, tx);
             if(moved > 0) {
                 tx.commit();
                 return moved;
             } else {
-                moved = upgrade.getRightTank().insert(index, resource, amount, tx);
+                moved = upgrade.getRightTank().insert(0, resource, amount, tx);
                 if(moved > 0) {
                     tx.commit();
                     return moved;
@@ -80,12 +80,12 @@ public class ItemFluidTankWrapper implements ResourceHandler<FluidResource> {
             return 0;
         }
         try(var tx = Transaction.open(transaction)) {
-            int moved = upgrade.getLeftTank().extract(index, resource, amount, tx);
+            int moved = upgrade.getLeftTank().extract(0, resource, amount, tx);
             if(moved > 0) {
                 tx.commit();
                 return moved;
             } else {
-                moved = upgrade.getRightTank().extract(index, resource, amount, tx);
+                moved = upgrade.getRightTank().extract(0, resource, amount, tx);
                 if(moved > 0) {
                     tx.commit();
                     return moved;
