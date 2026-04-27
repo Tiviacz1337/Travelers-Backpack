@@ -25,7 +25,7 @@ public class TankActions {
             BackpackWrapper wrapper = menu.getWrapper();
             FluidTank tank = leftTank ? wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).get().getLeftTank() : wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).get().getRightTank();
             ItemStack carried = menu.getCarried();
-            if(FluidUtil.getFluidContained(carried).isPresent() && carried.getCount() == 1) {
+            if(FluidUtil.getFluidContained(carried).isPresent() && carried.getCount() == 1) { //#TODO skip potion
                 //Fluid sound
                 SoundEvent fluidSound = tank.isEmpty() ? SoundEvents.BUCKET_EMPTY : tank.getFluid().getFluid().getFluidType().getSound(tank.getFluid(), SoundActions.BUCKET_EMPTY);
 
