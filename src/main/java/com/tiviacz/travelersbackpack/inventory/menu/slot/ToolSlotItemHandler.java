@@ -61,6 +61,6 @@ public class ToolSlotItemHandler extends ResourceHandlerSlot {
                 stack.getItem() instanceof ShieldItem) {
             return true;
         }
-        return stack.has(DataComponents.TOOL) || stack.has(DataComponents.WEAPON);
+        return stack.has(DataComponents.TOOL) || stack.has(DataComponents.WEAPON) || stack.getMaxStackSize() == 1;
     }
 }

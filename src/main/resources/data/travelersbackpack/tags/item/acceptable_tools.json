@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "minecraft:diamond_pickaxe"
+    "minecraft:diamond_pickaxe",
+    "#c:tools"
   ]
 }
