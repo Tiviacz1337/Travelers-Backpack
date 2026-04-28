@@ -57,7 +57,7 @@ public class CraftingUpgrade extends UpgradeBase<CraftingUpgrade> implements IMo
         if(NbtHelper.has(removedStack, ModDataHelper.BACKPACK_CONTAINER)) {
             NonNullList<ItemStack> retrievedContents = NbtHelper.getOrDefault(removedStack, ModDataHelper.BACKPACK_CONTAINER, NonNullList.withSize(9, ItemStack.EMPTY));
             ItemStackHandler tempHandler = new ItemStackHandler(retrievedContents);
-            BackpackBaseMenu.checkHandlerAndPlaySound(tempHandler, player, tempHandler.getSlots());
+            BackpackBaseMenu.clearSlotsAndPlaySound(player, tempHandler, tempHandler.getSlots(), true);
 
             //Save
             NbtHelper.set(removedStack, ModDataHelper.BACKPACK_CONTAINER, tempHandler);

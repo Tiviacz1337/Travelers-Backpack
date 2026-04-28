@@ -50,7 +50,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.SoundActions;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -59,7 +58,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class HoseItem extends Item {
     public HoseItem(Properties properties) {
@@ -80,272 +78,6 @@ public class HoseItem extends Item {
         return 24;
     }
 
-   /* @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-        ItemStack stack = player.getItemInHand(hand);
-        if(!stack.hasTag()) {
-            this.setCompoundTag(stack);
-        }
-        if(CapabilityUtils.isWearingBackpack(player) && hand == InteractionHand.MAIN_HAND) {
-            BackpackWrapper wrapper = CapabilityUtils.getBackpackWrapper(player, CapabilityUtils.UPGRADES_ONLY.get());
-            if(!wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).isPresent()) {
-                return InteractionResultHolder.pass(stack);
-            }
-            FluidTank tank = this.getSelectedFluidTank(stack, wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).get());
-
-            if(getHoseMode(stack) == SUCK_MODE) {
-                //Pick fluid from block
-                BlockHitResult result = getPlayerPOVHitResult(level, player, ClipContext.Fluid.SOURCE_ONLY);
-                BlockPos blockpos = result.getBlockPos();
-                Direction direction1 = result.getDirection();
-                BlockPos blockpos1 = blockpos.relative(result.getDirection());
-
-                if(level.mayInteract(player, blockpos) && player.mayUseItemAt(blockpos1, direction1, stack)) {
-                    BlockState blockstate1 = level.getBlockState(blockpos);
-                    if(blockstate1.getBlock() instanceof BucketPickup pickup) {
-                        Fluid fluid = blockstate1.getFluidState().getType();
-                        if(fluid != Fluids.EMPTY) {
-                            FluidStack fluidStack = new FluidStack(fluid, Reference.BUCKET);
-                            int tankAmount = tank.isEmpty() ? 0 : tank.getFluidAmount();
-                            boolean canFill = tank.isEmpty() || FluidStack.areFluidStackTagsEqual(tank.getFluid(), fluidStack);
-                            if(canFill && (fluidStack.getAmount() + tankAmount <= tank.getCapacity())) {
-                                ItemStack actualFluid = pickup.pickupBlock(level, blockpos, blockstate1);
-                                if(!actualFluid.isEmpty()) {
-                                    SoundEvent bucketFill = Optional.ofNullable(fluidStack.getFluid().getFluidType().getSound(SoundActions.BUCKET_FILL)).orElse(fluid.is(FluidTags.LAVA) ? SoundEvents.BUCKET_FILL_LAVA : SoundEvents.BUCKET_FILL);
-                                    level.playSound(player, result.getBlockPos(), bucketFill, SoundSource.BLOCKS, 1.0F, 1.0F);
-                                    // level.playSound(player, result.getBlockPos(), fluidStack.getFluid().getFluidType().getSound(SoundActions.BUCKET_FILL) == null ? (fluid.is(FluidTags.LAVA) ? SoundEvents.BUCKET_FILL_LAVA : SoundEvents.BUCKET_FILL) : fluidStack.getFluid().getFluidType().getSound(SoundActions.BUCKET_FILL), SoundSource.BLOCKS, 1.0F, 1.0F);
-                                    tank.fill(new FluidStack(fluid, Reference.BUCKET), IFluidHandler.FluidAction.EXECUTE);
-                                    triggerAdvancement(player, ActionTypeTrigger.HOSE_SUCK);
-                                    return InteractionResultHolder.success(stack);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            if(getHoseMode(stack) == SPILL_MODE) {
-                //Try to splash potion in the world
-                if(tank.getFluid().getFluid() == ModFluids.POTION_FLUID.get()) {
-                    if(tank.getFluid().getOrCreateTag().contains("Splash")) {
-                        if(tank.getFluidAmount() >= Reference.POTION) {
-                            ItemStack potionStack = FluidStackHelper.getSplashItemStackFromFluidStack(tank.getFluid());
-                            int drainAmount = ServerActions.throwPotion(level, player, potionStack, true);
-                            tank.drain(drainAmount, IFluidHandler.FluidAction.EXECUTE);
-                            triggerAdvancement(player, ActionTypeTrigger.HOSE_SPILL_POTION);
-                            return InteractionResultHolder.success(stack);
-                        }
-                    }
-                    if(tank.getFluid().getOrCreateTag().contains("Lingering")) {
-                        if(tank.getFluidAmount() >= Reference.POTION) {
-                            ItemStack potionStack = FluidStackHelper.getLingeringItemStackFromFluidStack(tank.getFluid());
-                            int drainAmount = ServerActions.throwPotion(level, player, potionStack, false);
-                            tank.drain(drainAmount, IFluidHandler.FluidAction.EXECUTE);
-                            triggerAdvancement(player, ActionTypeTrigger.HOSE_SPILL_POTION);
-                            return InteractionResultHolder.success(stack);
-                        }
-                    }
-                }
-            }
-
-            if(getHoseMode(stack) == DRINK_MODE) {
-                if(!tank.isEmpty()) {
-                    if(EffectFluidRegistry.hasExecutableEffects(tank.getFluid(), level, player)) {
-                        player.startUsingItem(hand);
-                        return InteractionResultHolder.success(stack);
-                    }
-                }
-            }
-        }
-        return InteractionResultHolder.pass(stack);
-    } */
-
-  /*  @Override
-    public InteractionResult useOn(UseOnContext context) {
-        Player player = context.getPlayer();
-        Level level = context.getLevel();
-        BlockPos pos = context.getClickedPos();
-        Direction direction = context.getClickedFace();
-        ItemStack stack = player.getItemInHand(context.getHand());
-        if(!stack.hasTag()) {
-            this.setCompoundTag(stack);
-        }
-        if(CapabilityUtils.isWearingBackpack(player) && context.getHand() == InteractionHand.MAIN_HAND) {
-            LazyOptional<IFluidHandler> fluidHandler = FluidUtil.getFluidHandler(level, pos, direction);
-            BackpackWrapper wrapper = CapabilityUtils.getBackpackWrapper(player, CapabilityUtils.UPGRADES_ONLY.get());
-            if(!wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).isPresent()) {
-                return InteractionResult.PASS;
-            }
-            FluidTank tank = this.getSelectedFluidTank(stack, wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).get());
-
-            if(getHoseMode(stack) == SUCK_MODE) {
-                //Transfer fluid from fluid handler
-                if(fluidHandler.isPresent()) {
-                    if(!fluidHandler.map(h -> h.getFluidInTank(0).isEmpty()).get()) {
-                        FluidStack fluidStack = FluidUtil.tryFluidTransfer(tank, fluidHandler.orElse(null), Reference.BUCKET, true);
-                        if(!fluidStack.isEmpty()) {
-                            SoundEvent bucketFill = Optional.ofNullable(fluidStack.getFluid().getFluidType().getSound(SoundActions.BUCKET_FILL)).orElse(SoundEvents.BUCKET_FILL);
-                            level.playSound(player, pos, bucketFill, SoundSource.BLOCKS, 1.0F, 1.0F);
-                            //level.playSound(player, pos, fluidStack.getFluid().getFluidType().getSound(SoundActions.BUCKET_FILL), SoundSource.BLOCKS, 1.0F, 1.0F);
-                            triggerAdvancement(player, ActionTypeTrigger.HOSE_SUCK);
-                            return InteractionResult.SUCCESS;
-                        }
-                    }
-                }
-                //Pick fluid from block
-                BlockHitResult result = getPlayerPOVHitResult(level, player, ClipContext.Fluid.SOURCE_ONLY);
-                BlockPos blockpos = result.getBlockPos();
-                Direction direction1 = result.getDirection();
-                BlockPos blockpos1 = blockpos.relative(direction);
-
-                if(level.mayInteract(player, blockpos) && player.mayUseItemAt(blockpos1, direction1, stack)) {
-                    BlockState blockstate1 = level.getBlockState(blockpos);
-                    if(blockstate1.getBlock() instanceof BucketPickup pickup) {
-                        Fluid fluid = blockstate1.getFluidState().getType();
-                        if(fluid != Fluids.EMPTY) {
-                            FluidStack fluidStack = new FluidStack(fluid, Reference.BUCKET);
-                            int tankAmount = tank.isEmpty() ? 0 : tank.getFluidAmount();
-                            boolean canFill = tank.isEmpty() || FluidStack.areFluidStackTagsEqual(tank.getFluid(), fluidStack);
-                            if(canFill && (fluidStack.getAmount() + tankAmount <= tank.getCapacity())) {
-                                ItemStack actualFluid = pickup.pickupBlock(level, blockpos, blockstate1);
-                                if(!actualFluid.isEmpty()) {
-                                    SoundEvent bucketFill = Optional.ofNullable(fluidStack.getFluid().getFluidType().getSound(SoundActions.BUCKET_FILL)).orElse(fluid.is(FluidTags.LAVA) ? SoundEvents.BUCKET_FILL_LAVA : SoundEvents.BUCKET_FILL);
-                                    level.playSound(player, result.getBlockPos(), bucketFill, SoundSource.BLOCKS, 1.0F, 1.0F);
-                                    // level.playSound(player, result.getBlockPos(), fluidStack.getFluid().getFluidType().getSound(SoundActions.BUCKET_FILL) == null ? (fluid.is(FluidTags.LAVA) ? SoundEvents.BUCKET_FILL_LAVA : SoundEvents.BUCKET_FILL) : fluidStack.getFluid().getFluidType().getSound(SoundActions.BUCKET_FILL), SoundSource.BLOCKS, 1.0F, 1.0F);
-                                    tank.fill(new FluidStack(fluid, Reference.BUCKET), IFluidHandler.FluidAction.EXECUTE);
-                                    triggerAdvancement(player, ActionTypeTrigger.HOSE_SUCK);
-                                    return InteractionResult.SUCCESS;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            if(getHoseMode(stack) == SPILL_MODE) {
-                //Transfer fluid to fluid handler
-                if(fluidHandler.isPresent() && !tank.isEmpty()) {
-                    FluidStack fluidStack = FluidUtil.tryFluidTransfer(fluidHandler.orElse(null), tank, Reference.BUCKET, true);
-                    if(!fluidStack.isEmpty()) {
-                        SoundEvent bucketFill = Optional.ofNullable(fluidStack.getFluid().getFluidType().getSound(SoundActions.BUCKET_FILL)).orElse(SoundEvents.BUCKET_FILL);
-                        level.playSound(player, pos, bucketFill, SoundSource.BLOCKS, 1.0F, 1.0F);
-                        //level.playSound(player, pos, fluidStack.getFluid().getFluidType().getSound(SoundActions.BUCKET_FILL), SoundSource.BLOCKS, 1.0F, 1.0F);
-                        triggerAdvancement(player, ActionTypeTrigger.HOSE_SPILL);
-                        return InteractionResult.SUCCESS;
-                    }
-                }
-
-                //Try to splash potion in the world
-                if(tank.getFluid().getFluid() == ModFluids.POTION_FLUID.get()) {
-                    if(tank.getFluid().getOrCreateTag().contains("Splash")) {
-                        if(tank.getFluidAmount() >= Reference.POTION) {
-                            ItemStack potionStack = FluidStackHelper.getSplashItemStackFromFluidStack(tank.getFluid());
-                            int drainAmount = ServerActions.throwPotion(level, player, potionStack, true);
-                            tank.drain(drainAmount, IFluidHandler.FluidAction.EXECUTE);
-                            triggerAdvancement(player, ActionTypeTrigger.HOSE_SPILL_POTION);
-                            return InteractionResult.SUCCESS;
-                        }
-                    }
-                    if(tank.getFluid().getOrCreateTag().contains("Lingering")) {
-                        if(tank.getFluidAmount() >= Reference.POTION) {
-                            ItemStack potionStack = FluidStackHelper.getLingeringItemStackFromFluidStack(tank.getFluid());
-                            int drainAmount = ServerActions.throwPotion(level, player, potionStack, false);
-                            tank.drain(drainAmount, IFluidHandler.FluidAction.EXECUTE);
-                            triggerAdvancement(player, ActionTypeTrigger.HOSE_SPILL_POTION);
-                            return InteractionResult.SUCCESS;
-                        }
-                    }
-                }
-
-                //Try to put fluid in the world
-                if(!tank.isEmpty()) {
-                    BlockState blockState = level.getBlockState(pos);
-                    Block block = blockState.getBlock();
-                    Fluid fluid = tank.getFluid().getFluid();
-                    if(tank.getFluidAmount() >= Reference.BUCKET && fluid instanceof FlowingFluid flowingFluid) {
-                        if(block instanceof LiquidBlockContainer container && container.canPlaceLiquid(level, pos, blockState, fluid)) {
-                            container.placeLiquid(level, pos, blockState, flowingFluid.getSource(false));
-                            SoundEvent bucketEmpty = Optional.ofNullable(fluid.getFluidType().getSound(SoundActions.BUCKET_EMPTY)).orElse(SoundEvents.BUCKET_EMPTY);
-                            level.playSound(player, pos, bucketEmpty, SoundSource.BLOCKS, 1.0F, 1.0F);
-                            //level.playSound(player, pos, fluid.getFluidType().getSound(SoundActions.BUCKET_EMPTY), SoundSource.BLOCKS, 1.0F, 1.0F);
-                            tank.drain(Reference.BUCKET, IFluidHandler.FluidAction.EXECUTE);
-                            triggerAdvancement(player, ActionTypeTrigger.HOSE_SPILL);
-                            return InteractionResult.SUCCESS;
-                        }
-                    }
-                    int x = pos.getX();
-                    int y = pos.getY();
-                    int z = pos.getZ();
-                    if(!level.getBlockState(pos).canBeReplaced(fluid)) {
-                        switch(context.getClickedFace()) {
-                            case WEST:
-                                --x;
-                                break;
-                            case EAST:
-                                ++x;
-                                break;
-                            case NORTH:
-                                --z;
-                                break;
-                            case SOUTH:
-                                ++z;
-                                break;
-                            case UP:
-                                ++y;
-                                break;
-                            case DOWN:
-                                --y;
-                                break;
-                            default:
-                                break;
-                        }
-                    }
-
-                    BlockPos newPos = new BlockPos(x, y, z);
-                    FluidStack fluidStack = tank.getFluid();
-                    if(level.getBlockState(newPos).canBeReplaced(fluid) && fluid.getFluidType().canBePlacedInLevel(level, newPos, fluidStack)) {
-                        boolean flag = !level.getBlockState(newPos).isSolid();
-                        if(level.dimensionType().ultraWarm() && fluidStack.getFluid().is(FluidTags.WATER)) {
-                            tank.drain(Reference.BUCKET, IFluidHandler.FluidAction.EXECUTE);
-                            level.playSound(null, newPos, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 0.5F, 2.6F + (level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.8F);
-                            for(int i = 0; i < 3; ++i) {
-                                double d0 = newPos.getX() + level.getRandom().nextDouble();
-                                double d1 = newPos.getY() + level.getRandom().nextDouble() * 0.5D + 0.5D;
-                                double d2 = newPos.getZ() + level.getRandom().nextDouble();
-                                level.addParticle(ParticleTypes.LARGE_SMOKE, d0, d1, d2, 0.0D, 0.0D, 0.0D);
-                            }
-                            triggerAdvancement(player, ActionTypeTrigger.HOSE_SPILL);
-                            return InteractionResult.SUCCESS;
-                        }
-                        if(fluidStack.getAmount() >= Reference.BUCKET) {
-                            if(!level.isClientSide && flag && !level.getBlockState(newPos).liquid()) {
-                                level.destroyBlock(newPos, false);
-                            }
-
-                            if(level.setBlock(newPos, fluidStack.getFluid().defaultFluidState().createLegacyBlock(), 3)) {
-                                SoundEvent bucketEmpty = Optional.ofNullable(fluidStack.getFluid().getFluidType().getSound(SoundActions.BUCKET_EMPTY)).orElse(SoundEvents.BUCKET_EMPTY);
-                                level.playSound(player, newPos, bucketEmpty, SoundSource.BLOCKS, 1.0F, 1.0F);
-                                //level.playSound(player, newPos, fluidStack.getFluid().getFluidType().getSound(SoundActions.BUCKET_EMPTY), SoundSource.BLOCKS, 1.0F, 1.0F);
-                                tank.drain(Reference.BUCKET, IFluidHandler.FluidAction.EXECUTE);
-                                level.updateNeighborsAt(newPos, fluidStack.getFluid().defaultFluidState().createLegacyBlock().getBlock());
-                            }
-                            triggerAdvancement(player, ActionTypeTrigger.HOSE_SPILL);
-                            return InteractionResult.SUCCESS;
-                        }
-                    }
-                }
-            }
-            if(getHoseMode(stack) == DRINK_MODE) {
-                if(!tank.isEmpty()) {
-                    if(EffectFluidRegistry.hasExecutableEffects(tank.getFluid(), level, player)) {
-                        player.startUsingItem(context.getHand());
-                        return InteractionResult.SUCCESS;
-                    }
-                }
-            }
-        }
-        return InteractionResult.FAIL;
-    }*/
-
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
@@ -355,7 +87,7 @@ public class HoseItem extends Item {
                 return InteractionResultHolder.pass(stack);
             }
             FluidTank tank = this.getSelectedFluidTank(stack, wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).get());
-            LazyOptional<IFluidHandler> fluidHandler = LazyOptional.empty();
+            IFluidHandler fluidHandler = null;
 
             int hoseMode = getHoseMode(stack);
             BlockHitResult hitResult = getPlayerPOVHitResult(level, player, hoseMode == SUCK_MODE ? ClipContext.Fluid.SOURCE_ONLY : ClipContext.Fluid.NONE);
@@ -366,25 +98,21 @@ public class HoseItem extends Item {
                 BlockPos directionOffsetPos = pos.relative(direction);
 
                 //Check for fluid storage like in-world tanks
-                fluidHandler = FluidUtil.getFluidHandler(level, pos, direction);
+                fluidHandler = FluidUtil.getFluidHandler(level, pos, direction).orElse(null);
 
                 if(hoseMode == SUCK_MODE) {
                     //Transfer fluid from fluid handler
-                    AtomicBoolean success = new AtomicBoolean(false);
-                    fluidHandler.ifPresent(handler -> {
-                        if(!handler.getFluidInTank(0).isEmpty()) {
-                            FluidStack result = FluidUtil.tryFluidTransfer(tank, handler, handler.getFluidInTank(0).getAmount(), false).copy();
+                    if(fluidHandler != null) {
+                        if(!fluidHandler.getFluidInTank(0).isEmpty()) {
+                            FluidStack result = FluidUtil.tryFluidTransfer(tank, fluidHandler, fluidHandler.getFluidInTank(0).getAmount(), false).copy();
                             if(result != null && !result.isEmpty()) {
-                                FluidUtil.tryFluidTransfer(tank, handler, handler.getFluidInTank(0).getAmount(), true);
+                                FluidUtil.tryFluidTransfer(tank, fluidHandler, fluidHandler.getFluidInTank(0).getAmount(), true);
                                 SoundEvent bucketFill = Optional.ofNullable(result.getFluid().getFluidType().getSound(SoundActions.BUCKET_FILL)).orElse(SoundEvents.BUCKET_FILL);
                                 level.playSound(player, pos, bucketFill, SoundSource.BLOCKS, 1.0F, 1.0F);
                                 triggerAdvancement(player, ActionTypeTrigger.HOSE_SUCK);
-                                success.set(true);
+                                return InteractionResultHolder.success(stack);
                             }
                         }
-                    });
-                    if(success.get()) {
-                        return InteractionResultHolder.success(stack);
                     }
 
                     //Pick fluid from block
@@ -421,21 +149,17 @@ public class HoseItem extends Item {
                 }
                 if(hoseMode == SPILL_MODE) {
                     //Transfer fluid to fluid handler
-                    AtomicBoolean success = new AtomicBoolean(false);
-                    fluidHandler.ifPresent(handler -> {
+                    if(fluidHandler != null) {
                         if(!tank.isEmpty()) {
-                            FluidStack result = FluidUtil.tryFluidTransfer(handler, tank, tank.getFluidAmount(), false).copy();
+                            FluidStack result = FluidUtil.tryFluidTransfer(fluidHandler, tank, tank.getFluidAmount(), false).copy();
                             if(result != null && !result.isEmpty()) {
-                                FluidUtil.tryFluidTransfer(handler, tank, tank.getFluidAmount(), true);
+                                FluidUtil.tryFluidTransfer(fluidHandler, tank, tank.getFluidAmount(), true);
                                 SoundEvent bucketFill = Optional.ofNullable(result.getFluid().getFluidType().getSound(SoundActions.BUCKET_FILL)).orElse(SoundEvents.BUCKET_FILL);
                                 level.playSound(player, pos, bucketFill, SoundSource.BLOCKS, 1.0F, 1.0F);
                                 triggerAdvancement(player, ActionTypeTrigger.HOSE_SPILL);
-                                success.set(true);
+                                return InteractionResultHolder.success(stack);
                             }
                         }
-                    });
-                    if(success.get()) {
-                        return InteractionResultHolder.success(stack);
                     }
 
                     //Try to splash potion in the world
@@ -675,12 +399,6 @@ public class HoseItem extends Item {
             if(tank == 2) {
                 tooltipComponents.add(Component.translatable("item.travelersbackpack.hose.tank_right").withStyle(ChatFormatting.BLUE));
             }
-        }
-    }
-
-    public void setCompoundTag(ItemStack stack) {
-        if(!stack.getOrCreateTag().contains(ModDataHelper.HOSE_MODES)) {
-            NbtHelper.set(stack, ModDataHelper.HOSE_MODES, List.of(1, 1));
         }
     }
 }

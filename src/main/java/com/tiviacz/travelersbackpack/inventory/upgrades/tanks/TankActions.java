@@ -25,7 +25,9 @@ public class TankActions {
             BackpackWrapper wrapper = menu.getWrapper();
             FluidTank tank = leftTank ? wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).get().getLeftTank() : wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).get().getRightTank();
             ItemStack carried = menu.getCarried();
-            if(FluidUtil.getFluidContained(carried).isPresent() && carried.getCount() == 1) { //#TODO skip potion
+            //Forge - special case for Potions
+            boolean isPotion = carried.getItem() instanceof PotionItem || carried.getItem() == Items.GLASS_BOTTLE;
+            if(FluidUtil.getFluidContained(carried).isPresent() && carried.getCount() == 1 && !isPotion) {
                 //Fluid sound
                 SoundEvent fluidSound = tank.isEmpty() ? SoundEvents.BUCKET_EMPTY : tank.getFluid().getFluid().getFluidType().getSound(tank.getFluid(), SoundActions.BUCKET_EMPTY);
 
@@ -36,8 +38,10 @@ public class TankActions {
                         InventoryActions.playFluidSound(wrapper.getBackpackOwner(), wrapper.getPlayersUsing(), fluidSound, false);
                     }
                     menu.setCarried(result.getResult());
+                    return;
                 }
-            } else if(FluidUtil.getFluidHandler(carried).isPresent() && FluidUtil.getFluidContained(carried).isEmpty()) {
+            }
+            if(FluidUtil.getFluidHandler(carried).isPresent() && !isPotion) {
                 ItemStack carriedCopy = carried.copy();
                 int count = carriedCopy.getCount();
                 carriedCopy.setCount(count - 1);

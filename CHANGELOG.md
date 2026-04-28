@@ -2,6 +2,7 @@
 ✨ Tool slots now accept all unstackable items  
 🐛 Fixed duplication issue with pickup upgrade  
 🐛 Fixed issue that caused backpacks to not spawn on overworld entities  
+🐛 Fixed issues with Tanks Upgrade  
 📚 Added Indonesian translation - Thanks AbsolutUser!  
 
 ⭐ Want to receive **Supporter Star Badge** for a **lifetime**? - [visit my Ko-Fi page](https://ko-fi.com/tiviacz1337)!  
