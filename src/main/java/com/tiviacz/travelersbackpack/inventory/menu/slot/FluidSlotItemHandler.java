@@ -6,7 +6,6 @@ import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemStackHandler;
-import org.jetbrains.annotations.NotNull;
 
 public class FluidSlotItemHandler extends UpgradeSlotItemHandler<TanksUpgrade> {
     private final int index;
@@ -33,16 +32,20 @@ public class FluidSlotItemHandler extends UpgradeSlotItemHandler<TanksUpgrade> {
             InventoryActions.transferContainerTank(upgrade, itemStack, index == 0 ? upgrade.getLeftTank() : upgrade.getRightTank(), index);
         }
         super.setByPlayer(itemStack);
-    }
+        /*if(index == 1 || index == 3) {
+            int inputIndex = index - 1;
+            ItemStack cachedStack = getItemHandler().getStackInSlot(inputIndex);
+            ItemStack inputStack = cachedStack.copy();
 
-    //Fix for buckets bug
-   /* @Override
-    public void setByPlayer(ItemStack stack) {
-        super.set(stack);
-        if(index == 0 || index == 2) {
-            InventoryActions.transferContainerTank(upgrade, index == 0 ? upgrade.getLeftTank() : upgrade.getRightTank(), index);
-        }
-    }*/
+            if(!inputStack.isEmpty()) {
+                InventoryActions.transferContainerTank(upgrade, inputStack, inputIndex == 0 ? upgrade.getLeftTank() : upgrade.getRightTank(), inputIndex);
+
+                if(!ItemStack.isSameItemSameTags(cachedStack, inputStack) || cachedStack.getCount() != inputStack.getCount()) {
+                    upgrade.getFluidSlotsHandler().setStackInSlot(inputIndex, inputStack);
+                }
+            }
+        }*/
+    }
 
     @Override
     public boolean mayPickup(Player playerIn) {
