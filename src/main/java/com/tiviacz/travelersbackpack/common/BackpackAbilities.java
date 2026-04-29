@@ -19,7 +19,6 @@ import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;
 import com.tiviacz.travelersbackpack.util.BackpackDeathHelper;
 import com.tiviacz.travelersbackpack.util.CooldownHelper;
 import com.tiviacz.travelersbackpack.util.NbtHelper;
-import dev.architectury.event.events.common.TickEvent;
 import net.blay09.mods.balm.api.event.LivingDeathEvent;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
