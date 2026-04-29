@@ -19,13 +19,13 @@ public class ClientboundSendMessagePacket implements IPacket<ClientboundSendMess
         this.pos = pos;
     }
 
-    public static ClientboundSendMessagePacket decode(final FriendlyByteBuf buffer) {
-        final boolean drop = buffer.readBoolean();
-        final BlockPos pos = buffer.readBlockPos();
+    public static ClientboundSendMessagePacket decode(FriendlyByteBuf buffer) {
+        boolean drop = buffer.readBoolean();
+        BlockPos pos = buffer.readBlockPos();
         return new ClientboundSendMessagePacket(drop, pos);
     }
 
-    public void encode(final ClientboundSendMessagePacket message, final FriendlyByteBuf buffer) {
+    public void encode(ClientboundSendMessagePacket message, FriendlyByteBuf buffer) {
         buffer.writeBoolean(message.drop);
         buffer.writeBlockPos(message.pos);
     }

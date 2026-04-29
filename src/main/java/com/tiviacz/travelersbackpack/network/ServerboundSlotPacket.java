@@ -27,7 +27,7 @@ public class ServerboundSlotPacket implements IPacket<ServerboundSlotPacket> {
         this.slotsData = slotsData;
     }
 
-    public static ServerboundSlotPacket decode(final FriendlyByteBuf buffer) {
+    public static ServerboundSlotPacket decode(FriendlyByteBuf buffer) {
         int selectType = buffer.readInt();
         List<?> slotsData = new ArrayList<>();
         if(selectType == UNSORTABLES) {
@@ -39,7 +39,7 @@ public class ServerboundSlotPacket implements IPacket<ServerboundSlotPacket> {
         return new ServerboundSlotPacket(selectType, slotsData);
     }
 
-    public void encode(final ServerboundSlotPacket message, final FriendlyByteBuf buffer) {
+    public void encode(ServerboundSlotPacket message, FriendlyByteBuf buffer) {
         buffer.writeInt(message.selectType);
         List<?> slotsData = message.slotsData;
         if(message.selectType == UNSORTABLES) {

@@ -20,13 +20,13 @@ public class SupporterBadgePacket {
             this.isEnabledForPlayer = isEnabledForPlayer;
         }
 
-        public static Serverbound decode(final FriendlyByteBuf buffer) {
-            final boolean isEnabledForPlayer = buffer.readBoolean();
+        public static Serverbound decode(FriendlyByteBuf buffer) {
+            boolean isEnabledForPlayer = buffer.readBoolean();
 
             return new Serverbound(isEnabledForPlayer);
         }
 
-        public void encode(final Serverbound message, final FriendlyByteBuf buffer) {
+        public void encode(Serverbound message, FriendlyByteBuf buffer) {
             buffer.writeBoolean(message.isEnabledForPlayer);
         }
 
@@ -60,14 +60,14 @@ public class SupporterBadgePacket {
             this.playerName = playerName;
         }
 
-        public static Clientbound decode(final FriendlyByteBuf buffer) {
-            final boolean isEnabledForPlayer = buffer.readBoolean();
-            final String playerName = buffer.readUtf();
+        public static Clientbound decode(FriendlyByteBuf buffer) {
+            boolean isEnabledForPlayer = buffer.readBoolean();
+            String playerName = buffer.readUtf();
 
             return new Clientbound(isEnabledForPlayer, playerName);
         }
 
-        public void encode(final Clientbound message, final FriendlyByteBuf buffer) {
+        public void encode(Clientbound message, FriendlyByteBuf buffer) {
             buffer.writeBoolean(message.isEnabledForPlayer);
             buffer.writeUtf(message.playerName);
         }

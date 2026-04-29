@@ -15,12 +15,12 @@ import net.minecraft.world.item.Items;
 
 public record ServerboundRetrieveBackpackPacket(
         ItemStack backpackHolder) implements IPacket<ServerboundRetrieveBackpackPacket> {
-    public static ServerboundRetrieveBackpackPacket decode(final FriendlyByteBuf buffer) {
+    public static ServerboundRetrieveBackpackPacket decode(FriendlyByteBuf buffer) {
         ItemStack backpackHolder = buffer.readItem();
         return new ServerboundRetrieveBackpackPacket(backpackHolder);
     }
 
-    public void encode(final ServerboundRetrieveBackpackPacket message, final FriendlyByteBuf buffer) {
+    public void encode(ServerboundRetrieveBackpackPacket message, FriendlyByteBuf buffer) {
         buffer.writeItem(message.backpackHolder);
     }
 

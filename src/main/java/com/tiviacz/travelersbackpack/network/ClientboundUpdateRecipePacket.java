@@ -27,13 +27,13 @@ public class ClientboundUpdateRecipePacket implements IPacket<ClientboundUpdateR
         this.output = output;
     }
 
-    public static ClientboundUpdateRecipePacket decode(final FriendlyByteBuf buffer) {
+    public static ClientboundUpdateRecipePacket decode(FriendlyByteBuf buffer) {
         ResourceLocation recipeId = buffer.readResourceLocation();
         ItemStack output = buffer.readItem();
         return new ClientboundUpdateRecipePacket(recipeId, output);
     }
 
-    public void encode(final ClientboundUpdateRecipePacket message, final FriendlyByteBuf buffer) {
+    public void encode(ClientboundUpdateRecipePacket message, FriendlyByteBuf buffer) {
         buffer.writeResourceLocation(message.id);
         buffer.writeItem(message.output);
     }

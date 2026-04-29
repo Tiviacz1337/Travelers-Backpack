@@ -27,14 +27,14 @@ public class ServerboundFilterSettingsPacket implements IPacket<ServerboundFilte
         this.settings = settings;
     }
 
-    public static ServerboundFilterSettingsPacket decode(final FriendlyByteBuf buffer) {
-        final int slot = buffer.readInt();
-        final List<Integer> settings = buffer.readIntIdList().intStream().boxed().collect(Collectors.toList());
+    public static ServerboundFilterSettingsPacket decode(FriendlyByteBuf buffer) {
+        int slot = buffer.readInt();
+        List<Integer> settings = buffer.readIntIdList().intStream().boxed().collect(Collectors.toList());
 
         return new ServerboundFilterSettingsPacket(slot, settings);
     }
 
-    public void encode(final ServerboundFilterSettingsPacket message, final FriendlyByteBuf buffer) {
+    public void encode(ServerboundFilterSettingsPacket message, FriendlyByteBuf buffer) {
         buffer.writeInt(message.slot);
         buffer.writeIntIdList(new IntArrayList(message.settings.stream().mapToInt(Integer::intValue).toArray()));
     }

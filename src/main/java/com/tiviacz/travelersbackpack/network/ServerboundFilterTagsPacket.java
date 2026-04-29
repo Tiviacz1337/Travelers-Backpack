@@ -25,14 +25,14 @@ public class ServerboundFilterTagsPacket implements IPacket<ServerboundFilterTag
         this.tags = tags;
     }
 
-    public static ServerboundFilterTagsPacket decode(final FriendlyByteBuf buffer) {
-        final int slot = buffer.readInt();
-        final List<String> tags = buffer.readList(FriendlyByteBuf::readUtf);
+    public static ServerboundFilterTagsPacket decode(FriendlyByteBuf buffer) {
+        int slot = buffer.readInt();
+        List<String> tags = buffer.readList(FriendlyByteBuf::readUtf);
 
         return new ServerboundFilterTagsPacket(slot, tags);
     }
 
-    public void encode(final ServerboundFilterTagsPacket message, final FriendlyByteBuf buffer) {
+    public void encode(ServerboundFilterTagsPacket message, FriendlyByteBuf buffer) {
         buffer.writeInt(message.slot);
         buffer.writeCollection(message.tags, FriendlyByteBuf::writeUtf);
     }

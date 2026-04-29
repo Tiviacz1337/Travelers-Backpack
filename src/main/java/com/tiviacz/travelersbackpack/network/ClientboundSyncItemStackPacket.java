@@ -27,7 +27,7 @@ public class ClientboundSyncItemStackPacket implements IPacket<ClientboundSyncIt
         this.map = map;
     }
 
-    public static ClientboundSyncItemStackPacket decode(final FriendlyByteBuf buffer) {
+    public static ClientboundSyncItemStackPacket decode(FriendlyByteBuf buffer) {
         int entityID = buffer.readInt();
         int slot = buffer.readInt();
         ItemStack itemStackInstance = buffer.readItem();
@@ -36,7 +36,7 @@ public class ClientboundSyncItemStackPacket implements IPacket<ClientboundSyncIt
         return new ClientboundSyncItemStackPacket(entityID, slot, itemStackInstance, map);
     }
 
-    public void encode(final ClientboundSyncItemStackPacket message, final FriendlyByteBuf buffer) {
+    public void encode(ClientboundSyncItemStackPacket message, FriendlyByteBuf buffer) {
         buffer.writeInt(message.entityID);
         buffer.writeInt(message.slot);
         buffer.writeItem(message.itemStackInstance);

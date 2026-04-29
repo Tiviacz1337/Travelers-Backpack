@@ -24,12 +24,12 @@ public class ClientboundUpdateConfigPacket implements IPacket<ClientboundUpdateC
         this.configTag = configTag;
     }
 
-    public static ClientboundUpdateConfigPacket decode(final FriendlyByteBuf buffer) {
-        final CompoundTag configTag = buffer.readNbt();
+    public static ClientboundUpdateConfigPacket decode(FriendlyByteBuf buffer) {
+        CompoundTag configTag = buffer.readNbt();
         return new ClientboundUpdateConfigPacket(configTag);
     }
 
-    public void encode(final ClientboundUpdateConfigPacket message, final FriendlyByteBuf buffer) {
+    public void encode(ClientboundUpdateConfigPacket message, FriendlyByteBuf buffer) {
         buffer.writeNbt(message.configTag);
     }
 
