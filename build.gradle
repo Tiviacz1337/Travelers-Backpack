@@ -7,9 +7,10 @@ plugins {
 }
 
 version = "${mod_loader}-${minecraft_version}-${mod_version}"
-group = "${maven_group}" + "." + "${mod_id}"
+group = mod_group_id
+
 base {
-    archivesName = "${archives_name}"
+    archivesName = mod_id
 }
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
@@ -170,7 +171,7 @@ dependencies {
     compileOnly fg.deobf("maven.modrinth:amendments:luR9kOmm")
     compileOnly fg.deobf("maven.modrinth:moonlight:62CPFGur")
 
-    implementation fg.deobf("curse.maven:gregtechceu-modern-890405:7625262")
+    compileOnly fg.deobf("curse.maven:gregtechceu-modern-890405:7625262")
 
     //runtimeOnly fg.deobf('curse.maven:terrablender-563928:5068218')
     //runtimeOnly fg.deobf('curse.maven:bop-220318:4764804')
@@ -198,7 +199,8 @@ processResources {
             mod_id                 : mod_id,
             mod_name               : mod_name,
             mod_display_name       : mod_display_name,
-            mod_url                : mod_url,
+            mod_display_url        : mod_display_url,
+            mod_issue_tracker_url  : mod_issue_tracker_url,
             mod_license            : mod_license,
             mod_version            : mod_version,
             mod_authors            : mod_authors,
