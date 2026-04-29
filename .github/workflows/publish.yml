@@ -24,8 +24,10 @@ jobs:
 
       - name: Checkout Repository
         uses: actions/checkout@v4
-        with:
-          submodules: true
+        #with:
+          #submodules: true
+          #fetch-depth: 0
+          #fetch-tags: true
 
       - name: Setup Java
         uses: actions/setup-java@v4
@@ -33,12 +35,14 @@ jobs:
           java-version: '25'
           distribution: 'temurin'
 
-      - name: Make Gradle Wrapper Executable
-        if: ${{ runner.os != 'Windows' }}
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Make Gradle wrapper executable
         run: chmod +x ./gradlew
 
-      - name: Build
-        run: ./gradlew clean build
+      - name: Build with Gradle
+        run: ./gradlew build
 
       - name: Publish (CurseForge/Modrinth)
         uses: Kir-Antipov/mc-publish@v3.3

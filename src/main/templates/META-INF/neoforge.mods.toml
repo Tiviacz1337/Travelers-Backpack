@@ -13,7 +13,7 @@ license = "${mod_license}"
     file = "META-INF/accesstransformer.cfg"
 
 [[mixins]]
-    config = "META-INF/travelersbackpack.mixins.json"
+    config = "travelersbackpack.mixins.json"
 
 [[dependencies.${ mod_id }]]
     modId = "neoforge"
