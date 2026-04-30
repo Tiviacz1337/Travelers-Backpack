@@ -343,6 +343,18 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Na
         }
     }
 
+    @Override
+    public boolean shouldCloseCurrentScreen() {
+        if(this.wrapper == BackpackWrapper.DUMMY) {
+            return true;
+        } else {
+            if(!getWrapper().getPlayersUsing().isEmpty()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public static FriendlyByteBuf saveSettingsExtraData(FriendlyByteBuf buf, BlockPos pos) {
         buf.writeBoolean(true);
         buf.writeBlockPos(pos);
@@ -363,6 +375,11 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Na
             }
             player.openMenu(new ExtendedScreenHandlerFactory() {
                 @Override
+                public boolean shouldCloseCurrentScreen() {
+                    return containerSupplier.shouldCloseCurrentScreen();
+                }
+
+                @Override
                 public void writeScreenOpeningData(ServerPlayer player, FriendlyByteBuf buf) {
                     buf.writeInt(-1);
                     buf.writeBlockPos(pos);
@@ -371,20 +388,11 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Na
                 @Override
                 public Component getDisplayName() {
                     return containerSupplier.getDisplayName();
-                    //return Component.translatable("screen.travelersbackpack.item");
                 }
 
                 @Override
                 public @Nullable AbstractContainerMenu createMenu(int i, Inventory inventory, Player player) {
                     return containerSupplier.createMenu(i, inventory, player);
-                   /* if(wrapper == BackpackWrapper.DUMMY) {
-                        throw new IllegalStateException("BackpackWrapper is not initialized!");
-                    }
-                    if(canOpenSettings(player)) {
-                        return new BackpackSettingsMenu(i, inventory, wrapper);
-                    } else {
-                        return new BackpackBlockEntityMenu(i, inventory, infiniteAccessUsers.contains(player.getId()) ? player.getId() : -1, wrapper);
-                    }*/
                 }
             });
         }
@@ -397,6 +405,11 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Na
 
             player.openMenu(new ExtendedScreenHandlerFactory() {
                 @Override
+                public boolean shouldCloseCurrentScreen() {
+                    return containerSupplier.shouldCloseCurrentScreen();
+                }
+
+                @Override
                 public void writeScreenOpeningData(ServerPlayer player, FriendlyByteBuf buf) {
                     buf.writeInt(player.getId());
                     buf.writeBlockPos(pos);
@@ -405,20 +418,11 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Na
                 @Override
                 public Component getDisplayName() {
                     return containerSupplier.getDisplayName();
-                    //return Component.translatable("screen.travelersbackpack.item");
                 }
 
                 @Override
                 public @Nullable AbstractContainerMenu createMenu(int i, Inventory inventory, Player player) {
                     return containerSupplier.createMenu(i, inventory, player);
-                    /*if(wrapper == BackpackWrapper.DUMMY) {
-                        throw new IllegalStateException("BackpackWrapper is not initialized!");
-                    }
-                    if(canOpenSettings(player)) {
-                        return new BackpackSettingsMenu(i, inventory, wrapper);
-                    } else {
-                        return new BackpackBlockEntityMenu(i, inventory, infiniteAccessUsers.contains(player.getId()) ? player.getId() : -1, wrapper);
-                    }*/
                 }
             });
         }
@@ -430,6 +434,11 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Na
             setSettingsUser(player);
             player.openMenu(new ExtendedScreenHandlerFactory() {
                 @Override
+                public boolean shouldCloseCurrentScreen() {
+                    return containerSupplier.shouldCloseCurrentScreen();
+                }
+
+                @Override
                 public void writeScreenOpeningData(ServerPlayer player, FriendlyByteBuf buf) {
                     saveSettingsExtraData(buf, pos);
                 }
@@ -437,20 +446,11 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Na
                 @Override
                 public Component getDisplayName() {
                     return containerSupplier.getDisplayName();
-                    //return Component.translatable("screen.travelersbackpack.item");
                 }
 
                 @Override
                 public @Nullable AbstractContainerMenu createMenu(int i, Inventory inventory, Player player) {
                     return containerSupplier.createMenu(i, inventory, player);
-                   /* if(wrapper == BackpackWrapper.DUMMY) {
-                        throw new IllegalStateException("BackpackWrapper is not initialized!");
-                    }
-                    if(canOpenSettings(player)) {
-                        return new BackpackSettingsMenu(i, inventory, wrapper);
-                    } else {
-                        return new BackpackBlockEntityMenu(i, inventory, infiniteAccessUsers.contains(player.getId()) ? player.getId() : -1, wrapper);
-                    }*/
                 }
             });
         }

@@ -102,6 +102,11 @@ public class BackpackContainer implements MenuProvider, Nameable {
                 }
 
                 @Override
+                public boolean shouldCloseCurrentScreen() {
+                    return false;
+                }
+
+                @Override
                 public Component getDisplayName() {
                     return Component.translatable("screen.travelersbackpack.item");
                 }
