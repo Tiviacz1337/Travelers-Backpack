@@ -6,6 +6,7 @@ import net.fabricmc.fabric.api.transfer.v1.storage.base.ResourceAmount;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.minecraft.nbt.CompoundTag;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -96,6 +97,11 @@ public class FluidTank extends SingleVariantStorage<FluidVariant> {
     }
 
     public long fill(FluidVariantWrapper resource, boolean simulate) {
+        return fill(resource, simulate, null);
+    }
+
+    //Transaction variant for proper saving
+    public long fill(FluidVariantWrapper resource, boolean simulate, @Nullable TransactionContext transaction) {
         if(resource.isEmpty() || !isFluidValid(resource)) {
             return 0;
         }
@@ -110,7 +116,15 @@ public class FluidTank extends SingleVariantStorage<FluidVariant> {
         }
         if(fluidVariant.isEmpty()) {
             fluidVariant = resource.copyWithAmount(Math.min(capacity, resource.getAmount()));
-            onContentsChanged();
+            if(transaction == null) {
+                onContentsChanged();
+            } else {
+                transaction.addOuterCloseCallback(result -> {
+                    if(result.wasCommitted()) {
+                        onContentsChanged();
+                    }
+                });
+            }
             return fluidVariant.getAmount();
         }
         if(!fluidVariant.fluidVariant().isOf(resource.fluidVariant().getFluid())) {//#matches components
@@ -125,7 +139,15 @@ public class FluidTank extends SingleVariantStorage<FluidVariant> {
             fluidVariant = fluidVariant.setAmount(capacity);
         }
         if(filled > 0)
-            onContentsChanged();
+            if(transaction == null) {
+                onContentsChanged();
+            } else {
+                transaction.addOuterCloseCallback(result -> {
+                    if(result.wasCommitted()) {
+                        onContentsChanged();
+                    }
+                });
+            }
         return filled;
     }
 
@@ -137,6 +159,11 @@ public class FluidTank extends SingleVariantStorage<FluidVariant> {
     }
 
     public FluidVariantWrapper drain(long maxDrain, boolean simulate) {
+        return drain(maxDrain,  simulate, null);
+    }
+
+    //Transaction variant for proper saving
+    public FluidVariantWrapper drain(long maxDrain, boolean simulate, @Nullable TransactionContext transaction) {
         long drained = maxDrain;
         if(fluidVariant.getAmount() < drained) {
             drained = fluidVariant.getAmount();
@@ -147,7 +174,15 @@ public class FluidTank extends SingleVariantStorage<FluidVariant> {
             if(fluidVariant.amount() <= 0) {
                 fluidVariant = FluidVariantWrapper.blank();
             }
-            onContentsChanged();
+            if(transaction == null) {
+                onContentsChanged();
+            } else {
+                transaction.addOuterCloseCallback(result -> {
+                    if(result.wasCommitted()) {
+                        onContentsChanged();
+                    }
+                });
+            }
         }
         return stack;
     }
@@ -161,12 +196,7 @@ public class FluidTank extends SingleVariantStorage<FluidVariant> {
 
             if(insertedAmount > 0) {
                 updateSnapshots(transaction);
-
-                if(fluidVariant.fluidVariant().isBlank()) {
-                    fill(new FluidVariantWrapper(insertedVariant, insertedAmount), false);
-                } else {
-                    fill(new FluidVariantWrapper(insertedVariant, insertedAmount), false);
-                }
+                fill(new FluidVariantWrapper(insertedVariant, insertedAmount), false, transaction);
                 return insertedAmount;
             }
         }
@@ -183,11 +213,10 @@ public class FluidTank extends SingleVariantStorage<FluidVariant> {
 
             if(extractedAmount > 0) {
                 updateSnapshots(transaction);
-                drain(extractedAmount, false);
+                drain(extractedAmount, false, transaction);
                 return extractedAmount;
             }
         }
-
         return 0;
     }
 
