@@ -456,8 +456,8 @@ public class BackpackAbilities {
                 FluidTank rightTank = upgrade.getRightTank();
                 FluidVariantWrapper water = new FluidVariantWrapper(FluidVariant.of(Fluids.WATER), FluidConstants.BUCKET);
                 if(!player.level().isClientSide) {
-                    leftTank.fill(water, true);
-                    rightTank.fill(water, true);
+                    leftTank.fill(water, false);
+                    rightTank.fill(water, false);
                 }
 
                 if(player.level().isClientSide) return;
@@ -496,8 +496,8 @@ public class BackpackAbilities {
                 FluidTank leftTank = upgrade.getLeftTank();
                 FluidTank rightTank = upgrade.getRightTank();
                 FluidVariantWrapper water = new FluidVariantWrapper(FluidVariant.of(Fluids.WATER), FluidConstants.BUCKET);
-                leftTank.fill(water, true);
-                rightTank.fill(water, true);
+                leftTank.fill(water, false);
+                rightTank.fill(water, false);
                 wrapper.setCooldown(0);
             } else {
                 return;
