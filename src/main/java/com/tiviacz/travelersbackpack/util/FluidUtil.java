@@ -40,7 +40,7 @@ public class FluidUtil {
 
     public static Optional<Storage<FluidVariant>> getFluidStorageConstant(ItemStack stack) {
         var ctx = ContainerItemContext.withConstant(stack).find(FluidStorage.ITEM);
-        return Optional.of(ctx);
+        return Optional.ofNullable(ctx);
     }
 
     public static boolean hasFluid(Player player, AbstractContainerMenu menu) {
