@@ -44,6 +44,7 @@ public record ServerboundActionTagPacket(CompoundTag actionTag) implements IPack
     public static final int ABILITY_SLIDER = 14;
     public static final int EQUIP_BACKPACK = 15;
     public static final int SET_STACK = 16;
+    public static final int PICK_ITEM = 17;
 
     public static void handle(MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl handler, FriendlyByteBuf buf, PacketSender responseSender) {
         ServerboundActionTagPacket message = decode(buf);
@@ -124,6 +125,10 @@ public record ServerboundActionTagPacket(CompoundTag actionTag) implements IPack
                     ItemStack stack = ItemStack.of(actionTag.getCompound("Arg1"));
                     int slot = actionTag.getInt("Arg2");
                     ServerActions.setStack(player, type, stack, slot);
+                }
+                case PICK_ITEM -> {
+                    ItemStack stack = ItemStack.of(actionTag.getCompound("Arg0"));
+                    ServerActions.pickItem(player, stack);
                 }
             }
         });

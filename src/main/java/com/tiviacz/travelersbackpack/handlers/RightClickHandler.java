@@ -11,8 +11,11 @@ import com.tiviacz.travelersbackpack.init.ModDataHelper;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.init.ModTags;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
+import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
 import com.tiviacz.travelersbackpack.util.NbtHelper;
+import net.fabricmc.fabric.api.event.client.player.ClientPickBlockApplyCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
@@ -70,7 +73,7 @@ public class RightClickHandler {
 
             //Change Sleeping Bag
             if(player.isShiftKeyDown() && hand == InteractionHand.MAIN_HAND && player.getMainHandItem().is(ModTags.SLEEPING_BAGS) && level.getBlockEntity(pos) instanceof BackpackBlockEntity blockEntity) {
-                ItemStack oldSleepingBag = blockEntity.getProperSleepingBag(blockEntity.getWrapper().getSleepingBagColor()).getBlock().asItem().getDefaultInstance();
+                ItemStack oldSleepingBag = BackpackBlockEntity.getProperSleepingBag(blockEntity.getWrapper().getSleepingBagColor()).getBlock().asItem().getDefaultInstance();
                 blockEntity.getWrapper().setSleepingBagColor(ShapedBackpackRecipe.getProperColor(player.getMainHandItem().getItem()));
 
                 if(!level.isClientSide) {
@@ -180,6 +183,17 @@ public class RightClickHandler {
                 }
             }
             return InteractionResult.PASS;
+        });
+
+        ClientPickBlockApplyCallback.EVENT.register((player, hitResult, target) -> {
+            if(ComponentUtils.isWearingBackpack(Minecraft.getInstance().player)) {
+                int i = player.getInventory().findSlotMatchingItem(target);
+                if(i == -1 && !player.getAbilities().instabuild) { //Can't find in normal inventory, backpack equipped and no creative mode
+                    ServerboundActionTagPacket.create(ServerboundActionTagPacket.PICK_ITEM, target);
+                    return ItemStack.EMPTY;
+                }
+            }
+            return target;
         });
     }
 
