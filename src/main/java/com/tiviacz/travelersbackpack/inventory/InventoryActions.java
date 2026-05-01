@@ -53,7 +53,7 @@ public class InventoryActions {
         }
 
         if(stackIn.getItem() == Items.GLASS_BOTTLE) {
-            if(tank.getFluid().fluidVariant().getFluid() == ModFluids.POTION_STILL && tank.getFluidAmount() >= Reference.POTION) {
+            if(tank.getFluid().fluidVariant().getFluid() == ModFluids.POTION_STILL && tank.getFluidAmount() >= FluidConstants.BOTTLE) {
                 ItemStack stackOut = FluidStackHelper.getItemStackFromFluidStack(tank.getFluid().fluidVariant());
                 if(transferPotion(itemStackHandler, FluidVariantWrapper.blank(), FluidConstants.BOTTLE, tank, stackIn, stackOut, slotOut, false)) {
                     playFluidSound(upgrade.getUpgradeManager().getWrapper().getBackpackOwner(), upgrade.getUpgradeManager().getWrapper().getPlayersUsing(), SoundEvents.BREWING_STAND_BREW, false);

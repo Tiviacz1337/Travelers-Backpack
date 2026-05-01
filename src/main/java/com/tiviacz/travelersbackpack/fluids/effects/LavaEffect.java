@@ -3,6 +3,7 @@ package com.tiviacz.travelersbackpack.fluids.effects;
 import com.tiviacz.travelersbackpack.api.fluids.EffectFluid;
 import com.tiviacz.travelersbackpack.inventory.FluidVariantWrapper;
 import com.tiviacz.travelersbackpack.util.Reference;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -12,7 +13,7 @@ import net.minecraft.world.level.material.Fluids;
 
 public class LavaEffect extends EffectFluid {
     public LavaEffect() {
-        super("minecraft:lava", Fluids.LAVA, Reference.BUCKET);
+        super("minecraft:lava", Fluids.LAVA, (int)FluidConstants.BUCKET);
     }
 
     @Override

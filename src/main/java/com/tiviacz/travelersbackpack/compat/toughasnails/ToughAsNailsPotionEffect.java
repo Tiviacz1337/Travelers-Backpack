@@ -4,6 +4,7 @@ import com.tiviacz.travelersbackpack.api.fluids.EffectFluid;
 import com.tiviacz.travelersbackpack.init.ModFluids;
 import com.tiviacz.travelersbackpack.inventory.FluidVariantWrapper;
 import com.tiviacz.travelersbackpack.util.Reference;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -14,7 +15,7 @@ import toughasnails.api.thirst.ThirstHelper;
 
 public class ToughAsNailsPotionEffect extends EffectFluid {
     public ToughAsNailsPotionEffect() {
-        super("toughasnails:potion", ModFluids.POTION_STILL, Reference.POTION);
+        super("toughasnails:potion", ModFluids.POTION_STILL, (int)FluidConstants.BOTTLE);
     }
 
     @Override

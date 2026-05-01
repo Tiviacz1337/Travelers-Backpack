@@ -3,6 +3,7 @@ package com.tiviacz.travelersbackpack.compat.toughasnails;
 import com.tiviacz.travelersbackpack.api.fluids.EffectFluid;
 import com.tiviacz.travelersbackpack.inventory.FluidVariantWrapper;
 import com.tiviacz.travelersbackpack.util.Reference;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -14,7 +15,7 @@ import toughasnails.api.thirst.ThirstHelper;
 
 public class ToughAsNailsWaterCanteenEffect extends EffectFluid {
     public ToughAsNailsWaterCanteenEffect() {
-        super("toughasnails:water_canteen", Fluids.WATER, Reference.POTION); //#TODO idk
+        super("toughasnails:water_canteen", Fluids.WATER, (int)FluidConstants.BOTTLE);
     }
 
     @Override

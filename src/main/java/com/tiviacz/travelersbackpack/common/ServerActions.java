@@ -24,6 +24,7 @@ import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.InventoryHelper;
 import com.tiviacz.travelersbackpack.util.NbtHelper;
 import com.tiviacz.travelersbackpack.util.Reference;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -479,7 +480,7 @@ public class ServerActions {
         }
 
         if(!player.getAbilities().instabuild) {
-            return Reference.POTION;
+            return (int)FluidConstants.BOTTLE;
         }
         return 0;
     }

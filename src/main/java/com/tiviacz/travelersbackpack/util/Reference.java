@@ -1,10 +1,6 @@
 package com.tiviacz.travelersbackpack.util;
 
 public class Reference {
-    //Fluid Constants
-    public static final int BUCKET = 81000;
-    public static final int POTION = 27000;
-
     //Screen IDs
     public static final int ITEM_SCREEN_ID = 1;
     public static final int WEARABLE_SCREEN_ID = 2;

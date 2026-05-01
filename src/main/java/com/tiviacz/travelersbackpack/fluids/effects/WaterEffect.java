@@ -3,6 +3,7 @@ package com.tiviacz.travelersbackpack.fluids.effects;
 import com.tiviacz.travelersbackpack.api.fluids.EffectFluid;
 import com.tiviacz.travelersbackpack.inventory.FluidVariantWrapper;
 import com.tiviacz.travelersbackpack.util.Reference;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.minecraft.core.Holder;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -14,7 +15,7 @@ import net.minecraft.world.level.material.Fluids;
 
 public class WaterEffect extends EffectFluid {
     public WaterEffect() {
-        super("minecraft:water", Fluids.WATER, Reference.BUCKET);
+        super("minecraft:water", Fluids.WATER, (int)FluidConstants.BUCKET);
     }
 
     @Override
