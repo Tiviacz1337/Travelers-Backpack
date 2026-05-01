@@ -1,7 +1,6 @@
 package com.tiviacz.travelersbackpack.fluids.effects;
 
 import com.tiviacz.travelersbackpack.api.fluids.EffectFluid;
-import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.core.Holder;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -11,10 +10,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
 
 public class WaterEffect extends EffectFluid {
     public WaterEffect() {
-        super("minecraft:water", Fluids.WATER, Reference.BUCKET);
+        super("minecraft:water", Fluids.WATER, FluidType.BUCKET_VOLUME);
     }
 
     @Override

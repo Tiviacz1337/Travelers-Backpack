@@ -1,20 +1,20 @@
 package com.tiviacz.travelersbackpack.compat.toughasnails;
 
 import com.tiviacz.travelersbackpack.api.fluids.EffectFluid;
-import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
 import toughasnails.api.potion.TANEffects;
 import toughasnails.api.thirst.IThirst;
 import toughasnails.api.thirst.ThirstHelper;
 
 public class ToughAsNailsWaterEffect extends EffectFluid {
     public ToughAsNailsWaterEffect() {
-        super("toughasnails:water", Fluids.WATER, Reference.BUCKET);
+        super("toughasnails:water", Fluids.WATER, FluidType.BUCKET_VOLUME);
     }
 
     @Override
