@@ -17,9 +17,7 @@ import com.tiviacz.travelersbackpack.compat.trashslot.TrashSlotCompat;
 import com.tiviacz.travelersbackpack.compat.trinkets.TravelersBackpackTrinketIntegration;
 import com.tiviacz.travelersbackpack.fluids.potion.PotionFluidVariantAttributeHandler;
 import com.tiviacz.travelersbackpack.fluids.potion.PotionFluidVariantRenderHandler;
-import com.tiviacz.travelersbackpack.handlers.BackpackModelLoadingPlugin;
-import com.tiviacz.travelersbackpack.handlers.KeybindHandler;
-import com.tiviacz.travelersbackpack.handlers.ScreenRenderHandler;
+import com.tiviacz.travelersbackpack.handlers.*;
 import com.tiviacz.travelersbackpack.init.*;
 import com.tiviacz.travelersbackpack.util.NbtHelper;
 import net.fabricmc.api.ClientModInitializer;
@@ -69,6 +67,7 @@ public class TravelersBackpackClient implements ClientModInitializer {
         //Keybindings
         KeybindHandler.initKeybinds();
         KeybindHandler.registerListener();
+        PickBlockHandler.registerClientListeners();
 
         //Client Network
         ModNetwork.initClient();
