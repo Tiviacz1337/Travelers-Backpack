@@ -40,7 +40,7 @@ public class FluidUtil {
 
     public static Optional<Storage<FluidVariant>> getFluidStorageConstant(ItemStack stack) {
         var ctx = ContainerItemContext.withConstant(stack).find(FluidStorage.ITEM);
-        return Optional.of(ctx);
+        return Optional.ofNullable(ctx);
     }
 
     public static boolean hasFluid(Player player, AbstractContainerMenu menu) {
@@ -51,7 +51,7 @@ public class FluidUtil {
     }
 
     public static boolean hasFluid(Storage<FluidVariant> storage) {
-        return storage.supportsExtraction();
+        return storage.supportsExtraction() && StorageUtil.findStoredResource(storage) != null;
     }
 
     public static long tryEmptyContainerAtCursor(FluidTank tank, long maxTransferAmount, Storage<FluidVariant> storage, boolean execute) {

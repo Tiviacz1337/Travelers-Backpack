@@ -22,9 +22,11 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.PotionItem;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -130,18 +132,13 @@ public class TanksUpgrade extends UpgradeBase<TanksUpgrade> {
         return slots;
     }
 
+    @Override
+    public void onUpgradeRemoved(ItemStack removedStack, @Nullable Player player) {
+        BackpackBaseMenu.clearSlotsAndPlaySound(player, fluidSlotsHandler, fluidSlotsHandler.getSlots(), false);
+    }
+
     public ItemStackHandler createTemporaryHandler() {
         return new ItemStackHandler(4) {
-            /*@Override
-            protected void onContentsChanged(int slot) {
-                if((slot == 0 || slot == 1) && !getStackInSlot(0).isEmpty()) {
-                    InventoryActions.transferContainerTank(TanksUpgrade.this, getLeftTank(), 0);
-                }
-                if((slot == 2 || slot == 3) && !getStackInSlot(2).isEmpty()) {
-                    InventoryActions.transferContainerTank(TanksUpgrade.this, getRightTank(), 2);
-                }
-            }*/
-
             @Override
             public boolean isItemValid(int slot, ItemStack stack) {
                 Storage<FluidVariant> storage = ContainerItemContext.withConstant(stack).find(FluidStorage.ITEM);

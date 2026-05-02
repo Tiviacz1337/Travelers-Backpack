@@ -31,13 +31,11 @@ public class TankActions {
 
                     long result = FluidUtil.tryEmptyContainerAtCursor(tank, wrapper.getBackpackTankCapacity(), fluidStorage, true);
                     if(result > 0) {
-                        //Play client only sound for item
-                        //if(wrapper.getScreenID() == Reference.ITEM_SCREEN_ID) {
                         InventoryActions.playFluidSound(wrapper.getBackpackOwner(), wrapper.getPlayersUsing(), fluidSound, FluidTypeHelper.BUCKET_EMPTY);
-                        //}
                         handled.set(true);
                     }
-                } else if(!handled.get() && fluidStorage.supportsInsertion()) {
+                }
+                if(!handled.get() && fluidStorage.supportsInsertion()) {
                     ItemStack carriedCopy = carried.copy();
                     int count = carriedCopy.getCount();
                     carriedCopy.setCount(count - 1);
@@ -55,10 +53,7 @@ public class TankActions {
                             } else {
                                 menu.setCarried(fullBucket.getDefaultInstance());
                             }
-                            //Play client only sound for item
-                            //if(wrapper.getScreenID() == Reference.ITEM_SCREEN_ID) {
                             InventoryActions.playFluidSound(wrapper.getBackpackOwner(), wrapper.getPlayersUsing(), fluidSound, FluidTypeHelper.BUCKET_FILL);
-                            //}
                             handled.set(true);
                         }
                     } else if(!handled.get() && carried.getItem() == Items.GLASS_BOTTLE) {
@@ -72,10 +67,7 @@ public class TankActions {
                     } else if(!handled.get() && carried.getCount() == 1) {
                         long result = FluidUtil.tryFillContainerAtCursor(tank, wrapper.getBackpackTankCapacity(), fluidStorage, true);
                         if(result > 0) {
-                            //Play client only sound for item
-                            //if(wrapper.getScreenID() == Reference.ITEM_SCREEN_ID) {
                             InventoryActions.playFluidSound(wrapper.getBackpackOwner(), wrapper.getPlayersUsing(), fluidSound, FluidTypeHelper.BUCKET_FILL);
-                            //}
                             handled.set(true);
                         }
                     }
@@ -97,7 +89,6 @@ public class TankActions {
 
     public static boolean tryEmptyPotion(ItemStack carried, FluidTank tank, int potionType) {
         long amount = FluidConstants.BOTTLE;
-        //FluidVariantWrapper fluidStack = new FluidVariantWrapper(FluidVariant.of(ModFluids.POTION_STILL), amount);
         FluidVariant potionVariant = FluidStackHelper.setPotionFluidVariant(carried, potionType);
         FluidVariantWrapper potionVariantWrapper = new FluidVariantWrapper(potionVariant, amount);
         if(tank.isEmpty() || (potionVariantWrapper.fluidVariant().isOf(tank.getFluid().fluidVariant().getFluid())) && potionVariantWrapper.fluidVariant().componentsMatch(tank.getFluid().fluidVariant().getComponents())) {
