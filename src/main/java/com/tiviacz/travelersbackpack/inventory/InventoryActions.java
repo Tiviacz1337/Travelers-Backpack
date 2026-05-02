@@ -12,6 +12,7 @@ import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.ResourceAmount;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
@@ -89,7 +90,7 @@ public class InventoryActions {
                 return false;
             }
 
-            if(isSameFluid(resource, tank)) {
+            if(isSameFluid(fluidStorage, tank)) {
                 //Fluid sound
                 SoundEvent fluidSound = FluidTypeHelper.getSound(tank.getFluid().fluidVariant(), FluidTypeHelper.BUCKET_FILL);
 
@@ -176,11 +177,15 @@ public class InventoryActions {
         return false;
     }
 
-    private static boolean isSameFluid(@Nullable ResourceAmount<FluidVariant> resource, FluidTank tank) {
-        if(resource == null) {
-            return true;
-        } else if(!resource.resource().isBlank() && resource.amount() > 0) {
-            return FluidUtil.isSameVariant(resource.resource(), tank.getFluid().fluidVariant());
+    private static boolean isSameFluid(Storage<FluidVariant> fluidStorage, FluidTank tank) {
+        for(StorageView<FluidVariant> view : fluidStorage) {
+            FluidVariant resource = view.getResource();
+            boolean sameFluid = tank.getFluidAmount() > 0 && FluidUtil.isSameVariant(resource, tank.getFluid().fluidVariant());
+            boolean emptyHandler = resource.isBlank();
+
+            if(emptyHandler || sameFluid) {
+                return true;
+            }
         }
         return false;
     }

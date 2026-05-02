@@ -51,7 +51,7 @@ public class FluidUtil {
     }
 
     public static boolean hasFluid(Storage<FluidVariant> storage) {
-        return storage.supportsExtraction();
+        return storage.supportsExtraction() && StorageUtil.findStoredResource(storage) != null;
     }
 
     public static long tryEmptyContainerAtCursor(FluidTank tank, long maxTransferAmount, Storage<FluidVariant> storage, boolean execute) {

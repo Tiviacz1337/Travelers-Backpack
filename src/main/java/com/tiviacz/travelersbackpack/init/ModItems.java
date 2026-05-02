@@ -2,17 +2,26 @@ package com.tiviacz.travelersbackpack.init;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.entity.BackpackItemEntity;
+import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
+import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.FluidStorageItemWrapper;
+import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;
 import com.tiviacz.travelersbackpack.items.BackpackTankItem;
 import com.tiviacz.travelersbackpack.items.HoseItem;
 import com.tiviacz.travelersbackpack.items.SleepingBagItem;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.items.upgrades.*;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.storage.SlottedStorage;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.CombinedSlottedStorage;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.item.Item;
+
+import java.util.List;
 
 public class ModItems {
     //Backpacks
@@ -195,5 +204,63 @@ public class ModItems {
         FEEDING_UPGRADE = Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(TravelersBackpack.MODID, "feeding_upgrade"), new FeedingUpgradeItem(new Item.Properties().stacksTo(16)));
         REFILL_UPGRADE = Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(TravelersBackpack.MODID, "refill_upgrade"), new RefillUpgradeItem(new Item.Properties().stacksTo(16)));
         BACKPACK_ITEM_ENTITY = Registry.register(BuiltInRegistries.ENTITY_TYPE, new ResourceLocation(TravelersBackpack.MODID, "backpack"), EntityType.Builder.of(BackpackItemEntity::new, MobCategory.MISC).sized(0.25F, 0.25F).clientTrackingRange(6).updateInterval(20).build(""));
+    }
+
+    public static void registerItemFluidStorage() {
+        FluidStorage.ITEM.registerForItems((stack, context) -> {
+                    BackpackWrapper wrapper = BackpackWrapper.fromStack(stack);
+                    if(wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).isPresent()) {
+                        return new CombinedSlottedStorage<FluidVariant, SlottedStorage<FluidVariant>>(List.of(new FluidStorageItemWrapper(context, true), new FluidStorageItemWrapper(context, false)));
+                    }
+                    return null;
+                }, ModItems.STANDARD_TRAVELERS_BACKPACK,
+                ModItems.NETHERITE_TRAVELERS_BACKPACK,
+                ModItems.DIAMOND_TRAVELERS_BACKPACK,
+                ModItems.GOLD_TRAVELERS_BACKPACK,
+                ModItems.EMERALD_TRAVELERS_BACKPACK,
+                ModItems.IRON_TRAVELERS_BACKPACK,
+                ModItems.LAPIS_TRAVELERS_BACKPACK,
+                ModItems.REDSTONE_TRAVELERS_BACKPACK,
+                ModItems.COAL_TRAVELERS_BACKPACK,
+
+                ModItems.QUARTZ_TRAVELERS_BACKPACK,
+                ModItems.BOOKSHELF_TRAVELERS_BACKPACK,
+                ModItems.END_TRAVELERS_BACKPACK,
+                ModItems.NETHER_TRAVELERS_BACKPACK,
+                ModItems.SANDSTONE_TRAVELERS_BACKPACK,
+                ModItems.SNOW_TRAVELERS_BACKPACK,
+                ModItems.SPONGE_TRAVELERS_BACKPACK,
+
+                ModItems.CAKE_TRAVELERS_BACKPACK,
+
+                ModItems.CACTUS_TRAVELERS_BACKPACK,
+                ModItems.HAY_TRAVELERS_BACKPACK,
+                ModItems.MELON_TRAVELERS_BACKPACK,
+                ModItems.PUMPKIN_TRAVELERS_BACKPACK,
+
+                ModItems.CREEPER_TRAVELERS_BACKPACK,
+                ModItems.DRAGON_TRAVELERS_BACKPACK,
+                ModItems.ENDERMAN_TRAVELERS_BACKPACK,
+                ModItems.BLAZE_TRAVELERS_BACKPACK,
+                ModItems.GHAST_TRAVELERS_BACKPACK,
+                ModItems.MAGMA_CUBE_TRAVELERS_BACKPACK,
+                ModItems.SKELETON_TRAVELERS_BACKPACK,
+                ModItems.SPIDER_TRAVELERS_BACKPACK,
+                ModItems.WITHER_TRAVELERS_BACKPACK,
+                ModItems.WARDEN_TRAVELERS_BACKPACK,
+
+                ModItems.BAT_TRAVELERS_BACKPACK,
+                ModItems.BEE_TRAVELERS_BACKPACK,
+                ModItems.WOLF_TRAVELERS_BACKPACK,
+                ModItems.FOX_TRAVELERS_BACKPACK,
+                ModItems.OCELOT_TRAVELERS_BACKPACK,
+                ModItems.HORSE_TRAVELERS_BACKPACK,
+                ModItems.COW_TRAVELERS_BACKPACK,
+                ModItems.PIG_TRAVELERS_BACKPACK,
+                ModItems.SHEEP_TRAVELERS_BACKPACK,
+                ModItems.CHICKEN_TRAVELERS_BACKPACK,
+                ModItems.SQUID_TRAVELERS_BACKPACK,
+                ModItems.VILLAGER_TRAVELERS_BACKPACK,
+                ModItems.IRON_GOLEM_TRAVELERS_BACKPACK);
     }
 }
