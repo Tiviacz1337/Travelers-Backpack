@@ -30,7 +30,7 @@ public record ClientboundUpdateRecipePacket(ResourceLocation id, ItemStack outpu
         this(recipe == null ? NULL : recipe.id(), output);
     }
 
-    public static void handle(final ClientboundUpdateRecipePacket message, ClientPlayNetworking.Context ctx) {
+    public static void handle(ClientboundUpdateRecipePacket message, ClientPlayNetworking.Context ctx) {
         ctx.client().execute(() -> {
             RecipeHolder<CraftingRecipe> recipe = (RecipeHolder<CraftingRecipe>)Minecraft.getInstance().level.getRecipeManager().byKey(message.id()).orElse(null);
             if(Minecraft.getInstance().screen instanceof BackpackScreen screen) {

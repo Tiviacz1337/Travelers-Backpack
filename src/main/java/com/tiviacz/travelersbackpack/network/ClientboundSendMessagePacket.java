@@ -22,7 +22,7 @@ public record ClientboundSendMessagePacket(boolean drop, BlockPos pos) implement
             ClientboundSendMessagePacket::new
     );
 
-    public static void handle(final ClientboundSendMessagePacket message, ClientPlayNetworking.Context ctx) {
+    public static void handle(ClientboundSendMessagePacket message, ClientPlayNetworking.Context ctx) {
         ctx.client().execute(() -> {
             if(TravelersBackpackConfig.getConfig().client.sendBackpackCoordinatesMessage) {
                 if(Minecraft.getInstance().player != null) {
