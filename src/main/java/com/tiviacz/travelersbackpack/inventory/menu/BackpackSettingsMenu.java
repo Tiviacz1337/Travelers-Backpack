@@ -118,18 +118,17 @@ public class BackpackSettingsMenu extends AbstractBackpackMenu {
 
     @Override
     public void removed(Player player) {
-        if(!player.level().isClientSide) {
-            if(getWrapper().getScreenID() == Reference.BLOCK_ENTITY_SCREEN_ID) {
+        if(getWrapper().getScreenID() == Reference.BLOCK_ENTITY_SCREEN_ID) {
+            if(!player.level().isClientSide()) {
                 BlockPos pos = getWrapper().getBackpackPos();
                 if(pos != null && player.level().getBlockEntity(pos) instanceof BackpackBlockEntity backpackBlockEntity) {
                     backpackBlockEntity.removeSettingsUser();
                 }
             }
         }
-        if(player.containerMenu instanceof BackpackSettingsMenu && player.level().isClientSide) {
-            return;
+        if(player.containerMenu instanceof InventoryMenu || player.containerMenu instanceof BackpackSettingsMenu) {
+            this.wrapper.playersUsing.remove(player);
         }
-        this.wrapper.playersUsing.remove(player);
         super.removed(player);
     }
 
