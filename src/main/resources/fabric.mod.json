@@ -38,9 +38,5 @@
     "minecraft": "${minecraft_version_range}",
     "java": ">=25",
     "forgeconfigapiport": "*"
-  },
-  "breaks": {
-    "accessories": "<1.4.3-beta+1.21.10",
-    "yigd": "<2.4.13"
   }
 }
