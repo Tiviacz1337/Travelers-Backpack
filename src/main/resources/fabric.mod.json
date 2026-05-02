@@ -1,26 +1,25 @@
 {
   "schemaVersion": 1,
-  "id": "travelersbackpack",
-  "version": "${version}",
+  "id": "${mod_id}",
+  "version": "${mod_version}",
+  "accessWidener" : "travelersbackpack.accesswidener",
+  "name": "${mod_display_name}",
+  "description": "${mod_description}",
+  "authors": [
+    "${mod_authors}"
+  ],
+  "contact": {
+    "homepage": "${mod_display_url}",
+    "issues": "${mod_issue_tracker_url}"
+  },
+  "license": "${mod_license}",
+  "icon": "assets/${mod_id}/textures/logo.png",
+  "environment": "*",
   "custom": {
     "cardinal-components": [
       "travelersbackpack:travelersbackpack"
     ]
   },
-  "accessWidener": "travelersbackpack.accesswidener",
-  "name": "Traveler's Backpack",
-  "description": "Unique and upgradeable backpacks with customisation, Trinkets/Accessories integration and more!",
-  "authors": [
-    "Tiviacz1337"
-  ],
-  "contact": {
-    "homepage": "https://www.curseforge.com/minecraft/mc-mods/travelers-backpack-fabric",
-    "sources": "https://github.com/Tiviacz1337/Travelers-Backpack",
-    "issues": "https://github.com/Tiviacz1337/Travelers-Backpack/issues"
-  },
-  "license": "GPL v3",
-  "icon": "assets/travelersbackpack/icon.png",
-  "environment": "*",
   "entrypoints": {
     "fabric-datagen": [
       "com.tiviacz.travelersbackpack.datagen.ModDataGeneration"
@@ -53,14 +52,11 @@
   "depends": {
     "fabricloader": ">=0.15.11",
     "fabric": ">=0.100.3",
-    "minecraft": "~1.21",
+    "minecraft": "${minecraft_version_range}",
     "java": ">=21",
     "cardinal-components-base": "*",
     "cardinal-components-entity": "*",
     "cloth-config2": "*"
-  },
-  "suggests": {
-    "modmenu": "*"
   },
   "breaks": {
     "accessories": "<1.1.0-beta.3+1.21.1",

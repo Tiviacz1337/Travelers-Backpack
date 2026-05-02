@@ -1,87 +1,31 @@
 plugins {
 	id 'fabric-loom' version '1.15-SNAPSHOT'
-	id 'maven-publish'
 }
 
-version = project.mod_version
-group = project.maven_group
+version = "${mod_loader}-${minecraft_version}-${mod_version}"
+group = mod_group_id
 
 base {
-	archivesName = "${project.archives_base_name}-${project.mod_loader}-${project.minecraft_version}"
+	archivesName = mod_id
 }
 
 repositories {
-
-	maven {
-		url "https://cursemaven.com"
-		content {
-			includeGroup "curse.maven"
-		}
-	}
-
-	maven { url "https://api.modrinth.com/maven" }
-
-	maven {
-		url "https://maven.siphalor.de/"
-	}
-
-	maven {
-		name = "TerraformersMC"
-		url = "https://maven.terraformersmc.com/"
-	}
-	maven {
-		name = 'Ladysnake Mods'
-		url = 'https://maven.ladysnake.org/releases'
-	}
-
-	//maven { url = "https://jitpack.io" }
-	maven { url "https://maven.shedaniel.me/" }
-
-	maven { url 'https://maven.nucleoid.xyz' }
-	maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
-	maven { url 'https://api.modrinth.com/maven' }
-
-	maven {
-		name 'Gegy'
-		url 'https://maven.gegy.dev'
-	}
-
-	maven { url 'https://maven.wispforest.io/releases' }
-	maven { url 'https://maven.su5ed.dev/releases' }
-	maven { url 'https://maven.fabricmc.net' }
-	maven { url 'https://maven.shedaniel.me/' }
-
-	maven {
-		name = 'ParchmentMC'
-		url = 'https://maven.parchmentmc.org'
-	}
-
-	maven {
-		url "https://maven.twelveiterations.com/repository/maven-public/"
-
-		content {
-			includeGroup "net.blay09.mods"
-		}
-	}
-
-	/*maven { url = "https://www.cursemaven.com" }
-	maven { url = "https://maven.shedaniel.me/" }
-	maven { url = "https://maven.terraformersmc.com/" }
-	maven { url = "https://maven.wispforest.io/" }
-	maven { url = "https://jitpack.io" }
+	maven { url "https://cursemaven.com" }
 	maven { url = "https://maven.ladysnake.org/releases" }
-	maven { url = "https://maven.cafeteria.dev" }
-	maven { url = "https://maven.jamieswhiteshirt.com/libs-release" }
-	maven { url = "https://api.modrinth.com/maven/" }
-	maven { url = "https://maven.nucleoid.xyz/" } */
-}
-
-loom {
-	accessWidenerPath = file("src/main/resources/travelersbackpack.accesswidener")
+	maven { url "https://maven.shedaniel.me/" }
+	maven { url "https://maven.jamieswhiteshirt.com/libs-release" }
+	maven { url "https://api.modrinth.com/maven" }
+	maven { url = "https://maven.parchmentmc.org" }
+	maven { url "https://maven.wispforest.io/releases" }
+	maven { url "https://maven.twelveiterations.com/repository/maven-public/" }
 }
 
 fabricApi {
 	configureDataGeneration()
+}
+
+loom {
+	accessWidenerPath = file("src/main/resources/travelersbackpack.accesswidener")
 }
 
 dependencies {
@@ -91,7 +35,7 @@ dependencies {
 		officialMojangMappings()
 		parchment("org.parchmentmc.data:parchment-1.21:2024.11.10@zip")
 	}
-	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	modImplementation "net.fabricmc:fabric-loader:${project.fabric_loader_version}"
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
@@ -106,8 +50,8 @@ dependencies {
 	modImplementation "dev.onyxstudios.cardinal-components-api:cardinal-components-block:${project.cca_version}"
 
 	//Cloth Config
-    //modCompileOnly("dev.architectury:architectury-fabric:${project.architectury_version}")
-	modImplementation "me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}"
+	//modImplementation("maven.modrinth:cloth-config:HpMb5wGb")
+	modImplementation("me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}")
 
 	//OPTIONAL
 
@@ -117,16 +61,16 @@ dependencies {
 	modApi("net.blay09.mods:kuma-api-fabric:21.0.7+1.21")
 
 	//Trash Slot
-	modImplementation "curse.maven:trashslot-235577:6319140"
+	modImplementation("curse.maven:trashslot-235577:6319140")
 
 	//ModMenu
-	modImplementation "com.terraformersmc:modmenu:${project.mod_menu_version}"
+	modImplementation("maven.modrinth:modmenu:v6Xx3fbU")
 
 	//Trinkets
-	modCompileOnly("dev.emi:trinkets:${trinkets_version}")
+	modCompileOnly("maven.modrinth:trinkets:JagCscwi")
 
 	//Accessories
-	modCompileOnly("io.wispforest:accessories-fabric:${project.accessories_version}")
+	modCompileOnly("maven.modrinth:accessories:Xlt4eWBe")
 
 	//REI
 	modCompileOnly("maven.modrinth:rei:aWzTESNC")
@@ -146,16 +90,16 @@ dependencies {
 	modCompileOnly("maven.modrinth:polymorph:j4jPy88h")
 
 	//Comforts
-	modCompileOnly ("maven.modrinth:comforts:vUdakIzK")
+	modCompileOnly("maven.modrinth:comforts:vUdakIzK")
 
 	//EMI
-	modCompileOnly("dev.emi:emi-fabric:${project.emi_version}")
+	modCompileOnly("maven.modrinth:emi:mYQ3bJs5")
 
 	//Universal Graves
-	modCompileOnly "curse.maven:universal-graves-497175:5435263"
+	modCompileOnly("curse.maven:universal-graves-497175:5435263")
 
 	//Mouse Tweaks
-	modCompileOnly "curse.maven:mouse-tweaks-60089:5437294"
+	modCompileOnly("curse.maven:mouse-tweaks-60089:5437294")
 
 	//TAN
 	modCompileOnly("curse.maven:tan-246391:5715303")
@@ -199,10 +143,23 @@ dependencies {
 }
 
 processResources {
-	inputs.property "version", project.version
+	var replaceProperties = [
+			minecraft_version      : minecraft_version,
+			minecraft_version_range: minecraft_version_range,
+			mod_id                 : mod_id,
+			mod_name               : mod_name,
+			mod_display_name       : mod_display_name,
+			mod_license            : mod_license,
+			mod_version            : mod_version,
+			mod_authors            : mod_authors,
+			mod_description        : mod_description,
+			mod_display_url        : mod_display_url,
+			mod_issue_tracker_url  : mod_issue_tracker_url,
+	]
+	inputs.properties replaceProperties
 
-	filesMatching("fabric.mod.json") {
-		expand "version": project.version
+	filesMatching('fabric.mod.json') {
+		expand replaceProperties
 	}
 }
 
@@ -215,7 +172,6 @@ java {
 	// if it is present.
 	// If you remove this line, sources will not be generated.
 	withSourcesJar()
-
 	sourceCompatibility = JavaVersion.VERSION_21
 	targetCompatibility = JavaVersion.VERSION_21
 }
@@ -223,23 +179,5 @@ java {
 jar {
 	from("LICENSE") {
 		rename { "${it}_${project.base.archivesName.get()}"}
-	}
-}
-
-// configure the maven publication
-publishing {
-	publications {
-		mavenJava(MavenPublication) {
-			artifactId = project.archives_base_name
-			from components.java
-		}
-	}
-
-	// See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
-	repositories {
-		// Add repositories to publish to here.
-		// Notice: This block does NOT have the same function as the block in the top level.
-		// The repositories here will be used for publishing your artifact, not for
-		// retrieving dependencies.
 	}
 }
