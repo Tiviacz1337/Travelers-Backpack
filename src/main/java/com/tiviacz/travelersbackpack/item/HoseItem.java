@@ -144,6 +144,8 @@ public class HoseItem extends Item {
                                     transaction.commit();
                                     triggerAdvancement(player, ActionTypeTrigger.HOSE_SUCK);
                                     return InteractionResult.SUCCESS;
+                                } else {
+                                    transaction.abort();
                                 }
                             }
                         }
@@ -194,6 +196,8 @@ public class HoseItem extends Item {
                                 transaction.commit();
                                 triggerAdvancement(player, ActionTypeTrigger.HOSE_SPILL);
                                 return InteractionResult.SUCCESS;
+                            } else {
+                                transaction.abort();
                             }
                         }
                     }
