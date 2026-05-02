@@ -159,7 +159,7 @@ public class FluidTank extends SingleVariantStorage<FluidVariant> {
     }
 
     public FluidVariantWrapper drain(long maxDrain, boolean simulate) {
-        return drain(maxDrain,  simulate, null);
+        return drain(maxDrain, simulate, null);
     }
 
     //Transaction variant for proper saving

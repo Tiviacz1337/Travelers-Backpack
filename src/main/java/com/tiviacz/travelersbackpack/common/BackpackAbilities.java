@@ -4,7 +4,6 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import com.jamieswhiteshirt.reachentityattributes.ReachEntityAttributes;
 import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
-import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.BackpackEffect;
 import com.tiviacz.travelersbackpack.config.Cooldown;
@@ -19,7 +18,6 @@ import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;
 import com.tiviacz.travelersbackpack.util.BackpackDeathHelper;
 import com.tiviacz.travelersbackpack.util.CooldownHelper;
 import com.tiviacz.travelersbackpack.util.NbtHelper;
-import net.blay09.mods.balm.api.event.LivingDeathEvent;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.core.BlockPos;
@@ -65,29 +63,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.*;
 
 public class BackpackAbilities {
-    /**
-     * Main class for all available abilities
-     * connects to few events and block methods to execute/remove proper abilities
-     * It's such a mess right now, I might create better system for all of that in the future.
-     * <p>
-     * //Connecting abilities to player, abilities removals
-     * {@link NeoForgeEventHandler#playerTick(TickEvent.PlayerTickEvent)}
-     * <p>
-     * //Connecting abilities to block entity
-     * {@link BackpackBlockEntity#tick(Level, BlockPos, BlockState, BackpackBlockEntity)}
-     * <p>
-     * //Ability removals
-     * {@link ServerActions#switchAbilitySlider(BackpackWrapper, boolean)} (Player, boolean)}
-     * <p>
-     * //Cosmetic only
-     * {@link TravelersBackpackBlock#animateTick(BlockState, Level, BlockPos, RandomSource)}
-     * <p>
-     * //Few uses of block abilities
-     * {@link TravelersBackpackBlock}
-     * <p>
-     * //Creeper ability
-     * {@link NeoForgeEventHandler#playerDeath(LivingDeathEvent)}
-     */
     public static final BackpackAbilities ABILITIES = new BackpackAbilities();
 
     /**
