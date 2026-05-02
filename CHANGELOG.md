@@ -5,6 +5,7 @@
 🐛 Fixed cactus backpack ability not working properly  
 🐛 Fixed issues with Tanks Upgrade  
 🐛 Fixed Hose fluid interaction to match vanilla bucket behavior  
+🐛 Fixed backpack animations when thrown in the world as an item  
 📚 Added Indonesian translation - Thanks AbsolutUser!  
 
 ⭐ Want to receive **Supporter Star Badge** for a **lifetime**? - [visit my Ko-Fi page](https://ko-fi.com/tiviacz1337)!  
