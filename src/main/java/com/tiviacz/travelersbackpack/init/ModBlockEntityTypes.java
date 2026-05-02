@@ -1,6 +1,5 @@
 package com.tiviacz.travelersbackpack.init;
 
-import com.mojang.datafixers.util.Pair;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
@@ -8,7 +7,6 @@ import com.tiviacz.travelersbackpack.inventory.FluidTank;
 import com.tiviacz.travelersbackpack.inventory.handler.ItemStackHandler;
 import com.tiviacz.travelersbackpack.inventory.handler.StorageAccessWrapper;
 import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;
-import com.tiviacz.travelersbackpack.util.ItemStackUtils;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
@@ -17,10 +15,11 @@ import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.SlottedStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
-import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
+import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 import net.fabricmc.fabric.impl.transfer.item.InventoryStorageImpl;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
@@ -29,6 +28,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
 import java.util.Iterator;
+import java.util.stream.IntStream;
 
 public class ModBlockEntityTypes {
     public static BlockEntityType<BackpackBlockEntity> BACKPACK;
@@ -135,7 +135,7 @@ public class ModBlockEntityTypes {
         return new FluidTank(0);
     }
 
-    public static class BackpackStorage implements Storage<ItemVariant> {
+    public static class BackpackStorage extends SnapshotParticipant<ItemStack[]> implements Storage<ItemVariant> {
         private final SlottedStorage<ItemVariant> storage;
         private final StorageAccessWrapper backingStorage;
 
@@ -146,72 +146,41 @@ public class ModBlockEntityTypes {
 
         @Override
         public long insert(ItemVariant resource, long maxAmount, TransactionContext transaction) {
-            ItemStack stack = resource.toStack();
-
-            if(backingStorage.tryVoiding(stack)) {
-                return maxAmount; //Accept, but void
-            }
+            StoragePreconditions.notBlankNotNegative(resource, maxAmount);
+            updateSnapshots(transaction);
+            long remainingToInsert = maxAmount;
             long totalInserted = 0;
-            long remaining = maxAmount;
 
-            for(Pair<Integer, Pair<ItemStack, Boolean>> memorizedStack : backingStorage.wrapper.getMemorySlots()) {
-                if(memorizedStack.getSecond().getFirst().getItem() != stack.getItem()) {
-                    continue;
-                }
-                int result = matchesStack(stack, memorizedStack);
-
-                if(result == -1) {
-                    continue;
-                }
-                SingleSlotStorage<ItemVariant> slot = storage.getSlot(result);
-                long inserted = slot.insert(resource, remaining, transaction);
-                if(inserted > 0) {
-                    totalInserted += inserted;
-                    remaining -= inserted;
-                    if(remaining <= 0) {
-                        return totalInserted;
-                    }
-                }
-            }
-
-            for(int i = 0; i < storage.getSlotCount() && remaining > 0; i++) {
-                if(backingStorage.wrapper.getUnsortableSlots().contains(i)) {
-                    continue;
-                }
-                SingleSlotStorage<ItemVariant> slot = storage.getSlot(i);
-                long inserted = slot.insert(resource, remaining, transaction);
-                if(inserted > 0) {
-                    totalInserted += inserted;
-                    remaining -= inserted;
+            for(int i = 0; i < backingStorage.getSlots(); i++) {
+                if(remainingToInsert <= 0) break;
+                int attemptAmount = (int)Math.min(remainingToInsert, resource.toStack().getMaxStackSize());
+                ItemStack insertStack = resource.toStack(attemptAmount);
+                ItemStack remainder = backingStorage.insertItem(i, insertStack, false);
+                int insertedInSlot = attemptAmount - remainder.getCount();
+                if(insertedInSlot > 0) {
+                    totalInserted += insertedInSlot;
+                    remainingToInsert -= insertedInSlot;
                 }
             }
             return totalInserted;
         }
 
-        public int matchesStack(ItemStack inserted, Pair<Integer, Pair<ItemStack, Boolean>> memorizedStack) {
-            if(memorizedStack.getSecond().getSecond()) {
-                return ItemStackUtils.isSameItemSameTags(inserted, memorizedStack.getSecond().getFirst()) ? memorizedStack.getFirst() : -1;
-            } else {
-                return ItemStack.isSameItem(inserted, memorizedStack.getSecond().getFirst()) ? memorizedStack.getFirst() : -1;
-            }
-        }
-
         @Override
         public long extract(ItemVariant resource, long maxAmount, TransactionContext transaction) {
+            StoragePreconditions.notBlankNotNegative(resource, maxAmount);
+            updateSnapshots(transaction);
+            long remainingToExtract = maxAmount;
             long totalExtracted = 0;
-            long remaining = maxAmount;
 
-            for(int i = 0; i < storage.getSlotCount() && remaining > 0; i++) {
-                if(backingStorage.wrapper.getUnsortableSlots().contains(i)) {
-                    continue;
-                }
-                SingleSlotStorage<ItemVariant> slot = storage.getSlot(i);
-                if(!slot.isResourceBlank() && slot.getResource().equals(resource)) {
-                    long extracted = slot.extract(resource, remaining, transaction);
-                    if(extracted > 0) {
-                        totalExtracted += extracted;
-                        remaining -= extracted;
-                    }
+            for(int i = 0; i < backingStorage.getSlots(); i++) {
+                if(remainingToExtract <= 0) break;
+                int attemptAmount = (int)Math.min(remainingToExtract, Integer.MAX_VALUE);
+                ItemStack simulatedStack = backingStorage.extractItem(i, attemptAmount, true);
+                if(!simulatedStack.isEmpty() && resource.matches(simulatedStack)) {
+                    int amountExtracted = simulatedStack.getCount();
+                    backingStorage.extractItem(i, amountExtracted, false);
+                    totalExtracted += amountExtracted;
+                    remainingToExtract -= amountExtracted;
                 }
             }
             return totalExtracted;
@@ -219,63 +188,58 @@ public class ModBlockEntityTypes {
 
         @Override
         public Iterator<StorageView<ItemVariant>> iterator() {
-            Iterator<StorageView<ItemVariant>> baseIt = storage.iterator();
+            return IntStream.range(0, storage.getSlotCount())
+                    .mapToObj(i -> (StorageView<ItemVariant>)new BackpackStorageView(i))
+                    .iterator();
+        }
 
-            return new Iterator<>() {
-                @Override
-                public boolean hasNext() {
-                    return baseIt.hasNext();
-                }
+        @Override
+        protected ItemStack[] createSnapshot() {
+            ItemStack[] snapshot = new ItemStack[backingStorage.getSlots()];
+            for(int i = 0; i < backingStorage.getSlots(); i++) {
+                snapshot[i] = backingStorage.getStackInSlot(i).copy();
+            }
+            return snapshot;
+        }
 
-                @Override
-                public StorageView<ItemVariant> next() {
-                    StorageView<ItemVariant> original = baseIt.next();
-                    return new StorageView<ItemVariant>() {
-                        @Override
-                        public long extract(ItemVariant resource, long maxAmount, TransactionContext transaction) {
-                            int slotIndex = getSlotIndex(original);
-                            if(backingStorage.wrapper.getUnsortableSlots().contains(slotIndex)) {
-                                return 0;
-                            }
-                            return original.extract(resource, maxAmount, transaction);
-                        }
+        @Override
+        protected void readSnapshot(ItemStack[] snapshot) {
+            for(int i = 0; i < snapshot.length; i++) {
+                backingStorage.setStackInSlot(i, snapshot[i]);
+            }
+        }
 
-                        @Override
-                        public ItemVariant getResource() {
-                            return original.getResource();
-                        }
+        private class BackpackStorageView implements StorageView<ItemVariant> {
+            private final int slotIndex;
 
-                        @Override
-                        public long getAmount() {
-                            return original.getAmount();
-                        }
+            public BackpackStorageView(int slotIndex) {
+                this.slotIndex = slotIndex;
+            }
 
-                        @Override
-                        public long getCapacity() {
-                            return original.getCapacity();
-                        }
+            @Override
+            public long extract(ItemVariant resource, long maxAmount, TransactionContext transaction) {
+                return BackpackStorage.this.extract(resource, maxAmount, transaction);
+            }
 
-                        @Override
-                        public boolean isResourceBlank() {
-                            return original.isResourceBlank();
-                        }
+            @Override
+            public boolean isResourceBlank() {
+                return getResource().isBlank();
+            }
 
-                        @Override
-                        public StorageView<ItemVariant> getUnderlyingView() {
-                            return original;
-                        }
-                    };
-                }
+            @Override
+            public ItemVariant getResource() {
+                return storage.getSlot(slotIndex).getResource();
+            }
 
-                private int getSlotIndex(StorageView<ItemVariant> view) {
-                    for(int i = 0; i < storage.getSlotCount(); i++) {
-                        if(storage.getSlot(i) == view) {
-                            return i;
-                        }
-                    }
-                    return -1;
-                }
-            };
+            @Override
+            public long getAmount() {
+                return storage.getSlot(slotIndex).getAmount();
+            }
+
+            @Override
+            public long getCapacity() {
+                return storage.getSlot(slotIndex).getCapacity();
+            }
         }
     }
 
