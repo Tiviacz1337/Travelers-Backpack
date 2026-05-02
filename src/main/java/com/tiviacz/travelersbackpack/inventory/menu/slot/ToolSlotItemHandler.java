@@ -43,6 +43,10 @@ public class ToolSlotItemHandler extends SlotItemHandler {
 
         if(TravelersBackpackConfig.isToolAllowed(stack)) return true;
 
+        if(stack.getMaxStackSize() == 1) {
+            return true; //Accept all possible tools
+        }
+
         //Vanilla tools
         if(stack.getItem() instanceof TieredItem ||
                 stack.getItem() instanceof HoeItem ||
