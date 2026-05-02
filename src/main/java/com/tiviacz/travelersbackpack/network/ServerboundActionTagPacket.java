@@ -43,6 +43,7 @@ public record ServerboundActionTagPacket(CompoundTag actionTag) implements Custo
     public static final int ABILITY_SLIDER = 14;
     public static final int EQUIP_BACKPACK = 15;
     public static final int SET_STACK = 16;
+    public static final int PICK_ITEM = 17;
 
     public static void handle(ServerboundActionTagPacket message, ServerPlayNetworking.Context ctx) {
         ctx.player().getServer().execute(() -> {
@@ -122,6 +123,10 @@ public record ServerboundActionTagPacket(CompoundTag actionTag) implements Custo
                     ItemStack stack = ItemStack.OPTIONAL_CODEC.parse(NbtOps.INSTANCE, actionTag.getCompound("Arg1")).getOrThrow();
                     int slot = actionTag.getInt("Arg2");
                     ServerActions.setStack(player, type, stack, slot);
+                }
+                case PICK_ITEM -> {
+                    ItemStack stack = ItemStack.OPTIONAL_CODEC.parse(NbtOps.INSTANCE, actionTag.getCompound("Arg0")).getOrThrow();
+                    ServerActions.pickItem(player, stack);
                 }
             }
         });

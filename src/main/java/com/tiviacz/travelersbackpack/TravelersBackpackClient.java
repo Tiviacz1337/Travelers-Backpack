@@ -19,6 +19,7 @@ import com.tiviacz.travelersbackpack.fluids.potion.PotionFluidVariantAttributeHa
 import com.tiviacz.travelersbackpack.fluids.potion.PotionFluidVariantRenderHandler;
 import com.tiviacz.travelersbackpack.handlers.BackpackModelLoadingPlugin;
 import com.tiviacz.travelersbackpack.handlers.KeybindHandler;
+import com.tiviacz.travelersbackpack.handlers.PickBlockHandler;
 import com.tiviacz.travelersbackpack.handlers.ScreenRenderHandler;
 import com.tiviacz.travelersbackpack.init.*;
 import net.fabricmc.api.ClientModInitializer;
@@ -71,6 +72,7 @@ public class TravelersBackpackClient implements ClientModInitializer {
         //Keybindings
         KeybindHandler.initKeybinds();
         KeybindHandler.registerListener();
+        PickBlockHandler.registerClientListeners();
 
         //Client Network
         ModNetwork.initClient();
