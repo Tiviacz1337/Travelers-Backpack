@@ -35,7 +35,8 @@ public class TankActions {
                         InventoryActions.playFluidSound(wrapper.getBackpackOwner(), wrapper.getPlayersUsing(), fluidSound, FluidTypeHelper.BUCKET_EMPTY);
                         handled.set(true);
                     }
-                } else if(!handled.get() && fluidStorage.supportsInsertion()) {
+                }
+                if(!handled.get() && fluidStorage.supportsInsertion()) {
                     ItemStack carriedCopy = carried.copy();
                     int count = carriedCopy.getCount();
                     carriedCopy.setCount(count - 1);

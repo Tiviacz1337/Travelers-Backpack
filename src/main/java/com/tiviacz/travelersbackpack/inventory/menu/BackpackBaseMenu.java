@@ -687,7 +687,7 @@ public class BackpackBaseMenu extends AbstractBackpackMenu {
     @Override
     public void removed(Player player) {
         this.wrapper.getUpgradeManager().getUpgrade(CraftingUpgrade.class).ifPresent(craftingUpgrade -> clearSlotsAndPlaySound(player, craftingUpgrade.crafting, craftingUpgrade.crafting.getSlots(), true));
-        this.wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).ifPresent(tanksUpgrade -> clearSlotsAndPlaySound(inventory.player, tanksUpgrade.getFluidSlotsHandler(), 4, false));
+        this.wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).ifPresent(tanksUpgrade -> clearSlotsAndPlaySound(player, tanksUpgrade.getFluidSlotsHandler(), 4, false));
         super.removed(player);
     }
 

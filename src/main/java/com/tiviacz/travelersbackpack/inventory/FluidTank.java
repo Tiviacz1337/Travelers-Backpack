@@ -223,6 +223,11 @@ public class FluidTank extends SingleVariantStorage<FluidVariant> {
     protected void onContentsChanged() {
     }
 
+    //Required for item fluid handler
+    public void saveToStack() {
+        onContentsChanged();
+    }
+
     public void setFluid(FluidVariantWrapper stack) {
         this.fluidVariant = stack;
     }
