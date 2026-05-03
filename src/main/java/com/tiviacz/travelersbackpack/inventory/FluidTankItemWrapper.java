@@ -1,13 +1,19 @@
 package com.tiviacz.travelersbackpack.inventory;
 
+import com.tiviacz.travelersbackpack.components.BackpackContainerContents;
+import com.tiviacz.travelersbackpack.components.Fluids;
+import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;
+import com.tiviacz.travelersbackpack.items.upgrades.TanksUpgradeItem;
+import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
+import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
 public class FluidTankItemWrapper implements IFluidHandlerItem {
-    private final ItemStack backpack;
-    private final TanksUpgrade upgrade;
+    private ItemStack backpack;
+    private TanksUpgrade upgrade;
 
     public FluidTankItemWrapper(ItemStack backpack, TanksUpgrade upgrade) {
         this.backpack = backpack;
@@ -21,15 +27,20 @@ public class FluidTankItemWrapper implements IFluidHandlerItem {
 
     @Override
     public int getTanks() {
-        return 2;
+        return 1;
+    }
+
+    public FluidStack getFluid() {
+        return upgrade.getLeftTank().getFluid().copy();
     }
 
     @Override
     public FluidStack getFluidInTank(int tank) {
-        if(tank == 0) {
+        return getFluid();
+        /*if(tank == 0) {
             return upgrade.getLeftTank().getFluid();
         }
-        return upgrade.getRightTank().getFluid();
+        return upgrade.getRightTank().getFluid();*/
     }
 
     @Override
@@ -61,23 +72,52 @@ public class FluidTankItemWrapper implements IFluidHandlerItem {
 
     @Override
     public FluidStack drain(FluidStack resource, FluidAction action) {
-        if(getContainer().getCount() > 1) {
+        if(backpack.getCount() != 1 || resource.isEmpty() || !FluidStack.isSameFluidSameComponents(resource, getFluid())) {
             return FluidStack.EMPTY;
         }
-        if(!upgrade.getLeftTank().drain(resource, FluidAction.SIMULATE).isEmpty()) {
-            return upgrade.getLeftTank().drain(resource, action);
-        }
-        return upgrade.getRightTank().drain(resource, action);
+        return drain(resource.getAmount(), action);
     }
 
     @Override
     public FluidStack drain(int maxDrain, FluidAction action) {
-        if(getContainer().getCount() > 1) {
+        if (backpack.getCount() != 1 || maxDrain <= 0) {
             return FluidStack.EMPTY;
         }
-        if(!upgrade.getLeftTank().drain(maxDrain, FluidAction.SIMULATE).isEmpty()) {
-            return upgrade.getLeftTank().drain(maxDrain, action);
+
+        FluidStack contained = getFluid();
+        if (contained.isEmpty()) {
+            return FluidStack.EMPTY;
         }
-        return upgrade.getRightTank().drain(maxDrain, action);
+
+        final int drainAmount = Math.min(contained.getAmount(), maxDrain);
+
+        FluidStack drained = contained.copyWithAmount(drainAmount);
+
+        if (action.execute()) {
+            contained.shrink(drainAmount);
+            saveToContainer(contained);
+        }
+
+        return drained;
+    }
+
+    //#TODO tweak ...
+    public void saveToContainer(FluidStack fluidStack) {
+        BackpackContainerContents upgrades = backpack.get(ModDataComponents.UPGRADES);
+        NonNullList<ItemStack> stacks = NonNullList.withSize(upgrades.getItems().size(), ItemStack.EMPTY);
+        upgrades.copyInto(stacks);
+        ItemStack tanksCopy = null;
+        int slot = 0;
+        for(int i = 0 ; i < stacks.size() ; i++) {
+            ItemStack stack = stacks.get(i);
+            if(stack.getItem() instanceof TanksUpgradeItem) {
+                tanksCopy = stack.copy();
+                tanksCopy.set(ModDataComponents.FLUIDS, new Fluids(fluidStack, FluidStack.EMPTY));
+                slot = i;
+            }
+        }
+
+        stacks.set(slot, tanksCopy);
+        backpack.set(ModDataComponents.UPGRADES, BackpackContainerContents.fromItems(stacks.size(), stacks));
     }
 }

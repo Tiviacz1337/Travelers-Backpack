@@ -1,11 +1,12 @@
 package com.tiviacz.travelersbackpack.inventory;
 
+import com.tiviacz.travelersbackpack.components.Fluids;
 import com.tiviacz.travelersbackpack.init.ModFluids;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBlockEntityMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackItemMenu;
 import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;
+import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.FluidStackHelper;
-import com.tiviacz.travelersbackpack.util.InventoryHelper;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -15,7 +16,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.PotionItem;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.common.SoundActions;
+import net.neoforged.neoforge.fluids.FluidActionResult;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
@@ -26,13 +29,10 @@ import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Optional;
 
 public class InventoryActions {
-    public static boolean transferContainerTank(TanksUpgrade upgrade, FluidTank tank, int slotIn) {
+    public static boolean transferContainerTank(TanksUpgrade upgrade, ItemStack stackIn, FluidTank tank, int slotIn) {
         ItemStackHandler itemStackHandler = upgrade.getFluidSlotsHandler();
-
-        ItemStack stackIn = itemStackHandler.getStackInSlot(slotIn);
         int slotOut = slotIn + 1;
 
         if(tank == null || stackIn.isEmpty() || stackIn.getItem() == Items.AIR) return false;
@@ -42,36 +42,16 @@ public class InventoryActions {
             boolean hasFluidHandler = FluidUtil.getFluidHandler(stackIn).isPresent();
 
             if(!hasFluidHandler) {
-                int amount = Reference.POTION;
-                FluidStack fluidStack = new FluidStack(ModFluids.POTION_FLUID.get(), amount);
+                FluidStack fluidStack = new FluidStack(ModFluids.POTION_FLUID.get(), Reference.POTION);
                 int potionType = 0;
                 if(stackIn.getItem() == Items.SPLASH_POTION) potionType = 1;
                 if(stackIn.getItem() == Items.LINGERING_POTION) potionType = 2;
                 FluidStackHelper.setFluidStackData(stackIn, fluidStack, potionType);
+                ItemStack bottle = potionType != 0 ? ItemStack.EMPTY.copy() : new ItemStack(Items.GLASS_BOTTLE);
 
-                if(tank.isEmpty() || FluidStack.isSameFluidSameComponents(tank.getFluid(), fluidStack)) {
-                    if(tank.getFluidAmount() + amount <= tank.getCapacity()) {
-                        ItemStack bottle = potionType != 0 ? ItemStack.EMPTY.copy() : new ItemStack(Items.GLASS_BOTTLE);
-                        ItemStack currentStackOut = itemStackHandler.getStackInSlot(slotOut);
-
-                        if(currentStackOut.isEmpty() || currentStackOut.getItem() == bottle.getItem() || bottle.isEmpty()) {
-                            if(currentStackOut.getItem() == bottle.getItem() && !bottle.isEmpty()) {
-                                if(currentStackOut.getCount() + 1 > currentStackOut.getMaxStackSize()) return false;
-
-                                bottle.setCount(itemStackHandler.getStackInSlot(slotOut).getCount() + 1);
-                            }
-
-                            tank.fill(fluidStack, IFluidHandler.FluidAction.EXECUTE);
-                            InventoryHelper.removeItem(upgrade.getFluidSlotsHandler(), slotIn, 1);
-                            if(!bottle.isEmpty()) {
-                                itemStackHandler.setStackInSlot(slotOut, bottle);
-                            }
-
-                            playFluidSound(upgrade.getUpgradeManager().getWrapper().getBackpackOwner(), upgrade.getUpgradeManager().getWrapper().getPlayersUsing(), SoundEvents.BREWING_STAND_BREW, true);
-
-                            return true;
-                        }
-                    }
+                if(transferPotion(itemStackHandler, fluidStack, 0, tank, stackIn, bottle, slotOut, true)) {
+                    playFluidSound(upgrade.getUpgradeManager().getWrapper().getBackpackOwner(), upgrade.getUpgradeManager().getWrapper().getPlayersUsing(), SoundEvents.BREWING_STAND_BREW, true);
+                    return true;
                 }
             }
         }
@@ -79,64 +59,29 @@ public class InventoryActions {
         if(stackIn.getItem() == Items.GLASS_BOTTLE) {
             if(tank.getFluid().getFluid() == ModFluids.POTION_FLUID.get() && tank.getFluidAmount() >= Reference.POTION) {
                 ItemStack stackOut = FluidStackHelper.getItemStackFromFluidStack(tank.getFluid());
-                ItemStack currentStackOut = itemStackHandler.getStackInSlot(slotOut);
-
-                if(currentStackOut.isEmpty()) {
-                    tank.drain(Reference.POTION, IFluidHandler.FluidAction.EXECUTE);
-                    InventoryHelper.removeItem(upgrade.getFluidSlotsHandler(), slotIn, 1);
-                    itemStackHandler.setStackInSlot(slotOut, stackOut);
-
+                if(transferPotion(itemStackHandler, FluidStack.EMPTY, Reference.POTION, tank, stackIn, stackOut, slotOut, false)) {
                     playFluidSound(upgrade.getUpgradeManager().getWrapper().getBackpackOwner(), upgrade.getUpgradeManager().getWrapper().getPlayersUsing(), SoundEvents.BREWING_STAND_BREW, false);
-
                     return true;
                 }
             }
         }
         // --- POTION PART ---
 
-        Optional<IFluidHandlerItem> fluidHandler = FluidUtil.getFluidHandler(stackIn);
+        IFluidHandlerItem fluidHandler = FluidUtil.getFluidHandler(stackIn).orElse(null);
 
-        if(fluidHandler.isPresent()) {
-            Optional<FluidStack> fluidstack = FluidUtil.getFluidContained(stackIn);
+        if(fluidHandler != null) {
+            FluidStack fluidStackCopy = fluidHandler.drain(Integer.MAX_VALUE, IFluidHandler.FluidAction.SIMULATE);
 
             //Container ===> Tank
 
-            if(fluidstack.isPresent() && fluidstack.map(FluidStack::getAmount).orElse(0) > 0) {
-                int amount = fluidstack.map(FluidStack::getAmount).orElse(0);
+            if(fluidStackCopy.getAmount() > 0) {
+                if(tank.getFluidAmount() <= 0 || FluidStack.isSameFluidSameComponents(fluidStackCopy, tank.getFluid())) {
+                    //Fluid sound
+                    SoundEvent fluidSound = fluidStackCopy.getFluid().getFluidType().getSound(fluidStackCopy, SoundActions.BUCKET_EMPTY);
 
-                if(tank.getFluidAmount() > 0 && !FluidStack.isSameFluidSameComponents(tank.getFluid(), fluidstack.orElse(FluidStack.EMPTY)))
-                    return false;
-
-                //Copies
-                ItemStack stackInCopy = stackIn.copy();
-                FluidTank tankCopy = new FluidTank(tank.getCapacity());
-                tankCopy.fill(tank.getFluid(), IFluidHandler.FluidAction.EXECUTE);
-
-                //Fluid sound
-                SoundEvent fluidSound = tank.getFluid().getFluidType().getSound(tank.getFluid(), SoundActions.BUCKET_EMPTY);
-
-                ItemStack stackOut = FluidUtil.tryEmptyContainer(stackInCopy, tankCopy, amount, null, false).getResult();
-
-                if(!stackOut.isEmpty()) {
-                    ItemStack slotOutStack = itemStackHandler.getStackInSlot(slotOut);
-
-                    if(slotOutStack.isEmpty() || slotOutStack.getItem() == stackOut.getItem()) {
-                        if(slotOutStack.getItem() == stackOut.getItem()) {
-                            stackOut.setCount(slotOutStack.getCount() + 1);
-
-                            if(stackOut.getCount() > slotOutStack.getMaxStackSize()) return false;
-                        }
-
-                       /* if(stackInCopy.getItem() == Items.WATER_BUCKET && EnchantmentHelper.getEnchantments(stackInCopy).containsKey(Enchantments.INFINITY_ARROWS))
-                        {
-                            stackOut = stackInCopy;
-                        } */
+                    if(transferFluid(itemStackHandler, tank, stackIn, slotOut, true)) {
+                        //Play fill sound
                         playFluidSound(upgrade.getUpgradeManager().getWrapper().getBackpackOwner(), upgrade.getUpgradeManager().getWrapper().getPlayersUsing(), fluidSound, false);
-                        FluidUtil.tryEmptyContainer(stackIn, tank, amount, null, true);
-
-                        itemStackHandler.setStackInSlot(slotOut, stackOut);
-                        InventoryHelper.removeItem(upgrade.getFluidSlotsHandler(), slotIn, 1);
-
                         return true;
                     }
                 }
@@ -144,37 +89,17 @@ public class InventoryActions {
 
             //Tank ===> Container
 
-            if(tank.isEmpty() || tank.getFluidAmount() <= 0) return false;
+            if(tank.isEmpty() || tank.getFluidAmount() <= 0) {
+                return false;
+            }
 
-            if(isFluidEqual(stackIn, tank)) {
-                int amount = FluidUtil.getFluidHandler(stackIn).map(iFluidHandlerItem -> iFluidHandlerItem.getTankCapacity(0)).orElse(0);
-
-                ItemStack stackInCopy = stackIn.copy();
-                FluidTank tankCopy = new FluidTank(tank.getCapacity());
-                tankCopy.fill(tank.getFluid(), IFluidHandler.FluidAction.EXECUTE);
-
+            if(isSameFluid(stackIn, tank)) {
                 //Fluid sound
-                SoundEvent fluidSound = tank.getFluid().getFluidType().getSound(tank.getFluid(), SoundActions.BUCKET_FILL);
+                SoundEvent fluidSound = tank.getFluid().getFluid().getFluidType().getSound(tank.getFluid(), SoundActions.BUCKET_FILL);
 
-                ItemStack stackOut = FluidUtil.tryFillContainer(stackInCopy, tankCopy, amount, null, true).getResult();
-
-                if(stackOut.isEmpty()) return false;
-
-                ItemStack slotOutStack = itemStackHandler.getStackInSlot(slotOut);
-
-                if(slotOutStack.isEmpty() || slotOutStack.getItem() == stackOut.getItem()) {
-                    if(slotOutStack.getItem() == stackOut.getItem()) {
-                        stackOut.setCount(slotOutStack.getCount() + 1);
-
-                        if(stackOut.getCount() > slotOutStack.getMaxStackSize()) return false;
-                    }
-
+                if(transferFluid(itemStackHandler, tank, stackIn, slotOut, false)) {
+                    //Play fill sound
                     playFluidSound(upgrade.getUpgradeManager().getWrapper().getBackpackOwner(), upgrade.getUpgradeManager().getWrapper().getPlayersUsing(), fluidSound, true);
-                    FluidUtil.tryFillContainer(stackIn, tank, amount, null, true);
-
-                    itemStackHandler.setStackInSlot(slotOut, stackOut);
-                    InventoryHelper.removeItem(upgrade.getFluidSlotsHandler(), slotIn, 1);
-
                     return true;
                 }
             }
@@ -182,10 +107,127 @@ public class InventoryActions {
         return false;
     }
 
-    private static boolean isFluidEqual(ItemStack stackIn, FluidTank tank) {
-        if(FluidUtil.getFluidContained(stackIn).isPresent() && FluidUtil.getFluidContained(stackIn).map(FluidStack::getAmount).orElse(0) > 0) {
-            return FluidUtil.getFluidContained(stackIn).map(fluidstack -> FluidStack.isSameFluidSameComponents(fluidstack, tank.getFluid())).orElse(false);
-        } else return !FluidUtil.getFluidContained(stackIn).isPresent();
+    private static boolean transferFluid(ItemStackHandler handler, FluidTank tank, ItemStack stack, int slotOut, boolean isFilling) {
+        ItemStackHandler tempHandler = new ItemStackHandler(1);
+        //1 - Current output item in slotOut
+        tempHandler.setStackInSlot(0, handler.getStackInSlot(slotOut));
+
+        //ItemStack backpackCopy = stack.copyWithCount(1);
+       // System.out.println(BackpackWrapper.fromStack(backpackCopy).getUpgrade(TanksUpgrade.class).get().getLeftTank().getFluid());
+        //FluidUtil.tryEmptyContainer(backpackCopy, tank, tank.getCapacity(), null, false);
+        //System.out.println(BackpackWrapper.fromStack(stack).getUpgrade(TanksUpgrade.class).get().getLeftTank().getFluid());
+
+        FluidActionResult simulatedResult = null;
+        if(isFilling) {
+            //if(stack.getItem() instanceof TravelersBackpackItem) {
+           //    simulatedResult = tryEmptyContainer(stack, tank, tank.getCapacity(), null, false);
+            //} else {
+                simulatedResult = FluidUtil.tryEmptyContainer(stack, tank, tank.getCapacity(), null, false);
+            //}
+        } else {
+            simulatedResult = FluidUtil.tryFillContainer(stack, tank, tank.getCapacity(), null, false);
+        }
+
+        if(simulatedResult.isSuccess()) {
+            ItemStack simulatedStackResult = simulatedResult.getResult();
+            ItemStack simulatedInsertResult = tempHandler.insertItem(0, simulatedStackResult, true);
+
+            //Success after simulation
+            if(simulatedInsertResult.isEmpty()) {
+                FluidActionResult finalResult = isFilling ? FluidUtil.tryEmptyContainer(stack, tank, tank.getCapacity(), null, true) : FluidUtil.tryFillContainer(stack, tank, tank.getCapacity(), null, true);
+                ItemStack finalStackResult = finalResult.getResult();
+
+                if(finalResult.isSuccess()) {
+                    tempHandler.insertItem(0, finalStackResult, false);
+
+                    //Shrink the stack in input slot
+                    stack.shrink(1);
+
+                    //Set result stack in output slot
+                    handler.setStackInSlot(slotOut, tempHandler.getStackInSlot(0).copy());
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public static FluidActionResult tryEmptyContainer(ItemStack container, IFluidHandler fluidDestination, int maxAmount, @Nullable Player player, boolean doDrain) {
+        ItemStack containerCopy = container.copyWithCount(1); // do not modify the input
+        return FluidUtil.getFluidHandler(containerCopy)
+                .map(containerFluidHandler -> {
+                    FluidStack transfer = FluidUtil.tryFluidTransfer(fluidDestination, containerFluidHandler, maxAmount, doDrain);
+                    if (transfer.isEmpty())
+                        return FluidActionResult.FAILURE;
+                    if (!doDrain) {
+                        // We are acting on a COPY of the stack, so performing changes on the source is acceptable even if we are simulating.
+                        // We need to perform the change otherwise the call to getContainer() will be incorrect.
+                        // #TODO FIND FIX FOR THIS? USING DRAIN EXECUTE HERE BREAKS EMPTYING TRAVELERS BACKPACK
+                        containerFluidHandler.drain(transfer, IFluidHandler.FluidAction.SIMULATE);
+                    }
+
+                    if (doDrain && player != null) {
+                        SoundEvent soundevent = transfer.getFluidType().getSound(transfer, SoundActions.BUCKET_EMPTY);
+
+                        if (soundevent != null) {
+                            player.level().playSound(null, player.getX(), player.getY() + 0.5, player.getZ(), soundevent, SoundSource.BLOCKS, 1.0F, 1.0F);
+                        }
+                    }
+
+                    ItemStack resultContainer = containerFluidHandler.getContainer();
+                    return new FluidActionResult(resultContainer);
+                })
+                .orElse(FluidActionResult.FAILURE);
+    }
+
+    public static boolean transferPotion(ItemStackHandler handler, FluidStack potionFluidStack, int fluidAmount, FluidTank tank, ItemStack stackIn, ItemStack bottleResult, int slotOut, boolean isFilling) {
+        int filledFluid = isFilling ? tank.fill(potionFluidStack, IFluidHandler.FluidAction.SIMULATE) : tank.drain(fluidAmount, IFluidHandler.FluidAction.SIMULATE).getAmount();
+
+        //Can't fill tank
+        if(filledFluid <= 0) {
+            return false;
+        }
+
+        ItemStackHandler tempHandler = new ItemStackHandler(1);
+        tempHandler.setStackInSlot(0, handler.getStackInSlot(slotOut).copy());
+
+        ItemStack insertResult = tempHandler.insertItem(0, bottleResult, true);
+
+        //Correctly inserted to the slot out
+        if(insertResult.isEmpty()) {
+            if(isFilling) {
+                tank.fill(potionFluidStack, IFluidHandler.FluidAction.EXECUTE);
+            } else {
+                tank.drain(fluidAmount, IFluidHandler.FluidAction.EXECUTE);
+            }
+
+            tempHandler.insertItem(0, bottleResult, false);
+
+            //Shrink input stack
+            stackIn.shrink(1);
+
+            //Set result stack in output slot
+            handler.setStackInSlot(slotOut, tempHandler.getStackInSlot(0).copy());
+            return true;
+        }
+        return false;
+    }
+
+    private static boolean isSameFluid(ItemStack stack, FluidTank tank) {
+        IFluidHandlerItem fluidHandler = stack.getCapability(Capabilities.FluidHandler.ITEM);
+        if(fluidHandler != null) {
+            //Search for same fluid or empty
+            for(int i = 0; i < fluidHandler.getTanks(); i++) {
+                FluidStack fluidStack = fluidHandler.getFluidInTank(i);
+                boolean sameFluid = tank.getFluidAmount() > 0 && FluidStack.isSameFluidSameComponents(fluidStack, tank.getFluid());
+                boolean emptyHandler = fluidStack.isEmpty();
+
+                if(emptyHandler || sameFluid) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public static void playFluidSound(@Nullable Player player, List<Player> usingPlayers, SoundEvent soundEvent, boolean fill) {
@@ -207,7 +249,6 @@ public class InventoryActions {
             }
             if(user.containerMenu instanceof BackpackItemMenu menu && menu.getWrapper().getScreenID() == Reference.ITEM_SCREEN_ID && !menu.player.level().isClientSide) {
                 menu.player.playNotifySound(soundEvent, SoundSource.BLOCKS, 1.0F, 1.0F);
-                //menu.player.level().playLocalSound(menu.player.position().x(), menu.player.position().y() + 0.5, menu.player.position().z(), soundEvent, SoundSource.BLOCKS, 1.0F, 1.0F, false);
             }
         }
     }

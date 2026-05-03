@@ -6,7 +6,6 @@ import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.ItemStackHandler;
-import org.jetbrains.annotations.NotNull;
 
 public class FluidSlotItemHandler extends UpgradeSlotItemHandler<TanksUpgrade> {
     private final int index;
@@ -27,13 +26,12 @@ public class FluidSlotItemHandler extends UpgradeSlotItemHandler<TanksUpgrade> {
         //3 - right out
     }
 
-    //Fix for buckets bug
     @Override
-    public void set(@NotNull ItemStack stack) {
-        super.set(stack);
+    public void setByPlayer(ItemStack itemStack) {
         if(index == 0 || index == 2) {
-            InventoryActions.transferContainerTank(upgrade, index == 0 ? upgrade.getLeftTank() : upgrade.getRightTank(), index);
+            InventoryActions.transferContainerTank(upgrade, itemStack, index == 0 ? upgrade.getLeftTank() : upgrade.getRightTank(), index);
         }
+        super.setByPlayer(itemStack);
     }
 
     @Override

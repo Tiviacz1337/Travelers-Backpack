@@ -14,8 +14,12 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -184,7 +188,7 @@ public class ModItems {
         event.registerItem(Capabilities.FluidHandler.ITEM, (stack, context) -> {
                     BackpackWrapper wrapper = BackpackWrapper.fromStack(stack);
                     if(wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).isPresent()) {
-                        return new FluidTankItemWrapper(stack, wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).get());
+                        return new FluidTankItemWrapper(wrapper.getBackpackStack(), wrapper.getUpgrade(TanksUpgrade.class).get());
                     }
                     return null;
                 }, ModItems.STANDARD_TRAVELERS_BACKPACK.get(),

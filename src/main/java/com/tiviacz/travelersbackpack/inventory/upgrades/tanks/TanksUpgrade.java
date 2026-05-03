@@ -133,16 +133,6 @@ public class TanksUpgrade extends UpgradeBase<TanksUpgrade> {
 
     public ItemStackHandler createTemporaryHandler() {
         return new ItemStackHandler(4) {
-            /*@Override
-            protected void onContentsChanged(int slot) {
-                if(slot == 0) {
-                    InventoryActions.transferContainerTank(TanksUpgrade.this, getLeftTank(), 0);
-                }
-                if(slot == 2) {
-                    InventoryActions.transferContainerTank(TanksUpgrade.this, getRightTank(), 2);
-                }
-            }*/
-
             @Override
             public boolean isItemValid(int slot, @NotNull ItemStack stack) {
                 Optional<IFluidHandlerItem> container = FluidUtil.getFluidHandler(stack);
