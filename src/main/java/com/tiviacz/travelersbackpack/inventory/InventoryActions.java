@@ -119,12 +119,6 @@ public class InventoryActions {
                 ItemStack finalStackResult = finalResult.getResult();
 
                 if(finalResult.isSuccess()) {
-                    //Forge only //#TODO check if it works natively
-                    if(isFilling) {
-                        if(stack.getItem() == Items.WATER_BUCKET && EnchantmentHelper.getEnchantments(stack).containsKey(Enchantments.INFINITY_ARROWS)) {
-                            finalStackResult = stack;
-                        }
-                    }
                     tempHandler.insertItem(0, finalStackResult, false);
 
                     //Shrink the stack in input slot
