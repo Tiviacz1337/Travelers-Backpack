@@ -24,7 +24,7 @@ public class MinecraftMixin {
     public void onPickBlock(CallbackInfo ci, @Local boolean flag, @Local ItemStack itemstack, @Local Inventory inventory) {
         if(AttachmentUtils.isWearingBackpack(Minecraft.getInstance().player)) {
             int i = inventory.findSlotMatchingItem(itemstack);
-            if (i == -1 && !flag) { // Can't find in normal inventory, backpack equipped and no creative mode
+            if(i == -1 && !flag) { // Can't find in normal inventory, backpack equipped and no creative mode
                 ServerboundActionTagPacket.create(ServerboundActionTagPacket.PICK_ITEM, itemstack);
                 ci.cancel();
             }

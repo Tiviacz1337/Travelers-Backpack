@@ -17,7 +17,8 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 
 public record BackpackContainer(ItemStack stack, Player player, int screenID,
-                                int index, boolean triggerClientSideContainerClosing) implements MenuProvider, Nameable {
+                                int index,
+                                boolean triggerClientSideContainerClosing) implements MenuProvider, Nameable {
     public BackpackContainer(ItemStack stack, Player player, int screenID, int index) {
         this(stack, player, screenID, index, true);
     }
