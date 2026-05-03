@@ -2,14 +2,12 @@ package com.tiviacz.travelersbackpack.network;
 
 import com.mojang.datafixers.util.Pair;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
-import com.tiviacz.travelersbackpack.capability.ITravelersBackpack;
 import com.tiviacz.travelersbackpack.init.ModDataHelper;
 import com.tiviacz.travelersbackpack.util.NbtHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.ArrayList;
@@ -70,15 +68,14 @@ public class ClientboundSyncCapabilityPacket {
 
     public static void handle(ClientboundSyncCapabilityPacket message, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
-            Player playerEntity = (Player)Minecraft.getInstance().level.getEntity(message.entityID);
-            LazyOptional<ITravelersBackpack> data = CapabilityUtils.getCapability(playerEntity);
-            if(data.isPresent()) {
+            Player player = (Player)Minecraft.getInstance().level.getEntity(message.entityID);
+            CapabilityUtils.getCapability(player).ifPresent(data -> {
                 if(message.removeData) {
-                    data.resolve().get().remove();
+                    data.remove();
                 } else {
-                    data.resolve().get().updateBackpack(message.backpack);
+                    data.updateBackpack(message.backpack);
                 }
-            }
+            });
         });
         ctx.get().setPacketHandled(true);
     }

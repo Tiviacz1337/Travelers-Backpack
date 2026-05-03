@@ -1,7 +1,6 @@
 package com.tiviacz.travelersbackpack.network;
 
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
-import com.tiviacz.travelersbackpack.capability.ITravelersBackpack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -32,11 +31,8 @@ public class ClientboundSyncComponentsPacket {
 
     public static void handle(ClientboundSyncComponentsPacket message, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
-            Player playerEntity = (Player)Minecraft.getInstance().player.level().getEntity(message.entityID);
-            ITravelersBackpack data = CapabilityUtils.getCapability(playerEntity).orElseThrow(() -> new RuntimeException("No player attachment data found!"));
-            if(data != null) {
-                data.applyComponents(message.map);
-            }
+            Player player = (Player)Minecraft.getInstance().player.level().getEntity(message.entityID);
+            CapabilityUtils.getCapability(player).ifPresent(data -> data.applyComponents(message.map));
         });
         ctx.get().setPacketHandled(true);
     }
