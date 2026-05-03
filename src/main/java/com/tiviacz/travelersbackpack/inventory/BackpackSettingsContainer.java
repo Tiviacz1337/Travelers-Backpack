@@ -17,7 +17,6 @@ import org.jetbrains.annotations.Nullable;
 
 public record BackpackSettingsContainer(ItemStack stack, Player player, int screenID,
                                         int index) implements MenuProvider, Nameable {
-
     @Override
     public Component getName() {
         return Component.translatable("screen.travelersbackpack.item");
@@ -34,6 +33,11 @@ public record BackpackSettingsContainer(ItemStack stack, Player player, int scre
         buf.writeBlockPos(BlockPos.ZERO); //Not used
         buf.writeInt(index);
         return buf;
+    }
+
+    @Override
+    public boolean shouldTriggerClientSideContainerClosingOnOpen() {
+        return false;
     }
 
     @Nullable

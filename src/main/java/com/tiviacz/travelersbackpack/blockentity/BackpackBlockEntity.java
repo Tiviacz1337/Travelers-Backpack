@@ -329,6 +329,18 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider {
         }
     }
 
+    @Override
+    public boolean shouldTriggerClientSideContainerClosingOnOpen() {
+        if(this.wrapper == BackpackWrapper.DUMMY) {
+            return true;
+        } else {
+            if(!getWrapper().getPlayersUsing().isEmpty()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public static RegistryFriendlyByteBuf saveSettingsExtraData(RegistryFriendlyByteBuf buf, BlockPos pos) {
         buf.writeBoolean(true);
         buf.writeBlockPos(pos);
