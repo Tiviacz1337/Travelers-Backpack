@@ -3,6 +3,7 @@
 🐛 Fixed issue that caused backpacks to not spawn on overworld entities  
 🐛 Fixed mouse cursor resetting to screen center after opening backpack from slot or opening backpack settings  
 🐛 Fixed issues with Tanks Upgrade  
+🐛 Fixed Hose fluid interaction to match vanilla bucket behavior  
 📚 Added Indonesian translation - Thanks AbsolutUser!  
 
 ⭐ Want to receive **Supporter Star Badge** for a **lifetime**? - [visit my Ko-Fi page](https://ko-fi.com/tiviacz1337)!  
