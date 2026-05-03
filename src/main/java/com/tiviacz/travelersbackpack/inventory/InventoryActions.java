@@ -1,11 +1,9 @@
 package com.tiviacz.travelersbackpack.inventory;
 
-import com.tiviacz.travelersbackpack.components.Fluids;
 import com.tiviacz.travelersbackpack.init.ModFluids;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBlockEntityMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackItemMenu;
 import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;
-import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.FluidStackHelper;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.sounds.SoundEvent;
@@ -112,21 +110,7 @@ public class InventoryActions {
         //1 - Current output item in slotOut
         tempHandler.setStackInSlot(0, handler.getStackInSlot(slotOut));
 
-        //ItemStack backpackCopy = stack.copyWithCount(1);
-       // System.out.println(BackpackWrapper.fromStack(backpackCopy).getUpgrade(TanksUpgrade.class).get().getLeftTank().getFluid());
-        //FluidUtil.tryEmptyContainer(backpackCopy, tank, tank.getCapacity(), null, false);
-        //System.out.println(BackpackWrapper.fromStack(stack).getUpgrade(TanksUpgrade.class).get().getLeftTank().getFluid());
-
-        FluidActionResult simulatedResult = null;
-        if(isFilling) {
-            //if(stack.getItem() instanceof TravelersBackpackItem) {
-           //    simulatedResult = tryEmptyContainer(stack, tank, tank.getCapacity(), null, false);
-            //} else {
-                simulatedResult = FluidUtil.tryEmptyContainer(stack, tank, tank.getCapacity(), null, false);
-            //}
-        } else {
-            simulatedResult = FluidUtil.tryFillContainer(stack, tank, tank.getCapacity(), null, false);
-        }
+        FluidActionResult simulatedResult = isFilling ? FluidUtil.tryEmptyContainer(stack, tank, tank.getCapacity(), null, false) : FluidUtil.tryFillContainer(stack, tank, tank.getCapacity(), null, false);
 
         if(simulatedResult.isSuccess()) {
             ItemStack simulatedStackResult = simulatedResult.getResult();
