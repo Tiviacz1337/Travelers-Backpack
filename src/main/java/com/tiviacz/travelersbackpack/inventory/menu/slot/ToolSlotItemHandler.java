@@ -50,6 +50,10 @@ public class ToolSlotItemHandler extends SlotItemHandler {
 
         if(TOOL_SLOTS_ACCEPTABLE_ITEMS.contains(stack.getItem())) return true;
 
+        if(stack.getMaxStackSize() == 1) {
+            return true; //Accept all possible tools
+        }
+
         if(stack.getItem() instanceof TieredItem ||
                 stack.getItem() instanceof HoeItem ||
                 stack.getItem() instanceof FishingRodItem ||
