@@ -136,34 +136,6 @@ public class InventoryActions {
         return false;
     }
 
-    public static FluidActionResult tryEmptyContainer(ItemStack container, IFluidHandler fluidDestination, int maxAmount, @Nullable Player player, boolean doDrain) {
-        ItemStack containerCopy = container.copyWithCount(1); // do not modify the input
-        return FluidUtil.getFluidHandler(containerCopy)
-                .map(containerFluidHandler -> {
-                    FluidStack transfer = FluidUtil.tryFluidTransfer(fluidDestination, containerFluidHandler, maxAmount, doDrain);
-                    if (transfer.isEmpty())
-                        return FluidActionResult.FAILURE;
-                    if (!doDrain) {
-                        // We are acting on a COPY of the stack, so performing changes on the source is acceptable even if we are simulating.
-                        // We need to perform the change otherwise the call to getContainer() will be incorrect.
-                        // #TODO FIND FIX FOR THIS? USING DRAIN EXECUTE HERE BREAKS EMPTYING TRAVELERS BACKPACK
-                        containerFluidHandler.drain(transfer, IFluidHandler.FluidAction.SIMULATE);
-                    }
-
-                    if (doDrain && player != null) {
-                        SoundEvent soundevent = transfer.getFluidType().getSound(transfer, SoundActions.BUCKET_EMPTY);
-
-                        if (soundevent != null) {
-                            player.level().playSound(null, player.getX(), player.getY() + 0.5, player.getZ(), soundevent, SoundSource.BLOCKS, 1.0F, 1.0F);
-                        }
-                    }
-
-                    ItemStack resultContainer = containerFluidHandler.getContainer();
-                    return new FluidActionResult(resultContainer);
-                })
-                .orElse(FluidActionResult.FAILURE);
-    }
-
     public static boolean transferPotion(ItemStackHandler handler, FluidStack potionFluidStack, int fluidAmount, FluidTank tank, ItemStack stackIn, ItemStack bottleResult, int slotOut, boolean isFilling) {
         int filledFluid = isFilling ? tank.fill(potionFluidStack, IFluidHandler.FluidAction.SIMULATE) : tank.drain(fluidAmount, IFluidHandler.FluidAction.SIMULATE).getAmount();
 
