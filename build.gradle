@@ -15,6 +15,11 @@ base {
     archivesName = mod_id
 }
 
+sourceSets.main.resources {
+    srcDir('src/generated/resources')
+    exclude("src/generated/**/.cache")
+}
+
 java.toolchain.languageVersion = JavaLanguageVersion.of(25)
 
 neoForge {
@@ -46,22 +51,13 @@ neoForge {
     }
 }
 
-sourceSets.main.resources { srcDir('src/generated/resources') }
-
 configurations {
     runtimeClasspath.extendsFrom localRuntime
 }
 
 repositories {
-    maven {
-        url "https://cursemaven.com"
-        content {
-            includeGroup "curse.maven"
-        }
-    }
-    maven {
-        url 'https://api.modrinth.com/maven'
-    }
+    maven { url "https://cursemaven.com" }
+    maven { url 'https://api.modrinth.com/maven' }
 }
 
 dependencies {
@@ -119,6 +115,7 @@ var generateModMetadata = tasks.register("generateModMetadata", ProcessResources
             mod_authors            : mod_authors,
             mod_description        : mod_description,
             mod_display_url        : mod_display_url,
+            mod_issue_tracker_url  : mod_issue_tracker_url,
     ]
     inputs.properties replaceProperties
     expand replaceProperties
@@ -128,27 +125,6 @@ var generateModMetadata = tasks.register("generateModMetadata", ProcessResources
 
 sourceSets.main.resources.srcDir generateModMetadata
 neoForge.ideSyncTask generateModMetadata
-
-/*tasks.withType(ProcessResources).configureEach {
-    var replaceProperties = [
-            minecraft_version      : minecraft_version,
-            minecraft_version_range: minecraft_version_range,
-            neo_version            : neo_dependency_version,
-            mod_id                 : mod_id,
-            mod_name               : mod_name,
-            mod_display_name       : mod_display_name,
-            mod_license            : mod_license,
-            mod_version            : mod_version,
-            mod_authors            : mod_authors,
-            mod_description        : mod_description,
-            mod_display_url        : mod_display_url,
-    ]
-    inputs.properties replaceProperties
-
-    filesMatching(['META-INF/neoforge.mods.toml']) {
-        expand replaceProperties
-    }
-}*/
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
