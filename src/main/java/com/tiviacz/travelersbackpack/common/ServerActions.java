@@ -13,6 +13,7 @@ import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.BackpackContainer;
 import com.tiviacz.travelersbackpack.inventory.BackpackSettingsContainer;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
+import com.tiviacz.travelersbackpack.inventory.StorageAccessWrapper;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackItemMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackSettingsMenu;
@@ -29,10 +30,13 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
+import net.minecraft.network.protocol.game.ClientboundSetCarriedItemPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ThrownPotion;
 import net.minecraft.world.item.DyeColor;
@@ -52,6 +56,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class ServerActions {
     public static void swapTool(Player player, int slot, int button) {
@@ -589,5 +594,38 @@ public class ServerActions {
         }
 
         player.level().playSound(null, player.position().x(), player.position().y() + 0.5, player.position().z(), SoundEvents.BOTTLE_FILL, SoundSource.BLOCKS, 1.0F, 1.0F);
+    }
+
+    public static void pickItem(ServerPlayer player, ItemStack target) {
+        if(AttachmentUtils.isWearingBackpack(player)) {
+            Level level = player.level();
+            if(target.isItemEnabled(level.enabledFeatures())) {
+                Inventory inventory = player.getInventory();
+                BackpackWrapper wrapper = AttachmentUtils.getBackpackWrapper(player, AttachmentUtils.STORAGE_ONLY.get());
+
+                AtomicReference<ItemStack> atomicStack = new AtomicReference<>(null);
+                StorageAccessWrapper storage = wrapper.getStorageForInputOutput();
+
+                InventoryHelper.iterate(storage, (slot, stack) -> {
+                    //Continue if found required stack
+                    if(ItemStack.isSameItemSameComponents(stack, target)) {
+                        inventory.selected = inventory.getSuitableHotbarSlot();
+                        ItemStack pickResult = inventory.getSelected();
+                        inventory.setItem(inventory.selected, stack.copy());
+
+                        storage.setStackInSlot(slot, pickResult); //storage.setStackInSlot(slot, pickResult);
+
+                        atomicStack.set(stack);
+                        return true;
+                    }
+                    return false;
+                });
+
+                if(atomicStack.get() != null) {
+                    player.connection.send(new ClientboundContainerSetSlotPacket(-2, 0, player.getInventory().selected, player.getInventory().getItem(player.getInventory().selected)));
+                    player.connection.send(new ClientboundSetCarriedItemPacket(player.getInventory().selected));
+                }
+            }
+        }
     }
 }
