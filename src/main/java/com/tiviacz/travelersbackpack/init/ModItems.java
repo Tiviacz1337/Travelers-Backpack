@@ -182,12 +182,12 @@ public class ModItems {
                 ModItems.IRON_GOLEM_TRAVELERS_BACKPACK.get());
 
         event.registerItem(Capabilities.FluidHandler.ITEM, (stack, context) -> {
-            BackpackWrapper wrapper = BackpackWrapper.fromStack(stack);
-            if(wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).isPresent()) {
-                return new FluidTankItemWrapper(stack, wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).get());
-            }
-            return null;
-        }, ModItems.STANDARD_TRAVELERS_BACKPACK.get(),
+                    BackpackWrapper wrapper = BackpackWrapper.fromStack(stack);
+                    if(wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).isPresent()) {
+                        return new FluidTankItemWrapper(stack, wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).get());
+                    }
+                    return null;
+                }, ModItems.STANDARD_TRAVELERS_BACKPACK.get(),
                 ModItems.NETHERITE_TRAVELERS_BACKPACK.get(),
                 ModItems.DIAMOND_TRAVELERS_BACKPACK.get(),
                 ModItems.GOLD_TRAVELERS_BACKPACK.get(),

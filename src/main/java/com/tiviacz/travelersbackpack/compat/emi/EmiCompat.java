@@ -22,6 +22,7 @@ import dev.emi.emi.api.widget.Bounds;
 import net.minecraft.world.inventory.Slot;
 
 import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.List;
 

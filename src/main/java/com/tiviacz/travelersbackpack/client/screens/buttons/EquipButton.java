@@ -8,6 +8,7 @@ import net.minecraft.network.chat.Component;
 
 public class EquipButton extends Button {
     private final boolean mainHand;
+
     public EquipButton(BackpackScreen screen, boolean mainHand) {
         super(screen, screen.getWidthAdditions() + 157, screen.getMiddleBar(), 12, 12);
         this.mainHand = mainHand;

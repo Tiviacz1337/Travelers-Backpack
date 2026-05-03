@@ -17,15 +17,14 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import org.jetbrains.annotations.NotNull;
 import top.theillusivec4.curios.api.CuriosCapability;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.client.CuriosRendererRegistry;
 import top.theillusivec4.curios.api.client.ICurioRenderer;
 import top.theillusivec4.curios.api.type.capability.ICurio;
 
-import org.jetbrains.annotations.NotNull;
-
-public class TravelersBackpackCurio implements ICurio {
+public record TravelersBackpackCurio(ItemStack stack) implements ICurio {
     public static void registerCurio(RegisterCapabilitiesEvent event) {
         ModItems.ITEMS.getEntries().stream()
                 .filter(holder -> holder.get() instanceof TravelersBackpackItem)
@@ -37,12 +36,6 @@ public class TravelersBackpackCurio implements ICurio {
         ModItems.ITEMS.getEntries().stream()
                 .filter(holder -> holder.get() instanceof TravelersBackpackItem)
                 .forEach(holder -> CuriosRendererRegistry.register(holder.get(), Renderer::new));
-    }
-
-    public final ItemStack stack;
-
-    public TravelersBackpackCurio(ItemStack stack) {
-        this.stack = stack;
     }
 
     @Override

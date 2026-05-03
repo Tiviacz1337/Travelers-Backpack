@@ -27,12 +27,12 @@ public record Fluids(FluidStack leftFluidStack, FluidStack rightFluidStack) {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
+        if(this == obj) {
             return true;
-        } else if (!(obj instanceof Fluids o)) {
+        } else if(!(obj instanceof Fluids(FluidStack fluidStack, FluidStack stack))) {
             return false;
         } else {
-            return FluidStack.matches(this.leftFluidStack, o.leftFluidStack) && FluidStack.matches(this.rightFluidStack, o.rightFluidStack);
+            return FluidStack.matches(this.leftFluidStack, fluidStack) && FluidStack.matches(this.rightFluidStack, stack);
         }
     }
 

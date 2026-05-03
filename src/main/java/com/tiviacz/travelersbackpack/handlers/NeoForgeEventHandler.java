@@ -156,7 +156,7 @@ public class NeoForgeEventHandler {
 
         //Change Sleeping Bag
         if(player.isShiftKeyDown() && hand == InteractionHand.MAIN_HAND && player.getMainHandItem().is(ModTags.SLEEPING_BAGS) && level.getBlockEntity(pos) instanceof BackpackBlockEntity blockEntity) {
-            ItemStack oldSleepingBag = blockEntity.getProperSleepingBag(blockEntity.getWrapper().getSleepingBagColor()).getBlock().asItem().getDefaultInstance();
+            ItemStack oldSleepingBag = BackpackBlockEntity.getProperSleepingBag(blockEntity.getWrapper().getSleepingBagColor()).getBlock().asItem().getDefaultInstance();
             blockEntity.getWrapper().setSleepingBagColor(ShapedBackpackRecipe.getProperColor(player.getMainHandItem().getItem()));
 
             if(!level.isClientSide) {
@@ -349,7 +349,6 @@ public class NeoForgeEventHandler {
         if(event.getEntity() instanceof Player player) {
             if(BackpackAbilities.ABILITIES.checkBackpack(player, ModItems.CREEPER_TRAVELERS_BACKPACK.get())) {
                 if(BackpackAbilities.creeperAbility(event)) {
-                    return;
                 }
             }
         }
@@ -575,16 +574,8 @@ public class NeoForgeEventHandler {
             wrapper.getUpgradeManager().getUpgrade(AutoPickupUpgrade.class).ifPresent(pickupUpgrade -> {
                 if(pickupUpgrade.canPickup(itemEntity.getItem()) && pickupUpgrade.tryPickup(itemEntity, level, player.blockPosition())) {
                     event.setCanPickup(TriState.FALSE);
-                }});
-
-            /*if(wrapper.getUpgradeManager().getUpgrade(AutoPickupUpgrade.class).isPresent() && wrapper.getUpgradeManager().getUpgrade(AutoPickupUpgrade.class).get().canPickup(itemEntity.getItem())) {
-                ItemStack remainingStack = ItemHandlerHelper.insertItemStacked(wrapper.getStorageForInputOutput(), itemEntity.getItem(), false);
-                if(remainingStack != itemEntity.getItem()) {
-                    level.playSound(null, player.blockPosition(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 0.2F, (level.random.nextFloat() - level.random.nextFloat()) * 1.4F + 2.0F);
-                    itemEntity.setItem(remainingStack);
-                    event.setCanPickup(TriState.FALSE);
                 }
-            }*/
+            });
         }
     }
 }

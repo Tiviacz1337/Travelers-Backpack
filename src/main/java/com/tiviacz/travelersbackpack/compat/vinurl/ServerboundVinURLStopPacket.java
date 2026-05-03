@@ -31,7 +31,7 @@ public record ServerboundVinURLStopPacket(ItemStack stack, boolean cancelable) i
                         Class<?> vinSoundClass = Class.forName("com.vinurl.api.VinURLSound");
                         Method stopMethod = vinSoundClass.getMethod("stopFor", net.minecraft.server.level.ServerLevel.class, net.minecraft.world.item.ItemStack.class, java.util.UUID.class, boolean.class);
                         stopMethod.invoke(null, serverLevel, message.stack, ctx.player().getUUID(), message.cancelable);
-                    } catch (Exception e) {
+                    } catch(Exception e) {
                         TravelersBackpack.LOGGER.error("Couldn't stop the VinURL sound, report it to Traveler's Backpack Developer!", e);
                     }
                 }

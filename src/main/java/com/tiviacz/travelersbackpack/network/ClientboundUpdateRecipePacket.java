@@ -30,7 +30,7 @@ public record ClientboundUpdateRecipePacket(ResourceLocation id, ItemStack outpu
         this(recipe == null ? NULL : recipe.id(), output);
     }
 
-    public static void handle(final ClientboundUpdateRecipePacket message, IPayloadContext ctx) {
+    public static void handle(ClientboundUpdateRecipePacket message, IPayloadContext ctx) {
         if(ctx.flow().isClientbound()) {
             ctx.enqueueWork(() -> {
                 RecipeHolder<CraftingRecipe> recipe = (RecipeHolder<CraftingRecipe>)Minecraft.getInstance().level.getRecipeManager().byKey(message.id()).orElse(null);

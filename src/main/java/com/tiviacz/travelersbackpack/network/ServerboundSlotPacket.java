@@ -31,7 +31,7 @@ public record ServerboundSlotPacket(int selectType, List<Integer> unsortables,
     public static final int UNSORTABLES = 0;
     public static final int MEMORY = 1;
 
-    public static void handle(final ServerboundSlotPacket message, IPayloadContext ctx) {
+    public static void handle(ServerboundSlotPacket message, IPayloadContext ctx) {
         ctx.enqueueWork(() -> {
             Player player = ctx.player();
             if(player instanceof ServerPlayer serverPlayer && serverPlayer.containerMenu instanceof BackpackSettingsMenu menu) {

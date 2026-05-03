@@ -18,10 +18,9 @@ public record StarterUpgrades(List<ItemStack> upgrades) {
         if(this == pOther) {
             return true;
         } else {
-            if(pOther instanceof StarterUpgrades contents && ItemStack.listMatches(this.upgrades, contents.upgrades)) {
-                return true;
-            }
-            return false;
+            return pOther instanceof StarterUpgrades(
+                    List<ItemStack> upgrades1
+            ) && ItemStack.listMatches(this.upgrades, upgrades1);
         }
     }
 

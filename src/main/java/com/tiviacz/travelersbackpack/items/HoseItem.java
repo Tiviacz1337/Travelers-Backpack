@@ -50,6 +50,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
@@ -98,7 +99,7 @@ public class HoseItem extends Item {
                     if(blockstate1.getBlock() instanceof BucketPickup pickup) {
                         Fluid fluid = blockstate1.getFluidState().getType();
                         if(fluid != Fluids.EMPTY) {
-                            FluidStack fluidStack = new FluidStack(fluid, Reference.BUCKET);
+                            FluidStack fluidStack = new FluidStack(fluid, FluidType.BUCKET_VOLUME);
                             int tankAmount = tank.isEmpty() ? 0 : tank.getFluidAmount();
                             boolean canFill = tank.isEmpty() || FluidStack.isSameFluidSameComponents(tank.getFluid(), fluidStack);
                             if(canFill && (fluidStack.getAmount() + tankAmount <= tank.getCapacity())) {
@@ -106,7 +107,7 @@ public class HoseItem extends Item {
                                 if(!actualFluid.isEmpty()) {
                                     SoundEvent bucketFill = Optional.ofNullable(fluidStack.getFluidType().getSound(SoundActions.BUCKET_FILL)).orElse(fluid.is(FluidTags.LAVA) ? SoundEvents.BUCKET_FILL_LAVA : SoundEvents.BUCKET_FILL);
                                     level.playSound(player, result.getBlockPos(), bucketFill, SoundSource.BLOCKS, 1.0F, 1.0F);
-                                    tank.fill(new FluidStack(fluid, Reference.BUCKET), IFluidHandler.FluidAction.EXECUTE);
+                                    tank.fill(new FluidStack(fluid, FluidType.BUCKET_VOLUME), IFluidHandler.FluidAction.EXECUTE);
                                     triggerAdvancement(player, ActionTypeTrigger.HOSE_SUCK);
                                     return InteractionResultHolder.success(stack);
                                 }
@@ -173,7 +174,7 @@ public class HoseItem extends Item {
                 //Transfer fluid from fluid handler
                 if(fluidHandler.isPresent()) {
                     if(!fluidHandler.map(h -> h.getFluidInTank(0).isEmpty()).get()) {
-                        FluidStack fluidStack = FluidUtil.tryFluidTransfer(tank, fluidHandler.orElse(null), Reference.BUCKET, true);
+                        FluidStack fluidStack = FluidUtil.tryFluidTransfer(tank, fluidHandler.orElse(null), FluidType.BUCKET_VOLUME, true);
                         if(!fluidStack.isEmpty()) {
                             SoundEvent bucketFill = Optional.ofNullable(fluidStack.getFluidType().getSound(SoundActions.BUCKET_FILL)).orElse(SoundEvents.BUCKET_FILL);
                             level.playSound(player, pos, bucketFill, SoundSource.BLOCKS, 1.0F, 1.0F);
@@ -193,7 +194,7 @@ public class HoseItem extends Item {
                     if(blockstate1.getBlock() instanceof BucketPickup pickup) {
                         Fluid fluid = blockstate1.getFluidState().getType();
                         if(fluid != Fluids.EMPTY) {
-                            FluidStack fluidStack = new FluidStack(fluid, Reference.BUCKET);
+                            FluidStack fluidStack = new FluidStack(fluid, FluidType.BUCKET_VOLUME);
                             int tankAmount = tank.isEmpty() ? 0 : tank.getFluidAmount();
                             boolean canFill = tank.isEmpty() || FluidStack.isSameFluidSameComponents(tank.getFluid(), fluidStack);
                             if(canFill && (fluidStack.getAmount() + tankAmount <= tank.getCapacity())) {
@@ -201,7 +202,7 @@ public class HoseItem extends Item {
                                 if(!actualFluid.isEmpty()) {
                                     SoundEvent bucketFill = Optional.ofNullable(fluidStack.getFluidType().getSound(SoundActions.BUCKET_FILL)).orElse(fluid.is(FluidTags.LAVA) ? SoundEvents.BUCKET_FILL_LAVA : SoundEvents.BUCKET_FILL);
                                     level.playSound(player, result.getBlockPos(), bucketFill, SoundSource.BLOCKS, 1.0F, 1.0F);
-                                    tank.fill(new FluidStack(fluid, Reference.BUCKET), IFluidHandler.FluidAction.EXECUTE);
+                                    tank.fill(new FluidStack(fluid, FluidType.BUCKET_VOLUME), IFluidHandler.FluidAction.EXECUTE);
                                     triggerAdvancement(player, ActionTypeTrigger.HOSE_SUCK);
                                     return InteractionResult.SUCCESS;
                                 }
@@ -213,7 +214,7 @@ public class HoseItem extends Item {
             if(getHoseMode(stack) == SPILL_MODE) {
                 //Transfer fluid to fluid handler
                 if(fluidHandler.isPresent() && !tank.isEmpty()) {
-                    FluidStack fluidStack = FluidUtil.tryFluidTransfer(fluidHandler.orElse(null), tank, Reference.BUCKET, true);
+                    FluidStack fluidStack = FluidUtil.tryFluidTransfer(fluidHandler.orElse(null), tank, FluidType.BUCKET_VOLUME, true);
                     if(!fluidStack.isEmpty()) {
                         SoundEvent bucketFill = Optional.ofNullable(fluidStack.getFluidType().getSound(SoundActions.BUCKET_FILL)).orElse(SoundEvents.BUCKET_FILL);
                         level.playSound(player, pos, bucketFill, SoundSource.BLOCKS, 1.0F, 1.0F);
@@ -251,12 +252,12 @@ public class HoseItem extends Item {
                     BlockState blockState = level.getBlockState(pos);
                     Block block = blockState.getBlock();
                     Fluid fluid = tank.getFluid().getFluid();
-                    if(tank.getFluidAmount() >= Reference.BUCKET && fluid instanceof FlowingFluid flowingFluid) {
+                    if(tank.getFluidAmount() >= FluidType.BUCKET_VOLUME && fluid instanceof FlowingFluid flowingFluid) {
                         if(block instanceof LiquidBlockContainer container && container.canPlaceLiquid(player, level, pos, blockState, fluid)) {
                             container.placeLiquid(level, pos, blockState, flowingFluid.getSource(false));
                             SoundEvent bucketEmpty = Optional.ofNullable(fluid.getFluidType().getSound(SoundActions.BUCKET_EMPTY)).orElse(SoundEvents.BUCKET_EMPTY);
                             level.playSound(player, pos, bucketEmpty, SoundSource.BLOCKS, 1.0F, 1.0F);
-                            tank.drain(Reference.BUCKET, IFluidHandler.FluidAction.EXECUTE);
+                            tank.drain(FluidType.BUCKET_VOLUME, IFluidHandler.FluidAction.EXECUTE);
                             triggerAdvancement(player, ActionTypeTrigger.HOSE_SPILL);
                             return InteractionResult.SUCCESS;
                         }
@@ -294,7 +295,7 @@ public class HoseItem extends Item {
                     if(level.getBlockState(newPos).canBeReplaced(fluid) && fluid.getFluidType().canBePlacedInLevel(level, newPos, fluidStack)) {
                         boolean flag = !level.getBlockState(newPos).isSolid();
                         if(level.dimensionType().ultraWarm() && fluidStack.getFluid().is(FluidTags.WATER)) {
-                            tank.drain(Reference.BUCKET, IFluidHandler.FluidAction.EXECUTE);
+                            tank.drain(FluidType.BUCKET_VOLUME, IFluidHandler.FluidAction.EXECUTE);
                             level.playSound(null, newPos, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 0.5F, 2.6F + (level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.8F);
                             for(int i = 0; i < 3; ++i) {
                                 double d0 = newPos.getX() + level.getRandom().nextDouble();
@@ -305,7 +306,7 @@ public class HoseItem extends Item {
                             triggerAdvancement(player, ActionTypeTrigger.HOSE_SPILL);
                             return InteractionResult.SUCCESS;
                         }
-                        if(fluidStack.getAmount() >= Reference.BUCKET) {
+                        if(fluidStack.getAmount() >= FluidType.BUCKET_VOLUME) {
                             if(!level.isClientSide && flag && !level.getBlockState(newPos).liquid()) {
                                 level.destroyBlock(newPos, false);
                             }
@@ -313,7 +314,7 @@ public class HoseItem extends Item {
                             if(level.setBlock(newPos, fluidStack.getFluid().defaultFluidState().createLegacyBlock(), 3)) {
                                 SoundEvent bucketEmpty = Optional.ofNullable(fluidStack.getFluid().getFluidType().getSound(SoundActions.BUCKET_EMPTY)).orElse(SoundEvents.BUCKET_EMPTY);
                                 level.playSound(player, newPos, bucketEmpty, SoundSource.BLOCKS, 1.0F, 1.0F);
-                                tank.drain(Reference.BUCKET, IFluidHandler.FluidAction.EXECUTE);
+                                tank.drain(FluidType.BUCKET_VOLUME, IFluidHandler.FluidAction.EXECUTE);
                                 level.updateNeighborsAt(newPos, fluidStack.getFluid().defaultFluidState().createLegacyBlock().getBlock());
                             }
                             triggerAdvancement(player, ActionTypeTrigger.HOSE_SPILL);
@@ -378,7 +379,7 @@ public class HoseItem extends Item {
             if(milk != null) {
                 if(entity instanceof Cow) {
                     int tankAmount = tank.isEmpty() ? 0 : tank.getFluidAmount();
-                    FluidStack milkStack = new FluidStack(milk, Reference.BUCKET);
+                    FluidStack milkStack = new FluidStack(milk, FluidType.BUCKET_VOLUME);
                     if(milkStack.getFluid() != Fluids.EMPTY) {
                         if((tank.isEmpty() || FluidStack.isSameFluidSameComponents(tank.getFluid(), milkStack)) && milkStack.getAmount() + tankAmount <= tank.getCapacity()) {
                             tank.fill(milkStack, IFluidHandler.FluidAction.EXECUTE);

@@ -39,9 +39,7 @@ public class AttachmentUtils {
             }
             if(TravelersBackpack.enableAccessories()) {
                 if(AccessoriesCapability.getOptionally(player).isPresent()) {
-                    if(AccessoriesCapability.get(player).isEquipped(t -> t.getItem() instanceof TravelersBackpackItem)) {
-                        return true;
-                    }
+                    return AccessoriesCapability.get(player).isEquipped(t -> t.getItem() instanceof TravelersBackpackItem);
                     //return AccessoriesCapability.get(player).isEquipped(t -> t.getItem() instanceof TravelersBackpackItem);
                 }
             }

@@ -2,10 +2,7 @@ package com.tiviacz.travelersbackpack.components;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -102,10 +99,7 @@ public final class BackpackContainerContents {
         if(this == pOther) {
             return true;
         } else {
-            if(pOther instanceof BackpackContainerContents contents && ItemStack.listMatches(this.items, contents.items)) {
-                return true;
-            }
-            return false;
+            return pOther instanceof BackpackContainerContents contents && ItemStack.listMatches(this.items, contents.items);
         }
     }
 

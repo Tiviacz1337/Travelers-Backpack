@@ -29,7 +29,7 @@ public record ServerboundVinURLStartPacket(ItemStack stack) implements CustomPac
                         Class<?> vinSoundClass = Class.forName("com.vinurl.api.VinURLSound");
                         Method playMethod = vinSoundClass.getMethod("playFor", net.minecraft.server.level.ServerLevel.class, net.minecraft.world.item.ItemStack.class, java.util.UUID.class);
                         playMethod.invoke(null, serverLevel, message.stack, ctx.player().getUUID());
-                    } catch (Exception e) {
+                    } catch(Exception e) {
                         TravelersBackpack.LOGGER.error("Couldn't play the VinURL sound, report it to Traveler's Backpack Developer!", e);
                     }
                 }

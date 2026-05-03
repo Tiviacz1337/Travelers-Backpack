@@ -188,9 +188,7 @@ public class VoidWidget extends FilterUpgradeWidgetBase<VoidWidget, VoidUpgrade>
                     return true;
                 }
             }
-            if(!isWithinTrashBinSlot(mouseX, mouseY)) {
-                return true;
-            }
+            return !isWithinTrashBinSlot(mouseX, mouseY);
         }
         return false;
     }
@@ -220,9 +218,7 @@ public class VoidWidget extends FilterUpgradeWidgetBase<VoidWidget, VoidUpgrade>
                 return false;
             }
             if(canSelectSlot(slot)) {
-                if(BackpackSettingsScreen.selectSlotsIndex(this.selectedSlots, this.hoveringTrashBin, slot, button)) {
-                    return true;
-                }
+                return BackpackSettingsScreen.selectSlotsIndex(this.selectedSlots, this.hoveringTrashBin, slot, button);
             }
         }
         return false;
@@ -255,7 +251,7 @@ public class VoidWidget extends FilterUpgradeWidgetBase<VoidWidget, VoidUpgrade>
     public void renderTrashBinAnimation(GuiGraphics guiGraphics, int x, int y) {
         this.tickAnimation();
         float time = (float)(System.currentTimeMillis() % 2000) / 1000.0F;
-        float f = (float) (Math.sin(time * Math.PI) * 1.0F + 1.0F);
+        float f = (float)(Math.sin(time * Math.PI) * 1.0F + 1.0F);
         guiGraphics.pose().pushPose();
         if(isHoveringWithTrashBin()) {
             RenderSystem.disableDepthTest();

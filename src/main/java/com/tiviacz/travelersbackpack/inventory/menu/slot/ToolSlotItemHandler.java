@@ -10,6 +10,7 @@ import net.minecraft.world.item.*;
 import net.neoforged.neoforge.items.SlotItemHandler;
 
 import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 

@@ -22,7 +22,7 @@ public record ClientboundSendMessagePacket(boolean drop, BlockPos pos) implement
             ClientboundSendMessagePacket::new
     );
 
-    public static void handle(final ClientboundSendMessagePacket message, IPayloadContext ctx) {
+    public static void handle(ClientboundSendMessagePacket message, IPayloadContext ctx) {
         if(ctx.flow().isClientbound()) {
             ctx.enqueueWork(() -> {
                 if(TravelersBackpackConfig.CLIENT.sendBackpackCoordinatesMessage.get()) {

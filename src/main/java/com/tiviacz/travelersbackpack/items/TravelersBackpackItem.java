@@ -61,6 +61,7 @@ import net.neoforged.api.distmarker.OnlyIn;
 
 import net.neoforged.neoforge.capabilities.Capabilities;
 import org.jetbrains.annotations.Nullable;
+
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -339,9 +340,9 @@ public class TravelersBackpackItem extends BlockItem {
                 }
 
                 if(d > (double)0.0F) {
-                    components.add(Component.translatable("attribute.modifier.plus." + modifier.operation().id(), new Object[]{ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(e), Component.translatable(((Attribute)attribute.value()).getDescriptionId())}).withStyle(((Attribute)attribute.value()).getStyle(true)));
+                    components.add(Component.translatable("attribute.modifier.plus." + modifier.operation().id(), ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(e), Component.translatable(attribute.value().getDescriptionId())).withStyle(attribute.value().getStyle(true)));
                 } else if(d < (double)0.0F) {
-                    components.add(Component.translatable("attribute.modifier.take." + modifier.operation().id(), new Object[]{ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(-e), Component.translatable(((Attribute)attribute.value()).getDescriptionId())}).withStyle(((Attribute)attribute.value()).getStyle(false)));
+                    components.add(Component.translatable("attribute.modifier.take." + modifier.operation().id(), ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(-e), Component.translatable(attribute.value().getDescriptionId())).withStyle(attribute.value().getStyle(false)));
                 }
             }
         }
@@ -372,10 +373,7 @@ public class TravelersBackpackItem extends BlockItem {
         if(stack.getOrDefault(ModDataComponents.TOOLS_CONTAINER, BackpackContainerContents.fromItems(0, List.of())).getItems().stream().anyMatch(itemStack -> !itemStack.isEmpty())) {
             return true;
         }
-        if(stack.getOrDefault(ModDataComponents.TIER, 0) >= Tiers.DIAMOND.getOrdinal()) {
-            return true;
-        }
-        return false;
+        return stack.getOrDefault(ModDataComponents.TIER, 0) >= Tiers.DIAMOND.getOrdinal();
     }
 
     @Nullable

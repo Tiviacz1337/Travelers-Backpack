@@ -25,7 +25,7 @@ public class ItemStackUtils {
         if(!pStack.is(pOther.getItem())) {
             return false;
         } else {
-            return pStack.isEmpty() && pOther.isEmpty() ? true : checkComponentsIgnoreDamage(pStack.getComponents(), pOther.getComponents());
+            return pStack.isEmpty() && pOther.isEmpty() || checkComponentsIgnoreDamage(pStack.getComponents(), pOther.getComponents());
         }
     }
 
