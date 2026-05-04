@@ -22,26 +22,27 @@ import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.fluid.FluidStacksResourceHandler;
 
-import java.util.Optional;
-
 public class TankActions {
     public static void fillTank(ServerPlayer player, boolean leftTank) {
         if(player instanceof ServerPlayer serverPlayer && serverPlayer.containerMenu instanceof BackpackBaseMenu menu) {
             BackpackWrapper wrapper = menu.getWrapper();
             FluidStacksResourceHandler tank = leftTank ? wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).get().getLeftTank() : wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).get().getRightTank();
             ItemStack carried = menu.getCarried();
-            Optional<ResourceHandler<FluidResource>> carriedHandler = Optional.ofNullable(ItemAccess.forPlayerCursor(player, menu).getCapability(Capabilities.Fluid.ITEM));
-            FluidResource carriedResource = carriedHandler.map(fluidResourceResourceHandler -> fluidResourceResourceHandler.getResource(0)).orElse(FluidResource.EMPTY);
-            if(carriedHandler.isPresent() && !carriedResource.isEmpty() && carried.getCount() == 1) {
-                //Fluid sound
-                SoundEvent fluidSound = StacksHandlerUtils.isEmpty(tank) ? SoundEvents.BUCKET_EMPTY : StacksHandlerUtils.getFluid(tank).getFluidType().getSound(StacksHandlerUtils.getFluid(tank), SoundActions.BUCKET_EMPTY);
+            ResourceHandler<FluidResource> carriedHandler = ItemAccess.forPlayerCursor(player, menu).getCapability(Capabilities.Fluid.ITEM);
+            if(carriedHandler != null) {
+                FluidResource carriedResource = ResourceHandlerUtil.findExtractableResource(carriedHandler, f -> true, null);
+                if(carriedResource != null && carried.getCount() == 1) {
+                    //Fluid sound
+                    SoundEvent fluidSound = StacksHandlerUtils.isEmpty(tank) ? SoundEvents.BUCKET_EMPTY : StacksHandlerUtils.getFluid(tank).getFluidType().getSound(StacksHandlerUtils.getFluid(tank), SoundActions.BUCKET_EMPTY);
 
-                int movedAmount = ResourceHandlerUtil.move(carriedHandler.get(), tank, p -> true, carriedHandler.get().getAmountAsInt(0), null);
-                if(movedAmount > 0) {
-                    //Play client only sound for item
-                    InventoryActions.playFluidSound(wrapper.getBackpackOwner(), wrapper.getPlayersUsing(), fluidSound, false);
+                    int movedAmount = ResourceHandlerUtil.move(carriedHandler, tank, p -> true, carriedHandler.getAmountAsInt(ResourceHandlerUtil.indexOf(carriedHandler, carriedResource)), null);
+                    if(movedAmount > 0) {
+                        //Play client only sound for item
+                        InventoryActions.playFluidSound(wrapper.getBackpackOwner(), wrapper.getPlayersUsing(), fluidSound, false);
+                        return;
+                    }
                 }
-            } else if(carriedHandler.isPresent() && carriedResource.isEmpty()) {
+
                 int remainingCount = carried.getCount();
                 if(carried.getCount() > 1) {
                     carried.setCount(1);
@@ -50,7 +51,7 @@ public class TankActions {
                 //Fluid sound
                 SoundEvent fluidSound = StacksHandlerUtils.isEmpty(tank) ? SoundEvents.BUCKET_FILL : StacksHandlerUtils.getFluid(tank).getFluidType().getSound(StacksHandlerUtils.getFluid(tank), SoundActions.BUCKET_FILL);
 
-                int movedAmount = ResourceHandlerUtil.move(tank, carriedHandler.get(), p -> true, wrapper.getBackpackTankCapacity(), null);
+                int movedAmount = ResourceHandlerUtil.move(tank, carriedHandler, p -> true, wrapper.getBackpackTankCapacity(), null);
                 if(movedAmount > 0) {
                     ItemStack result = menu.getCarried().copy();
                     if(remainingCount > 1) {
@@ -62,7 +63,41 @@ public class TankActions {
                 } else {
                     carried.setCount(remainingCount);
                 }
-            } else if(carried.getItem() instanceof PotionItem && carried.getItem() != Items.GLASS_BOTTLE) {
+            }
+            //FluidResource carriedResource = carriedHandler.map(fluidResourceResourceHandler -> fluidResourceResourceHandler.getResource(0)).orElse(FluidResource.EMPTY);
+            /*if(carriedHandler != null && !carriedResource.isEmpty() && carried.getCount() == 1) {
+                //Fluid sound
+                SoundEvent fluidSound = StacksHandlerUtils.isEmpty(tank) ? SoundEvents.BUCKET_EMPTY : StacksHandlerUtils.getFluid(tank).getFluidType().getSound(StacksHandlerUtils.getFluid(tank), SoundActions.BUCKET_EMPTY);
+
+                int movedAmount = ResourceHandlerUtil.move(carriedHandler, tank, p -> true, carriedHandler.getAmountAsInt(0), null);
+                if(movedAmount > 0) {
+                    //Play client only sound for item
+                    InventoryActions.playFluidSound(wrapper.getBackpackOwner(), wrapper.getPlayersUsing(), fluidSound, false);
+                    return;
+                }
+            }
+            if(carriedHandler != null) {
+                int remainingCount = carried.getCount();
+                if(carried.getCount() > 1) {
+                    carried.setCount(1);
+                }
+
+                //Fluid sound
+                SoundEvent fluidSound = StacksHandlerUtils.isEmpty(tank) ? SoundEvents.BUCKET_FILL : StacksHandlerUtils.getFluid(tank).getFluidType().getSound(StacksHandlerUtils.getFluid(tank), SoundActions.BUCKET_FILL);
+
+                int movedAmount = ResourceHandlerUtil.move(tank, carriedHandler, p -> true, wrapper.getBackpackTankCapacity(), null);
+                if(movedAmount > 0) {
+                    ItemStack result = menu.getCarried().copy();
+                    if(remainingCount > 1) {
+                        serverPlayer.getInventory().placeItemBackInInventory(result);
+                        menu.setCarried(carried.copyWithCount(remainingCount - 1));
+                    }
+                    //Play client only sound for item
+                    InventoryActions.playFluidSound(wrapper.getBackpackOwner(), wrapper.getPlayersUsing(), fluidSound, true);
+                } else {
+                    carried.setCount(remainingCount);
+                }
+            }*/ else if(carried.getItem() instanceof PotionItem && carried.getItem() != Items.GLASS_BOTTLE) {
                 if(carried.getCount() == 1) {
                     int potionType = 0;
                     if(carried.getItem() == Items.SPLASH_POTION) potionType = 1;

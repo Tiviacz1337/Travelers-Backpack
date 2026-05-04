@@ -188,7 +188,7 @@ public class ModItems {
         event.registerItem(Capabilities.Fluid.ITEM, (stack, context) -> {
                     BackpackWrapper wrapper = BackpackWrapper.fromStack(stack);
                     if(wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).isPresent()) {
-                        return new ItemFluidTankWrapper(stack, wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).get());
+                        return new ItemFluidTankWrapper(context, wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).get());
                     }
                     return null;
                 }, ModItems.STANDARD_TRAVELERS_BACKPACK.get(),

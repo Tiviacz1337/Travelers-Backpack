@@ -7,7 +7,6 @@ import java.util.List;
 
 public class Reference {
     //Fluid Constants
-    public static final int BUCKET = 1000;
     public static final int POTION = 250;
 
     //Screen IDs

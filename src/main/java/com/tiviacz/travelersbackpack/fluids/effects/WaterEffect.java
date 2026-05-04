@@ -11,10 +11,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidType;
 
 public class WaterEffect extends EffectFluid {
     public WaterEffect() {
-        super("minecraft:water", Fluids.WATER, Reference.BUCKET);
+        super("minecraft:water", Fluids.WATER, FluidType.BUCKET_VOLUME);
     }
 
     @Override

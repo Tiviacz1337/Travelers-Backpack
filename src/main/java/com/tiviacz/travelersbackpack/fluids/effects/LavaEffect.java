@@ -9,10 +9,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidType;
 
 public class LavaEffect extends EffectFluid {
     public LavaEffect() {
-        super("minecraft:lava", Fluids.LAVA, Reference.BUCKET);
+        super("minecraft:lava", Fluids.LAVA, FluidType.BUCKET_VOLUME);
     }
 
     @Override

@@ -15,6 +15,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.PotionItem;
@@ -28,6 +29,7 @@ import net.neoforged.neoforge.transfer.fluid.FluidStacksResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
 import net.neoforged.neoforge.transfer.item.ResourceHandlerSlot;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -123,6 +125,11 @@ public class TanksUpgrade extends UpgradeBase<TanksUpgrade> {
         slots.add(new FluidSlotItemHandler(menu.player, this, wrapper, getFluidSlotsHandler(), 2, x + 28, y + 23));
         slots.add(new FluidSlotItemHandler(menu.player, this, wrapper, getFluidSlotsHandler(), 3, x + 28, y + 49));
         return slots;
+    }
+
+    @Override
+    public void onUpgradeRemoved(ItemStack removedStack, @Nullable Player player) {
+        BackpackBaseMenu.clearSlotsAndPlaySound(player, fluidSlotsHandler, StacksHandlerUtils.getSlots(fluidSlotsHandler), false);
     }
 
     public ItemStacksResourceHandler createTemporaryHandler() {

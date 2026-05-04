@@ -53,6 +53,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.Nullable;
 
@@ -275,10 +276,10 @@ public class TravelersBackpackBlock extends Block implements EntityBlock {
                     if(blockstate.getBlock() instanceof BucketPickup && !((BucketPickup)blockstate.getBlock()).pickupBlock(null, level, blockpos1, blockstate).isEmpty()) {
                         ++i;
                         if(StacksHandlerUtils.isEmpty(tanksUpgrade.getLeftTank()) || (StacksHandlerUtils.getFluid(tanksUpgrade.getLeftTank()).getFluid().isSame(Fluids.WATER) && StacksHandlerUtils.getFluidAmount(tanksUpgrade.getLeftTank()) < StacksHandlerUtils.getCapacity(tanksUpgrade.getLeftTank()))) {
-                            StacksHandlerUtils.fill(tanksUpgrade.getLeftTank(), new FluidStack(Fluids.WATER, Reference.BUCKET), false);
+                            StacksHandlerUtils.fill(tanksUpgrade.getLeftTank(), new FluidStack(Fluids.WATER, FluidType.BUCKET_VOLUME), false);
                         } else {
                             if(StacksHandlerUtils.isEmpty(tanksUpgrade.getRightTank()) || (StacksHandlerUtils.getFluid(tanksUpgrade.getRightTank()).getFluid().isSame(Fluids.WATER) && StacksHandlerUtils.getFluidAmount(tanksUpgrade.getRightTank()) < StacksHandlerUtils.getCapacity(tanksUpgrade.getRightTank()))) {
-                                StacksHandlerUtils.fill(tanksUpgrade.getRightTank(), new FluidStack(Fluids.WATER, Reference.BUCKET), false);
+                                StacksHandlerUtils.fill(tanksUpgrade.getRightTank(), new FluidStack(Fluids.WATER, FluidType.BUCKET_VOLUME), false);
                             }
                         }
                         if(j < 6) {

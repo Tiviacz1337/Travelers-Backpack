@@ -6,10 +6,11 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidType;
 
 public class MilkEffect extends EffectFluid {
     public MilkEffect() {
-        super("minecraft:milk", "minecraft", "milk", Reference.BUCKET);
+        super("minecraft:milk", "minecraft", "milk", FluidType.BUCKET_VOLUME);
     }
 
     @Override
