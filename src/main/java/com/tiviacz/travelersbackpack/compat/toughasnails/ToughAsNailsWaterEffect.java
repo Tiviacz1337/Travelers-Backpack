@@ -1,7 +1,6 @@
 package com.tiviacz.travelersbackpack.compat.toughasnails;
 
 import com.tiviacz.travelersbackpack.api.fluids.EffectFluid;
-import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;

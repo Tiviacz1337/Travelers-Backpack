@@ -12,13 +12,13 @@ import net.minecraft.world.Nameable;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 
 public record BackpackContainer(ItemStack stack, Player player, int screenID,
-                                int index, boolean triggerClientSideContainerClosing) implements MenuProvider, Nameable {
+                                int index,
+                                boolean triggerClientSideContainerClosing) implements MenuProvider, Nameable {
     public BackpackContainer(ItemStack stack, Player player, int screenID, int index) {
         this(stack, player, screenID, index, true);
     }

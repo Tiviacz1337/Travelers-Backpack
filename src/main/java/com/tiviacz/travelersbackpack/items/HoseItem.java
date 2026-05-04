@@ -339,7 +339,8 @@ public class HoseItem extends Item {
 
     protected void playEmptySound(FluidStack fluidStack, @Nullable LivingEntity user, LevelAccessor level, BlockPos pos) {
         SoundEvent soundEvent = fluidStack.getFluidType().getSound(user, level, pos, SoundActions.BUCKET_EMPTY);
-        if(soundEvent == null) soundEvent = fluidStack.is(FluidTags.LAVA) ? SoundEvents.BUCKET_EMPTY_LAVA : SoundEvents.BUCKET_EMPTY;
+        if(soundEvent == null)
+            soundEvent = fluidStack.is(FluidTags.LAVA) ? SoundEvents.BUCKET_EMPTY_LAVA : SoundEvents.BUCKET_EMPTY;
         level.playSound(user, pos, soundEvent, SoundSource.BLOCKS, 1.0F, 1.0F);
         level.gameEvent(user, GameEvent.FLUID_PLACE, pos);
     }

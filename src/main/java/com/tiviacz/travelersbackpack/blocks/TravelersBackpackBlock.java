@@ -11,7 +11,6 @@ import com.tiviacz.travelersbackpack.inventory.upgrades.smelting.AbstractSmeltin
 import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.BackpackDeathHelper;
-import com.tiviacz.travelersbackpack.util.Reference;
 import com.tiviacz.travelersbackpack.util.StacksHandlerUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
