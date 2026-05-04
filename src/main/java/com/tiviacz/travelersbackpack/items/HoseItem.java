@@ -66,7 +66,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
 public class HoseItem extends Item {
@@ -123,7 +122,7 @@ public class HoseItem extends Item {
                 return InteractionResult.PASS;
             }
             FluidStacksResourceHandler tank = this.getSelectedFluidTank(stack, wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).get());
-            Optional<ResourceHandler<FluidResource>> fluidHandler = Optional.empty();
+            ResourceHandler<FluidResource> fluidHandler = null;
 
             int hoseMode = getHoseMode(stack);
             BlockHitResult hitResult = getPlayerPOVHitResult(level, player, hoseMode == SUCK_MODE ? ClipContext.Fluid.SOURCE_ONLY : ClipContext.Fluid.NONE);
@@ -134,28 +133,26 @@ public class HoseItem extends Item {
                 BlockPos directionOffsetPos = pos.relative(direction);
 
                 //Check for fluid storage like in-world tanks
-                fluidHandler = Optional.ofNullable(level.getCapability(Capabilities.Fluid.BLOCK, pos, direction));
+                fluidHandler = level.getCapability(Capabilities.Fluid.BLOCK, pos, direction);
 
                 if(hoseMode == SUCK_MODE) {
                     //Transfer fluid from fluid handler
-                    AtomicBoolean success = new AtomicBoolean(false);
-                    fluidHandler.ifPresent(handler -> {
-                        if(!handler.getResource(0).isEmpty()) {
+                    if(fluidHandler != null) {
+                        if(!fluidHandler.getResource(0).isEmpty()) {
                             try(var tx = Transaction.openRoot()) {
-                                FluidStack fluidStack = handler.getResource(0).toStack(Reference.BUCKET);
-                                int moved = ResourceHandlerUtil.move(handler, tank, p -> true, Reference.BUCKET, tx);
+                                FluidStack fluidStack = fluidHandler.getResource(0).toStack(Reference.BUCKET);
+                                int moved = ResourceHandlerUtil.move(fluidHandler, tank, p -> true, Reference.BUCKET, tx);
                                 if(moved > 0) {
                                     SoundEvent bucketFill = Optional.ofNullable(fluidStack.getFluidType().getSound(SoundActions.BUCKET_FILL)).orElse(SoundEvents.BUCKET_FILL);
                                     level.playSound(player, pos, bucketFill, SoundSource.BLOCKS, 1.0F, 1.0F);
                                     triggerAdvancement(player, ActionTypeTrigger.HOSE_SUCK);
                                     tx.commit();
-                                    success.set(true);
+                                    return InteractionResult.SUCCESS;
+                                } else {
+                                    tx.close();
                                 }
                             }
                         }
-                    });
-                    if(success.get()) {
-                        return InteractionResult.SUCCESS;
                     }
 
                     //Pick fluid from block
@@ -194,24 +191,22 @@ public class HoseItem extends Item {
 
                 if(hoseMode == SPILL_MODE) {
                     //Transfer fluid to fluid handler
-                    AtomicBoolean success = new AtomicBoolean(false);
-                    fluidHandler.ifPresent(handler -> {
+                    if(fluidHandler != null) {
                         if(!StacksHandlerUtils.isEmpty(tank)) {
                             FluidStack fluidStack = tank.getResource(0).toStack(Reference.BUCKET);
                             try(var tx = Transaction.openRoot()) {
-                                int moved = ResourceHandlerUtil.move(tank, handler, p -> true, Reference.BUCKET, tx);
+                                int moved = ResourceHandlerUtil.move(tank, fluidHandler, p -> true, Reference.BUCKET, tx);
                                 if(moved > 0) {
                                     SoundEvent bucketFill = Optional.ofNullable(fluidStack.getFluidType().getSound(SoundActions.BUCKET_FILL)).orElse(SoundEvents.BUCKET_FILL);
                                     level.playSound(player, pos, bucketFill, SoundSource.BLOCKS, 1.0F, 1.0F);
                                     triggerAdvancement(player, ActionTypeTrigger.HOSE_SPILL);
                                     tx.commit();
-                                    success.set(true);
+                                    return InteractionResult.SUCCESS;
+                                } else {
+                                    tx.close();
                                 }
                             }
                         }
-                    });
-                    if(success.get()) {
-                        return InteractionResult.SUCCESS;
                     }
 
                     //Try to splash potion in the world
