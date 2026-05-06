@@ -1,0 +1,25 @@
+{
+  "type": "travelersbackpack:backpack_shaped",
+  "category": "misc",
+  "group": "standard_travelers_backpack",
+  "key": {
+    "B": {
+      "tag": "forge:string"
+    },
+    "D": {
+      "tag": "forge:chests/wooden"
+    },
+    "X": {
+      "tag": "forge:leather"
+    }
+  },
+  "pattern": [
+    "XBX",
+    " D ",
+    "X X"
+  ],
+  "result": {
+    "item": "travelersbackpack:standard"
+  },
+  "show_notification": true
+}

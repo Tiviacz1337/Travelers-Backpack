@@ -125,6 +125,18 @@ public class ModRecipeProvider extends RecipeProvider {
                 .pattern("XBX").pattern(" D ").pattern("XSX")
                 .unlockedBy("has_chest", has(Tags.Items.CHESTS_WOODEN)).save(writer, id("standard_no_tanks"));
 
+        ShapedBackpackRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.STANDARD_TRAVELERS_BACKPACK.get()).group("standard_travelers_backpack")
+                .define('X', Tags.Items.LEATHER).define('B', Tags.Items.STRING)
+                .define('D', Tags.Items.CHESTS_WOODEN)
+                .pattern("XBX").pattern(" D ").pattern("X X")
+                .unlockedBy("has_chest", has(Tags.Items.CHESTS_WOODEN)).save(writer, id("standard_no_tanks_sleeping_bag"));
+
+        ShapedBackpackRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.STANDARD_TRAVELERS_BACKPACK.get()).group("standard_travelers_backpack")
+                .define('X', Tags.Items.LEATHER).define('B', Tags.Items.STRING).define('C', ModItems.BACKPACK_TANK.get())
+                .define('D', Tags.Items.CHESTS_WOODEN)
+                .pattern("XBX").pattern("CDC").pattern("X X")
+                .unlockedBy("has_chest", has(Tags.Items.CHESTS_WOODEN)).save(writer, id("standard_no_sleeping_bag"));
+
         //Netherite backpack
         SmithingTransformRecipeBuilder.smithing(Ingredient.of(Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE),
                         Ingredient.of(ModItems.DIAMOND_TRAVELERS_BACKPACK.get()), Ingredient.of(Tags.Items.INGOTS_NETHERITE),

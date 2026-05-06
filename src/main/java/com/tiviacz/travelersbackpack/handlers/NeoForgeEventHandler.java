@@ -144,8 +144,12 @@ public class NeoForgeEventHandler {
         }
 
         //Change Sleeping Bag
-        if(player.isShiftKeyDown() && hand == InteractionHand.MAIN_HAND && player.getMainHandItem().is(ModTags.SLEEPING_BAGS) && level.getBlockEntity(pos) instanceof BackpackBlockEntity blockEntity) {
-            ItemStack oldSleepingBag = BackpackBlockEntity.getProperSleepingBag(blockEntity.getWrapper().getSleepingBagColor()).getBlock().asItem().getDefaultInstance();
+        if(TravelersBackpackConfig.SERVER.backpackUpgrades.enableSleepingBag.get() && player.isShiftKeyDown() && hand == InteractionHand.MAIN_HAND && player.getMainHandItem().is(ModTags.SLEEPING_BAGS) && level.getBlockEntity(pos) instanceof BackpackBlockEntity blockEntity) {
+            int sleepingBagColor = blockEntity.getWrapper().getSleepingBagColor();
+            ItemStack oldSleepingBag = ItemStack.EMPTY;
+            if(sleepingBagColor != -1) {
+                oldSleepingBag = BackpackBlockEntity.getProperSleepingBag(blockEntity.getWrapper().getSleepingBagColor()).getBlock().asItem().getDefaultInstance();
+            }
             blockEntity.getWrapper().setSleepingBagColor(ShapedBackpackRecipe.getProperColor(player.getMainHandItem().getItem()));
 
             if(!level.isClientSide) {

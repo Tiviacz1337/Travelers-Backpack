@@ -48,6 +48,7 @@ public class TravelersBackpackConfig {
         }
 
         public static class BackpackUpgrades {
+            public final ForgeConfigSpec.BooleanValue enableSleepingBag;
             public final ForgeConfigSpec.BooleanValue enableTanksUpgrade;
             public final ForgeConfigSpec.BooleanValue enableCraftingUpgrade;
             public final ForgeConfigSpec.BooleanValue enableFurnaceUpgrade;
@@ -62,6 +63,9 @@ public class TravelersBackpackConfig {
 
             public BackpackUpgrades(ForgeConfigSpec.Builder builder, String path) {
                 builder.push(path);
+
+                enableSleepingBag = builder
+                        .define("enableSleepingBag", true);
 
                 enableTanksUpgrade = builder
                         .define("enableTanksUpgrade", true);

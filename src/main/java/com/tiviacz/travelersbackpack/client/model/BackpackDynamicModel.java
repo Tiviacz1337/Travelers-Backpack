@@ -213,6 +213,9 @@ public class BackpackDynamicModel implements IUnbakedGeometry<BackpackDynamicMod
 
         //Rebake sleeping bag to change sprite dynamically
         private void addSleepingBag(List<BakedQuad> ret, BlockState state, Direction side, RandomSource rand, ModelData extraData, RenderType renderType) {
+            if(sleepingBagColor == -1) {
+                return;
+            }
             ret.addAll(models.get(ModelParts.SLEEPING_BAG_EXTRAS).getQuads(state, side, rand, extraData, renderType));
 
             TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(new ResourceLocation(TravelersBackpack.MODID, "block/bag/" + DyeColor.byId(sleepingBagColor).getName().toLowerCase(Locale.ENGLISH) + "_sleeping_bag"));
