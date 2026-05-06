@@ -5,6 +5,7 @@ license = "${mod_license}"
     version = "${mod_version}"
     displayName = "${mod_display_name}"
     displayURL = "${mod_display_url}"
+    issueTrackerURL = "${mod_issue_tracker_url}"
     authors = "${mod_authors}"
     description = '''${mod_description}'''
     logoFile = "assets/${mod_id}/textures/logo.png"
