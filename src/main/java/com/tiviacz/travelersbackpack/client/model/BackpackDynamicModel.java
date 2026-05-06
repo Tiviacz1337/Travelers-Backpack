@@ -265,10 +265,10 @@ public class BackpackDynamicModel implements UnbakedModel, ResolvableModel {
         private void addFluids(QuadCollection.Builder builder, RenderInfo renderInfo) {
             if(renderInfo != null && !renderInfo.isEmpty()) {
                 if(!renderInfo.getLeftFluidStack().isEmpty()) {
-                    addFluid(builder, renderInfo.getLeftFluidStack(), (float)renderInfo.getLeftFluidStack().getAmount() / renderInfo.getCapacity(), 1.8F / 16D, 0);
+                    addFluid(builder, renderInfo.getLeftFluidStack(), (float)renderInfo.getLeftFluidStack().getAmount() / renderInfo.getCapacity(), 1.8F / 16D, 1);
                 }
                 if(!renderInfo.getRightFluidStack().isEmpty()) {
-                    addFluid(builder, renderInfo.getRightFluidStack(), (float)renderInfo.getRightFluidStack().getAmount() / renderInfo.getCapacity(), 12.7F / 16D, 1);
+                    addFluid(builder, renderInfo.getRightFluidStack(), (float)renderInfo.getRightFluidStack().getAmount() / renderInfo.getCapacity(), 12.7F / 16D, 2);
                 }
             }
         }
