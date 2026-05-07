@@ -196,8 +196,8 @@ public class TravelersBackpackClient implements ClientModInitializer {
     }
 
     public static void registerBlockColorProvider() {
-        BlockColorRegistry.register(List.of(new BackpackTintSources.LeftFluidBlockTintSource(), new BackpackTintSources.RightFluidBlockTintSource(), new BackpackTintSources.BackpackBlockTintSource()), ModBlocks.STANDARD_TRAVELERS_BACKPACK);
-        BlockColorRegistry.register(List.of(new BackpackTintSources.LeftFluidBlockTintSource(), new BackpackTintSources.RightFluidBlockTintSource()), ModBlocks.NETHERITE_TRAVELERS_BACKPACK,
+        BlockColorRegistry.register(List.of(new BackpackTintSources.BackpackBlockTintSource(), new BackpackTintSources.LeftFluidBlockTintSource(), new BackpackTintSources.RightFluidBlockTintSource()), ModBlocks.STANDARD_TRAVELERS_BACKPACK);
+        BlockColorRegistry.register(List.of((state) -> -1, new BackpackTintSources.LeftFluidBlockTintSource(), new BackpackTintSources.RightFluidBlockTintSource()), ModBlocks.NETHERITE_TRAVELERS_BACKPACK,
                 ModBlocks.DIAMOND_TRAVELERS_BACKPACK,
                 ModBlocks.GOLD_TRAVELERS_BACKPACK,
                 ModBlocks.EMERALD_TRAVELERS_BACKPACK,
