@@ -213,9 +213,17 @@ public class NeoForgeEventHandler {
                 list.addAll(getUpgrades(tier));
             }
 
-            //Add backpack
             Item backpackItem = blockEntity.getWrapper().getBackpackStack().getItem();
-            list.add(backpackItem.getDefaultInstance());
+            ItemStack backpackStack = new ItemStack(backpackItem);
+
+            //Carry over sleeping bag info
+            int sleepingBagColor = blockEntity.getWrapper().getSleepingBagColor();
+            if(sleepingBagColor == -1) {
+                NbtHelper.set(backpackStack, ModDataHelper.SLEEPING_BAG_COLOR, -1);
+            }
+
+            //Add backpack
+            list.add(backpackStack);
 
             if(!level.isClientSide) {
                 Containers.dropContents(level, pos.above(), list);

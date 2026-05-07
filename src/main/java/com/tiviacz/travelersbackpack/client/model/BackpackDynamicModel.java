@@ -189,7 +189,7 @@ public class BackpackDynamicModel implements IUnbakedGeometry<BackpackDynamicMod
             } else {
                 ret.addAll(models.get(ModelParts.BASE).getQuads(state, side, rand, extraData, renderType));
             }
-            if(renderInfo == null || !renderInfo.isEmpty()) {
+            if(renderInfo == null || renderInfo.hasTanks()) {
                 addTanks(state, side, rand, extraData, ret, renderType);
             }
             if(!isSleepingBagDeployed) {
@@ -201,7 +201,7 @@ public class BackpackDynamicModel implements IUnbakedGeometry<BackpackDynamicMod
         }
 
         private void addFluids(List<BakedQuad> ret, RenderInfo renderInfo) {
-            if(renderInfo != null && !renderInfo.isEmpty()) {
+            if(renderInfo != null && renderInfo.hasTanks()) {
                 if(!renderInfo.getLeftFluidStack().isEmpty()) {
                     addFluid(ret, renderInfo.getLeftFluidStack(), (float)renderInfo.getLeftFluidStack().getAmount() / renderInfo.getCapacity(), 1.8F / 16D);
                 }
