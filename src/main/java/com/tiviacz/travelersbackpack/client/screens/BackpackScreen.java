@@ -242,9 +242,11 @@ public class BackpackScreen extends AbstractBackpackScreen<BackpackBaseMenu> imp
         this.sortingButtons = new SortingButtons(this, new Point(xPos, topPos - 10 + 12), 50, 13);
         addRenderableWidget(this.sortingButtons);
 
-        int xPosTools = (wider ? 36 : 0) + (tanksVisible ? 22 : 0);
-        this.toolSlotsWidget = new ToolSlotsWidget(this, new Point(this.leftPos + xPosTools + 110, topPos - 10 + 15), xPosTools);
-        addRenderableWidget(this.toolSlotsWidget);
+        if(getWrapper().getToolSize() > 0) {
+            int xPosTools = (wider ? 36 : 0) + (tanksVisible ? 22 : 0);
+            this.toolSlotsWidget = new ToolSlotsWidget(this, new Point(this.leftPos + xPosTools + 110, topPos - 10 + 15), xPosTools);
+            addRenderableWidget(this.toolSlotsWidget);
+        }
 
         UpgradeManager manager = getWrapper().getUpgradeManager();
 
