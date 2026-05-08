@@ -19,6 +19,7 @@ import net.minecraft.network.chat.Component;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 public class UpgradeWidgetBase<U extends UpgradeBase> extends WidgetBase<BackpackScreen> {
     private final WidgetElement removeElement;
@@ -111,6 +112,7 @@ public class UpgradeWidgetBase<U extends UpgradeBase> extends WidgetBase<Backpac
         if(isMouseOverIcon(mouseX, mouseY)) {
             List<Component> tooltips = new ArrayList<>();
             tooltips.add(Component.translatable(this.upgradeIconTooltip));
+            this.getAdditionalTooltips(tooltips::add);
             int screenID = getUpgrade().getUpgradeManager().getWrapper().getScreenID();
             if(this.upgrade.getDataHolderStack().getItem() instanceof UpgradeItem upgradeItem) {
                 if((screenID == Reference.ITEM_SCREEN_ID && upgradeItem.requiresEquippedBackpack() || (!upgradeItem.hasBlockFunctionality() && screenID == Reference.BLOCK_ENTITY_SCREEN_ID))) {
@@ -123,6 +125,10 @@ public class UpgradeWidgetBase<U extends UpgradeBase> extends WidgetBase<Backpac
         renderEnableButtonTooltip(guiGraphics, mouseX, mouseY);
     }
 
+    public void getAdditionalTooltips(Consumer<Component> consumer) {
+
+    }
+
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean pButton) {
         if(enableButtonMouseClicked(event.x(), event.y())) {
@@ -132,13 +138,17 @@ public class UpgradeWidgetBase<U extends UpgradeBase> extends WidgetBase<Backpac
             return true;
         }
         if(isMouseOverIcon(event)) {
-            if(this.upgrade.isTabOpened()) {
-                ServerboundActionTagPacket.create(ServerboundActionTagPacket.UPGRADE_TAB, this.dataHolderSlot, false, ServerActions.TAB_OPEN);
+            if(this.upgrade.hasTab()) {
+                if(this.upgrade.isTabOpened()) {
+                    ServerboundActionTagPacket.create(ServerboundActionTagPacket.UPGRADE_TAB, this.dataHolderSlot, false, ServerActions.TAB_OPEN);
+                } else {
+                    ServerboundActionTagPacket.create(ServerboundActionTagPacket.UPGRADE_TAB, this.dataHolderSlot, true, ServerActions.TAB_OPEN);
+                }
+                this.screen.playUIClickSound();
+                return true;
             } else {
-                ServerboundActionTagPacket.create(ServerboundActionTagPacket.UPGRADE_TAB, this.dataHolderSlot, true, ServerActions.TAB_OPEN);
+                return removeUpgrade();
             }
-            this.screen.playUIClickSound();
-            return true;
         }
         return false;
     }
@@ -185,15 +195,19 @@ public class UpgradeWidgetBase<U extends UpgradeBase> extends WidgetBase<Backpac
     public boolean removeButtonMouseClicked(double pMouseX, double pMouseY) {
         if(this.upgrade.isTabOpened()) {
             if(isMouseOverRemoveButton(pMouseX, pMouseY)) {
-                if(!isBackpackOwner()) {
-                    return false;
-                }
-                ServerboundActionTagPacket.create(ServerboundActionTagPacket.REMOVE_UPGRADE, this.dataHolderSlot);
-                this.screen.playUIClickSound();
-                return true;
+                return removeUpgrade();
             }
         }
         return false;
+    }
+
+    public boolean removeUpgrade() {
+        if(!isBackpackOwner()) {
+            return false;
+        }
+        ServerboundActionTagPacket.create(ServerboundActionTagPacket.REMOVE_UPGRADE, this.dataHolderSlot);
+        this.screen.playUIClickSound();
+        return true;
     }
 
     public void renderEnableButton(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
@@ -247,7 +261,7 @@ public class UpgradeWidgetBase<U extends UpgradeBase> extends WidgetBase<Backpac
     }
 
     public boolean isTabOpened() {
-        return this.upgrade.isTabOpened();
+        return this.upgrade.hasTab() && this.upgrade.isTabOpened();
     }
 
     @Override

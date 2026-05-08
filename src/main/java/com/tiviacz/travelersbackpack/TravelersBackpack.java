@@ -47,6 +47,7 @@ public class TravelersBackpack {
     public static boolean reiLoaded;
     public static boolean emiLoaded;
     public static boolean trashSlotLoaded;
+    public static boolean lambDynamicLightsLoaded;
 
     public TravelersBackpack(IEventBus eventBus, ModContainer modContainer) {
         NeoForgeMod.enableMilkFluid();
@@ -93,6 +94,7 @@ public class TravelersBackpack {
         reiLoaded = ModList.get().isLoaded("roughlyenoughitems");
         emiLoaded = ModList.get().isLoaded("emi");
         trashSlotLoaded = ModList.get().isLoaded("trashslot");
+        lambDynamicLightsLoaded = ModList.get().isLoaded("lambdynlights");
 
         //Fetch supporters
         Supporters.fetchSupporters();

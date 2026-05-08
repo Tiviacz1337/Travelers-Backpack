@@ -124,6 +124,7 @@ public class ModItems {
     public static final DeferredItem<VoidUpgradeItem> VOID_UPGRADE = ITEMS.registerItem("void_upgrade", (props) -> new VoidUpgradeItem(props.stacksTo(16)));
     public static final DeferredItem<FeedingUpgradeItem> FEEDING_UPGRADE = ITEMS.registerItem("feeding_upgrade", (props) -> new FeedingUpgradeItem(props.stacksTo(16)));
     public static final DeferredItem<RefillUpgradeItem> REFILL_UPGRADE = ITEMS.registerItem("refill_upgrade", (props) -> new RefillUpgradeItem(props.stacksTo(16)));
+    public static final DeferredItem<LanternUpgradeItem> LANTERN_UPGRADE = ITEMS.registerItem("lantern_upgrade", (props) -> new LanternUpgradeItem(props.stacksTo(16)));
 
     public static final Supplier<EntityType<BackpackItemEntity>> BACKPACK_ITEM_ENTITY = ENTITY_TYPES.register(
             "backpack", () -> EntityType.Builder.of(BackpackItemEntity::new, MobCategory.MISC)

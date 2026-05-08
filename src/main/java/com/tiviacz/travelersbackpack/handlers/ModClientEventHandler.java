@@ -32,6 +32,8 @@ import com.tiviacz.travelersbackpack.inventory.upgrades.feeding.FeedingUpgrade;
 import com.tiviacz.travelersbackpack.inventory.upgrades.feeding.FeedingWidget;
 import com.tiviacz.travelersbackpack.inventory.upgrades.jukebox.JukeboxUpgrade;
 import com.tiviacz.travelersbackpack.inventory.upgrades.jukebox.JukeboxWidget;
+import com.tiviacz.travelersbackpack.inventory.upgrades.lantern.LanternUpgrade;
+import com.tiviacz.travelersbackpack.inventory.upgrades.lantern.LanternWidget;
 import com.tiviacz.travelersbackpack.inventory.upgrades.magnet.MagnetUpgrade;
 import com.tiviacz.travelersbackpack.inventory.upgrades.magnet.MagnetWidget;
 import com.tiviacz.travelersbackpack.inventory.upgrades.pickup.AutoPickupUpgrade;
@@ -351,6 +353,9 @@ public class ModClientEventHandler {
         );
         UpgradeWidgetRegistry.register(RefillUpgrade.class, (screen, upgrade, x, y) ->
                 new UpgradeWidgetBase<>(screen, upgrade, new Point(screen.getGuiLeft() + x, screen.getGuiTop() + y), new Point(137, 0), "screen.travelersbackpack.refill_upgrade")
+        );
+        UpgradeWidgetRegistry.register(LanternUpgrade.class, (screen, upgrade, x, y) ->
+                new LanternWidget(screen, upgrade, new Point(screen.getLeftPos() + x, screen.getTopPos() + y), new Point(137, 0), "screen.travelersbackpack.lantern_upgrade")
         );
     }
 }

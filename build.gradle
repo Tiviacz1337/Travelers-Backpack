@@ -59,6 +59,9 @@ configurations {
 repositories {
     maven { url "https://cursemaven.com" }
     maven { url 'https://api.modrinth.com/maven' }
+
+    //LambDynamicLights
+    maven { url "https://maven.gegy.dev" }
 }
 
 dependencies {
@@ -66,6 +69,10 @@ dependencies {
 
     //Curios
     compileOnly("maven.modrinth:curios:68gxflop")
+
+    //LambDynamicLights
+    compileOnly("dev.lambdaurora.lambdynamiclights:lambdynamiclights-api:4.10.2+26.1.2")
+    //localRuntime("dev.lambdaurora.lambdynamiclights:lambdynamiclights-runtime:4.10.2+26.1.2")
 
     //JEI
     implementation("maven.modrinth:jei:XkrFsbih")

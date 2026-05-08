@@ -24,6 +24,7 @@ public record RenderInfo(CompoundTag compoundTag) {
     public static final String LEFT_TANK = "LeftTank";
     public static final String RIGHT_TANK = "RightTank";
     public static final String CAPACITY = "Capacity";
+    public static final String LANTERN = "Lantern";
 
     public boolean isEmpty() {
         return this.compoundTag.isEmpty();
@@ -31,6 +32,10 @@ public record RenderInfo(CompoundTag compoundTag) {
 
     public boolean hasTanks() {
         return this.compoundTag.contains(LEFT_TANK) || this.compoundTag.contains(RIGHT_TANK);
+    }
+
+    public boolean hasLantern() {
+        return this.compoundTag.contains(LANTERN);
     }
 
     public FluidStack getLeftFluidStack() {
