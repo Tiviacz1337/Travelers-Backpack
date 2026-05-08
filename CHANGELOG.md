@@ -1,4 +1,4 @@
-✨ Added Lantern upgrade - requires LambDynamicLights mod installed to provide light properly. Upgrade can be crafted even if mod is not installed but will not have any functionality    
+✨ Added Lantern upgrade - requires LambDynamicLights mod installed to provide light properly. Upgrade can be crafted even if mod is not installed but will not have any functionality. Can be disabled entirely in mod config      
 ✨ The sleeping bag is now optional! Backpack can be crafted without it  
 ✨ Sleeping bags can be attached to the backpack by holding the item in your hand and Shift + Right-Clicking on a placed backpack  
 ✨ The sleeping bag can be detached from the backpack by holding Shift while clicking the "Use Sleeping Bag" button  
