@@ -66,7 +66,7 @@ public class TravelersBackpackItem extends BlockItem {
     public TravelersBackpackItem(Properties properties, Block block) {
         super(block, properties.useBlockDescriptionPrefix().stacksTo(1)
                 .component(ModDataComponents.TIER, 0)
-                .component(ModDataComponents.SLEEPING_BAG_COLOR, DyeColor.RED.getId())
+                //.component(ModDataComponents.SLEEPING_BAG_COLOR, DyeColor.RED.getId())
                 .component(ModDataComponents.IS_VISIBLE, true));
     }
 

@@ -145,10 +145,7 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider {
     }
 
     public boolean isSleepingBagDeployed() {
-        if(getWrapper().hasSleepingBag()) {
-            return this.isSleepingBagDeployed;
-        }
-        return true;
+        return this.isSleepingBagDeployed;
     }
 
     public void setSleepingBagDeployed(boolean isSleepingBagDeployed) {

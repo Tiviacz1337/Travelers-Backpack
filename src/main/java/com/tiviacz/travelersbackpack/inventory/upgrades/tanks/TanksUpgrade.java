@@ -2,6 +2,7 @@ package com.tiviacz.travelersbackpack.inventory.upgrades.tanks;
 
 import com.mojang.datafixers.util.Pair;
 import com.tiviacz.travelersbackpack.components.Fluids;
+import com.tiviacz.travelersbackpack.components.RenderInfo;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.UpgradeManager;
@@ -46,7 +47,7 @@ public class TanksUpgrade extends UpgradeBase<TanksUpgrade> {
         this.rightTank = createFluidHandler(fluids.rightFluidStack(), getUpgradeManager().getWrapper().getBackpackTankCapacity());
 
         //Update Render data
-        getUpgradeManager().getWrapper().setRenderInfo(writeToRenderData());
+        getUpgradeManager().getWrapper().updateRenderInfo(this::writeToRenderData);
     }
 
     public FluidStacksResourceHandler getLeftTank() {
@@ -84,7 +85,7 @@ public class TanksUpgrade extends UpgradeBase<TanksUpgrade> {
                 updateDataHolderUnchecked(ModDataComponents.FLUIDS.get(), new Fluids(StacksHandlerUtils.getFluid(leftTank), StacksHandlerUtils.getFluid(rightTank)));
 
                 //Update Render data
-                getUpgradeManager().getWrapper().setRenderInfo(writeToRenderData());
+                getUpgradeManager().getWrapper().updateRenderInfo(TanksUpgrade.this::writeToRenderData);
 
                 //Update backpack attachment data on clients
                 getUpgradeManager().getWrapper().sendDataToClients(ModDataComponents.RENDER_INFO.get(), ModDataComponents.UPGRADES.get());
@@ -92,19 +93,21 @@ public class TanksUpgrade extends UpgradeBase<TanksUpgrade> {
         };
     }
 
-    public CompoundTag writeToRenderData() {
-        CompoundTag tag = new CompoundTag();
+    public void writeToRenderData(CompoundTag tag) {
         Tag leftFluid = FluidStack.CODEC.encodeStart(NbtOps.INSTANCE, StacksHandlerUtils.getFluid(leftTank)).result().orElseGet(CompoundTag::new);
         Tag rightFluid = FluidStack.CODEC.encodeStart(NbtOps.INSTANCE, StacksHandlerUtils.getFluid(rightTank)).result().orElseGet(CompoundTag::new);
-        tag.put("LeftTank", leftFluid);
-        tag.put("RightTank", rightFluid);
-        tag.putInt("Capacity", StacksHandlerUtils.getCapacity(leftTank));
-        return tag;
+        tag.put(RenderInfo.LEFT_TANK, leftFluid);
+        tag.put(RenderInfo.RIGHT_TANK, rightFluid);
+        tag.putInt(RenderInfo.CAPACITY, StacksHandlerUtils.getCapacity(leftTank));
     }
 
     @Override
     public void remove() {
-        getUpgradeManager().getWrapper().removeRenderInfo();
+        getUpgradeManager().getWrapper().updateRenderInfo(compoundTag -> {
+            compoundTag.remove(RenderInfo.LEFT_TANK);
+            compoundTag.remove(RenderInfo.RIGHT_TANK);
+            compoundTag.remove(RenderInfo.CAPACITY);
+        });
     }
 
     @Override

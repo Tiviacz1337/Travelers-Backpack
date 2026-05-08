@@ -168,7 +168,7 @@ public class BackpackDynamicModel implements UnbakedModel {
         }
 
         private void addFluids(QuadCollection.Builder builder, RenderInfo renderInfo) {
-            if(renderInfo != null && !renderInfo.isEmpty()) {
+            if(renderInfo != null && renderInfo.hasTanks()) {
                 if(!renderInfo.getLeftFluidStack().isEmpty()) {
                     addFluid(builder, renderInfo.getLeftFluidStack(), (float)renderInfo.getLeftFluidStack().getAmount() / renderInfo.getCapacity(), 1.8F / 16D);
                 }
@@ -180,7 +180,7 @@ public class BackpackDynamicModel implements UnbakedModel {
 
         //Rebake sleeping bag to change sprite dynamically
         private void addSleepingBag(QuadCollection.Builder builder) {
-            if(isSleepingBagDeployed) {
+            if(isSleepingBagDeployed || sleepingBagColor == -1) {
                 return;
             }
 
@@ -263,7 +263,7 @@ public class BackpackDynamicModel implements UnbakedModel {
         }
 
         private void addTanks(QuadCollection.Builder builder) {
-            if(renderInfo == null || !renderInfo.isEmpty()) {
+            if(renderInfo == null || renderInfo.hasTanks()) {
                 builder.addAll(models.get(ModelParts.TANKS));
                 addFluids(builder, renderInfo);
             }

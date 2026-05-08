@@ -28,7 +28,7 @@ public class HudOverlay {
         int y = window.getGuiScaledHeight() - TravelersBackpackConfig.CLIENT.overlay.offsetY.get();
 
         RenderInfo info = stack.getOrDefault(ModDataComponents.RENDER_INFO, RenderInfo.EMPTY);
-        if(info.isEmpty()) return;
+        if(!info.hasTanks()) return;
 
         if(!info.getRightFluidStack().isEmpty()) {
             FluidStacksResourceHandler right = new FluidStacksResourceHandler(1, info.getCapacity());
