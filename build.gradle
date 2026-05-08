@@ -12,6 +12,9 @@ base {
 repositories {
 	maven { url "https://cursemaven.com" }
 	maven { url "https://api.modrinth.com/maven" }
+
+	//LambDynamicLights
+	maven { uri("https://maven.gegy.dev")}
 }
 
 fabricApi {
@@ -50,6 +53,10 @@ dependencies {
 	//compileOnly("me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}")
 
 	//OPTIONAL
+
+	//LambDynamicLights
+	compileOnly("dev.lambdaurora.lambdynamiclights:lambdynamiclights-api:4.10.2+26.1.2")
+	localRuntime("dev.lambdaurora.lambdynamiclights:lambdynamiclights-runtime:4.10.2+26.1.2")
 
 	//Crafting Tweaks
 	compileOnly("maven.modrinth:balm:I9GF44A2")

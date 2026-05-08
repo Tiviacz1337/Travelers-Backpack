@@ -115,6 +115,7 @@ public class ModItems {
     public static Item VOID_UPGRADE;
     public static Item FEEDING_UPGRADE;
     public static Item REFILL_UPGRADE;
+    public static Item LANTERN_UPGRADE;
 
     //Backpack Item Entity
     public static EntityType<BackpackItemEntity> BACKPACK_ITEM_ENTITY;
@@ -206,7 +207,7 @@ public class ModItems {
         VOID_UPGRADE = Registry.register(BuiltInRegistries.ITEM, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "void_upgrade"), new VoidUpgradeItem(new Item.Properties().stacksTo(16).setId(resourceKey("void_upgrade"))));
         FEEDING_UPGRADE = Registry.register(BuiltInRegistries.ITEM, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "feeding_upgrade"), new FeedingUpgradeItem(new Item.Properties().stacksTo(16).setId(resourceKey("feeding_upgrade"))));
         REFILL_UPGRADE = Registry.register(BuiltInRegistries.ITEM, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "refill_upgrade"), new RefillUpgradeItem(new Item.Properties().stacksTo(16).setId(resourceKey("refill_upgrade"))));
-
+        LANTERN_UPGRADE = Registry.register(BuiltInRegistries.ITEM, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "lantern_upgrade"), new LanternUpgradeItem(new Item.Properties().stacksTo(16).setId(resourceKey("lantern_upgrade"))));
         BACKPACK_ITEM_ENTITY = Registry.register(BuiltInRegistries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "backpack"), EntityType.Builder.of(BackpackItemEntity::new, MobCategory.MISC).sized(0.25F, 0.25F).clientTrackingRange(6).updateInterval(20).build(ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "backpack"))));
     }
 

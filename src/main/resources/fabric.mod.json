@@ -27,6 +27,9 @@
     ],
     "jei_mod_plugin": [
       "com.tiviacz.travelersbackpack.compat.jei.TravelersBackpackPlugin"
+    ],
+    "lambdynlights:initializer": [
+      "com.tiviacz.travelersbackpack.compat.lambdynamiclight.BackpackDynamicLight"
     ]
   },
   "mixins": [

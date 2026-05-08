@@ -57,6 +57,7 @@ public class ModItemGroups {
             output.accept(ModItems.MAGNET_UPGRADE);
             output.accept(ModItems.VOID_UPGRADE);
             output.accept(ModItems.JUKEBOX_UPGRADE);
+            output.accept(ModItems.LANTERN_UPGRADE);
 
             //Standard
             output.accept(withTanks(ModBlocks.STANDARD_TRAVELERS_BACKPACK));

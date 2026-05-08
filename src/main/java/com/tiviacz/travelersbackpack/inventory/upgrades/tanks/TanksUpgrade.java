@@ -4,6 +4,7 @@ import com.mojang.datafixers.util.Pair;
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetBase;
 import com.tiviacz.travelersbackpack.components.Fluids;
+import com.tiviacz.travelersbackpack.components.RenderInfo;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.FluidTank;
@@ -44,7 +45,7 @@ public class TanksUpgrade extends UpgradeBase<TanksUpgrade> {
         this.setFluids(fluids);
 
         //Update Render data
-        getUpgradeManager().getWrapper().setRenderInfo(writeToRenderData());
+        getUpgradeManager().getWrapper().updateRenderInfo(this::writeToRenderData);
     }
 
     public FluidTank getLeftTank() {
@@ -87,7 +88,7 @@ public class TanksUpgrade extends UpgradeBase<TanksUpgrade> {
                 updateDataHolderUnchecked(ModDataComponents.FLUIDS, new Fluids(leftTank.getFluid(), rightTank.getFluid()));
 
                 //Update Render data
-                getUpgradeManager().getWrapper().setRenderInfo(writeToRenderData());
+                getUpgradeManager().getWrapper().updateRenderInfo(TanksUpgrade.this::writeToRenderData);
 
                 //Update backpack attachment data on clients
                 getUpgradeManager().getWrapper().sendDataToClients(ModDataComponents.RENDER_INFO, ModDataComponents.UPGRADES);
@@ -95,17 +96,19 @@ public class TanksUpgrade extends UpgradeBase<TanksUpgrade> {
         };
     }
 
-    public CompoundTag writeToRenderData() {
-        CompoundTag tag = new CompoundTag();
-        tag.put("LeftTank", leftTank.getFluid().saveOptional());
-        tag.put("RightTank", rightTank.getFluid().saveOptional());
-        tag.putLong("Capacity", leftTank.getCapacity());
-        return tag;
+    public void writeToRenderData(CompoundTag tag) {
+        tag.put(RenderInfo.LEFT_TANK, leftTank.getFluid().saveOptional());
+        tag.put(RenderInfo.RIGHT_TANK, rightTank.getFluid().saveOptional());
+        tag.putLong(RenderInfo.CAPACITY, leftTank.getCapacity());
     }
 
     @Override
     public void remove() {
-        getUpgradeManager().getWrapper().removeRenderInfo();
+        getUpgradeManager().getWrapper().updateRenderInfo(compoundTag -> {
+            compoundTag.remove(RenderInfo.LEFT_TANK);
+            compoundTag.remove(RenderInfo.RIGHT_TANK);
+            compoundTag.remove(RenderInfo.CAPACITY);
+        });
     }
 
     @Override

@@ -256,14 +256,14 @@ public class BackpackDynamicModel implements UnbakedModel, ResolvableModel {
         }
 
         private void addTanks(QuadCollection.Builder builder) {
-            if(renderInfo == null || !renderInfo.isEmpty()) {
+            if(renderInfo == null || renderInfo.hasTanks()) {
                 addAll(builder, models.get(ModelParts.TANKS));
                 addFluids(builder, renderInfo);
             }
         }
 
         private void addFluids(QuadCollection.Builder builder, RenderInfo renderInfo) {
-            if(renderInfo != null && !renderInfo.isEmpty()) {
+            if(renderInfo != null && renderInfo.hasTanks()) {
                 if(!renderInfo.getLeftFluidStack().isEmpty()) {
                     addFluid(builder, renderInfo.getLeftFluidStack(), (float)renderInfo.getLeftFluidStack().getAmount() / renderInfo.getCapacity(), 1.8F / 16D, 1);
                 }
