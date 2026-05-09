@@ -1,7 +1,7 @@
 package com.tiviacz.travelersbackpack.inventory.upgrades.lantern;
 
 import com.mojang.datafixers.util.Pair;
-import com.tiviacz.travelersbackpack.components.RenderInfo;
+import com.tiviacz.travelersbackpack.component.RenderInfo;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.UpgradeManager;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;

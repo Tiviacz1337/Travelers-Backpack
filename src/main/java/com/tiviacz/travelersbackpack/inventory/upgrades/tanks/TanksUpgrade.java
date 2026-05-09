@@ -1,8 +1,8 @@
 package com.tiviacz.travelersbackpack.inventory.upgrades.tanks;
 
 import com.mojang.datafixers.util.Pair;
-import com.tiviacz.travelersbackpack.components.Fluids;
-import com.tiviacz.travelersbackpack.components.RenderInfo;
+import com.tiviacz.travelersbackpack.component.Fluids;
+import com.tiviacz.travelersbackpack.component.RenderInfo;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.UpgradeManager;

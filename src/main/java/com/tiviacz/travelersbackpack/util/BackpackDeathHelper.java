@@ -2,11 +2,11 @@ package com.tiviacz.travelersbackpack.util;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
-import com.tiviacz.travelersbackpack.capability.AttachmentUtils;
-import com.tiviacz.travelersbackpack.capability.BackpackAttachment;
+import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
+import com.tiviacz.travelersbackpack.attachment.BackpackAttachment;
 import com.tiviacz.travelersbackpack.common.BackpackManager;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
-import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
+import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.network.ClientboundSendMessagePacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;

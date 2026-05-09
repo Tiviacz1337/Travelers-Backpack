@@ -1,4 +1,4 @@
-package com.tiviacz.travelersbackpack.items.upgrades;
+package com.tiviacz.travelersbackpack.item.upgrade;
 
 import com.tiviacz.travelersbackpack.inventory.Tiers;
 import net.minecraft.ChatFormatting;

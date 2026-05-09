@@ -1,9 +1,9 @@
-package com.tiviacz.travelersbackpack.capability;
+package com.tiviacz.travelersbackpack.attachment;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.init.ModAttachmentTypes;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
-import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
+import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
 import io.wispforest.accessories.api.AccessoriesCapability;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;

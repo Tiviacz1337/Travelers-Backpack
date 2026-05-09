@@ -2,7 +2,7 @@ package com.tiviacz.travelersbackpack.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.tiviacz.travelersbackpack.client.model.StackModelPart;
-import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
+import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.RenderLayerParent;

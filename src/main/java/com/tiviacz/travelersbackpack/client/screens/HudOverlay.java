@@ -1,10 +1,10 @@
 package com.tiviacz.travelersbackpack.client.screens;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
-import com.tiviacz.travelersbackpack.components.RenderInfo;
+import com.tiviacz.travelersbackpack.component.RenderInfo;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
-import com.tiviacz.travelersbackpack.items.HoseItem;
+import com.tiviacz.travelersbackpack.item.HoseItem;
 import com.tiviacz.travelersbackpack.util.RenderHelper;
 import com.tiviacz.travelersbackpack.util.StacksHandlerUtils;
 import net.minecraft.client.Minecraft;

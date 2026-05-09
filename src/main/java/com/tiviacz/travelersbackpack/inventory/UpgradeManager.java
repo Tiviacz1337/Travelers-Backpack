@@ -6,7 +6,7 @@ import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.upgrades.IEnable;
 import com.tiviacz.travelersbackpack.inventory.upgrades.ITickableUpgrade;
 import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
-import com.tiviacz.travelersbackpack.items.upgrades.UpgradeItem;
+import com.tiviacz.travelersbackpack.item.upgrade.UpgradeItem;
 import com.tiviacz.travelersbackpack.util.StacksHandlerUtils;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;

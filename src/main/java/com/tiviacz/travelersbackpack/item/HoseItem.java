@@ -1,7 +1,7 @@
-package com.tiviacz.travelersbackpack.items;
+package com.tiviacz.travelersbackpack.item;
 
 import com.tiviacz.travelersbackpack.advancements.ActionTypeTrigger;
-import com.tiviacz.travelersbackpack.capability.AttachmentUtils;
+import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
 import com.tiviacz.travelersbackpack.common.ServerActions;
 import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
 import com.tiviacz.travelersbackpack.init.ModAdvancements;

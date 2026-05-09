@@ -1,10 +1,10 @@
-package com.tiviacz.travelersbackpack.items.upgrades;
+package com.tiviacz.travelersbackpack.item.upgrade;
 
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.UpgradeManager;
 import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
-import com.tiviacz.travelersbackpack.inventory.upgrades.refill.RefillUpgrade;
+import com.tiviacz.travelersbackpack.inventory.upgrades.feeding.FeedingUpgrade;
 import com.tiviacz.travelersbackpack.util.ContainerContentsHelper;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.flag.FeatureFlagSet;
@@ -14,15 +14,15 @@ import org.apache.commons.lang3.function.TriFunction;
 
 import java.util.Optional;
 
-public class RefillUpgradeItem extends UpgradeItem {
-    public RefillUpgradeItem(Properties pProperties) {
-        super(pProperties, "refill_upgrade");
+public class FeedingUpgradeItem extends UpgradeItem {
+    public FeedingUpgradeItem(Properties pProperties) {
+        super(pProperties, "feeding_upgrade");
     }
 
     @Override
     public boolean isEnabled(FeatureFlagSet enabledFeatures) {
         if(TravelersBackpackConfig.serverSpec.isLoaded()) {
-            return TravelersBackpackConfig.SERVER.backpackUpgrades.refillUpgradeSettings.enableRefillUpgrade.get() && super.isEnabled(enabledFeatures);
+            return TravelersBackpackConfig.SERVER.backpackUpgrades.feedingUpgradeSettings.enableFeedingUpgrade.get() && super.isEnabled(enabledFeatures);
         }
         return super.isEnabled(enabledFeatures);
     }
@@ -34,7 +34,7 @@ public class RefillUpgradeItem extends UpgradeItem {
 
     @Override
     public Class<? extends UpgradeBase<?>> getUpgradeClass() {
-        return RefillUpgrade.class;
+        return FeedingUpgrade.class;
     }
 
     @Override
@@ -42,7 +42,7 @@ public class RefillUpgradeItem extends UpgradeItem {
         return (upgradeManager, dataHolderSlot, provider) -> {
             ItemContainerContents contents = provider.getOrDefault(ModDataComponents.BACKPACK_CONTAINER.get(), ItemContainerContents.EMPTY);
             NonNullList<ItemStack> items = ContainerContentsHelper.getItems(contents, 9);
-            return Optional.of(new RefillUpgrade(upgradeManager, dataHolderSlot, items));
+            return Optional.of(new FeedingUpgrade(upgradeManager, dataHolderSlot, items));
         };
     }
 }

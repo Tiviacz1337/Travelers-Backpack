@@ -1,9 +1,9 @@
 package com.tiviacz.travelersbackpack.inventory.transfer;
 
-import com.tiviacz.travelersbackpack.components.Fluids;
+import com.tiviacz.travelersbackpack.component.Fluids;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;
-import com.tiviacz.travelersbackpack.items.upgrades.TanksUpgradeItem;
+import com.tiviacz.travelersbackpack.item.upgrade.TanksUpgradeItem;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;

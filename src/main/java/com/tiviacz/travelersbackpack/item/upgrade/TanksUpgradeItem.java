@@ -1,7 +1,7 @@
-package com.tiviacz.travelersbackpack.items.upgrades;
+package com.tiviacz.travelersbackpack.item.upgrade;
 
-import com.tiviacz.travelersbackpack.components.Fluids;
-import com.tiviacz.travelersbackpack.components.RenderInfo;
+import com.tiviacz.travelersbackpack.component.Fluids;
+import com.tiviacz.travelersbackpack.component.RenderInfo;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.UpgradeManager;

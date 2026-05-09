@@ -3,7 +3,7 @@ package com.tiviacz.travelersbackpack.inventory.menu.slot;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModTags;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
-import com.tiviacz.travelersbackpack.items.HoseItem;
+import com.tiviacz.travelersbackpack.item.HoseItem;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;

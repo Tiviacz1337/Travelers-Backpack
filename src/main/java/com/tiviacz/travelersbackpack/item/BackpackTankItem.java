@@ -1,4 +1,4 @@
-package com.tiviacz.travelersbackpack.items;
+package com.tiviacz.travelersbackpack.item;
 
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import net.minecraft.world.flag.FeatureFlagSet;

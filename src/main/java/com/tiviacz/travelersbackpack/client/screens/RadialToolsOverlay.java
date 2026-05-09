@@ -1,12 +1,12 @@
 package com.tiviacz.travelersbackpack.client.screens;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
-import com.tiviacz.travelersbackpack.components.RenderInfo;
+import com.tiviacz.travelersbackpack.component.RenderInfo;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TankWidget;
-import com.tiviacz.travelersbackpack.items.BackpackTankItem;
-import com.tiviacz.travelersbackpack.items.HoseItem;
+import com.tiviacz.travelersbackpack.item.BackpackTankItem;
+import com.tiviacz.travelersbackpack.item.HoseItem;
 import com.tiviacz.travelersbackpack.util.StacksHandlerUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;

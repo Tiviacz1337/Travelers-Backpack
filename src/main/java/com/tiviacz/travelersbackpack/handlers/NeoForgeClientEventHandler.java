@@ -2,7 +2,7 @@ package com.tiviacz.travelersbackpack.handlers;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
-import com.tiviacz.travelersbackpack.capability.AttachmentUtils;
+import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
 import com.tiviacz.travelersbackpack.client.screens.RadialToolsOverlay;
 import com.tiviacz.travelersbackpack.client.screens.ToolsScreen;
 import com.tiviacz.travelersbackpack.client.screens.tooltip.BackpackTooltipComponent;
@@ -12,7 +12,7 @@ import com.tiviacz.travelersbackpack.common.ServerActions;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.BackpackSlotItemHandler;
-import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
+import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
 import com.tiviacz.travelersbackpack.network.ServerboundRetrieveBackpackPacket;
 import net.minecraft.ChatFormatting;

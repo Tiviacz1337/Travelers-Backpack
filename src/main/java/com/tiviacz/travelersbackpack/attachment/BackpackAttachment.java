@@ -1,7 +1,7 @@
-package com.tiviacz.travelersbackpack.capability;
+package com.tiviacz.travelersbackpack.attachment;
 
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
-import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
+import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.network.ClientboundSyncAttachmentPacket;
 import com.tiviacz.travelersbackpack.network.ClientboundSyncComponentsPacket;
 import com.tiviacz.travelersbackpack.util.Reference;

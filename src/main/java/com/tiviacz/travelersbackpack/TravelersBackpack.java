@@ -1,6 +1,6 @@
 package com.tiviacz.travelersbackpack;
 
-import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
+import com.tiviacz.travelersbackpack.block.TravelersBackpackBlock;
 import com.tiviacz.travelersbackpack.compat.accessories.TravelersBackpackAccessory;
 import com.tiviacz.travelersbackpack.compat.accessories.TravelersBackpackAccessoryClient;
 import com.tiviacz.travelersbackpack.compat.craftingtweaks.CraftingTweaksCompat;

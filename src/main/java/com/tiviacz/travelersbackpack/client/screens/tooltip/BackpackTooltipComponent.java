@@ -1,6 +1,6 @@
 package com.tiviacz.travelersbackpack.client.screens.tooltip;
 
-import com.tiviacz.travelersbackpack.components.RenderInfo;
+import com.tiviacz.travelersbackpack.component.RenderInfo;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.CommonFluid;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;

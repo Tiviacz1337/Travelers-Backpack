@@ -2,8 +2,8 @@ package com.tiviacz.travelersbackpack.inventory.menu.slot;
 
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
-import com.tiviacz.travelersbackpack.items.upgrades.TanksUpgradeItem;
-import com.tiviacz.travelersbackpack.items.upgrades.UpgradeItem;
+import com.tiviacz.travelersbackpack.item.upgrade.TanksUpgradeItem;
+import com.tiviacz.travelersbackpack.item.upgrade.UpgradeItem;
 import com.tiviacz.travelersbackpack.util.StacksHandlerUtils;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Player;

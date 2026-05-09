@@ -3,7 +3,7 @@ package com.tiviacz.travelersbackpack.commands;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
-import com.tiviacz.travelersbackpack.capability.AttachmentUtils;
+import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;

@@ -1,4 +1,4 @@
-package com.tiviacz.travelersbackpack.blocks;
+package com.tiviacz.travelersbackpack.block;
 
 import com.google.common.collect.Lists;
 import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
@@ -9,7 +9,7 @@ import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.upgrades.pickup.AutoPickupUpgrade;
 import com.tiviacz.travelersbackpack.inventory.upgrades.smelting.AbstractSmeltingUpgrade;
 import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;
-import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
+import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.BackpackDeathHelper;
 import com.tiviacz.travelersbackpack.util.StacksHandlerUtils;
 import net.minecraft.core.BlockPos;

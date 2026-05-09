@@ -2,7 +2,7 @@ package com.tiviacz.travelersbackpack.client.screens;
 
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.datafixers.util.Pair;
-import com.tiviacz.travelersbackpack.capability.AttachmentUtils;
+import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.handlers.ModClientEventHandler;
 import com.tiviacz.travelersbackpack.handlers.NeoForgeClientEventHandler;
@@ -10,7 +10,7 @@ import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.ToolSlotItemHandler;
-import com.tiviacz.travelersbackpack.items.HoseItem;
+import com.tiviacz.travelersbackpack.item.HoseItem;
 import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
 import com.tiviacz.travelersbackpack.util.ContainerContentsHelper;
 import net.minecraft.client.Minecraft;

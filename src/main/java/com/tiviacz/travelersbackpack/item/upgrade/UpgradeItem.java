@@ -1,4 +1,4 @@
-package com.tiviacz.travelersbackpack.items.upgrades;
+package com.tiviacz.travelersbackpack.item.upgrade;
 
 import com.tiviacz.travelersbackpack.inventory.UpgradeManager;
 import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;

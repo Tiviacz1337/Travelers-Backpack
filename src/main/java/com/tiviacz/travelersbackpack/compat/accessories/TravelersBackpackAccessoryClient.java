@@ -3,7 +3,7 @@ package com.tiviacz.travelersbackpack.compat.accessories;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.tiviacz.travelersbackpack.client.model.StackModelPart;
 import com.tiviacz.travelersbackpack.client.renderer.BackpackLayer;
-import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
+import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
 import io.wispforest.accessories.api.client.AccessoriesRenderStateKeys;
 import io.wispforest.accessories.api.client.AccessoryRenderState;
 import io.wispforest.accessories.api.client.renderers.SimpleAccessoryRenderer;

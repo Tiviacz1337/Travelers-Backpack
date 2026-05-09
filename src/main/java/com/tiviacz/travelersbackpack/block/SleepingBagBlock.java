@@ -1,4 +1,4 @@
-package com.tiviacz.travelersbackpack.blocks;
+package com.tiviacz.travelersbackpack.block;
 
 import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
