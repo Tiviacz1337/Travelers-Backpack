@@ -3,6 +3,7 @@
 ✨ Sleeping bags can be attached to the backpack by holding the item in your hand and Shift + Right-Clicking on a placed backpack  
 ✨ The sleeping bag can be detached from the backpack by holding Shift while clicking the "Use Sleeping Bag" button  
 ✨ Sleeping bags can be disabled entirely in the config  
+🔧 Tool slots button do not appear if the backpack does not have any tool slots  
 🐛 Fixed duplication issue with Trinkets Updated  
 🐛 Fixed an issue where the particles that appear when breaking the backpack were colored by the fluid in the tank  
 
