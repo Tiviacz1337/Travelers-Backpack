@@ -371,7 +371,6 @@ public class ServerActions {
     public static void toggleSleepingBag(Player player, BlockPos pos, boolean isEquipped, boolean isShiftPressed) {
         Level level = player.level();
         if(isShiftPressed) {
-            //#TODO check server crash on fabric
             if(player.containerMenu instanceof BackpackBaseMenu menu) {
                 ItemStack sleepingBag = BackpackBlockEntity.getProperSleepingBag(menu.getWrapper().getSleepingBagColor()).getBlock().asItem().getDefaultInstance();
                 player.getInventory().placeItemBackInInventory(sleepingBag);
