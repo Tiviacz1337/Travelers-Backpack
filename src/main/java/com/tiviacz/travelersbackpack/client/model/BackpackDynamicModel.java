@@ -302,7 +302,7 @@ public class BackpackDynamicModel implements UnbakedModel, ResolvableModel {
 
         //Rebake sleeping bag to change sprite dynamically
         private void addSleepingBag(QuadCollection.Builder builder) {
-            if(isSleepingBagDeployed) {
+            if(isSleepingBagDeployed || sleepingBagColor == -1) {
                 return;
             }
             addAll(builder, models.get(ModelParts.SLEEPING_BAG_EXTRAS));
