@@ -7,7 +7,7 @@ import com.tiviacz.travelersbackpack.inventory.handler.ItemStackHandler;
 import com.tiviacz.travelersbackpack.inventory.upgrades.IEnable;
 import com.tiviacz.travelersbackpack.inventory.upgrades.ITickableUpgrade;
 import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
-import com.tiviacz.travelersbackpack.item.upgrades.UpgradeItem;
+import com.tiviacz.travelersbackpack.item.upgrade.UpgradeItem;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;

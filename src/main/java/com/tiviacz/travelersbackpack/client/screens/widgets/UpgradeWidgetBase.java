@@ -7,7 +7,7 @@ import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
 import com.tiviacz.travelersbackpack.inventory.upgrades.filter.IFilter;
 import com.tiviacz.travelersbackpack.inventory.upgrades.filter.IFilterSlots;
-import com.tiviacz.travelersbackpack.item.upgrades.UpgradeItem;
+import com.tiviacz.travelersbackpack.item.upgrade.UpgradeItem;
 import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.client.gui.GuiGraphicsExtractor;

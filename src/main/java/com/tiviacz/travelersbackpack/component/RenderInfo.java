@@ -1,4 +1,4 @@
-package com.tiviacz.travelersbackpack.components;
+package com.tiviacz.travelersbackpack.component;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;

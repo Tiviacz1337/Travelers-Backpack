@@ -1,8 +1,8 @@
 package com.tiviacz.travelersbackpack.init;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
-import com.tiviacz.travelersbackpack.blocks.SleepingBagBlock;
-import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
+import com.tiviacz.travelersbackpack.block.SleepingBagBlock;
+import com.tiviacz.travelersbackpack.block.TravelersBackpackBlock;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;

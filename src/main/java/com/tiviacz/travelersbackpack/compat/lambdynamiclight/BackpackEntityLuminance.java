@@ -1,7 +1,7 @@
 package com.tiviacz.travelersbackpack.compat.lambdynamiclight;
 
 import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
-import com.tiviacz.travelersbackpack.components.RenderInfo;
+import com.tiviacz.travelersbackpack.component.RenderInfo;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import dev.lambdaurora.lambdynlights.api.entity.luminance.EntityLuminance;
 import dev.lambdaurora.lambdynlights.api.item.ItemLightSourceManager;

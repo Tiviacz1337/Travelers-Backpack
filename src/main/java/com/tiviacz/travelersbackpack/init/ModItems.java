@@ -9,7 +9,7 @@ import com.tiviacz.travelersbackpack.item.BackpackTankItem;
 import com.tiviacz.travelersbackpack.item.HoseItem;
 import com.tiviacz.travelersbackpack.item.SleepingBagItem;
 import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
-import com.tiviacz.travelersbackpack.item.upgrades.*;
+import com.tiviacz.travelersbackpack.item.upgrade.*;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.SlottedStorage;

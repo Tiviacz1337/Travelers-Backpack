@@ -3,7 +3,7 @@ package com.tiviacz.travelersbackpack.common;
 import com.tiviacz.travelersbackpack.advancements.ActionTypeTrigger;
 import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
 import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
-import com.tiviacz.travelersbackpack.blocks.SleepingBagBlock;
+import com.tiviacz.travelersbackpack.block.SleepingBagBlock;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
 import com.tiviacz.travelersbackpack.init.ModAdvancements;

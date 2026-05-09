@@ -2,9 +2,9 @@ package com.tiviacz.travelersbackpack.init;
 
 import com.mojang.serialization.Codec;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
-import com.tiviacz.travelersbackpack.components.Fluids;
-import com.tiviacz.travelersbackpack.components.RenderInfo;
-import com.tiviacz.travelersbackpack.components.Slots;
+import com.tiviacz.travelersbackpack.component.Fluids;
+import com.tiviacz.travelersbackpack.component.RenderInfo;
+import com.tiviacz.travelersbackpack.component.Slots;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;

@@ -18,7 +18,7 @@ import com.tiviacz.travelersbackpack.commands.BackpackIconCommands;
 import com.tiviacz.travelersbackpack.compat.craftingtweaks.CraftingTweaksCompat;
 import com.tiviacz.travelersbackpack.compat.trashslot.TrashSlotCompat;
 import com.tiviacz.travelersbackpack.compat.trinkets.BackpackTrinketRenderer;
-import com.tiviacz.travelersbackpack.components.RenderInfo;
+import com.tiviacz.travelersbackpack.component.RenderInfo;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.fluids.potion.PotionFluidVariantAttributeHandler;
 import com.tiviacz.travelersbackpack.fluids.potion.PotionFluidVariantRenderHandler;

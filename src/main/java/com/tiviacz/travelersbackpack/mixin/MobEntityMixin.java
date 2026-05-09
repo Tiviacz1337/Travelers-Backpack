@@ -1,10 +1,10 @@
 package com.tiviacz.travelersbackpack.mixin;
 
-import com.tiviacz.travelersbackpack.components.RenderInfo;
+import com.tiviacz.travelersbackpack.component.RenderInfo;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.init.ModItems;
-import com.tiviacz.travelersbackpack.item.upgrades.TanksUpgradeItem;
+import com.tiviacz.travelersbackpack.item.upgrade.TanksUpgradeItem;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.util.RandomSource;

@@ -1,7 +1,7 @@
 package com.tiviacz.travelersbackpack.mixin;
 
 import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
-import com.tiviacz.travelersbackpack.attachment.TravelersBackpackAttachment;
+import com.tiviacz.travelersbackpack.attachment.BackpackAttachment;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.common.ServerActions;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
@@ -132,7 +132,7 @@ public abstract class PlayerMixin extends LivingEntity {
             Optional<ValueInput> backpack = nested.child("travelersbackpack:travelersbackpack");
             backpack.ifPresent(nestedBackpack -> {
                 ItemStack stack = nestedBackpack.read("Wearable", ItemStack.OPTIONAL_CODEC).orElseGet(() -> new ItemStack(Items.AIR, 0));
-                this.setAttached(ModAttachmentTypes.TRAVELERS_BACKPACK, new TravelersBackpackAttachment(stack));
+                this.setAttached(ModAttachmentTypes.TRAVELERS_BACKPACK, new BackpackAttachment(stack));
             });
         });
     }

@@ -13,7 +13,7 @@ import com.tiviacz.travelersbackpack.inventory.sorter.ContainerSorter;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
 import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
-import com.tiviacz.travelersbackpack.item.upgrades.TanksUpgradeItem;
+import com.tiviacz.travelersbackpack.item.upgrade.TanksUpgradeItem;
 import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
 import com.tiviacz.travelersbackpack.util.FluidTypeHelper;
 import com.tiviacz.travelersbackpack.util.KeyHelper;

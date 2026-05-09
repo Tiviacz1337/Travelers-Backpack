@@ -3,7 +3,7 @@ package com.tiviacz.travelersbackpack.network;
 import com.mojang.datafixers.util.Pair;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
-import com.tiviacz.travelersbackpack.components.Slots;
+import com.tiviacz.travelersbackpack.component.Slots;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.Minecraft;

@@ -1,7 +1,7 @@
 package com.tiviacz.travelersbackpack;
 
 import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
-import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
+import com.tiviacz.travelersbackpack.block.TravelersBackpackBlock;
 import com.tiviacz.travelersbackpack.compat.craftingtweaks.CraftingTweaksCompat;
 import com.tiviacz.travelersbackpack.compat.pneumonogravestones.PneumonoGravestonesCompat;
 import com.tiviacz.travelersbackpack.compat.trinkets.BackpackTrinket;

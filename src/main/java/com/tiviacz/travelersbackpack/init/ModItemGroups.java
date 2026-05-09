@@ -1,7 +1,7 @@
 package com.tiviacz.travelersbackpack.init;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
-import com.tiviacz.travelersbackpack.components.RenderInfo;
+import com.tiviacz.travelersbackpack.component.RenderInfo;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
 import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 import net.fabricmc.fabric.api.creativetab.v1.FabricCreativeModeTab;

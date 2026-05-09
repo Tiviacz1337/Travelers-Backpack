@@ -10,7 +10,7 @@ import com.tiviacz.travelersbackpack.inventory.upgrades.IUpgrade;
 import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
 import com.tiviacz.travelersbackpack.inventory.upgrades.crafting.CraftingUpgrade;
 import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;
-import com.tiviacz.travelersbackpack.item.upgrades.UpgradeItem;
+import com.tiviacz.travelersbackpack.item.upgrade.UpgradeItem;
 import com.tiviacz.travelersbackpack.network.ClientboundUpdateRecipePacket;
 import com.tiviacz.travelersbackpack.util.ItemStackUtils;
 import com.tiviacz.travelersbackpack.util.PacketDistributor;

@@ -3,7 +3,7 @@ package com.tiviacz.travelersbackpack.client.screens;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
-import com.tiviacz.travelersbackpack.item.upgrades.UpgradeItem;
+import com.tiviacz.travelersbackpack.item.upgrade.UpgradeItem;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 

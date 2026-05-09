@@ -1,6 +1,6 @@
 package com.tiviacz.travelersbackpack.datagen;
 
-import com.tiviacz.travelersbackpack.blocks.SleepingBagBlock;
+import com.tiviacz.travelersbackpack.block.SleepingBagBlock;
 import com.tiviacz.travelersbackpack.init.ModBlocks;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;

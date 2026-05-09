@@ -1,7 +1,7 @@
 package com.tiviacz.travelersbackpack.handlers;
 
-import com.tiviacz.travelersbackpack.blocks.SleepingBagBlock;
-import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
+import com.tiviacz.travelersbackpack.block.SleepingBagBlock;
+import com.tiviacz.travelersbackpack.block.TravelersBackpackBlock;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import net.fabricmc.fabric.api.entity.event.v1.EntitySleepEvents;
 import net.minecraft.core.BlockPos;

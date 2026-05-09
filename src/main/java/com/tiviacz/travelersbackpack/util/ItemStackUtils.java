@@ -1,7 +1,7 @@
 package com.tiviacz.travelersbackpack.util;
 
 import com.mojang.datafixers.util.Pair;
-import com.tiviacz.travelersbackpack.components.Slots;
+import com.tiviacz.travelersbackpack.component.Slots;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.item.HoseItem;
 import net.minecraft.core.component.DataComponentMap;

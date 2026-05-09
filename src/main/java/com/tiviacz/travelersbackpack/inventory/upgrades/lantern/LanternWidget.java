@@ -3,7 +3,7 @@ package com.tiviacz.travelersbackpack.inventory.upgrades.lantern;
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.client.screens.widgets.UpgradeWidgetBase;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
-import com.tiviacz.travelersbackpack.item.upgrades.LanternUpgradeItem;
+import com.tiviacz.travelersbackpack.item.upgrade.LanternUpgradeItem;
 import net.minecraft.network.chat.Component;
 
 import java.util.function.Consumer;

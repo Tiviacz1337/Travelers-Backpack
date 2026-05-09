@@ -16,7 +16,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 public class AttachmentUtils {
-    public static Optional<TravelersBackpackAttachment> getAttachment(Player player) {
+    public static Optional<BackpackAttachment> getAttachment(Player player) {
         if(player == null) {
             return Optional.empty();
         }
@@ -92,7 +92,7 @@ public class AttachmentUtils {
             return null;
         }
         if(isWearingBackpack(player)) {
-            return AttachmentUtils.getAttachment(player).map(TravelersBackpackAttachment::getWrapper).orElse(null);
+            return AttachmentUtils.getAttachment(player).map(BackpackAttachment::getWrapper).orElse(null);
         }
         return null;
     }
@@ -125,7 +125,7 @@ public class AttachmentUtils {
             return null;
         }
         if(isWearingBackpack(player)) {
-            return AttachmentUtils.getAttachment(player).map(TravelersBackpackAttachment::getWrapper).orElse(null);
+            return AttachmentUtils.getAttachment(player).map(BackpackAttachment::getWrapper).orElse(null);
         }
         return null;
     }

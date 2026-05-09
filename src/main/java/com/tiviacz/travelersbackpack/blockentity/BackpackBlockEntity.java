@@ -1,8 +1,8 @@
 package com.tiviacz.travelersbackpack.blockentity;
 
-import com.tiviacz.travelersbackpack.blocks.SleepingBagBlock;
-import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
-import com.tiviacz.travelersbackpack.components.RenderInfo;
+import com.tiviacz.travelersbackpack.block.SleepingBagBlock;
+import com.tiviacz.travelersbackpack.block.TravelersBackpackBlock;
+import com.tiviacz.travelersbackpack.component.RenderInfo;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModBlockEntityTypes;
 import com.tiviacz.travelersbackpack.init.ModBlocks;

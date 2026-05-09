@@ -14,14 +14,14 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
-public class TravelersBackpackAttachment {
-    public static Codec<TravelersBackpackAttachment> CODEC = ItemStack.OPTIONAL_CODEC.xmap(TravelersBackpackAttachment::new, TravelersBackpackAttachment::getBackpack);
-    public static StreamCodec<RegistryFriendlyByteBuf, TravelersBackpackAttachment> STREAM_CODEC = ItemStack.OPTIONAL_STREAM_CODEC.map(TravelersBackpackAttachment::new, TravelersBackpackAttachment::getBackpack);
+public class BackpackAttachment {
+    public static Codec<BackpackAttachment> CODEC = ItemStack.OPTIONAL_CODEC.xmap(BackpackAttachment::new, BackpackAttachment::getBackpack);
+    public static StreamCodec<RegistryFriendlyByteBuf, BackpackAttachment> STREAM_CODEC = ItemStack.OPTIONAL_STREAM_CODEC.map(BackpackAttachment::new, BackpackAttachment::getBackpack);
 
     public BackpackWrapper backpackWrapper;
     public ItemStack backpack = new ItemStack(Items.AIR, 0);
 
-    public TravelersBackpackAttachment(ItemStack backpack) {
+    public BackpackAttachment(ItemStack backpack) {
         this.backpack = backpack;
     }
 
