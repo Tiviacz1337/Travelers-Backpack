@@ -687,7 +687,7 @@ public class BackpackWrapper {
 
     public void initializeSleepingBag(ItemStack stack) {
         if(TravelersBackpackConfig.serverSpec.isLoaded()) {
-            if(!TravelersBackpackConfig.SERVER.backpackUpgrades.enableSleepingBag.get()) { //#TODO change
+            if(!TravelersBackpackConfig.SERVER.backpackUpgrades.enableSleepingBag.get()) {
                 if(!stack.has(ModDataComponents.SLEEPING_BAG_COLOR)) {
                     stack.set(ModDataComponents.SLEEPING_BAG_COLOR, -1);
                 }

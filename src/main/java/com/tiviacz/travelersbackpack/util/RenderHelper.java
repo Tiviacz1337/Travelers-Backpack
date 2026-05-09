@@ -28,7 +28,7 @@ public class RenderHelper {
         int posY = (int)(y + height - renderAmount);
 
         int color = FluidVariantRendering.getColor(fluid.fluidVariant());
-        if(fluid.fluidVariant().is(Fluids.WATER)) { //#TODO Patch for water
+        if(fluid.fluidVariant().is(Fluids.WATER)) {
             color = 0xFF3F76E4;
         }
         guiGraphics.pose().pushMatrix();
