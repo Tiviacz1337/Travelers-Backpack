@@ -10,6 +10,8 @@ import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
 import com.tiviacz.travelersbackpack.inventory.upgrades.IEnable;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -27,6 +29,7 @@ public class LanternUpgrade extends UpgradeBase<LanternUpgrade> implements IEnab
     }
 
     @Override
+    @Environment(EnvType.CLIENT)
     public WidgetBase<?> createWidget(BackpackScreen screen, int x, int y) {
         return new LanternWidget(screen, this, new Point(screen.getGuiLeft() + x, screen.getGuiTop() + y), new Point(137, 0), "screen.travelersbackpack.lantern_upgrade");
     }
