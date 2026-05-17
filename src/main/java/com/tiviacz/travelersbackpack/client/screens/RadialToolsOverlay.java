@@ -132,7 +132,7 @@ public final class RadialToolsOverlay {
                 List<Component> tooltip = (TravelersBackpackConfig.CLIENT.toolsOverlay.showTooltip.get() || hoveredStack.getItem() instanceof HoseItem) ? getTooltipFromItem(mc, hoveredStack) : new ArrayList<>(List.of(hoveredStack.getHoverName()));
                 //Fluid contents for backpack tanks
                 if(hoveredStack.getItem() instanceof BackpackTankItem) {
-                    if(!backpack.getOrDefault(ModDataComponents.RENDER_INFO, RenderInfo.EMPTY).isEmpty()) {
+                    if(backpack.getOrDefault(ModDataComponents.RENDER_INFO, RenderInfo.EMPTY).hasTanks()) {
                         RenderInfo renderInfo = backpack.get(ModDataComponents.RENDER_INFO);
                         if(hoveredResult == 2) {
                             FluidTank rightTank = new FluidTank(renderInfo.getCapacity());

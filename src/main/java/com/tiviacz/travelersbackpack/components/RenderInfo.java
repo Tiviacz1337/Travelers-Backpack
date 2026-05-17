@@ -31,7 +31,7 @@ public record RenderInfo(CompoundTag compoundTag) {
     }
 
     public boolean hasTanks() {
-        return this.compoundTag.contains("LeftTank") || this.compoundTag.contains("RightTank");
+        return this.compoundTag.contains(LEFT_TANK) || this.compoundTag.contains(RIGHT_TANK);
     }
 
     public boolean hasLantern() {
@@ -39,37 +39,37 @@ public record RenderInfo(CompoundTag compoundTag) {
     }
 
     public FluidStack getLeftFluidStack() {
-        if(this.compoundTag.contains("LeftTank")) {
-            return FluidStack.parseOptional(RegistryHelper.getRegistryAccess().get(), this.compoundTag.getCompound("LeftTank"));
+        if(this.compoundTag.contains(LEFT_TANK)) {
+            return FluidStack.parseOptional(RegistryHelper.getRegistryAccess().get(), this.compoundTag.getCompound(LEFT_TANK));
         }
         return FluidStack.EMPTY;
     }
 
     public FluidStack getRightFluidStack() {
-        if(this.compoundTag.contains("RightTank")) {
-            return FluidStack.parseOptional(RegistryHelper.getRegistryAccess().get(), this.compoundTag.getCompound("RightTank"));
+        if(this.compoundTag.contains(RIGHT_TANK)) {
+            return FluidStack.parseOptional(RegistryHelper.getRegistryAccess().get(), this.compoundTag.getCompound(RIGHT_TANK));
         }
         return FluidStack.EMPTY;
     }
 
     public void updateCapacity(int capacity) {
-        if(this.compoundTag.contains("Capacity")) {
-            this.compoundTag.putInt("Capacity", capacity);
+        if(this.compoundTag.contains(CAPACITY)) {
+            this.compoundTag.putInt(CAPACITY, capacity);
         }
     }
 
     public int getCapacity() {
-        if(this.compoundTag.contains("Capacity")) {
-            return this.compoundTag.getInt("Capacity");
+        if(this.compoundTag.contains(CAPACITY)) {
+            return this.compoundTag.getInt(CAPACITY);
         }
         return 0;
     }
 
     public static RenderInfo createCreativeTabInfo() {
         CompoundTag tag = new CompoundTag();
-        tag.put("LeftTank", new FluidStack(Fluids.WATER, 1).save(RegistryHelper.getRegistryAccess().get()));
-        tag.put("RightTank", new FluidStack(Fluids.LAVA, 1).save(RegistryHelper.getRegistryAccess().get()));
-        tag.putInt("Capacity", 1);
+        tag.put(LEFT_TANK, new FluidStack(Fluids.WATER, 1).save(RegistryHelper.getRegistryAccess().get()));
+        tag.put(RIGHT_TANK, new FluidStack(Fluids.LAVA, 1).save(RegistryHelper.getRegistryAccess().get()));
+        tag.putInt(CAPACITY, 1);
         return new RenderInfo(tag);
     }
 

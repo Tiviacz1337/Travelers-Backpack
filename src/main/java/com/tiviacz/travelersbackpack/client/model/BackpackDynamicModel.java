@@ -189,7 +189,7 @@ public class BackpackDynamicModel implements IUnbakedGeometry<BackpackDynamicMod
             } else {
                 ret.addAll(models.get(ModelParts.BASE).getQuads(state, side, rand, extraData, renderType));
             }
-            if(renderInfo == null || !renderInfo.isEmpty()) {
+            if(renderInfo == null || renderInfo.hasTanks()) {
                 addTanks(state, side, rand, extraData, ret, renderType);
             }
             if(!isSleepingBagDeployed) {
@@ -201,7 +201,7 @@ public class BackpackDynamicModel implements IUnbakedGeometry<BackpackDynamicMod
         }
 
         private void addFluids(List<BakedQuad> ret, RenderInfo renderInfo) {
-            if(renderInfo != null && !renderInfo.isEmpty()) {
+            if(renderInfo != null && renderInfo.hasTanks()) {
                 if(!renderInfo.getLeftFluidStack().isEmpty()) {
                     addFluid(ret, renderInfo.getLeftFluidStack(), (float)renderInfo.getLeftFluidStack().getAmount() / renderInfo.getCapacity(), 1.8F / 16D);
                 }
@@ -213,6 +213,9 @@ public class BackpackDynamicModel implements IUnbakedGeometry<BackpackDynamicMod
 
         //Rebake sleeping bag to change sprite dynamically
         private void addSleepingBag(List<BakedQuad> ret, BlockState state, Direction side, RandomSource rand, ModelData extraData, RenderType renderType) {
+            if(isSleepingBagDeployed || sleepingBagColor == -1) {
+                return;
+            }
             ret.addAll(models.get(ModelParts.SLEEPING_BAG_EXTRAS).getQuads(state, side, rand, extraData, renderType));
 
             TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "block/bag/" + DyeColor.byId(sleepingBagColor).getName().toLowerCase(Locale.ENGLISH) + "_sleeping_bag"));

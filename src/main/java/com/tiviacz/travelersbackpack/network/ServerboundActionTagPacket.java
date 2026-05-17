@@ -78,7 +78,8 @@ public record ServerboundActionTagPacket(CompoundTag actionTag) implements Custo
                 case SLEEPING_BAG -> {
                     BlockPos pos = BlockPos.CODEC.parse(NbtOps.INSTANCE, actionTag.get("Arg0")).getOrThrow();
                     boolean isEquipped = actionTag.getBoolean("Arg1");
-                    ServerActions.toggleSleepingBag(player, pos, isEquipped);
+                    boolean isShiftPressed  = actionTag.getBoolean("Arg2");
+                    ServerActions.toggleSleepingBag(player, pos, isEquipped, isShiftPressed);
                 }
                 case FILL_TANK -> {
                     boolean leftTank = actionTag.getBoolean("Arg0");

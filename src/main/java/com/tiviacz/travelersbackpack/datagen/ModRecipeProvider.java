@@ -7,7 +7,6 @@ import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.init.ModTags;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
 import net.minecraft.resources.ResourceLocation;
@@ -130,6 +129,18 @@ public class ModRecipeProvider extends RecipeProvider {
                 .define('D', Tags.Items.CHESTS_WOODEN).define('S', ModTags.SLEEPING_BAGS)
                 .pattern("XBX").pattern(" D ").pattern("XSX")
                 .unlockedBy("has_chest", has(Tags.Items.CHESTS_WOODEN)).save(writer, id("standard_no_tanks"));
+
+        ShapedBackpackRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.STANDARD_TRAVELERS_BACKPACK.get()).group("standard_travelers_backpack")
+                .define('X', Tags.Items.LEATHERS).define('B', Tags.Items.STRINGS)
+                .define('D', Tags.Items.CHESTS_WOODEN)
+                .pattern("XBX").pattern(" D ").pattern("X X")
+                .unlockedBy("has_chest", has(Tags.Items.CHESTS_WOODEN)).save(writer, id("standard_no_tanks_sleeping_bag"));
+
+        ShapedBackpackRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.STANDARD_TRAVELERS_BACKPACK.get()).group("standard_travelers_backpack")
+                .define('X', Tags.Items.LEATHERS).define('B', Tags.Items.STRINGS).define('C', ModItems.BACKPACK_TANK.get())
+                .define('D', Tags.Items.CHESTS_WOODEN)
+                .pattern("XBX").pattern("CDC").pattern("X X")
+                .unlockedBy("has_chest", has(Tags.Items.CHESTS_WOODEN)).save(writer, id("standard_no_sleeping_bag"));
 
         //Netherite backpack
         SmithingTransformRecipeBuilder.smithing(Ingredient.of(Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE),

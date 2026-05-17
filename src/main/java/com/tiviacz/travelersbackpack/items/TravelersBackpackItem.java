@@ -84,7 +84,7 @@ public class TravelersBackpackItem extends BlockItem {
     public TravelersBackpackItem(Block block, ResourceLocation texture) {
         super(block, new Properties().stacksTo(1)
                 .component(ModDataComponents.TIER, 0)
-                .component(ModDataComponents.SLEEPING_BAG_COLOR, DyeColor.RED.getId())
+              //  .component(ModDataComponents.SLEEPING_BAG_COLOR, DyeColor.RED.getId())
                 .component(ModDataComponents.IS_VISIBLE, true));
 
         //Texture location
