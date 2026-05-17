@@ -7,6 +7,7 @@ import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.init.ModTags;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
 import net.minecraft.resources.ResourceLocation;
@@ -97,6 +98,10 @@ public class ModRecipeProvider extends RecipeProvider {
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.VOID_UPGRADE.get()).define('A', Items.LAVA_BUCKET)
                 .define('B', ModItems.BLANK_UPGRADE.get()).define('C', Tags.Items.DUSTS_REDSTONE).pattern("ABA").pattern("CCC")
                 .unlockedBy(getHasName(ModItems.BLANK_UPGRADE), has(ModItems.BLANK_UPGRADE)).save(writer, id("void_upgrade"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.LANTERN_UPGRADE.get()).define('A', Items.LANTERN)
+                .define('B', ModItems.BLANK_UPGRADE).define('C', Tags.Items.DUSTS_REDSTONE).pattern("ABA").pattern("CCC")
+                .unlockedBy(getHasName(ModItems.BLANK_UPGRADE), has(ModItems.BLANK_UPGRADE)).save(writer, id("lantern_upgrade"));
 
         //All Recipes
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.BACKPACK_TANK.get())

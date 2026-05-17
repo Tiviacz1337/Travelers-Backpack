@@ -46,6 +46,10 @@ public interface IUpgrade<T> {
 
     }
 
+    default boolean hasTab() {
+        return true;
+    }
+
     Point getTabSize();
 
     boolean isTabOpened();

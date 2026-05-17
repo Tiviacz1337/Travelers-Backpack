@@ -120,6 +120,7 @@ public class ModItems {
     public static final DeferredItem<VoidUpgradeItem> VOID_UPGRADE = ITEMS.register("void_upgrade", () -> new VoidUpgradeItem(new Item.Properties().stacksTo(16)));
     public static final DeferredItem<FeedingUpgradeItem> FEEDING_UPGRADE = ITEMS.register("feeding_upgrade", () -> new FeedingUpgradeItem(new Item.Properties().stacksTo(16)));
     public static final DeferredItem<RefillUpgradeItem> REFILL_UPGRADE = ITEMS.register("refill_upgrade", () -> new RefillUpgradeItem(new Item.Properties().stacksTo(16)));
+    public static final DeferredItem<LanternUpgradeItem> LANTERN_UPGRADE = ITEMS.register("lantern_upgrade", () -> new LanternUpgradeItem(new Item.Properties().stacksTo(16)));
 
     public static final Supplier<EntityType<BackpackItemEntity>> BACKPACK_ITEM_ENTITY = ENTITY_TYPES.register(
             "backpack", () -> EntityType.Builder.of(BackpackItemEntity::new, MobCategory.MISC)

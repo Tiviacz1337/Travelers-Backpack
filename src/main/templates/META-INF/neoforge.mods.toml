@@ -18,6 +18,9 @@ license = "${mod_license}"
 [[mixins]]
     config="travelersbackpack.mixins.json"
 
+[modproperties.${mod_id}."yumi:entrypoints"]
+    "lambdynlights:initializer" = "com.tiviacz.travelersbackpack.compat.lambdynamiclights.BackpackDynamicLight"
+
 [[dependencies.${ mod_id }]]
     modId = "neoforge"
     type = "required"

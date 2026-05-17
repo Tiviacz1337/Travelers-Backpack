@@ -50,6 +50,7 @@ public class TravelersBackpack {
     public static boolean emiLoaded;
     public static boolean polymorphLoaded;
     public static boolean trashSlotLoaded;
+    public static boolean lambDynamicLightsLoaded;
 
     public TravelersBackpack(IEventBus eventBus, ModContainer modContainer) {
         NeoForgeMod.enableMilkFluid();
@@ -99,6 +100,7 @@ public class TravelersBackpack {
         emiLoaded = ModList.get().isLoaded("emi");
         polymorphLoaded = ModList.get().isLoaded("polymorph");
         trashSlotLoaded = ModList.get().isLoaded("trashslot");
+        lambDynamicLightsLoaded = ModList.get().isLoaded("lambdynlights");
 
         //Fetch supporters
         Supporters.fetchSupporters();

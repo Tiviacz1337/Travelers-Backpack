@@ -49,6 +49,7 @@ public class ModCreativeTabs {
         output.accept(ModItems.MAGNET_UPGRADE.get());
         output.accept(ModItems.VOID_UPGRADE.get());
         output.accept(ModItems.JUKEBOX_UPGRADE.get());
+        output.accept(ModItems.LANTERN_UPGRADE.get());
 
         //Standard
         output.accept(withTanks(ModBlocks.STANDARD_TRAVELERS_BACKPACK));
