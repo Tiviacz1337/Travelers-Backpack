@@ -6,4 +6,4 @@
 🔧 Tool slots button do not appear if the backpack does not have any tool slots  
 
 ⭐ Want to receive **Supporter Star Badge** for a **lifetime**? - [visit my Ko-Fi page](https://ko-fi.com/tiviacz1337)!  
-![Banner](https://i.imgur.com/SSrFv58.png)
+![Banner](https://i.imgur.com/OF6652S.png)
