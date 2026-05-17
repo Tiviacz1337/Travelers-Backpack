@@ -36,7 +36,7 @@ public class AbstractSmeltingWidget<T> extends UpgradeWidgetBase<AbstractSmeltin
                 long burnTimeFinish = upgrade.getBurnFinishTime();
                 long progress = burnTimeFinish - gameTime;
                 float p = (float)progress / upgrade.getBurnTotalTime();
-                int k = (int)Math.ceil(13 * p);
+                int k = Math.clamp((int)Math.ceil(13 * p), 0, 13);
                 guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BackpackScreen.TABS, pos.x() + 7, pos.y() + 55 - k, 0, 213 - k, 14, k + 1, 256, 256);
             }
 
