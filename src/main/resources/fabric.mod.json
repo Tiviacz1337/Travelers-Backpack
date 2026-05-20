@@ -44,6 +44,9 @@
     ],
     "modmenu": [
       "com.tiviacz.travelersbackpack.compat.modmenu.ModMenuIntegration"
+    ],
+    "lambdynlights:initializer": [
+      "com.tiviacz.travelersbackpack.compat.lambdynamiclight.BackpackDynamicLight"
     ]
   },
   "mixins": [

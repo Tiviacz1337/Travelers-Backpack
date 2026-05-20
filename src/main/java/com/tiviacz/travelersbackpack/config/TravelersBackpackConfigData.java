@@ -67,6 +67,9 @@ public class TravelersBackpackConfigData implements ConfigData {
         @ConfigEntry.Gui.CollapsibleObject
         public VoidUpgradeSettings voidUpgradeSettings = new VoidUpgradeSettings();
 
+        @ConfigEntry.Gui.RequiresRestart
+        public boolean enableLanternUpgrade = true;
+
         public static class PickupUpgradeSettings {
             @ConfigEntry.Gui.RequiresRestart
             public boolean enableUpgrade = true;

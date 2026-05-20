@@ -61,9 +61,14 @@ public class TanksUpgradeItem extends UpgradeItem {
 
     public static RenderInfo writeToRenderData() {
         CompoundTag tag = new CompoundTag();
-        tag.put("LeftTank", new CompoundTag());
-        tag.put("RightTank", new CompoundTag());
+        tag.put(RenderInfo.LEFT_TANK, new CompoundTag());
+        tag.put(RenderInfo.RIGHT_TANK, new CompoundTag());
         return new RenderInfo(tag);
+    }
+
+    public static void writeToRenderData(CompoundTag tag) {
+        tag.put(RenderInfo.LEFT_TANK, new CompoundTag());
+        tag.put(RenderInfo.RIGHT_TANK, new CompoundTag());
     }
 
     @Environment(EnvType.CLIENT)
