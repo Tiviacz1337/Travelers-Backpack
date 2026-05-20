@@ -109,6 +109,7 @@ public class TravelersBackpackConfig {
         CompoundTag nbt = new CompoundTag();
 
         //Backpack Upgrades
+        nbt.putBoolean("backpackUpgrades.enableSleepingBag", data.backpackUpgrades.enableSleepingBag);
         nbt.putBoolean("backpackUpgrades.enableTanksUpgrade", data.backpackUpgrades.enableTanksUpgrade);
         nbt.putBoolean("backpackUpgrades.enableCraftingUpgrade", data.backpackUpgrades.enableCraftingUpgrade);
         nbt.putBoolean("backpackUpgrades.enableFurnaceUpgrade", data.backpackUpgrades.enableFurnaceUpgrade);
@@ -244,6 +245,7 @@ public class TravelersBackpackConfig {
             return data;
         }
 
+        data.backpackUpgrades.enableSleepingBag = nbt.getBoolean("backpackUpgrades.enableSleepingBag");
         data.backpackUpgrades.enableTanksUpgrade = nbt.getBoolean("backpackUpgrades.enableTanksUpgrade");
         data.backpackUpgrades.enableCraftingUpgrade = nbt.getBoolean("backpackUpgrades.enableCraftingUpgrade");
         data.backpackUpgrades.enableFurnaceUpgrade = nbt.getBoolean("backpackUpgrades.enableFurnaceUpgrade");

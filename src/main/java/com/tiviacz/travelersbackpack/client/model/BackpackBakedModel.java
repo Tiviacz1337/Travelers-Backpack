@@ -164,6 +164,9 @@ public class BackpackBakedModel implements BakedModel {
     }
 
     private void emitSleepingBagQuads(QuadEmitter emitter, int color) {
+        if(color == -1) {
+            return;
+        }
         bakedQuads.getSleepingBagExtrasQuads().forEach(quad -> emitter.fromVanilla(quad, emitter.material(), null).emit());
         TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "block/bag/" + DyeColor.byId(color).getName().toLowerCase(Locale.ENGLISH) + "_sleeping_bag"));
         rebakeSleepingBag(emitter, sprite);

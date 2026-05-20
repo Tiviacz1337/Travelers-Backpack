@@ -22,6 +22,7 @@ import com.tiviacz.travelersbackpack.inventory.upgrades.ITickableUpgrade;
 import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
 import com.tiviacz.travelersbackpack.inventory.upgrades.smelting.FurnaceUpgrade;
 import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;
+import com.tiviacz.travelersbackpack.item.SleepingBagItem;
 import com.tiviacz.travelersbackpack.item.upgrades.TanksUpgradeItem;
 import com.tiviacz.travelersbackpack.item.upgrades.UpgradeItem;
 import com.tiviacz.travelersbackpack.network.ClientboundSyncItemStackPacket;
@@ -40,6 +41,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.DyedItemColor;
 import net.minecraft.world.level.Level;
@@ -103,6 +105,7 @@ public class BackpackWrapper {
 
         this.stack = stack;
 
+        initializeSleepingBag(stack);
         if(!isSizeInitialized(stack)) {
             initializeSize(stack);
         }
@@ -150,6 +153,8 @@ public class BackpackWrapper {
         //Update client tanks if present
         getUpgradeManager().getUpgrade(TanksUpgrade.class).ifPresent(tanksUpgrade -> tanksUpgrade.syncClients(backpack));
         getUpgradeManager().getUpgrade(FurnaceUpgrade.class).ifPresent(furnaceUpgrade -> furnaceUpgrade.syncClient(backpack));
+        //Update Sleeping Bag after detachment
+        setSleepingBagColor(backpack.getOrDefault(ModDataComponents.SLEEPING_BAG_COLOR, DyeColor.RED.getId()));
     }
 
     public ItemStack getBackpackStack() {
@@ -428,16 +433,12 @@ public class BackpackWrapper {
         setDataAndSync(ModDataComponents.SORT_TYPE, type.next().ordinal());
     }
 
-    public boolean hasSleepingBag() {
-        return this.stack.has(ModDataComponents.SLEEPING_BAG_COLOR);
-    }
-
     public int getSleepingBagColor() {
-        return this.stack.getOrDefault(ModDataComponents.SLEEPING_BAG_COLOR, -1);
+        return this.stack.getOrDefault(ModDataComponents.SLEEPING_BAG_COLOR, SleepingBagItem.getDefaultColor());
     }
 
     public void setSleepingBagColor(int colorId) {
-        setData(ModDataComponents.SLEEPING_BAG_COLOR, colorId);
+        setDataAndSync(ModDataComponents.SLEEPING_BAG_COLOR, colorId);
     }
 
     public boolean isOwner(Player player) {
@@ -707,6 +708,14 @@ public class BackpackWrapper {
         }
         if(!stack.has(ModDataComponents.TOOL_SLOTS)) {
             stack.set(ModDataComponents.TOOL_SLOTS, tier.getToolSlots());
+        }
+    }
+
+    public void initializeSleepingBag(ItemStack stack) {
+        if(!TravelersBackpackConfig.getConfig().backpackUpgrades.enableSleepingBag) {
+            if(!stack.has(ModDataComponents.SLEEPING_BAG_COLOR)) {
+                stack.set(ModDataComponents.SLEEPING_BAG_COLOR, -1);
+            }
         }
     }
 

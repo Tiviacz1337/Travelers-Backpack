@@ -2,8 +2,13 @@ package com.tiviacz.travelersbackpack.client.screens.buttons;
 
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
+import com.tiviacz.travelersbackpack.util.KeyHelper;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 public class SleepingBagButton extends Button {
     private final boolean isEquipped;
@@ -21,7 +26,10 @@ public class SleepingBagButton extends Button {
     @Override
     public void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         if(inButton(mouseX, mouseY)) {
-            guiGraphics.renderTooltip(screen.getFont(), Component.translatable("screen.travelersbackpack.use_sleeping_bag"), mouseX, mouseY);
+            List<Component> tooltip = new ArrayList<>();
+            tooltip.add(Component.translatable("screen.travelersbackpack.use_sleeping_bag"));
+            tooltip.add(Component.translatable("screen.travelersbackpack.detach_sleeping_bag"));
+            guiGraphics.renderTooltip(screen.getFont(), tooltip, Optional.empty(), mouseX, mouseY);
         }
     }
 
@@ -31,7 +39,7 @@ public class SleepingBagButton extends Button {
             if(this.isEquipped && screen.getWrapper().getBackpackOwner() == null) {
                 return false;
             }
-            ServerboundActionTagPacket.create(ServerboundActionTagPacket.SLEEPING_BAG, this.isEquipped ? screen.getWrapper().getBackpackOwner().blockPosition() : screen.getWrapper().getBackpackPos(), this.isEquipped);
+            ServerboundActionTagPacket.create(ServerboundActionTagPacket.SLEEPING_BAG, this.isEquipped ? screen.getWrapper().getBackpackOwner().blockPosition() : screen.getWrapper().getBackpackPos(), this.isEquipped, KeyHelper.isShiftPressed());
             return true;
         }
         return false;

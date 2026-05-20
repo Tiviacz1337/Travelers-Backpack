@@ -35,6 +35,9 @@ public class TravelersBackpackConfigData implements ConfigData {
 
     public static class BackpackUpgrades {
         @ConfigEntry.Gui.RequiresRestart
+        public boolean enableSleepingBag = true;
+
+        @ConfigEntry.Gui.RequiresRestart
         public boolean enableTanksUpgrade = true;
 
         @ConfigEntry.Gui.RequiresRestart
