@@ -169,10 +169,14 @@ public class FeedingUpgrade extends FilterUpgradeBase<FeedingUpgrade, FeedingFil
             singleItemCopy.setCount(1);
 
             if(singleItemCopy.use(level, player, InteractionHand.MAIN_HAND).getResult() == InteractionResult.CONSUME) {
-                stack.shrink(1);
-                backpackStorage.setStackInSlot(slot, stack);
-
                 InteractionResultHolder<ItemStack> result = UseItemCallback.EVENT.invoker().interact(player, level, InteractionHand.MAIN_HAND);
+
+                //OpenPac compatibility
+                if(result.getResult() != InteractionResult.FAIL) {
+                    stack.shrink(1);
+                    backpackStorage.setStackInSlot(slot, stack);
+                }
+
                 ItemStack resultItem = result.getObject();
                 if(result.getResult() == InteractionResult.PASS) {
                     resultItem = singleItemCopy.getItem().finishUsingItem(singleItemCopy, level, player);
