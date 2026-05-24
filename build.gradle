@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '1.10-SNAPSHOT'
+	id 'fabric-loom' version '1.12-SNAPSHOT'
 }
 
 version = "${mod_loader}-${minecraft_version}-${mod_version}"
@@ -18,6 +18,9 @@ repositories {
 	maven { url = "https://maven.parchmentmc.org" }
     maven { url "https://maven.wispforest.io/releases" }
 	maven { url "https://maven.twelveiterations.com/repository/maven-public/" }
+
+	//LambDynamicLights
+	maven { url "https://maven.gegy.dev" }
 }
 
 fabricApi {
@@ -55,6 +58,10 @@ dependencies {
 	include modImplementation("com.jamieswhiteshirt:reach-entity-attributes:${project.reach_entity_attributes_version}")
 
 	//OPTIONAL
+
+	//LambDynamicLights
+	modCompileOnly("dev.lambdaurora.lambdynamiclights:lambdynamiclights-api:4.4.0+1.20.1")
+	//modLocalRuntime("dev.lambdaurora.lambdynamiclights:lambdynamiclights-runtime:4.4.0+1.20.1")
 
 	//Crafting Tweaks
 	modCompileOnly("curse.maven:balm-fabric-500525:7087238")

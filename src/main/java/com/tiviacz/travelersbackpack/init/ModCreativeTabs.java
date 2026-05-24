@@ -57,6 +57,7 @@ public class ModCreativeTabs {
             entries.accept(ModItems.MAGNET_UPGRADE);
             entries.accept(ModItems.VOID_UPGRADE);
             entries.accept(ModItems.JUKEBOX_UPGRADE);
+            entries.accept(ModItems.LANTERN_UPGRADE);
 
             //Standard
             entries.accept(withTanks(ModBlocks.STANDARD_TRAVELERS_BACKPACK));

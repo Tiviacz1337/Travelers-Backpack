@@ -139,6 +139,8 @@ public class TravelersBackpackConfig {
         nbt.putBoolean("backpackUpgrades.voidUpgradeSettings.enableUpgrade", data.backpackUpgrades.voidUpgradeSettings.enableUpgrade);
         nbt.putInt("backpackUpgrades.voidUpgradeSettings.filterSlotCount", data.backpackUpgrades.voidUpgradeSettings.filterSlotCount);
         nbt.putInt("backpackUpgrades.voidUpgradeSettings.slotsInRow", data.backpackUpgrades.voidUpgradeSettings.slotsInRow);
+        //Lantern
+        nbt.putBoolean("backpackUpgrades.enableLanternUpgrade", data.backpackUpgrades.enableLanternUpgrade);
 
         //Backpack Settings
 
@@ -272,6 +274,8 @@ public class TravelersBackpackConfig {
         data.backpackUpgrades.voidUpgradeSettings.enableUpgrade = nbt.getBoolean("backpackUpgrades.voidUpgradeSettings.enableUpgrade");
         data.backpackUpgrades.voidUpgradeSettings.filterSlotCount = nbt.getInt("backpackUpgrades.voidUpgradeSettings.filterSlotCount");
         data.backpackUpgrades.voidUpgradeSettings.slotsInRow = nbt.getInt("backpackUpgrades.voidUpgradeSettings.slotsInRow");
+
+        data.backpackUpgrades.enableLanternUpgrade = nbt.getBoolean("backpackUpgrades.enableLanternUpgrade");
 
         //Leather
         data.backpackSettings.leather.inventorySlotCount = nbt.getInt("backpackSettings.leather.inventorySlotCount");

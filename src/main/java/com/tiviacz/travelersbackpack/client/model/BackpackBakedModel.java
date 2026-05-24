@@ -66,8 +66,6 @@ public class BackpackBakedModel implements BakedModel {
                 : new BackpackBlockEntity.BackpackRenderData(RenderInfo.EMPTY, -1, false, DyeColor.RED.getId());
         RenderInfo info = renderData.info() == null ? RenderInfo.EMPTY : renderData.info();
 
-        //collectBakedQuads(state, randomSupplier.get()); //#TODO?
-
         Direction direction = Direction.NORTH;
         if(state.getValue(TravelersBackpackBlock.FACING) != null) {
             direction = state.getValue(TravelersBackpackBlock.FACING);
@@ -197,7 +195,7 @@ public class BackpackBakedModel implements BakedModel {
     }
 
     private void addFluids(QuadEmitter emitter, RenderInfo renderInfo, int index) {
-        if(renderInfo != null && !renderInfo.isEmpty()) {
+        if(renderInfo != null && renderInfo.hasTanks()) {
             if(!renderInfo.getLeftFluidStack().isEmpty()) {
                 addFluid(emitter, renderInfo.getLeftFluidStack(), (float)renderInfo.getLeftFluidStack().getAmount() / renderInfo.getCapacity(), 1.8F / 16D, index);
             }

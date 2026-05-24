@@ -48,6 +48,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 public class BackpackWrapper {
     public static final BackpackWrapper DUMMY = new BackpackWrapper(ModItems.STANDARD_TRAVELERS_BACKPACK.getDefaultInstance(), Reference.BLOCK_ENTITY_SCREEN_ID, null, null);
@@ -260,7 +261,7 @@ public class BackpackWrapper {
                     this.upgradesTracker.setStackInSlot(i, upgrade);
 
                     if(upgrade.getItem() instanceof TanksUpgradeItem) {
-                        this.setRenderInfo(TanksUpgradeItem.writeToRenderData().compoundTag());
+                        this.updateRenderInfo(TanksUpgradeItem::writeToRenderData);
                     }
                     break;
                 }
@@ -381,13 +382,15 @@ public class BackpackWrapper {
     }
 
     public void setRenderInfo(CompoundTag compound) {
-        if(!getRenderInfo().compoundTag().equals(compound)) {
-            setDataAndSync(ModDataHelper.RENDER_INFO, new RenderInfo(compound));
-        }
+        setDataAndSync(ModDataHelper.RENDER_INFO, new RenderInfo(compound));
     }
 
-    public void removeRenderInfo() {
-        setRenderInfo(new CompoundTag());
+    public void updateRenderInfo(Consumer<CompoundTag> compoundConsumer) {
+        CompoundTag currentInfo = getRenderInfo().compoundTag().copy();
+        compoundConsumer.accept(currentInfo);
+        if(!getRenderInfo().compoundTag().equals(currentInfo)) {
+            setDataAndSync(ModDataHelper.RENDER_INFO, new RenderInfo(currentInfo));
+        }
     }
 
     public boolean isAbilityEnabled() {

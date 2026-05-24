@@ -98,6 +98,10 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                 .define('B', ModItems.BLANK_UPGRADE).define('C', ConventionalItemTags.REDSTONE_DUSTS).pattern("ABA").pattern("CCC")
                 .unlockedBy(getHasName(ModItems.BLANK_UPGRADE), has(ModItems.BLANK_UPGRADE)).save(writer, id("void_upgrade"));
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.LANTERN_UPGRADE).define('A', Items.LANTERN)
+                .define('B', ModItems.BLANK_UPGRADE).define('C', ConventionalItemTags.REDSTONE_DUSTS).pattern("ABA").pattern("CCC")
+                .unlockedBy(getHasName(ModItems.BLANK_UPGRADE), has(ModItems.BLANK_UPGRADE)).save(writer, id("lantern_upgrade"));
+
         //All Recipes
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.BACKPACK_TANK)
                 .define('B', ConventionalItemTags.GLASS_BLOCKS).define('A', ConventionalItemTags.IRON_INGOTS)

@@ -30,7 +30,7 @@ public class HudOverlay {
             int y = window.getGuiScaledHeight() - TravelersBackpackConfig.getConfig().client.overlay.offsetY;
 
             RenderInfo info = NbtHelper.getOrDefault(stack, ModDataHelper.RENDER_INFO, RenderInfo.EMPTY);
-            if(info.isEmpty()) return;
+            if(!info.hasTanks()) return;
 
             if(!info.getRightFluidStack().isEmpty()) {
                 FluidTank right = new FluidTank(info.getCapacity());
