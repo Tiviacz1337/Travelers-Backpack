@@ -78,7 +78,8 @@ public record ServerboundActionTagPacket(CompoundTag actionTag) implements IPack
                 case SLEEPING_BAG -> {
                     BlockPos pos = BlockPos.of(actionTag.getLong("Arg0"));
                     boolean isEquipped = actionTag.getBoolean("Arg1");
-                    ServerActions.toggleSleepingBag(player, pos, isEquipped);
+                    boolean isShiftPressed = actionTag.getBoolean("Arg2");
+                    ServerActions.toggleSleepingBag(player, pos, isEquipped, isShiftPressed);
                 }
                 case FILL_TANK -> {
                     boolean leftTank = actionTag.getBoolean("Arg0");

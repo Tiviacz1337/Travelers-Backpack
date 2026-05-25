@@ -67,8 +67,12 @@ public class RightClickHandler {
             }
 
             //Change Sleeping Bag
-            if(player.isShiftKeyDown() && hand == InteractionHand.MAIN_HAND && player.getMainHandItem().is(ModTags.SLEEPING_BAGS) && level.getBlockEntity(pos) instanceof BackpackBlockEntity blockEntity) {
-                ItemStack oldSleepingBag = BackpackBlockEntity.getProperSleepingBag(blockEntity.getWrapper().getSleepingBagColor()).getBlock().asItem().getDefaultInstance();
+            if(TravelersBackpackConfig.getConfig().backpackUpgrades.enableSleepingBag && player.isShiftKeyDown() && hand == InteractionHand.MAIN_HAND && player.getMainHandItem().is(ModTags.SLEEPING_BAGS) && level.getBlockEntity(pos) instanceof BackpackBlockEntity blockEntity) {
+                int sleepingBagColor = blockEntity.getWrapper().getSleepingBagColor();
+                ItemStack oldSleepingBag = ItemStack.EMPTY;
+                if(sleepingBagColor != -1) {
+                    oldSleepingBag = BackpackBlockEntity.getProperSleepingBag(blockEntity.getWrapper().getSleepingBagColor()).getBlock().asItem().getDefaultInstance();
+                }
                 blockEntity.getWrapper().setSleepingBagColor(ShapedBackpackRecipe.getProperColor(player.getMainHandItem().getItem()));
 
                 if(!level.isClientSide) {
@@ -129,7 +133,16 @@ public class RightClickHandler {
 
                 //Add backpack
                 Item backpackItem = blockEntity.getWrapper().getBackpackStack().getItem();
-                list.add(backpackItem.getDefaultInstance());
+                ItemStack backpackStack = new ItemStack(backpackItem);
+
+                //Carry over sleeping bag info
+                int sleepingBagColor = blockEntity.getWrapper().getSleepingBagColor();
+                if(sleepingBagColor == -1) {
+                    NbtHelper.set(backpackStack, ModDataHelper.SLEEPING_BAG_COLOR, -1);
+                }
+
+                //Add backpack
+                list.add(backpackStack);
 
                 if(!level.isClientSide) {
                     Containers.dropContents(level, pos.above(), list);

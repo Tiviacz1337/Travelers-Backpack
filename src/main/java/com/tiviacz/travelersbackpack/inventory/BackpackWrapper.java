@@ -23,6 +23,7 @@ import com.tiviacz.travelersbackpack.inventory.upgrades.ITickableUpgrade;
 import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
 import com.tiviacz.travelersbackpack.inventory.upgrades.smelting.FurnaceUpgrade;
 import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;
+import com.tiviacz.travelersbackpack.items.SleepingBagItem;
 import com.tiviacz.travelersbackpack.items.upgrades.TanksUpgradeItem;
 import com.tiviacz.travelersbackpack.items.upgrades.UpgradeItem;
 import com.tiviacz.travelersbackpack.network.ClientboundSyncItemStackPacket;
@@ -101,6 +102,7 @@ public class BackpackWrapper {
 
         this.stack = stack;
 
+        initializeSleepingBag(stack);
         if(!isSizeInitialized(stack)) {
             initializeSize(stack);
         }
@@ -145,6 +147,8 @@ public class BackpackWrapper {
         //Update client tanks if present
         getUpgradeManager().getUpgrade(TanksUpgrade.class).ifPresent(tanksUpgrade -> tanksUpgrade.syncClients(backpack));
         getUpgradeManager().getUpgrade(FurnaceUpgrade.class).ifPresent(furnaceUpgrade -> furnaceUpgrade.syncClient(backpack));
+        //Update Sleeping Bag after detachment
+        setSleepingBagColor(NbtHelper.getOrDefault(backpack, ModDataHelper.SLEEPING_BAG_COLOR, DyeColor.RED.getId()));
 
         //How can I check if upgrade manager needs sync? #TODO
     }
@@ -407,16 +411,12 @@ public class BackpackWrapper {
         setDataAndSync(ModDataHelper.SORT_TYPE, type.next().ordinal());
     }
 
-    public boolean hasSleepingBag() {
-        return NbtHelper.has(this.stack, ModDataHelper.SLEEPING_BAG_COLOR);
-    }
-
     public int getSleepingBagColor() {
-        return NbtHelper.getOrDefault(this.stack, ModDataHelper.SLEEPING_BAG_COLOR, DyeColor.RED.getId());
+        return NbtHelper.getOrDefault(this.stack, ModDataHelper.SLEEPING_BAG_COLOR, SleepingBagItem.getDefaultColor());
     }
 
     public void setSleepingBagColor(int colorId) {
-        setData(ModDataHelper.SLEEPING_BAG_COLOR, colorId);
+        setDataAndSync(ModDataHelper.SLEEPING_BAG_COLOR, colorId);
     }
 
     public boolean isOwner(Player player) {
@@ -701,6 +701,14 @@ public class BackpackWrapper {
         }
         if(!NbtHelper.has(stack, ModDataHelper.TOOL_SLOTS)) {
             NbtHelper.set(stack, ModDataHelper.TOOL_SLOTS, tier.getToolSlots());
+        }
+    }
+
+    public void initializeSleepingBag(ItemStack stack) {
+        if(!TravelersBackpackConfig.getConfig().backpackUpgrades.enableSleepingBag) {
+            if(!NbtHelper.has(stack, ModDataHelper.SLEEPING_BAG_COLOR)) {
+                NbtHelper.set(stack, ModDataHelper.SLEEPING_BAG_COLOR, -1);
+            }
         }
     }
 

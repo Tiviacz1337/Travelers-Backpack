@@ -1,0 +1,28 @@
+{
+  "type": "travelersbackpack:backpack_shaped",
+  "category": "misc",
+  "group": "standard_travelers_backpack",
+  "key": {
+    "B": {
+      "item": "minecraft:string"
+    },
+    "C": {
+      "item": "travelersbackpack:backpack_tank"
+    },
+    "D": {
+      "tag": "c:chests"
+    },
+    "X": {
+      "item": "minecraft:leather"
+    }
+  },
+  "pattern": [
+    "XBX",
+    "CDC",
+    "X X"
+  ],
+  "result": {
+    "item": "travelersbackpack:standard"
+  },
+  "show_notification": true
+}
