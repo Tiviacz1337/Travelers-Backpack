@@ -5,9 +5,9 @@ on: [ workflow_dispatch ]
 env:
   MINECRAFT_VERSION: 1.20.1
   JAVA_VERSION: 17
-  VERSION: 1.20.1-9.1.52
-  RELEASE_NAME_CURSEFORGE: "travelersbackpack-fabric-1.20.1-9.1.52"
-  RELEASE_NAME_MODRINTH: "[1.20.1] Traveler's Backpack 9.1.52"
+  VERSION: 1.20.1-9.1.53
+  RELEASE_NAME_CURSEFORGE: "travelersbackpack-fabric-1.20.1-9.1.53"
+  RELEASE_NAME_MODRINTH: "[1.20.1] Traveler's Backpack 9.1.53"
   MODRINTH_TOKEN: ${{ secrets.MODRINTH }}
   CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE }}
   GITHUB_TOKEN: ${{ secrets.TOKEN }}
@@ -62,6 +62,7 @@ jobs:
             cardinal-components-api(required){modrinth:K01OU20C}{curseforge:318449}
             cloth-config-api(required){modrinth:9s6osm5g}{curseforge:348521}
             trinkets(optional){modrinth:5aaWibi9}{curseforge:341284}
+            lambdynamiclights(optional){modrinth:yBW8D80W}{curseforge:393442}
             crafting-tweaks(optional){modrinth:DMu0oBKf}{curseforge:233071}
             polymorph(optional){modrinth:tagwiZkJ}{curseforge:388800}
             comforts(optional){modrinth:SaCpeal4}{curseforge:276951}
