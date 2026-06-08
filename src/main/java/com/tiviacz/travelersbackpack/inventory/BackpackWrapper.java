@@ -50,6 +50,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
@@ -64,7 +65,7 @@ public class BackpackWrapper {
     public ItemStackHandler upgradesTracker;
 
     private final UpgradeManager upgradeManager;
-    private Player owner;
+    private UUID ownerUUID;
     public ArrayList<Player> playersUsing = new ArrayList<>();
     protected Level level;
     private final int screenID;
@@ -156,12 +157,23 @@ public class BackpackWrapper {
     }
 
     public void setBackpackOwner(Player player) {
-        this.owner = player;
+        this.ownerUUID = player.getUUID();
     }
 
     @Nullable
     public Player getBackpackOwner() {
-        return this.owner;
+        // on client side, this.level reference will become stale
+        // on level change event (e.g. passing through a portal)
+        // TODO either don't cache the level reference or invalidate it
+        return this.getBackpackOwner(this.level);
+    }
+
+    public Player getBackpackOwner(Level level) {
+        try {
+            return level.getPlayerByUUID(this.ownerUUID);
+        } catch (NullPointerException e) {
+            return null;
+        }
     }
 
     public ArrayList<Player> getPlayersUsing() {

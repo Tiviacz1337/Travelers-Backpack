@@ -3,9 +3,12 @@ package com.tiviacz.travelersbackpack.client.screens.buttons;
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
 import com.tiviacz.travelersbackpack.util.KeyHelper;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.Level;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +43,10 @@ public class SleepingBagButton extends Button {
             if(this.isEquipped && screen.getWrapper().getBackpackOwner() == null) {
                 return false;
             }
-            ServerboundActionTagPacket.create(ServerboundActionTagPacket.SLEEPING_BAG, this.isEquipped ? screen.getWrapper().getBackpackOwner().blockPosition() : screen.getWrapper().getBackpackPos(), this.isEquipped, KeyHelper.isShiftPressed());
+
+            Level level = Minecraft.getInstance().level;
+            BlockPos pos = this.isEquipped ? screen.getWrapper().getBackpackOwner(level).blockPosition() : screen.getWrapper().getBackpackPos();
+            ServerboundActionTagPacket.create(ServerboundActionTagPacket.SLEEPING_BAG, pos, this.isEquipped, KeyHelper.isShiftPressed());
             return true;
         }
         return false;
