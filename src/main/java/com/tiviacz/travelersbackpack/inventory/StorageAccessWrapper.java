@@ -73,6 +73,8 @@ public class StorageAccessWrapper implements ResourceHandler<ItemResource> {
         if(tryVoiding(wrapper, resource.toStack())) {
             return amount;
         }
+        int remainingAmount = amount;
+        int totalInserted = 0;
         //Try inserting to memory slots first
         if(!wrapper.getMemorySlots().isEmpty()) {
             ItemStack stack = resource.toStack();
@@ -82,11 +84,18 @@ public class StorageAccessWrapper implements ResourceHandler<ItemResource> {
                 }
                 int result = matchesStack(stack, memorizedStack);
                 if(result != -1) {
-                    return inserter.apply(result, resource, amount, transaction);
+                    int inserted = inserter.apply(result, resource, remainingAmount, transaction);
+                    if(inserted > 0) {
+                        totalInserted += inserted;
+                        remainingAmount -= inserted;
+                        if(remainingAmount <= 0) {
+                            return totalInserted;
+                        }
+                    }
                 }
             }
         }
-        return wrapper.getUnsortableSlots().contains(index) ? 0 : inserter.apply(index, resource, amount, transaction);
+        return wrapper.getUnsortableSlots().contains(index) ? 0 : inserter.apply(index, resource, remainingAmount, transaction) + totalInserted;
     }
 
     public static int extract(BackpackWrapper wrapper, QuadFunction<Integer, ItemResource, Integer, TransactionContext, Integer> extractor, int index, ItemResource resource, int amount, TransactionContext transaction) {
