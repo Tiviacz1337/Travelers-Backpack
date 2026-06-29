@@ -71,8 +71,13 @@ public class InventoryActions {
 
         ResourceHandler<FluidResource> fluidHandler = ItemAccess.forStack(stackIn).getCapability(Capabilities.Fluid.ITEM);
 
-        if(fluidHandler != null) {
-            FluidResource resource = ResourceHandlerUtil.findExtractableResource(fluidHandler, p -> true, null);
+        //Insert to handler because it does not extract otherwise
+        ItemStacksResourceHandler handler = new ItemStacksResourceHandler(1);
+        handler.set(0, ItemResource.of(stackIn), 1);
+        ResourceHandler<FluidResource> fluidHandlerCopy = ItemAccess.forHandlerIndex(handler, 0).getCapability(Capabilities.Fluid.ITEM);
+
+        if(fluidHandler != null && fluidHandlerCopy != null) {
+            FluidResource resource = ResourceHandlerUtil.findExtractableResource(fluidHandlerCopy, p -> true, null);
             int index = 0;
             if(resource == null) {
                 resource = FluidResource.EMPTY;
