@@ -75,11 +75,11 @@ public class KeybindHandler {
                     }
                 }
                 while(KeybindHandler.SWAP_TOOL.consumeClick()) {
-                    if(mc.screen == null && !mc.options.hideGui && mc.gameMode.getPlayerMode() != GameType.SPECTATOR) {
+                    if(mc.gui.screen() == null && !mc.gui.hud.isHidden() && mc.gameMode.getPlayerMode() != GameType.SPECTATOR) {
                         if(!TravelersBackpackConfig.SERVER.backpackSettings.allowToolSwapping.get() && mc.player.getItemInHand(InteractionHand.MAIN_HAND).getItem() != ModItems.HOSE) {
                             return;
                         }
-                        mc.setScreen(new ToolsScreen());
+                        mc.gui.setScreen(new ToolsScreen());
                     }
                 }
                 for(int i = 0; i < KeybindHandler.TOGGLE_UPGRADE_KEYS.size(); i++) {

@@ -155,20 +155,8 @@ public class SleepingBagBlock extends BedBlock {
     }
 
     @Override
-    public void updateEntityMovementAfterFallOn(BlockGetter getter, Entity entity) {
-        if(entity.isSuppressingBounce()) {
-            super.updateEntityMovementAfterFallOn(getter, entity);
-        } else {
-            this.bounceUp(entity);
-        }
-    }
-
-    private void bounceUp(Entity entity) {
-        Vec3 var2 = entity.getDeltaMovement();
-        if(var2.y < 0.0D) {
-            double var3 = entity instanceof LivingEntity ? 1.0D : 0.8D;
-            entity.setDeltaMovement(var2.x, -var2.y * 0.3300000262260437D * var3, var2.z);
-        }
+    public float getBounceRestitution() {
+        return 0.2F;
     }
 
     @Override
@@ -240,10 +228,5 @@ public class SleepingBagBlock extends BedBlock {
             return List.of();
         }
         return super.getDrops(pState, pParams);
-    }
-
-    @Override
-    public BlockEntity newBlockEntity(BlockPos p_152175_, BlockState p_152176_) {
-        return null;
     }
 }

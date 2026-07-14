@@ -17,7 +17,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -79,7 +79,7 @@ public class MagnetUpgrade extends FilterUpgradeBase<MagnetUpgrade, MagnetFilter
         if(level.isClientSide()) return;
         int radius = getPullRange();
         AABB area = new AABB(pos.add(-radius, -radius, -radius), pos.add(radius, radius, radius));
-        List<ItemEntity> items = level.getEntities(EntityType.ITEM, area,
+        List<ItemEntity> items = level.getEntities(EntityTypes.ITEM, area,
                 item -> item.isAlive() && (!level.isClientSide() || item.tickCount > 1) &&
                         (item.getOwner() == null || (!item.getOwner().equals(player) || item.tickCount > 80)) &&
                         !item.getItem().isEmpty() /*!item.getEntityData().getPersistentData().contains("PreventRemoteMovement")*/ && this.getFilterSettings().matchesFilter(player, item.getItem()));

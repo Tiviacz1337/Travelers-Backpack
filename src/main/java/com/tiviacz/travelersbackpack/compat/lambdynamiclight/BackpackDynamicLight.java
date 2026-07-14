@@ -5,13 +5,13 @@ import dev.lambdaurora.lambdynlights.api.DynamicLightsContext;
 import dev.lambdaurora.lambdynlights.api.DynamicLightsInitializer;
 import dev.lambdaurora.lambdynlights.api.entity.luminance.EntityLuminance;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 
 public class BackpackDynamicLight implements DynamicLightsInitializer {
     public static final EntityLuminance.Type TYPE = EntityLuminance.Type.registerSimple(Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "lantern_upgrade"), BackpackEntityLuminance.INSTANCE);
 
     @Override
     public void onInitializeDynamicLights(DynamicLightsContext context) {
-        context.entityLightSourceManager().onRegisterEvent().register(registerContext -> registerContext.register(EntityType.PLAYER, BackpackEntityLuminance.INSTANCE));
+        context.entityLightSourceManager().onRegisterEvent().register(registerContext -> registerContext.register(EntityTypes.PLAYER, BackpackEntityLuminance.INSTANCE));
     }
 }

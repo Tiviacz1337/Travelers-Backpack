@@ -32,7 +32,7 @@ public record ClientboundUpdateRecipePacket(ItemStack output,
     public static void handle(ClientboundUpdateRecipePacket message, ClientPlayNetworking.Context ctx) {
         ctx.client().execute(() -> {
             RecipeHolder<?> recipe = message.recipeHolder();
-            if(Minecraft.getInstance().screen instanceof BackpackScreen screen) {
+            if(Minecraft.getInstance().gui.screen() instanceof BackpackScreen screen) {
                 screen.getMenu().getWrapper().getUpgradeManager().getUpgrade(CraftingUpgrade.class).ifPresent(upgrade -> {
                     upgrade.resultSlots.setRecipeUsed(recipe);
                     upgrade.resultSlots.setItem(0, message.output());

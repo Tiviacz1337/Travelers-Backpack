@@ -8,7 +8,7 @@ import com.tiviacz.travelersbackpack.init.ModTags;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
-import net.minecraft.advancements.Criterion;
+import net.minecraft.advancements.triggers.Criterion;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.*;
@@ -19,6 +19,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.crafting.DyeRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
@@ -298,9 +299,9 @@ public class ModRecipeProvider extends FabricRecipeProvider {
 
                 //Sheep
                 ShapedBackpackRecipeBuilder.shaped(registries.lookupOrThrow(Registries.ITEM), RecipeCategory.MISC, ModItems.SHEEP_TRAVELERS_BACKPACK)
-                        .define('A', Items.WHITE_WOOL).define('B', Items.MUTTON).define('C', ModItems.STANDARD_TRAVELERS_BACKPACK)
+                        .define('A', Items.WOOL.pick(DyeColor.WHITE)).define('B', Items.MUTTON).define('C', ModItems.STANDARD_TRAVELERS_BACKPACK)
                         .pattern("ABA").pattern("BCB").pattern("ABA")
-                        .unlockedBy(getHasName(Items.WHITE_WOOL), has(Items.WHITE_WOOL)).save(writer);
+                        .unlockedBy(getHasName(Items.WOOL.pick(DyeColor.WHITE)), has(Items.WOOL.pick(DyeColor.WHITE))).save(writer);
 
                 //Skeleton
                 ShapedBackpackRecipeBuilder.shaped(registries.lookupOrThrow(Registries.ITEM), RecipeCategory.MISC, ModItems.SKELETON_TRAVELERS_BACKPACK)
@@ -339,24 +340,24 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                         .unlockedBy(getHasName(Items.ECHO_SHARD), has(Items.ECHO_SHARD)).save(writer);
 
                 //Sleeping Bags
-                sleepingBagFromWool(writer, ModItems.BLACK_SLEEPING_BAG, Items.BLACK_WOOL);
-                sleepingBagFromWool(writer, ModItems.BLUE_SLEEPING_BAG, Items.BLUE_WOOL);
-                sleepingBagFromWool(writer, ModItems.BROWN_SLEEPING_BAG, Items.BROWN_WOOL);
-                sleepingBagFromWool(writer, ModItems.CYAN_SLEEPING_BAG, Items.CYAN_WOOL);
-                sleepingBagFromWool(writer, ModItems.GRAY_SLEEPING_BAG, Items.GRAY_WOOL);
-                sleepingBagFromWool(writer, ModItems.GREEN_SLEEPING_BAG, Items.GREEN_WOOL);
-                sleepingBagFromWool(writer, ModItems.LIGHT_BLUE_SLEEPING_BAG, Items.LIGHT_BLUE_WOOL);
-                sleepingBagFromWool(writer, ModItems.LIGHT_GRAY_SLEEPING_BAG, Items.LIGHT_GRAY_WOOL);
-                sleepingBagFromWool(writer, ModItems.LIME_SLEEPING_BAG, Items.LIME_WOOL);
-                sleepingBagFromWool(writer, ModItems.MAGENTA_SLEEPING_BAG, Items.MAGENTA_WOOL);
-                sleepingBagFromWool(writer, ModItems.ORANGE_SLEEPING_BAG, Items.ORANGE_WOOL);
-                sleepingBagFromWool(writer, ModItems.PINK_SLEEPING_BAG, Items.PINK_WOOL);
-                sleepingBagFromWool(writer, ModItems.PURPLE_SLEEPING_BAG, Items.PURPLE_WOOL);
-                sleepingBagFromWool(writer, ModItems.RED_SLEEPING_BAG, Items.RED_WOOL);
-                sleepingBagFromWool(writer, ModItems.WHITE_SLEEPING_BAG, Items.WHITE_WOOL);
-                sleepingBagFromWool(writer, ModItems.YELLOW_SLEEPING_BAG, Items.YELLOW_WOOL);
+                sleepingBagFromWool(writer, ModItems.BLACK_SLEEPING_BAG, Items.WOOL.pick(DyeColor.BLACK));
+                sleepingBagFromWool(writer, ModItems.BLUE_SLEEPING_BAG, Items.WOOL.pick(DyeColor.BLUE));
+                sleepingBagFromWool(writer, ModItems.BROWN_SLEEPING_BAG, Items.WOOL.pick(DyeColor.BROWN));
+                sleepingBagFromWool(writer, ModItems.CYAN_SLEEPING_BAG, Items.WOOL.pick(DyeColor.CYAN));
+                sleepingBagFromWool(writer, ModItems.GRAY_SLEEPING_BAG, Items.WOOL.pick(DyeColor.GRAY));
+                sleepingBagFromWool(writer, ModItems.GREEN_SLEEPING_BAG, Items.WOOL.pick(DyeColor.GREEN));
+                sleepingBagFromWool(writer, ModItems.LIGHT_BLUE_SLEEPING_BAG, Items.WOOL.pick(DyeColor.LIGHT_BLUE));
+                sleepingBagFromWool(writer, ModItems.LIGHT_GRAY_SLEEPING_BAG, Items.WOOL.pick(DyeColor.LIGHT_GRAY));
+                sleepingBagFromWool(writer, ModItems.LIME_SLEEPING_BAG, Items.WOOL.pick(DyeColor.LIME));
+                sleepingBagFromWool(writer, ModItems.MAGENTA_SLEEPING_BAG, Items.WOOL.pick(DyeColor.MAGENTA));
+                sleepingBagFromWool(writer, ModItems.ORANGE_SLEEPING_BAG, Items.WOOL.pick(DyeColor.ORANGE));
+                sleepingBagFromWool(writer, ModItems.PINK_SLEEPING_BAG, Items.WOOL.pick(DyeColor.PINK));
+                sleepingBagFromWool(writer, ModItems.PURPLE_SLEEPING_BAG, Items.WOOL.pick(DyeColor.PURPLE));
+                sleepingBagFromWool(writer, ModItems.RED_SLEEPING_BAG, Items.WOOL.pick(DyeColor.RED));
+                sleepingBagFromWool(writer, ModItems.WHITE_SLEEPING_BAG, Items.WOOL.pick(DyeColor.WHITE));
+                sleepingBagFromWool(writer, ModItems.YELLOW_SLEEPING_BAG, Items.WOOL.pick(DyeColor.YELLOW));
 
-                List<Item> list = List.of(Items.BLACK_DYE, Items.BLUE_DYE, Items.BROWN_DYE, Items.CYAN_DYE, Items.GRAY_DYE, Items.GREEN_DYE, Items.LIGHT_BLUE_DYE, Items.LIGHT_GRAY_DYE, Items.LIME_DYE, Items.MAGENTA_DYE, Items.ORANGE_DYE, Items.PINK_DYE, Items.PURPLE_DYE, Items.RED_DYE, Items.YELLOW_DYE, Items.WHITE_DYE);
+                List<Item> list = List.of(Items.DYE.pick(DyeColor.BLACK), Items.DYE.pick(DyeColor.BLUE), Items.DYE.pick(DyeColor.BROWN), Items.DYE.pick(DyeColor.CYAN), Items.DYE.pick(DyeColor.GRAY), Items.DYE.pick(DyeColor.GREEN), Items.DYE.pick(DyeColor.LIGHT_BLUE), Items.DYE.pick(DyeColor.LIGHT_GRAY), Items.DYE.pick(DyeColor.LIME), Items.DYE.pick(DyeColor.MAGENTA), Items.DYE.pick(DyeColor.ORANGE), Items.DYE.pick(DyeColor.PINK), Items.DYE.pick(DyeColor.PURPLE), Items.DYE.pick(DyeColor.RED), Items.DYE.pick(DyeColor.YELLOW), Items.DYE.pick(DyeColor.WHITE));
                 List<Item> list2 = List.of(ModItems.BLACK_SLEEPING_BAG, ModItems.BLUE_SLEEPING_BAG, ModItems.BROWN_SLEEPING_BAG, ModItems.CYAN_SLEEPING_BAG, ModItems.GRAY_SLEEPING_BAG, ModItems.GREEN_SLEEPING_BAG, ModItems.LIGHT_BLUE_SLEEPING_BAG, ModItems.LIGHT_GRAY_SLEEPING_BAG, ModItems.LIME_SLEEPING_BAG, ModItems.MAGENTA_SLEEPING_BAG, ModItems.ORANGE_SLEEPING_BAG, ModItems.PINK_SLEEPING_BAG, ModItems.PURPLE_SLEEPING_BAG, ModItems.RED_SLEEPING_BAG, ModItems.YELLOW_SLEEPING_BAG, ModItems.WHITE_SLEEPING_BAG);
                 colorWithDye(writer, list, list2, null, "sleeping_bag");
 
@@ -382,7 +383,7 @@ public class ModRecipeProvider extends FabricRecipeProvider {
             }
 
             private void sleepingBagFromWool(RecipeOutput recipeOutput, ItemLike sleepingBag, ItemLike pWool) {
-                ShapedRecipeBuilder.shaped(registries.lookupOrThrow(Registries.ITEM), RecipeCategory.DECORATIONS, sleepingBag).group("sleeping_bag").define('#', pWool).define('X', Items.WHITE_WOOL).pattern("##X").unlockedBy(getHasName(pWool), has(pWool)).save(recipeOutput);
+                ShapedRecipeBuilder.shaped(registries.lookupOrThrow(Registries.ITEM), RecipeCategory.DECORATIONS, sleepingBag).group("sleeping_bag").define('#', pWool).define('X', Items.WOOL.pick(DyeColor.WHITE)).pattern("##X").unlockedBy(getHasName(pWool), has(pWool)).save(recipeOutput);
             }
 
             private void colorWithDye(RecipeOutput output, List<Item> dyes, List<Item> dyeableItems, Item dye, String group) {

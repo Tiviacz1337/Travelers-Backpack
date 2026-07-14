@@ -6,8 +6,8 @@ import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.client.screens.widgets.UpgradeWidgetBase;
 import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetElement;
 import com.tiviacz.travelersbackpack.common.ServerActions;
-import com.tiviacz.travelersbackpack.compat.vinurl.ServerboundVinURLStartPacket;
-import com.tiviacz.travelersbackpack.compat.vinurl.ServerboundVinURLStopPacket;
+//import com.tiviacz.travelersbackpack.compat.vinurl.ServerboundVinURLStartPacket;
+//import com.tiviacz.travelersbackpack.compat.vinurl.ServerboundVinURLStopPacket;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
 import com.tiviacz.travelersbackpack.util.PacketDistributor;
@@ -67,9 +67,10 @@ public class JukeboxWidget extends UpgradeWidgetBase<JukeboxUpgrade> {
             if(isMouseOverPlayButton(event.x(), event.y()) && isBackpackOwner()) {
                 if(isTabOpened() && this.upgrade.canPlayRecord()) {
                     ServerboundActionTagPacket.create(ServerboundActionTagPacket.UPGRADE_TAB, this.dataHolderSlot, true, ServerActions.PLAY_RECORD);
-                    if(TravelersBackpack.vinurlLoaded) {
+                    // VinURL not updated for 26.2
+                    /*if(TravelersBackpack.vinurlLoaded) {
                         PacketDistributor.sendToServer(new ServerboundVinURLStartPacket(upgrade.diskHandler.getStackInSlot(0)));
-                    }
+                    }*/
                     playDiscToPlayer(screen.getMenu().getPlayerInventory().player.getId(), getFromDisk(upgrade.diskHandler.getStackInSlot(0)));
                     this.screen.playUIClickSound();
                     return true;
@@ -81,9 +82,10 @@ public class JukeboxWidget extends UpgradeWidgetBase<JukeboxUpgrade> {
             if(isTabOpened() && this.upgrade.isPlayingRecord()) {
                 ServerboundActionTagPacket.create(ServerboundActionTagPacket.UPGRADE_TAB, this.dataHolderSlot, false, ServerActions.PLAY_RECORD);
                 if(this.upgrade.getUpgradeManager().getWrapper().getScreenID() == Reference.WEARABLE_SCREEN_ID) {
-                    if(TravelersBackpack.vinurlLoaded) {
+                    // VinURL not updated for 26.2
+                    /*if(TravelersBackpack.vinurlLoaded) {
                         PacketDistributor.sendToServer(new ServerboundVinURLStopPacket(upgrade.diskHandler.getStackInSlot(0), true));
-                    }
+                    }*/
                     stopDisc(getFromDisk(upgrade.diskHandler.getStackInSlot(0)));
                 }
                 this.screen.playUIClickSound();
@@ -127,7 +129,7 @@ public class JukeboxWidget extends UpgradeWidgetBase<JukeboxUpgrade> {
 
         //Minecraft.getInstance().getSoundManager().stop();
         Minecraft.getInstance().getSoundManager().queueTickingSound(new MovingSound(entity, jukeboxSong.soundEvent().value()));
-        Minecraft.getInstance().gui.setNowPlaying(jukeboxSong.description());
+        Minecraft.getInstance().gui.hud.setNowPlaying(jukeboxSong.description());
     }
 
     @Environment(EnvType.CLIENT)

@@ -26,7 +26,7 @@ public record ClientboundSendMessagePacket(boolean drop, BlockPos pos) implement
         ctx.client().execute(() -> {
             if(TravelersBackpackConfig.CLIENT.sendBackpackCoordinatesMessage.get()) {
                 if(Minecraft.getInstance().player != null) {
-                    Minecraft.getInstance().gui.getChat().addClientSystemMessage(Component.translatable(message.drop ? "information.travelersbackpack.backpack_drop" : "information.travelersbackpack.backpack_coords", message.pos().getX(), message.pos().getY(), message.pos().getZ()));
+                    Minecraft.getInstance().gui.hud.getChat().addClientSystemMessage(Component.translatable(message.drop ? "information.travelersbackpack.backpack_drop" : "information.travelersbackpack.backpack_coords", message.pos().getX(), message.pos().getY(), message.pos().getZ()));
                 }
             }
         });

@@ -315,8 +315,7 @@ public class BackpackScreen extends AbstractBackpackScreen<BackpackBaseMenu> imp
     public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         this.extractContents(guiGraphics, mouseX, mouseY, partialTicks);
         this.extractCarriedItem(guiGraphics, mouseX, mouseY);
-        this.extractSnapbackItem(guiGraphics);
-
+        
         this.children().stream().filter(w -> w instanceof WidgetBase).forEach(w -> ((WidgetBase)w).renderUnderTooltip(guiGraphics, mouseX, mouseY, partialTicks));
         this.extractTooltip(guiGraphics, mouseX, mouseY);
         this.children().stream().filter(w -> w instanceof WidgetBase).forEach(w -> ((WidgetBase)w).renderOnTop(guiGraphics, mouseX, mouseY, partialTicks));
@@ -427,7 +426,7 @@ public class BackpackScreen extends AbstractBackpackScreen<BackpackBaseMenu> imp
 
     public static void displayTanksUpgradeWarning(Player player) {
         if(player.level().isClientSide()) {
-            if(Minecraft.getInstance().screen instanceof BackpackScreen screen) {
+            if(Minecraft.getInstance().gui.screen() instanceof BackpackScreen screen) {
                 screen.warningTicks = 60;
             }
         }

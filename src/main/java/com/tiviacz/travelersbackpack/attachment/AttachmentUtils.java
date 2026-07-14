@@ -55,7 +55,9 @@ public class AttachmentUtils {
     public static ItemStack getWearingBackpack(Player player) {
         if(TravelersBackpack.enableIntegration()) {
             if(TravelersBackpack.enableTrinkets()) {
-                return isWearingBackpack(player) ? TrinketsApi.getAttachment(player).getEquipped(t -> t.getItem() instanceof TravelersBackpackItem).getFirst().getB() : ItemStack.EMPTY;
+                // TODO: Update to Trinkets Updated 26.2 API
+                //return isWearingBackpack(player) ? TrinketsApi.getAttachment(player).getEquipped(t -> t.getItem() instanceof TravelersBackpackItem).getFirst().getB() : ItemStack.EMPTY;
+                return ItemStack.EMPTY;
             } /*else {
                 if(isWearingBackpack(player)) {
                     if(AccessoriesCapability.get(player).getFirstEquipped(t -> t.getItem() instanceof TravelersBackpackItem) != null) {

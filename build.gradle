@@ -37,7 +37,7 @@ dependencies {
 	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
 	//Forge Config Api Port
-	implementation("maven.modrinth:forge-config-api-port:RXbL43Lt")
+	implementation("maven.modrinth:forge-config-api-port:rSd3GiG8")
 	api 'com.electronwill.night-config:core:3.8.1'
 	api 'com.electronwill.night-config:toml:3.8.1'
 
@@ -55,26 +55,25 @@ dependencies {
 	//OPTIONAL
 
 	//LambDynamicLights
-	compileOnly("dev.lambdaurora.lambdynamiclights:lambdynamiclights-api:4.10.2+26.1.2")
-	localRuntime("dev.lambdaurora.lambdynamiclights:lambdynamiclights-runtime:4.10.2+26.1.2")
+	compileOnly("dev.lambdaurora.lambdynamiclights:lambdynamiclights-api:4.12.1+26.2")
+	localRuntime("dev.lambdaurora.lambdynamiclights:lambdynamiclights-runtime:4.12.1+26.2")
 
 	//Crafting Tweaks
-	compileOnly("maven.modrinth:balm:I9GF44A2")
-	compileOnly("maven.modrinth:crafting-tweaks:ZlYheOfe")
-	//modApi("net.blay09.mods:kuma-api-fabric:21.10.5+1.21.10")
+	compileOnly("maven.modrinth:balm:Gl7L60Mm")
+	compileOnly("maven.modrinth:crafting-tweaks:L8AL817i")
 
 	//Trash Slot
-	implementation("maven.modrinth:trashslot:QRkC87Rb")
-	implementation("maven.modrinth:balm:CXPaGqRl")
+	implementation("maven.modrinth:trashslot:qIsYpFhq")
+	implementation("maven.modrinth:balm:Gl7L60Mm")
 
 	//ModMenu
-	implementation("maven.modrinth:modmenu:jvjwXH6l")
+	implementation("maven.modrinth:modmenu:njXb639R")
 
 	//VinURL
-	compileOnly("maven.modrinth:vinurl:AinwJJKy")
+	//compileOnly("maven.modrinth:vinurl:AinwJJKy") // Not updated for 26.2 yet
 
 	//Trinkets
-	implementation "maven.modrinth:trinkets-updated:ObfwZi0X"
+	implementation "maven.modrinth:trinkets-updated:kOeE0jtC"
 
 	//Accessories
 	//compileOnly("io.wispforest:accessories-fabric:${project.accessories_version}")
@@ -87,7 +86,7 @@ dependencies {
     //compileOnly("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}") //Not Updated
 
 	//JEI
-	implementation ("maven.modrinth:jei:cHJ1j59c")
+	implementation ("maven.modrinth:jei:WyzzzTmr")
 
 	//Polymorph
 	//compileOnly("maven.modrinth:polymorph:j4jPy88h")
@@ -99,7 +98,7 @@ dependencies {
 	//compileOnly("dev.emi:emi-fabric:${project.emi_version}")
 
 	//Universal Graves
-    compileOnly("maven.modrinth:universal-graves:rZHOziFD")
+    compileOnly("maven.modrinth:universal-graves:BZfhXd0q")
 
 	//Mouse Tweaks
 	//compileOnly "curse.maven:mouse-tweaks-60089:5437294"
@@ -109,7 +108,7 @@ dependencies {
 	//compileOnly("curse.maven:glitchcore-955399:5483774")
 
 	//Gravestones
-	compileOnly("maven.modrinth:pneumono_gravestones:40yhXn3d")
+	compileOnly("maven.modrinth:pneumono_gravestones:orcmjeln")
 	//compileOnly("maven.modrinth:pneumono_core:Y03YVYzM")
 }
 

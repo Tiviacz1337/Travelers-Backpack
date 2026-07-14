@@ -202,11 +202,11 @@ public class InventoryActions {
         } else if(!usingPlayers.isEmpty()) {
             Player user = usingPlayers.get(0);
             if(user.containerMenu instanceof BackpackBlockEntityMenu menu) {
-                Vec3 backpackPos = menu.getWrapper().getBackpackPos().getCenter();
+                Vec3 backpackPos = Vec3.atCenterOf(menu.getWrapper().getBackpackPos());
                 menu.player.level().playSound(null, backpackPos.x(), backpackPos.y() + 0.5, backpackPos.z(), soundEvent, SoundSource.BLOCKS, 1.0F, 1.0F);
             }
             if(user.containerMenu instanceof BackpackItemMenu menu && menu.getWrapper().getScreenID() == Reference.ITEM_SCREEN_ID && !menu.player.level().isClientSide()) {
-                var vec3 = menu.player.blockPosition().getCenter();
+                var vec3 = Vec3.atCenterOf(menu.player.blockPosition());
                 menu.player.level().playSound(null, vec3.x(), vec3.y(), vec3.z(), soundEvent, SoundSource.BLOCKS, 1.0F, 1.0F);
             }
         }

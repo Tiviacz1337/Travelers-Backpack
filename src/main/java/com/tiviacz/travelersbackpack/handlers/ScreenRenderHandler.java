@@ -72,7 +72,7 @@ public class ScreenRenderHandler {
         }
 
         //Render Backpack Icon if Backpack is equipped in Capability but Integration is enabled to easily retrieve the backpack
-        if(mc.screen instanceof InventoryScreen) {
+        if(mc.gui.screen() instanceof InventoryScreen) {
             boolean highlighted = mouseX >= screen.leftPos + 77 && mouseX < screen.leftPos + 77 + 16 && mouseY >= screen.topPos + 62 - 18 && mouseY < screen.topPos + 62 - 18 + 16;
             if(AttachmentUtils.getAttachment(player).isPresent()) {
                 if(AttachmentUtils.getAttachment(player).get().hasBackpack() && TravelersBackpack.enableIntegration()) {
@@ -126,7 +126,7 @@ public class ScreenRenderHandler {
             if(screen2 instanceof InventoryScreen screen) {
                 ScreenMouseEvents.afterMouseClick(screen).register((screen1, mouseButtonEvent, doubleClick) -> {
                     //Render Backpack Icon if Backpack is equipped in Capability but Integration is enabled to easily retrieve the backpack
-                    if(Minecraft.getInstance().screen instanceof InventoryScreen && AttachmentUtils.getAttachment(player).isPresent()) {
+                    if(Minecraft.getInstance().gui.screen() instanceof InventoryScreen && AttachmentUtils.getAttachment(player).isPresent()) {
                         if(AttachmentUtils.getAttachment(player).get().hasBackpack() && TravelersBackpack.enableIntegration()) {
                             if(mouseButtonEvent.x() >= screen.leftPos + 77 && mouseButtonEvent.x() < screen.leftPos + 77 + 16 && mouseButtonEvent.y() >= screen.topPos + 62 - 18 && mouseButtonEvent.y() < screen.topPos + 62 - 18 + 16) {
                                 if(mouseButtonEvent.button() == GLFW.GLFW_MOUSE_BUTTON_1) {
@@ -149,7 +149,7 @@ public class ScreenRenderHandler {
                             }
                             if(mouseButtonEvent.button() == GLFW.GLFW_MOUSE_BUTTON_2) {
                                 if(InputConstants.isKeyDown(Minecraft.getInstance().getWindow(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
-                                    Minecraft.getInstance().gui.getChat().addClientSystemMessage(Component.translatable("screen.travelersbackpack.hide_icon_info"));
+                                    Minecraft.getInstance().gui.hud.getChat().addClientSystemMessage(Component.translatable("screen.travelersbackpack.hide_icon_info"));
                                     return true;
                                 }
                             }

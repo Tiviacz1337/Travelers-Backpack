@@ -23,7 +23,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
@@ -100,7 +100,7 @@ public class RefillUpgrade extends UpgradeBase<RefillUpgrade> implements IEnable
         }
 
         if(getUpgradeManager().getWrapper().getScreenID() == Reference.BLOCK_ENTITY_SCREEN_ID) {
-            level.getEntities(EntityType.PLAYER, new AABB(pos).inflate(REFILL_RANGE), p -> true).forEach(this::tryRefillItems);
+            level.getEntities(EntityTypes.PLAYER, new AABB(pos).inflate(REFILL_RANGE), p -> true).forEach(this::tryRefillItems);
         } else {
             tryRefillItems(player);
         }

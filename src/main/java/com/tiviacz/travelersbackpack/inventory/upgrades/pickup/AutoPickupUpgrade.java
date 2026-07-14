@@ -18,7 +18,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -71,7 +71,7 @@ public class AutoPickupUpgrade extends FilterUpgradeBase<AutoPickupUpgrade, Auto
         }
 
         //Collect items
-        level.getEntities(EntityType.ITEM, new AABB(pos).inflate(PICKUP_RANGE), item -> this.canPickup(item.getItem())).forEach(item -> tryPickup(item, level, pos));
+        level.getEntities(EntityTypes.ITEM, new AABB(pos).inflate(PICKUP_RANGE), item -> this.canPickup(item.getItem())).forEach(item -> tryPickup(item, level, pos));
 
         if(!hasCooldown() || getCooldown() != getTickRate()) {
             setCooldown(getTickRate());

@@ -28,7 +28,7 @@ public class HudOverlay {
         Player player = mc.player;
         Window window = mc.getWindow();
 
-        if(!AttachmentUtils.isWearingBackpack(player) || mc.options.hideGui || (mc.gameMode != null && mc.gameMode.getPlayerMode() == GameType.SPECTATOR))
+        if(!AttachmentUtils.isWearingBackpack(player) || mc.gui.hud.isHidden() || (mc.gameMode != null && mc.gameMode.getPlayerMode() == GameType.SPECTATOR))
             return;
 
         ItemStack stack = AttachmentUtils.getWearingBackpack(player);

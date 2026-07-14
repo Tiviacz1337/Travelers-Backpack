@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class GuiMixin {
     @Inject(method = "extractCrosshair", at = @At("HEAD"), cancellable = true)
     private void onExtractCrosshair(GuiGraphicsExtractor guiGraphics, DeltaTracker deltaTracker, CallbackInfo ci) {
-        if(Minecraft.getInstance().screen instanceof ToolsScreen && !RadialToolsOverlay.drawCrosshair) {
+        if(Minecraft.getInstance().gui.screen() instanceof ToolsScreen && !RadialToolsOverlay.drawCrosshair) {
             ci.cancel();
         }
     }

@@ -26,7 +26,8 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
-import net.minecraft.util.Tuple;
+import java.util.Map;
+import java.util.AbstractMap;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.InsideBlockEffectApplier;
@@ -269,14 +270,14 @@ public class TravelersBackpackBlock extends Block implements EntityBlock {
     }
 
     private boolean removeWaterBreadthFirstSearch(Level level, BlockPos pos, TanksUpgrade tanksUpgrade) {
-        Queue<Tuple<BlockPos, Integer>> queue = Lists.newLinkedList();
-        queue.add(new Tuple<>(pos, 0));
+        Queue<Map.Entry<BlockPos, Integer>> queue = Lists.newLinkedList();
+        queue.add(new AbstractMap.SimpleEntry<>(pos, 0));
         int i = 0;
 
         while(!queue.isEmpty()) {
-            Tuple<BlockPos, Integer> tuple = queue.poll();
-            BlockPos blockpos = tuple.getA();
-            int j = tuple.getB();
+            Map.Entry<BlockPos, Integer> tuple = queue.poll();
+            BlockPos blockpos = tuple.getKey();
+            int j = tuple.getValue();
 
             for(Direction direction : Direction.values()) {
                 BlockPos blockpos1 = blockpos.relative(direction);
@@ -293,13 +294,13 @@ public class TravelersBackpackBlock extends Block implements EntityBlock {
                             }
                         }
                         if(j < 6) {
-                            queue.add(new Tuple<>(blockpos1, j + 1));
+                            queue.add(new AbstractMap.SimpleEntry<>(blockpos1, j + 1));
                         }
                     } else if(blockstate.getBlock() instanceof LiquidBlock) {
                         level.setBlock(blockpos1, Blocks.AIR.defaultBlockState(), 3);
                         ++i;
                         if(j < 6) {
-                            queue.add(new Tuple<>(blockpos1, j + 1));
+                            queue.add(new AbstractMap.SimpleEntry<>(blockpos1, j + 1));
                         }
                     } else {
 
@@ -312,7 +313,7 @@ public class TravelersBackpackBlock extends Block implements EntityBlock {
                         level.setBlock(blockpos1, Blocks.AIR.defaultBlockState(), 3);
                         ++i;
                         if(j < 6) {
-                            queue.add(new Tuple<>(blockpos1, j + 1));
+                            queue.add(new AbstractMap.SimpleEntry<>(blockpos1, j + 1));
                         }
                     }
                 }
