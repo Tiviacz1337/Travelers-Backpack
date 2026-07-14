@@ -4,6 +4,7 @@ import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.init.ModAttachmentTypes;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
+import eu.pb4.trinkets.api.TrinketSlotAccess;
 import eu.pb4.trinkets.api.TrinketsApi;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.minecraft.sounds.SoundEvents;
@@ -55,9 +56,7 @@ public class AttachmentUtils {
     public static ItemStack getWearingBackpack(Player player) {
         if(TravelersBackpack.enableIntegration()) {
             if(TravelersBackpack.enableTrinkets()) {
-                // TODO: Update to Trinkets Updated 26.2 API
-                //return isWearingBackpack(player) ? TrinketsApi.getAttachment(player).getEquipped(t -> t.getItem() instanceof TravelersBackpackItem).getFirst().getB() : ItemStack.EMPTY;
-                return ItemStack.EMPTY;
+                return isWearingBackpack(player) ? TrinketsApi.getAttachment(player).findFirst(t -> t.getItem() instanceof TravelersBackpackItem).map(TrinketSlotAccess::get).orElse(ItemStack.EMPTY) : ItemStack.EMPTY;
             } /*else {
                 if(isWearingBackpack(player)) {
                     if(AccessoriesCapability.get(player).getFirstEquipped(t -> t.getItem() instanceof TravelersBackpackItem) != null) {

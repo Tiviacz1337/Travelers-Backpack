@@ -484,7 +484,7 @@ public class BackpackWrapper {
         if(getScreenID() == Reference.BLOCK_ENTITY_SCREEN_ID) return;
 
         //Sync stack in slot or hand
-        if(getScreenID() == Reference.ITEM_SCREEN_ID && !getPlayersUsing().stream().filter(p -> !p.level().isClientSide()).toList().isEmpty()) {
+        if(getScreenID() == Reference.ITEM_SCREEN_ID && !getPlayersUsing().stream().filter(p -> !p.level().isClientSide()).toList().isEmpty() && !getBackpackStack().isEmpty()) {
             int slotIndex = this.index == -1 ? getPlayersUsing().get(0).getInventory().getSelectedSlot() : this.index;
             PacketDistributor.sendToPlayer((ServerPlayer)this.getPlayersUsing().get(0), new ClientboundSyncItemStackPacket(getPlayersUsing().get(0).getId(), slotIndex, getBackpackStack().typeHolder(), ItemStackUtils.createDataComponentMap(getBackpackStack(), dataComponentTypes)));
             return;
