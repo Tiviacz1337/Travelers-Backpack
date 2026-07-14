@@ -156,7 +156,7 @@ public class SleepingBagBlock extends BedBlock {
 
     @Override
     public float getBounceRestitution() {
-        return 0.2F;
+        return 0.66F;
     }
 
     @Override
