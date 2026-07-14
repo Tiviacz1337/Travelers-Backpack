@@ -5,6 +5,7 @@ import com.tiviacz.travelersbackpack.init.ModAttachmentTypes;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
 import eu.pb4.trinkets.api.TrinketsApi;
+import net.fabricmc.fabric.api.entity.event.v1.ServerEntityLevelChangeEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -25,6 +26,14 @@ public class AttachmentUtils {
 
     public static void registerJoinEquip() {
         ServerPlayerEvents.JOIN.register((player) -> {
+            AttachmentUtils.getAttachment(player).ifPresent(attachment -> {
+                attachment.equipBackpack(attachment.getBackpack(), player);
+            });
+        });
+
+        //#TODO get rid of level and player instance in the future
+        //Refresh player and world instance
+        ServerEntityLevelChangeEvents.AFTER_PLAYER_CHANGE_LEVEL.register((player, origin, destination) -> {
             AttachmentUtils.getAttachment(player).ifPresent(attachment -> {
                 attachment.equipBackpack(attachment.getBackpack(), player);
             });
