@@ -1,6 +1,8 @@
-🐛 Fixed crash that was caused by not loaded config option  
-🐛 Fixed smelting upgrades visual glitch  
-📚 Updated Vietnamese translation - Thanks Koshiisan!  
+🔧 Tools with enchantments will sort in proper order if sorted inside backpack  
+🐛 Fix for config not loaded crashes  
+🐛 Backpacks no longer can be stored in tool slots  
+🐛 Fix for Carpet mod compatibility issue  
+🐛 Fix for sleeping bag issue after returning to overworld
 
 ⭐ Want to receive **Supporter Star Badge** for a **lifetime**? - [visit my Ko-Fi page](https://ko-fi.com/tiviacz1337)!  
 ![Banner](https://i.imgur.com/OF6652S.png)
