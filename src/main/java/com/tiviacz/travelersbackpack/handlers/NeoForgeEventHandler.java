@@ -410,7 +410,11 @@ public class NeoForgeEventHandler {
 
     @SubscribeEvent
     public static void playerChangeDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
-        AttachmentUtils.synchronise(event.getEntity());
+        //#TODO get rid of level and player instance in the future
+        //Refresh player and world instance
+        AttachmentUtils.getAttachment(event.getEntity()).ifPresent(attachment -> attachment.equipBackpack(attachment.getBackpack()));
+
+        //AttachmentUtils.synchronise(event.getEntity());
     }
 
     @SubscribeEvent
