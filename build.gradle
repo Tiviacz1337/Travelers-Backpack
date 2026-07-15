@@ -10,11 +10,15 @@ base {
 }
 
 repositories {
+	mavenLocal()
 	maven { url "https://cursemaven.com" }
 	maven { url "https://api.modrinth.com/maven" }
 
 	//LambDynamicLights
 	maven { url "https://maven.gegy.dev" }
+
+	//WispForest (owo-lib, endec)
+	maven { url "https://maven.wispforest.io/releases" }
 }
 
 fabricApi {
@@ -70,7 +74,9 @@ dependencies {
 	implementation("maven.modrinth:modmenu:njXb639R")
 
 	//VinURL
-	//compileOnly("maven.modrinth:vinurl:AinwJJKy") // Not updated for 26.2 yet
+	compileOnly("com.vinurl:VinURL:2.7.0+mc26.2") {
+		transitive = false
+	}
 
 	//Trinkets
 	implementation "maven.modrinth:trinkets-updated:kOeE0jtC"

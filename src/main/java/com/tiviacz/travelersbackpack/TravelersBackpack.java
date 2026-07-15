@@ -6,7 +6,7 @@ import com.tiviacz.travelersbackpack.compat.craftingtweaks.CraftingTweaksCompat;
 import com.tiviacz.travelersbackpack.compat.pneumonogravestones.PneumonoGravestonesCompat;
 import com.tiviacz.travelersbackpack.compat.trinkets.BackpackTrinket;
 import com.tiviacz.travelersbackpack.compat.universalgraves.UniversalGravesCompat;
-//import com.tiviacz.travelersbackpack.compat.vinurl.VinURLNetwork;
+import com.tiviacz.travelersbackpack.compat.vinurl.VinURLNetwork;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
 import com.tiviacz.travelersbackpack.handlers.*;
@@ -105,8 +105,8 @@ public class TravelersBackpack implements ModInitializer {
 
         polymorphLoaded = fabricLoader.isModLoaded("polymorph");
         trashSlotLoaded = fabricLoader.isModLoaded("trashslot");
-        //vinurlLoaded = fabricLoader.isModLoaded("vinurl");
-        //if(vinurlLoaded) VinURLNetwork.register();
+        vinurlLoaded = fabricLoader.isModLoaded("vinurl");
+        if(vinurlLoaded) VinURLNetwork.register();
 
         lambDynamicLightsLoaded = fabricLoader.isModLoaded("lambdynlights");
 
