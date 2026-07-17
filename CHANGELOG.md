@@ -1,6 +1,7 @@
 🔧 Tools with enchantments will sort in proper order if sorted inside backpack  
 🐛 Backpacks no longer can be stored in tool slots  
 🐛 Fix for sleeping bag issue after returning to overworld  
+🐛 Fixed refmap error console log  
 📚 Updated russian translation - Thanks A1Asriel!  
 📚 Updated Vietnamese translation - Thanks Koshiisan!  
 
