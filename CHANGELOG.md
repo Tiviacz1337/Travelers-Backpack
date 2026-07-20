@@ -1,3 +1,4 @@
+🔧 Tools with enchantments will sort in proper order if sorted inside backpack  
 🐛 Backpacks no longer can be stored in tool slots  
 
 ⭐ Want to receive **Supporter Star Badge** for a **lifetime**? - [visit my Ko-Fi page](https://ko-fi.com/tiviacz1337)!  
