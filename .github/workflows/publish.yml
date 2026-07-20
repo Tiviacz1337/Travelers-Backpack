@@ -5,9 +5,9 @@ on: [ workflow_dispatch ]
 env:
   MINECRAFT_VERSION: 1.21.1
   JAVA_VERSION: 21
-  VERSION: 1.21.1-10.1.36
-  RELEASE_NAME_CURSEFORGE: "travelersbackpack-neoforge-1.21.1-10.1.36"
-  RELEASE_NAME_MODRINTH: "[1.21.1] Traveler's Backpack 10.1.36"
+  VERSION: 1.21.1-10.1.37
+  RELEASE_NAME_CURSEFORGE: "travelersbackpack-neoforge-1.21.1-10.1.37"
+  RELEASE_NAME_MODRINTH: "[1.21.1] Traveler's Backpack 10.1.37"
   MODRINTH_TOKEN: ${{ secrets.MODRINTH }}
   CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE }}
 
@@ -55,6 +55,7 @@ jobs:
           changelog-file: CHANGELOG.md
 
           loaders: neoforge
+          environment: client | server
           game-versions: "${{ env.MINECRAFT_VERSION }}"
           dependencies: |
             curios-api(optional){modrinth:vvuO3ImH}{curseforge:309927}
@@ -63,6 +64,7 @@ jobs:
             polymorph(optional){modrinth:tagwiZkJ}{curseforge:388800}
             comforts(optional){modrinth:SaCpeal4}{curseforge:276951}
             trash-slot(optional){modrinth:vRYk0bv7}{curseforge:235577}
+            lambdynamiclights(optional){modrinth:yBW8D80W}{curseforge:393442}
             jei(optional){modrinth:u6dRKJwZ}{curseforge:238222}
             rei(optional){modrinth:nfn13YXA}{curseforge:310111}
             emi(optional){modrinth:fRiHVvU7}{curseforge:580555}
