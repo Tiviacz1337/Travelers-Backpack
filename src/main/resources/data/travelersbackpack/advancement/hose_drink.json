@@ -17,10 +17,7 @@
     "description": {
       "translate": "advancements.travelersbackpack.hose_drink.description"
     },
-    "frame": "task",
-    "show_toast": false,
-    "announce_to_chat": true,
-    "hidden": false
+    "frame": "task"
   },
   "criteria": {
     "hose_drink": {
