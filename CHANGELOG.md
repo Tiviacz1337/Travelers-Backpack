@@ -7,7 +7,7 @@
 🐛 Fixed compatibility with BetterCombat  
 🐛 Fixed achievements not being displayed when obtained  
 📚 Updated Vietnamese translation - Thanks Koshiisan!  
-📚 Updated russian translation - Thanks A1Asriel!  
+📚 Updated Russian translation - Thanks A1Asriel!  
 
 ⭐ Want to receive **Supporter Star Badge** for a **lifetime**? - [visit my Ko-Fi page](https://ko-fi.com/tiviacz1337)!  
 ![Banner](https://i.imgur.com/OF6652S.png)
