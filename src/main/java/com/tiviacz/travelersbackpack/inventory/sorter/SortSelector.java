@@ -2,6 +2,7 @@ package com.tiviacz.travelersbackpack.inventory.sorter;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.EnchantedBookItem;
@@ -9,6 +10,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TieredItem;
 import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
 
 import java.util.*;
 
@@ -84,8 +86,11 @@ public class SortSelector {
     private static String specialCases(ItemStack stack, String name) {
         Item item = stack.getItem();
         name = stackSize(stack, name);
-        if(item instanceof EnchantedBookItem) {
-            return enchantedBookNameCase(stack, name);
+        if(stack.has(DataComponents.STORED_ENCHANTMENTS)) {
+            return enchantedBookNameCase(stack, name, DataComponents.STORED_ENCHANTMENTS);
+        }
+        if(stack.has(DataComponents.ENCHANTMENTS)) {
+            return enchantedBookNameCase(stack, name, DataComponents.ENCHANTMENTS);
         }
         if(item instanceof TieredItem) {
             return toolDurabilityCase(stack, name);
@@ -98,8 +103,8 @@ public class SortSelector {
         return name + String.format("%04d", invertedCount);
     }
 
-    private static String enchantedBookNameCase(ItemStack stack, String name) {
-        Set<Object2IntMap.Entry<Holder<Enchantment>>> enchants = stack.get(DataComponents.STORED_ENCHANTMENTS).entrySet();
+    private static String enchantedBookNameCase(ItemStack stack, String name, DataComponentType<ItemEnchantments> type) {
+        Set<Object2IntMap.Entry<Holder<Enchantment>>> enchants = stack.get(type).entrySet();
         List<String> names = new ArrayList<>();
         StringBuilder enchantNames = new StringBuilder();
 
