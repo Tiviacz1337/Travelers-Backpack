@@ -1,7 +1,5 @@
 package com.tiviacz.travelersbackpack.inventory.menu.slot;
 
-import com.tiviacz.travelersbackpack.TravelersBackpack;
-import com.tiviacz.travelersbackpack.compat.tetra.TetraCompat;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModTags;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
@@ -39,30 +37,19 @@ public class ToolSlotItemHandler extends SlotItemHandler {
     }
 
     public static boolean isValid(ItemStack stack) {
-        if(stack.getItem() instanceof HoseItem) return false;
+        Item item = stack.getItem();
+        if(item instanceof HoseItem) return false;
 
-        if(TravelersBackpackConfig.SERVER.backpackSettings.toolSlotsAcceptEverything.get()) {
-            return BackpackSlotItemHandler.isItemValid(stack);
-        }
+        boolean isItemValid = BackpackSlotItemHandler.isItemValid(stack);
 
-        //Datapacks :D
+        if(!isItemValid) return false;
+        if(TravelersBackpackConfig.SERVER.backpackSettings.toolSlotsAcceptEverything.get()) return true;
+        if(stack.getMaxStackSize() == 1) return true;
         if(stack.is(ModTags.ACCEPTABLE_TOOLS)) return true;
-
         if(TOOL_SLOTS_ACCEPTABLE_ITEMS.contains(stack.getItem())) return true;
 
-        if(TravelersBackpack.tetraLoaded) {
-            if(TetraCompat.isTetraTool(stack)) {
-                return true;
-            }
-        }
-
-        if(stack.getMaxStackSize() == 1) {
-            return true; //Accept all possible tools
-        }
-
         //Vanilla tools
-        return stack.getItem() instanceof TieredItem ||
-                stack.getItem() instanceof HoeItem ||
+        if(stack.getItem() instanceof HoeItem ||
                 stack.getItem() instanceof FishingRodItem ||
                 stack.getItem() instanceof ShearsItem ||
                 stack.getItem() instanceof FlintAndSteelItem ||
@@ -70,11 +57,9 @@ public class ToolSlotItemHandler extends SlotItemHandler {
                 stack.getItem() instanceof BrushItem ||
                 stack.getItem() instanceof TridentItem ||
                 stack.getItem() instanceof SpyglassItem ||
-                stack.getItem() instanceof ShieldItem;
-    }
-
-    @Override
-    public void setChanged() {
-        super.setChanged();
+                stack.getItem() instanceof ShieldItem) {
+            return true;
+        }
+        return false;
     }
 }
