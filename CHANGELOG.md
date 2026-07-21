@@ -5,6 +5,7 @@
 🐛 Fixed refmap error console log  
 🐛 Fixed bundle duplication issue  
 🐛 Fixed compatibility with BetterCombat  
+🐛 Fixed achievements not being displayed when obtained  
 📚 Updated Vietnamese translation - Thanks Koshiisan!  
 📚 Updated russian translation - Thanks A1Asriel!  
 
