@@ -4,11 +4,9 @@ import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModTags;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.BundleItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import net.neoforged.neoforge.items.SlotItemHandler;
 
 import java.util.ArrayList;
@@ -25,14 +23,6 @@ public class BackpackSlotItemHandler extends SlotItemHandler {
         if(BackpackSlotItemHandler.BLACKLISTED_ITEMS.contains(stack.getItem())) return false;
 
         return !(stack.getItem() instanceof TravelersBackpackItem) && !stack.is(ModTags.BLACKLISTED_ITEMS) && (TravelersBackpackConfig.SERVER.backpackSettings.allowShulkerBoxes.get() || stack.getItem().canFitInsideContainerItems());
-    }
-
-    @Override
-    public void setChanged() {
-        if(!getItem().getItem().canFitInsideContainerItems() || getItem().getItem() instanceof BundleItem) {
-            ((IItemHandlerModifiable)this.getItemHandler()).setStackInSlot(index, getItem()); //fix for EasyShulkerBoxes and BundleItem not calling onContentsChanged
-        }
-        super.setChanged();
     }
 
     @Override
