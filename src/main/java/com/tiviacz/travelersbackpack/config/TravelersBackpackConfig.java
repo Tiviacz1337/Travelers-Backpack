@@ -663,7 +663,7 @@ public class TravelersBackpackConfig {
             loadBackpackEffectsFromConfig(TravelersBackpackConfig.SERVER.backpackAbilities.backpackEffects.get(), com.tiviacz.travelersbackpack.common.BackpackAbilities.BACKPACK_EFFECTS);
 
             //Update allowed abilities if added effect
-            com.tiviacz.travelersbackpack.common.BackpackAbilities.getBackpackEffects().entries().stream().forEach(entry -> {
+            new ArrayList<>(com.tiviacz.travelersbackpack.common.BackpackAbilities.getBackpackEffects().entries()).forEach(entry -> {
                 if(!com.tiviacz.travelersbackpack.common.BackpackAbilities.ALLOWED_ABILITIES.contains(entry.getKey())) {
                     com.tiviacz.travelersbackpack.common.BackpackAbilities.ALLOWED_ABILITIES.add(entry.getKey());
                 }
