@@ -4,10 +4,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.EnchantedBookItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TieredItem;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.enchantment.Enchantment;
 
 import java.util.*;
@@ -88,6 +85,9 @@ public class SortSelector {
             return enchantedBookNameCase(stack, name);
         }
         if(item instanceof TieredItem) {
+            if(stack.isEnchanted()) {
+                name = enchantedBookNameCase(stack, name);
+            }
             return toolDurabilityCase(stack, name);
         }
         return name;
@@ -99,7 +99,7 @@ public class SortSelector {
     }
 
     private static String enchantedBookNameCase(ItemStack stack, String name) {
-        ListTag enchants = EnchantedBookItem.getEnchantments(stack);
+        ListTag enchants = stack.is(Items.ENCHANTED_BOOK) ? EnchantedBookItem.getEnchantments(stack) : stack.getEnchantmentTags();
         List<String> names = new ArrayList<>();
         StringBuilder enchantNames = new StringBuilder();
         for(int i = 0; i < enchants.size(); i++) {
