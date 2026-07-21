@@ -49,7 +49,8 @@ public class ToolSlotItemHandler extends SlotItemHandler {
         if(TOOL_SLOTS_ACCEPTABLE_ITEMS.contains(stack.getItem())) return true;
 
         //Vanilla tools
-        if(stack.getItem() instanceof HoeItem ||
+        if(stack.getItem() instanceof TieredItem ||
+                stack.getItem() instanceof HoeItem ||
                 stack.getItem() instanceof FishingRodItem ||
                 stack.getItem() instanceof ShearsItem ||
                 stack.getItem() instanceof FlintAndSteelItem ||
