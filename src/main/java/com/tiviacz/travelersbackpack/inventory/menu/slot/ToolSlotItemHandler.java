@@ -32,24 +32,20 @@ public class ToolSlotItemHandler extends SlotItemHandler {
     }
 
     public static boolean isValid(ItemStack stack) {
-        if(stack.getItem() instanceof HoseItem) return false;
+        Item item = stack.getItem();
+        if(item instanceof HoseItem) return false;
 
-        if(TravelersBackpackConfig.getConfig().backpackSettings.toolSlotsAcceptEverything) {
-            return BackpackSlotItemHandler.isItemValid(stack);
-        }
+        boolean isItemValid = BackpackSlotItemHandler.isItemValid(stack);
 
-        //Datapacks :D
+        if(!isItemValid) return false;
+        if(TravelersBackpackConfig.getConfig().backpackSettings.toolSlotsAcceptEverything) return true;
+        if(stack.getMaxStackSize() == 1) return true;
         if(stack.is(ModTags.ACCEPTABLE_TOOLS)) return true;
-
         if(TravelersBackpackConfig.isToolAllowed(stack)) return true;
-
-        if(stack.getMaxStackSize() == 1) {
-            return true; //Accept all possible tools
-        }
+        if(stack.has(DataComponents.TOOL)) return true;
 
         //Vanilla tools
-        if(stack.getItem() instanceof TieredItem ||
-                stack.getItem() instanceof HoeItem ||
+        if(stack.getItem() instanceof HoeItem ||
                 stack.getItem() instanceof FishingRodItem ||
                 stack.getItem() instanceof ShearsItem ||
                 stack.getItem() instanceof FlintAndSteelItem ||
@@ -61,7 +57,7 @@ public class ToolSlotItemHandler extends SlotItemHandler {
                 stack.getItem() instanceof ShieldItem) {
             return true;
         }
-        return stack.has(DataComponents.TOOL);
+        return false;
     }
 
     @Override

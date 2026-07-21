@@ -1,9 +1,12 @@
-✨ Added Lantern upgrade - requires LambDynamicLights mod installed to provide light properly. Upgrade can be crafted even if mod is not installed but will not have any functionality. Can be disabled entirely in mod config  
-✨ The sleeping bag is now optional! Backpack can be crafted without it  
-✨ Sleeping bags can be attached to the backpack by holding the item in your hand and Shift + Right-Clicking on a placed backpack  
-✨ The sleeping bag can be detached from the backpack by holding Shift while clicking the "Use Sleeping Bag" button  
-✨ Sleeping bags can be disabled entirely in the config  
-🔧 Tool slots button do not appear if the backpack does not have any tool slots  
+🔧 Tools with enchantments will sort in proper order if sorted inside backpack  
+🔧 Slowness debuff now also includes the backpack that is equipped on player's back   
+🐛 Fixed compatibility with VR  
+🐛 Backpacks no longer can be stored in tool slots  
+🐛 Fixed refmap error console log  
+🐛 Fixed bundle duplication issue  
+🐛 Fixed compatibility with BetterCombat  
+📚 Updated Vietnamese translation - Thanks Koshiisan!  
+📚 Updated russian translation - Thanks A1Asriel!  
 
 ⭐ Want to receive **Supporter Star Badge** for a **lifetime**? - [visit my Ko-Fi page](https://ko-fi.com/tiviacz1337)!  
 ![Banner](https://i.imgur.com/OF6652S.png)
