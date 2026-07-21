@@ -59,9 +59,4 @@ public class ToolSlotItemHandler extends SlotItemHandler {
         }
         return false;
     }
-
-    @Override
-    public void setChanged() {
-        super.setChanged();
-    }
 }

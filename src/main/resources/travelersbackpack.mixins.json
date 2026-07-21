@@ -6,6 +6,7 @@
   "plugin": "com.tiviacz.travelersbackpack.TravelersBackpackMixinPlugin",
   "mixins": [
     "ItemEntityMixin",
+    "ItemStackMixin",
     "LevelResourceMixin",
     "LivingEntityPriorityMixin",
     "MobEntityMixin",
