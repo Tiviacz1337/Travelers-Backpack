@@ -10,10 +10,7 @@
     "description": {
       "translate": "advancements.travelersbackpack.hose_spill_potion.description"
     },
-    "frame": "task",
-    "show_toast": false,
-    "announce_to_chat": true,
-    "hidden": false
+    "frame": "task"
   },
   "criteria": {
     "hose_spill_potion": {

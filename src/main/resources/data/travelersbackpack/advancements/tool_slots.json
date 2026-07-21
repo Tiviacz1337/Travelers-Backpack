@@ -10,10 +10,7 @@
     "description": {
       "translate": "advancements.travelersbackpack.swap_tools.description"
     },
-    "frame": "task",
-    "show_toast": false,
-    "announce_to_chat": true,
-    "hidden": false
+    "frame": "task"
   },
   "criteria": {
     "swap_tools": {
