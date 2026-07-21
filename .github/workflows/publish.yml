@@ -5,9 +5,9 @@ on: [ workflow_dispatch ]
 env:
   MINECRAFT_VERSION: 1.20.1
   JAVA_VERSION: 17
-  VERSION: 1.20.1-9.1.53
-  RELEASE_NAME_CURSEFORGE: "travelersbackpack-fabric-1.20.1-9.1.53"
-  RELEASE_NAME_MODRINTH: "[1.20.1] Traveler's Backpack 9.1.53"
+  VERSION: 1.20.1-9.1.54
+  RELEASE_NAME_CURSEFORGE: "travelersbackpack-fabric-1.20.1-9.1.54"
+  RELEASE_NAME_MODRINTH: "[1.20.1] Traveler's Backpack 9.1.54"
   MODRINTH_TOKEN: ${{ secrets.MODRINTH }}
   CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE }}
   GITHUB_TOKEN: ${{ secrets.TOKEN }}
@@ -56,6 +56,7 @@ jobs:
           changelog-file: CHANGELOG.md
 
           loaders: fabric
+          environment: client | server
           game-versions: "${{ env.MINECRAFT_VERSION }}"
           dependencies: |
             fabric-api(required){modrinth:P7dR8mSH}{curseforge:306612}
