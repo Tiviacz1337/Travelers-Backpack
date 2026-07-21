@@ -1,6 +1,6 @@
-🔧 Tools with enchantments will sort in proper order if sorted inside backpack
-🐛 Fixed compatibility with VR  
-🐛 Backpacks no longer can be stored in tool slots
+🔧 Tools with enchantments will sort in proper order if sorted inside backpack  
+🐛 Fixed compatibility with VR    
+🐛 Backpacks no longer can be stored in tool slots  
 🐛 Fixed compatibility with BetterCombat  
 🐛 Fixed achievements not being displayed when obtained  
 📚 Updated Vietnamese translation - Thanks Koshiisan!  
