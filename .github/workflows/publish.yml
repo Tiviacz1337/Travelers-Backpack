@@ -5,9 +5,9 @@ on: [ workflow_dispatch ]
 env:
   MINECRAFT_VERSION: 1.21.1
   JAVA_VERSION: 21
-  VERSION: 1.21.1-10.1.36
-  RELEASE_NAME_CURSEFORGE: "travelersbackpack-fabric-1.21.1-10.1.36"
-  RELEASE_NAME_MODRINTH: "[1.21.1] Traveler's Backpack 10.1.36"
+  VERSION: 1.21.1-10.1.37
+  RELEASE_NAME_CURSEFORGE: "travelersbackpack-fabric-1.21.1-10.1.37"
+  RELEASE_NAME_MODRINTH: "[1.21.1] Traveler's Backpack 10.1.37"
   MODRINTH_TOKEN: ${{ secrets.MODRINTH }}
   CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE }}
   GITHUB_TOKEN: ${{ secrets.TOKEN }}
@@ -56,6 +56,7 @@ jobs:
           changelog-file: CHANGELOG.md
 
           loaders: fabric
+          environment: client | server
           game-versions: "${{ env.MINECRAFT_VERSION }}"
           dependencies: |
             fabric-api(required){modrinth:P7dR8mSH}{curseforge:306612}
@@ -67,6 +68,7 @@ jobs:
             polymorph(optional){modrinth:tagwiZkJ}{curseforge:388800}
             comforts(optional){modrinth:SaCpeal4}{curseforge:276951}
             trash-slot(optional){modrinth:vRYk0bv7}{curseforge:235577}
+            lambdynamiclights(optional){modrinth:yBW8D80W}{curseforge:393442}
             yigd(optional){modrinth:HnD1GX6e}{curseforge:544912}
             universal-graves(optional){modrinth:yn9u3ypm}{curseforge:497175}
             jei(optional){modrinth:u6dRKJwZ}{curseforge:238222}
