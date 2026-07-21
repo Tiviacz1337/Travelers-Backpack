@@ -60,7 +60,7 @@ public class ServerActions {
             BackpackWrapper wrapper = ComponentUtils.getBackpackWrapper(player, ComponentUtils.TOOLS_ONLY.get());
             ItemStackHandler inv = wrapper.getTools();
             InteractionHand hand = button == 0 ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
-            ItemStack handStack = player.getItemInHand(hand);
+            ItemStack handStack = hand == InteractionHand.OFF_HAND ? player.getInventory().offhand.get(0) : player.getItemInHand(hand);
 
             if(!handStack.isEmpty() && !ToolSlotItemHandler.isValid(handStack)) {
                 return;
