@@ -25,11 +25,12 @@ public class TravelersBackpackCurioClient {
     }
 
     public static class Renderer implements ICurioRenderer {
+        private final ItemStackRenderState backpackRenderState = new ItemStackRenderState();
+        private final StackModelPart tools = new StackModelPart();
+
         @Override
         public <S extends LivingEntityRenderState, M extends EntityModel<? super S>> void render(ItemStack stack, SlotContext slotContext, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int packedLight, S renderState, RenderLayerParent<S, M> renderLayerParent, EntityRendererProvider.Context context, float yRotation, float xRotation) {
             if(stack.getItem() instanceof TravelersBackpackItem && renderLayerParent.getModel() instanceof PlayerModel playerModel && renderState instanceof AvatarRenderState playerRenderState) {
-                var backpackRenderState = new ItemStackRenderState();
-                var tools = new StackModelPart();
                 BackpackLayer.renderBackpackLayer(playerModel, poseStack, submitNodeCollector, packedLight, playerRenderState, backpackRenderState, tools, stack);
             }
         }
