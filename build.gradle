@@ -68,7 +68,7 @@ dependencies {
     implementation("net.neoforged:neoforge:${neo_version}")
 
     //Curios
-    compileOnly("maven.modrinth:curios:68gxflop")
+    implementation("maven.modrinth:curios:dRnRThvD")
 
     //LambDynamicLights
     compileOnly("dev.lambdaurora.lambdynamiclights:lambdynamiclights-api:4.10.2+26.1.2")
