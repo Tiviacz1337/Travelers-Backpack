@@ -1,20 +1,19 @@
 {
   "schemaVersion": 1,
-  "id": "travelersbackpack",
-  "version": "${version}",
+  "id": "${mod_id}",
+  "version": "${mod_version}",
   "accessWidener": "travelersbackpack.accesswidener",
-  "name": "Traveler's Backpack",
-  "description": "Unique and upgradeable backpacks with customisation, Trinkets/Accessories integration and more!",
+  "name": "${mod_display_name}",
+  "description": "${mod_description}",
   "authors": [
-    "Tiviacz1337"
+    "${mod_authors}"
   ],
   "contact": {
-    "homepage": "https://www.curseforge.com/minecraft/mc-mods/travelers-backpack-fabric",
-    "sources": "https://github.com/Tiviacz1337/Travelers-Backpack",
-    "issues": "https://github.com/Tiviacz1337/Travelers-Backpack/issues"
+    "homepage": "${mod_display_url}",
+    "issues": "${mod_issue_tracker_url}"
   },
-  "license": "GPL v3",
-  "icon": "assets/travelersbackpack/icon.png",
+  "license": "${mod_license}",
+  "icon": "assets/${mod_id}/textures/logo.png",
   "environment": "*",
   "entrypoints": {
     "fabric-datagen": [
@@ -25,9 +24,6 @@
     ],
     "client": [
       "com.tiviacz.travelersbackpack.TravelersBackpackClient"
-    ],
-    "emi": [
-      "com.tiviacz.travelersbackpack.compat.emi.EmiCompat"
     ],
     "rei_client": [
       "com.tiviacz.travelersbackpack.compat.rei.ReiClientCompat"
@@ -42,12 +38,9 @@
   "depends": {
     "fabricloader": ">=0.15.11",
     "fabric-api": ">=0.120.0",
-    "minecraft": "~1.21.6",
+    "minecraft": "${minecraft_version_range}",
     "java": ">=21",
     "forgeconfigapiport": "*"
-  },
-  "suggests": {
-    "modmenu": "*"
   },
   "breaks": {
     "accessories": "<1.4.3-beta+1.21.10",

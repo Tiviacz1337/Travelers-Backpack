@@ -4,10 +4,10 @@ plugins {
 }
 
 version = project.mod_version
-group = project.maven_group
+group = project.mod_group_id
 
 base {
-	archivesName = "${project.archives_base_name}-${project.mod_loader}-${project.minecraft_version}"
+	archivesName = "${project.mod_id}-${project.mod_loader}-${project.minecraft_version}"
 }
 
 loom {
@@ -156,7 +156,7 @@ dependencies {
 	modCompileOnly ("maven.modrinth:comforts:vUdakIzK")
 
 	//EMI
-	modCompileOnly("dev.emi:emi-fabric:${project.emi_version}")
+	//modCompileOnly("dev.emi:emi-fabric:${project.emi_version}")
 
 	//Universal Graves
     modCompileOnly "curse.maven:universal-graves-497175:7054553"
@@ -197,10 +197,23 @@ dependencies {
 }
 
 processResources {
-	inputs.property "version", project.version
+	var replaceProperties = [
+			minecraft_version      : minecraft_version,
+			minecraft_version_range: minecraft_version_range,
+			mod_id                 : mod_id,
+			mod_name               : mod_name,
+			mod_display_name       : mod_display_name,
+			mod_license            : mod_license,
+			mod_version            : mod_version,
+			mod_authors            : mod_authors,
+			mod_description        : mod_description,
+			mod_display_url        : mod_display_url,
+			mod_issue_tracker_url  : mod_issue_tracker_url,
+	]
+	inputs.properties replaceProperties
 
-	filesMatching("fabric.mod.json") {
-		expand "version": project.version
+	filesMatching('fabric.mod.json') {
+		expand replaceProperties
 	}
 }
 
@@ -221,23 +234,5 @@ java {
 jar {
 	from("LICENSE") {
 		rename { "${it}_${project.base.archivesName.get()}"}
-	}
-}
-
-// configure the maven publication
-publishing {
-	publications {
-		mavenJava(MavenPublication) {
-			artifactId = project.archives_base_name
-			from components.java
-		}
-	}
-
-	// See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
-	repositories {
-		// Add repositories to publish to here.
-		// Notice: This block does NOT have the same function as the block in the top level.
-		// The repositories here will be used for publishing your artifact, not for
-		// retrieving dependencies.
 	}
 }
