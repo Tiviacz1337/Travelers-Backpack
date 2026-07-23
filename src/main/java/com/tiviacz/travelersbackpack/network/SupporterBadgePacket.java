@@ -25,7 +25,7 @@ public class SupporterBadgePacket {
             return TYPE;
         }
 
-        public static void handle(final Serverbound message, ServerPlayNetworking.Context ctx) {
+        public static void handle(Serverbound message, ServerPlayNetworking.Context ctx) {
             ctx.server().execute(() -> {
                 Player player = ctx.player();
                 if(message.isEnabledForPlayer && !Supporters.SUPPORTERS.contains(player.getGameProfile().name())) {
