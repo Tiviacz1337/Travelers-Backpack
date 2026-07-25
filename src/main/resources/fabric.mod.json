@@ -54,7 +54,7 @@
   ],
   "depends": {
     "fabricloader": ">=0.15.11",
-    "fabric": ">=0.100.3",
+    "fabric": ">=0.115.1",
     "minecraft": "${minecraft_version_range}",
     "java": ">=21",
     "cardinal-components-base": "*",

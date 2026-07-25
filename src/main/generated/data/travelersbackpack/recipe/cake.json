@@ -6,7 +6,7 @@
       "item": "minecraft:milk_bucket"
     },
     "B": {
-      "item": "minecraft:egg"
+      "tag": "c:eggs"
     },
     "C": {
       "item": "minecraft:sugar"

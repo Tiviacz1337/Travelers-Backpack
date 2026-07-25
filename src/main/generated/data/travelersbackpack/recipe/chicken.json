@@ -9,7 +9,7 @@
       "item": "travelersbackpack:standard"
     },
     "C": {
-      "item": "minecraft:egg"
+      "tag": "c:eggs"
     }
   },
   "pattern": [
