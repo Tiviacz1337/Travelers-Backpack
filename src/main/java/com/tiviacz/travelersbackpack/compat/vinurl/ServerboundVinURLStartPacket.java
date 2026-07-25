@@ -24,7 +24,7 @@ public record ServerboundVinURLStartPacket(ItemStack stack) implements CustomPac
         ctx.server().execute(() -> {
             if(TravelersBackpack.vinurlLoaded) {
                 if(ctx.player().level() instanceof ServerLevel serverLevel) {
-                    VinURLSound.playFor(serverLevel, message.stack, ctx.player().getUUID());
+                    VinURLSound.playFor(serverLevel, message.stack, ctx.player().getId());
                 }
             }
         });

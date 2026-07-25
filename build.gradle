@@ -71,7 +71,7 @@ dependencies {
 	implementation("maven.modrinth:modmenu:jvjwXH6l")
 
 	//VinURL
-	compileOnly("maven.modrinth:vinurl:AinwJJKy")
+	compileOnly("maven.modrinth:vinurl:myqNwplT")
 
 	//Trinkets
 	implementation "maven.modrinth:trinkets-updated:ObfwZi0X"
