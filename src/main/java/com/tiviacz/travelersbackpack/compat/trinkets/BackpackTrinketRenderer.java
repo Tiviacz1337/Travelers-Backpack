@@ -23,10 +23,11 @@ public class BackpackTrinketRenderer implements TrinketRenderer {
                 .forEach(item -> TrinketRendererRegistry.registerRenderer(item, new BackpackTrinketRenderer()));
     }
 
+    private final ItemStackRenderState backpackRenderState = new ItemStackRenderState();
+    private final StackModelPart tools = new StackModelPart();
+
     @Override
     public void submit(ItemStack itemStack, TrinketSlotAccess trinketSlotAccess, EntityModel<? extends LivingEntityRenderState> entityModel, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int i, LivingEntityRenderState livingEntityRenderState, float v, float v1) {
-        ItemStackRenderState backpackRenderState = new ItemStackRenderState();
-        StackModelPart tools = new StackModelPart();
         if(itemStack.getItem() instanceof TravelersBackpackItem && entityModel instanceof PlayerModel playerModel && livingEntityRenderState instanceof HumanoidRenderState humanoidRenderState) {
             BackpackLayer.renderBackpackLayer(playerModel, poseStack, submitNodeCollector, i, humanoidRenderState, backpackRenderState, tools, itemStack);
         }
