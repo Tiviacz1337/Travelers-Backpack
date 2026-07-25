@@ -4,9 +4,13 @@ import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.init.ModAttachmentTypes;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
+import com.tiviacz.travelersbackpack.network.ClientboundSyncAttachmentPacket;
 import eu.pb4.trinkets.api.TrinketsApi;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityLevelChangeEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
+import net.fabricmc.fabric.api.networking.v1.EntityTrackingEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
@@ -29,6 +33,15 @@ public class AttachmentUtils {
             AttachmentUtils.getAttachment(player).ifPresent(attachment -> {
                 attachment.equipBackpack(attachment.getBackpack(), player);
             });
+        });
+
+        EntityTrackingEvents.START_TRACKING.register((trackedEntity, player) -> {
+            if(trackedEntity instanceof ServerPlayer wearer && player instanceof ServerPlayer viewer) {
+                ItemStack backpack = AttachmentUtils.getWearingBackpack(wearer);
+                if(!backpack.isEmpty()) {
+                    ServerPlayNetworking.send(viewer, new ClientboundSyncAttachmentPacket(wearer.getId(), backpack));
+                }
+            }
         });
 
         //#TODO get rid of level and player instance in the future
