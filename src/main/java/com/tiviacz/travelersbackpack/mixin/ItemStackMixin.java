@@ -6,6 +6,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.BundleItem;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -20,7 +21,9 @@ public class ItemStackMixin {
         boolean result = cir.getReturnValue();
         if(player.containerMenu instanceof AbstractBackpackMenu && !(slot.container instanceof Inventory)) { //Only for backpack, vanilla inventory slots work fine so do not include them
             if(result && (Object)this instanceof ItemStack clicked) {
-                slot.set(clicked.copy());
+                if(!clicked.canFitInsideContainerItems() || clicked.getItem() instanceof BundleItem) { //No other way
+                    slot.set(clicked.copy());
+                }
             }
         }
     }

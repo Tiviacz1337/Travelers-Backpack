@@ -106,6 +106,10 @@ dependencies {
     //Trash Slot
     implementation("maven.modrinth:trashslot:xyqrX19y")
 
+    //Quark
+    implementation("maven.modrinth:qnQsVE2z:yvp3Jbmk")
+    implementation("maven.modrinth:MVARlG2f:9GjNW2Gf")
+
     //VinURL
     compileOnly("maven.modrinth:vinurl:5NlvMz3w")
 
