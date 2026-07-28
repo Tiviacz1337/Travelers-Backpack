@@ -4,7 +4,7 @@
   "key": {
     "A": "minecraft:feather",
     "B": "travelersbackpack:standard",
-    "C": "minecraft:egg"
+    "C": "#c:eggs"
   },
   "pattern": [
     " A ",
