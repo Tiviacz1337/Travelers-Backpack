@@ -87,7 +87,7 @@ public class SortSelector {
             return enchantedBookNameCase(stack, name, DataComponents.STORED_ENCHANTMENTS);
         }
         if(stack.has(DataComponents.ENCHANTMENTS)) {
-            return enchantedBookNameCase(stack, name, DataComponents.ENCHANTMENTS);
+            name = enchantedBookNameCase(stack, name, DataComponents.ENCHANTMENTS);
         }
         if(stack.has(DataComponents.DAMAGE)) {
             return toolDurabilityCase(stack, name);
