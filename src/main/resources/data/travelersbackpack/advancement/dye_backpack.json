@@ -11,10 +11,7 @@
     "description": {
       "translate": "advancements.travelersbackpack.dye_backpack.description"
     },
-    "frame": "task",
-    "show_toast": false,
-    "announce_to_chat": true,
-    "hidden": false
+    "frame": "task"
   },
   "criteria": {
     "dye_backpack": {
