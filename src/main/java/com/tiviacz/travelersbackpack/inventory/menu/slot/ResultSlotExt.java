@@ -117,4 +117,12 @@ public class ResultSlotExt extends ResultSlot {
         }
         return ItemStack.EMPTY;
     }
+
+    @Override
+    public ItemStack safeTake(int amount, int maxAmount, Player player) {
+        if(player.level().isClientSide()) {
+            return ItemStack.EMPTY;
+        }
+        return super.safeTake(amount, maxAmount, player);
+    }
 }
