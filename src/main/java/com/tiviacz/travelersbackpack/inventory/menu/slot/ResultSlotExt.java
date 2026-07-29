@@ -120,7 +120,7 @@ public class ResultSlotExt extends ResultSlot {
 
     @Override
     public ItemStack safeTake(int amount, int maxAmount, Player player) {
-        if(player.level().isClientSide()) {
+        if (player.level().isClientSide()) {
             return ItemStack.EMPTY;
         }
         return super.safeTake(amount, maxAmount, player);
