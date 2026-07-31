@@ -11,14 +11,20 @@ import com.tiviacz.travelersbackpack.init.ModAdvancements;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.init.ModTags;
+import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
+import com.tiviacz.travelersbackpack.inventory.handler.StorageAccessWrapper;
 import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
+import com.tiviacz.travelersbackpack.util.InventoryHelper;
+import net.fabricmc.fabric.api.event.player.PlayerPickItemEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundSetHeldSlotPacket;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -26,7 +32,7 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -39,6 +45,7 @@ import net.minecraft.world.level.gameevent.GameEvent;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
 public class RightClickHandler {
@@ -218,6 +225,47 @@ public class RightClickHandler {
             }
 
             return InteractionResult.PASS;
+        });
+
+        PlayerPickItemEvents.BLOCK.register((player, pos, state, requestIncludeData) -> {
+            if(AttachmentUtils.isWearingBackpack(player)) {
+                if(player.isWithinBlockInteractionRange(pos, 1.0)) {
+                    ServerLevel level = player.level();
+                    ItemStack itemStack = state.getCloneItemStack(level, pos, false);
+                    if(!itemStack.isEmpty()) {
+                        if(itemStack.isItemEnabled(level.enabledFeatures())) {
+                            Inventory inventory = player.getInventory();
+                            //If found in inventory, do vanilla pick item
+                            if(inventory.findSlotMatchingItem(itemStack) != -1) {
+                                return null;
+                            }
+                            BackpackWrapper wrapper = AttachmentUtils.getBackpackWrapper(player, AttachmentUtils.STORAGE_ONLY.get());
+
+                            AtomicReference<ItemStack> atomicStack = new AtomicReference<>(null);
+                            StorageAccessWrapper storage = wrapper.getStorageForInputOutput();
+
+                            InventoryHelper.iterate(storage, (slot, stack) -> {
+                                //Continue if found required stack
+                                if(ItemStack.isSameItemSameComponents(stack, itemStack)) {
+                                    inventory.setSelectedSlot(inventory.getSuitableHotbarSlot());
+                                    ItemStack pickResult = inventory.getSelectedItem();
+                                    inventory.setItem(inventory.getSelectedSlot(), stack.copy());
+
+                                    storage.setStackInSlot(slot, pickResult);
+
+                                    player.connection.send(new ClientboundSetHeldSlotPacket(inventory.getSelectedSlot()));
+                                    player.inventoryMenu.broadcastChanges();
+                                    atomicStack.set(stack);
+                                    return true;
+                                }
+                                return false;
+                            });
+                            return atomicStack.get();
+                        }
+                    }
+                }
+            }
+            return null;
         });
     }
 
