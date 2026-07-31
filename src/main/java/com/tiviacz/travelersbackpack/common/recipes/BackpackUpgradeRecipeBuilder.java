@@ -18,6 +18,7 @@ import net.minecraft.world.item.crafting.TransmuteResult;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 public class BackpackUpgradeRecipeBuilder {
@@ -51,22 +52,16 @@ public class BackpackUpgradeRecipeBuilder {
 
     public void save(RecipeOutput output, ResourceKey<Recipe<?>> resourceKey) {
         this.ensureValid(resourceKey);
-        Advancement.Builder advancement$builder = output.advancement()
-                .addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(resourceKey))
-                .rewards(AdvancementRewards.Builder.recipe(resourceKey))
-                .requirements(AdvancementRequirements.Strategy.OR);
-        this.criteria.forEach(advancement$builder::addCriterion);
-        BackpackUpgradeRecipe backpackUpgradeRecipe = new BackpackUpgradeRecipe(
-                Optional.of(this.template), this.base, Optional.of(this.addition), new TransmuteResult(this.result)
-        );
-        output.accept(
-                resourceKey, backpackUpgradeRecipe, advancement$builder.build(resourceKey.identifier().withPrefix("recipes/" + this.category.getFolderName() + "/"))
-        );
+        Advancement.Builder builder = output.advancement().addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(resourceKey)).rewards(AdvancementRewards.Builder.recipe(resourceKey)).requirements(AdvancementRequirements.Strategy.OR);
+        Objects.requireNonNull(builder);
+        this.criteria.forEach(builder::addCriterion);
+        BackpackUpgradeRecipe backpackUpgradeRecipe = new BackpackUpgradeRecipe(Optional.of(this.template), this.base, Optional.of(this.addition), new TransmuteResult(this.result));
+        output.accept(resourceKey, backpackUpgradeRecipe, builder.build(resourceKey.identifier().withPrefix("recipes/" + this.category.getFolderName() + "/")));
     }
 
     private void ensureValid(ResourceKey<Recipe<?>> recipe) {
-        if(this.criteria.isEmpty()) {
-            throw new IllegalStateException("No way of obtaining recipe " + recipe.identifier());
+        if (this.criteria.isEmpty()) {
+            throw new IllegalStateException("No way of obtaining recipe " + String.valueOf(recipe.identifier()));
         }
     }
 }

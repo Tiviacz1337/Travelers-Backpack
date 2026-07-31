@@ -31,24 +31,17 @@ public class ShapedBackpackRecipeBuilder implements RecipeBuilder {
     private final RecipeCategory category;
     private final Item result;
     private final int count;
-    private final ItemStack resultStack; // Neo: add stack result support
     private final List<String> rows = Lists.newArrayList();
     private final Map<Character, Ingredient> key = Maps.newLinkedHashMap();
-    private final Map<String, Criterion<?>> criteria = new LinkedHashMap<>();
-    @Nullable
-    private String group;
+    private final Map<String, Criterion<?>> criteria = new LinkedHashMap();
+    private @Nullable String group;
     private boolean showNotification = true;
 
     private ShapedBackpackRecipeBuilder(HolderGetter<Item> items, RecipeCategory category, ItemLike result, int count) {
-        this(items, category, new ItemStack(result, count));
-    }
-
-    private ShapedBackpackRecipeBuilder(HolderGetter<Item> p_365072_, RecipeCategory p_249996_, ItemStack result) {
-        this.items = p_365072_;
-        this.category = p_249996_;
-        this.result = result.getItem();
-        this.count = result.getCount();
-        this.resultStack = result;
+        this.items = items;
+        this.category = category;
+        this.result = result.asItem();
+        this.count = count;
     }
 
     public static ShapedBackpackRecipeBuilder shaped(HolderGetter<Item> items, RecipeCategory category, ItemLike result) {
@@ -59,31 +52,18 @@ public class ShapedBackpackRecipeBuilder implements RecipeBuilder {
         return new ShapedBackpackRecipeBuilder(items, category, result, count);
     }
 
-    public static ShapedBackpackRecipeBuilder shaped(HolderGetter<Item> p_365019_, RecipeCategory p_251325_, ItemStack result) {
-        return new ShapedBackpackRecipeBuilder(p_365019_, p_251325_, result);
-    }
-
-    /**
-     * Adds a key to the recipe pattern.
-     */
     public ShapedBackpackRecipeBuilder define(Character symbol, TagKey<Item> tag) {
         return this.define(symbol, Ingredient.of(this.items.getOrThrow(tag)));
     }
 
-    /**
-     * Adds a key to the recipe pattern.
-     */
     public ShapedBackpackRecipeBuilder define(Character symbol, ItemLike item) {
         return this.define(symbol, Ingredient.of(item));
     }
 
-    /**
-     * Adds a key to the recipe pattern.
-     */
     public ShapedBackpackRecipeBuilder define(Character symbol, Ingredient ingredient) {
-        if(this.key.containsKey(symbol)) {
+        if (this.key.containsKey(symbol)) {
             throw new IllegalArgumentException("Symbol '" + symbol + "' is already defined!");
-        } else if(symbol == ' ') {
+        } else if (symbol == ' ') {
             throw new IllegalArgumentException("Symbol ' ' (whitespace) is reserved and cannot be defined");
         } else {
             this.key.put(symbol, ingredient);
@@ -91,11 +71,8 @@ public class ShapedBackpackRecipeBuilder implements RecipeBuilder {
         }
     }
 
-    /**
-     * Adds a new entry to the patterns for this recipe.
-     */
     public ShapedBackpackRecipeBuilder pattern(String pattern) {
-        if(!this.rows.isEmpty() && pattern.length() != this.rows.get(0).length()) {
+        if (!this.rows.isEmpty() && pattern.length() != ((String)this.rows.get(0)).length()) {
             throw new IllegalArgumentException("Pattern must be the same width on every line!");
         } else {
             this.rows.add(pattern);
@@ -103,13 +80,13 @@ public class ShapedBackpackRecipeBuilder implements RecipeBuilder {
         }
     }
 
-    public ShapedBackpackRecipeBuilder unlockedBy(String p_126133_, Criterion<?> p_301126_) {
-        this.criteria.put(p_126133_, p_301126_);
+    public ShapedBackpackRecipeBuilder unlockedBy(String string, Criterion<?> criterion) {
+        this.criteria.put(string, criterion);
         return this;
     }
 
-    public ShapedBackpackRecipeBuilder group(@Nullable String p_126146_) {
-        this.group = p_126146_;
+    public ShapedBackpackRecipeBuilder group(@org.jspecify.annotations.Nullable String string) {
+        this.group = string;
         return this;
     }
 
@@ -123,27 +100,18 @@ public class ShapedBackpackRecipeBuilder implements RecipeBuilder {
         return this.result;
     }
 
-    @Override
-    public void save(RecipeOutput p_301098_, ResourceKey<Recipe<?>> p_380072_) {
-        ShapedRecipePattern shapedrecipepattern = this.ensureValid(p_380072_);
-        Advancement.Builder advancement$builder = p_301098_.advancement()
-                .addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(p_380072_))
-                .rewards(AdvancementRewards.Builder.recipe(p_380072_))
-                .requirements(AdvancementRequirements.Strategy.OR);
-        this.criteria.forEach(advancement$builder::addCriterion);
-        ShapedBackpackRecipe shapedrecipe = new ShapedBackpackRecipe(
-                Objects.requireNonNullElse(this.group, ""),
-                RecipeBuilder.determineBookCategory(this.category),
-                shapedrecipepattern,
-                this.resultStack,
-                this.showNotification
-        );
-        p_301098_.accept(p_380072_, shapedrecipe, advancement$builder.build(p_380072_.identifier().withPrefix("recipes/" + this.category.getFolderName() + "/")));
+    public void save(RecipeOutput output, ResourceKey<Recipe<?>> resourceKey) {
+        ShapedRecipePattern shapedRecipePattern = this.ensureValid(resourceKey);
+        Advancement.Builder builder = output.advancement().addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(resourceKey)).rewards(AdvancementRewards.Builder.recipe(resourceKey)).requirements(AdvancementRequirements.Strategy.OR);
+        Objects.requireNonNull(builder);
+        this.criteria.forEach(builder::addCriterion);
+        ShapedBackpackRecipe shapedRecipe = new ShapedBackpackRecipe((String)Objects.requireNonNullElse(this.group, ""), RecipeBuilder.determineBookCategory(this.category), shapedRecipePattern, new ItemStack(this.result, this.count), this.showNotification);
+        output.accept(resourceKey, shapedRecipe, builder.build(resourceKey.identifier().withPrefix("recipes/" + this.category.getFolderName() + "/")));
     }
 
     private ShapedRecipePattern ensureValid(ResourceKey<Recipe<?>> recipe) {
-        if(this.criteria.isEmpty()) {
-            throw new IllegalStateException("No way of obtaining recipe " + recipe.identifier());
+        if (this.criteria.isEmpty()) {
+            throw new IllegalStateException("No way of obtaining recipe " + String.valueOf(recipe.identifier()));
         } else {
             return ShapedRecipePattern.of(this.key, this.rows);
         }
