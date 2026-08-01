@@ -65,29 +65,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.*;
 
 public class BackpackAbilities {
-    /**
-     * Main class for all available abilities
-     * connects to few events and block methods to execute/remove proper abilities
-     * It's such a mess right now, I might create better system for all of that in the future.
-     * <p>
-     * //Connecting abilities to player, abilities removals
-     * {@link NeoForgeEventHandler#playerTick(PlayerTickEvent.Post)}
-     * <p>
-     * //Connecting abilities to block entity
-     * {@link BackpackBlockEntity#tick(Level, BlockPos, BlockState, BackpackBlockEntity)}
-     * <p>
-     * //Ability removals
-     * {@link ServerActions#switchAbilitySlider(BackpackWrapper, boolean)} (Player, boolean)}
-     * <p>
-     * //Cosmetic only
-     * {@link TravelersBackpackBlock#animateTick(BlockState, Level, BlockPos, RandomSource)}
-     * <p>
-     * //Few uses of block abilities
-     * {@link TravelersBackpackBlock}
-     * <p>
-     * //Creeper ability
-     * {@link NeoForgeEventHandler#playerDeath(LivingDeathEvent)}
-     */
     public static final BackpackAbilities ABILITIES = new BackpackAbilities();
 
     /**
@@ -459,8 +436,8 @@ public class BackpackAbilities {
                 FluidTank rightTank = upgrade.getRightTank();
                 FluidVariantWrapper water = new FluidVariantWrapper(FluidVariant.of(Fluids.WATER), FluidConstants.BUCKET);
                 if(!player.level().isClientSide()) {
-                    leftTank.fill(water, true);
-                    rightTank.fill(water, true);
+                    leftTank.fill(water, false);
+                    rightTank.fill(water, false);
                 }
 
                 if(player.level().isClientSide()) return;
@@ -499,8 +476,8 @@ public class BackpackAbilities {
                 FluidTank leftTank = upgrade.getLeftTank();
                 FluidTank rightTank = upgrade.getRightTank();
                 FluidVariantWrapper water = new FluidVariantWrapper(FluidVariant.of(Fluids.WATER), FluidConstants.BUCKET);
-                leftTank.fill(water, true);
-                rightTank.fill(water, true);
+                leftTank.fill(water, false);
+                rightTank.fill(water, false);
                 wrapper.setCooldown(0);
             } else {
                 return;
