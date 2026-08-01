@@ -65,6 +65,11 @@ public record BackpackContainer(ItemStack stack, Player player, int screenID, in
                 }
 
                 @Override
+                public boolean shouldCloseCurrentScreen() {
+                    return false;
+                }
+
+                @Override
                 public @Nullable AbstractContainerMenu createMenu(int i, Inventory inventory, Player player) {
                     if(screenID == Reference.WEARABLE_SCREEN_ID) {
                         return new BackpackItemMenu(i, inventory, AttachmentUtils.getBackpackWrapper(player));
