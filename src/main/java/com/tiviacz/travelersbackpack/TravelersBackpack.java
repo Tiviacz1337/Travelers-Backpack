@@ -62,6 +62,7 @@ public class TravelersBackpack implements ModInitializer {
         ModItemGroups.registerItemGroup();
         ModBlocks.init();
         ModItems.init();
+        ModItems.registerItemFluidStorage();
         ModAttachmentTypes.init();
         ModBlockEntityTypes.init();
         ModBlockEntityTypes.initSidedStorage();
