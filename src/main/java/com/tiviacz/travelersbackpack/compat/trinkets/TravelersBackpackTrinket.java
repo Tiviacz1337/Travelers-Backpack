@@ -58,9 +58,10 @@ public class TravelersBackpackTrinket implements Trinket {
 
     @Environment(EnvType.CLIENT)
     public static class Renderer implements TrinketRenderer {
+        private final ItemStackRenderState backpackRenderState = new ItemStackRenderState();
+
         @Override
         public void render(ItemStack itemStack, SlotReference slotReference, EntityModel<? extends LivingEntityRenderState> entityModel, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int i, LivingEntityRenderState livingEntityRenderState, float v, float v1) {
-            ItemStackRenderState backpackRenderState = new ItemStackRenderState();
             StackModelPart tools = new StackModelPart();
             if(itemStack.getItem() instanceof TravelersBackpackItem && entityModel instanceof PlayerModel playerModel && livingEntityRenderState instanceof HumanoidRenderState humanoidRenderState) {
                 BackpackLayer.renderBackpackLayer(playerModel, poseStack, submitNodeCollector, i, humanoidRenderState, backpackRenderState, tools, itemStack);
