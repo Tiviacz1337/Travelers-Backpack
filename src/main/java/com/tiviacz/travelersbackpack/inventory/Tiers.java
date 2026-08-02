@@ -37,6 +37,9 @@ public class Tiers {
         }
 
         public int getStorageSlots() {
+            if(!TravelersBackpackConfig.serverSpec.isLoaded()) {
+                return this.storageSlots;
+            }
             if(this == LEATHER) return TravelersBackpackConfig.SERVER.backpackSettings.leather.inventorySlotCount.get();
             if(this == IRON) return TravelersBackpackConfig.SERVER.backpackSettings.iron.inventorySlotCount.get();
             if(this == GOLD) return TravelersBackpackConfig.SERVER.backpackSettings.gold.inventorySlotCount.get();
@@ -47,6 +50,9 @@ public class Tiers {
         }
 
         public int getUpgradeSlots() {
+            if(!TravelersBackpackConfig.serverSpec.isLoaded()) {
+                return this.upgradeSlots;
+            }
             if(this == LEATHER) return TravelersBackpackConfig.SERVER.backpackSettings.leather.upgradeSlotCount.get();
             if(this == IRON) return TravelersBackpackConfig.SERVER.backpackSettings.iron.upgradeSlotCount.get();
             if(this == GOLD) return TravelersBackpackConfig.SERVER.backpackSettings.gold.upgradeSlotCount.get();
@@ -57,6 +63,9 @@ public class Tiers {
         }
 
         public int getToolSlots() {
+            if(!TravelersBackpackConfig.serverSpec.isLoaded()) {
+                return this.toolSlots;
+            }
             if(this == LEATHER) return TravelersBackpackConfig.SERVER.backpackSettings.leather.toolSlotCount.get();
             if(this == IRON) return TravelersBackpackConfig.SERVER.backpackSettings.iron.toolSlotCount.get();
             if(this == GOLD) return TravelersBackpackConfig.SERVER.backpackSettings.gold.toolSlotCount.get();
@@ -66,6 +75,9 @@ public class Tiers {
         }
 
         public long getTankCapacityPerRow() {
+            if(!TravelersBackpackConfig.serverSpec.isLoaded()) {
+                return this.tankCapacityPerRow;
+            }
             if(this == LEATHER) return TravelersBackpackConfig.SERVER.backpackSettings.leather.tankCapacityPerRow.get();
             if(this == IRON) return TravelersBackpackConfig.SERVER.backpackSettings.iron.tankCapacityPerRow.get();
             if(this == GOLD) return TravelersBackpackConfig.SERVER.backpackSettings.gold.tankCapacityPerRow.get();
