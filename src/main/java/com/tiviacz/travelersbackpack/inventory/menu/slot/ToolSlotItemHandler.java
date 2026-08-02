@@ -39,7 +39,10 @@ public class ToolSlotItemHandler extends SlotItemHandler {
         Item item = stack.getItem();
         if(item instanceof HoseItem) return false;
 
-        boolean isItemValid = BackpackSlotItemHandler.isItemValid(stack);
+        boolean isItemValid = false;
+        if(TravelersBackpackConfig.serverSpec.isLoaded()) {
+            isItemValid = BackpackSlotItemHandler.isItemValid(stack);
+        }
 
         if(!isItemValid) return false;
         if(TravelersBackpackConfig.SERVER.backpackSettings.toolSlotsAcceptEverything.get()) return true;

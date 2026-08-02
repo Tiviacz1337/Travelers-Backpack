@@ -667,11 +667,11 @@ public class BackpackAbilities {
     }
 
     public static boolean isAbilityEnabledInConfig(ItemStack stack) {
-        return TravelersBackpackConfig.SERVER.backpackAbilities.enableBackpackAbilities.get() && BackpackAbilities.ALLOWED_ABILITIES.contains(stack.getItem());
+        return TravelersBackpackConfig.serverSpec.isLoaded() && TravelersBackpackConfig.SERVER.backpackAbilities.enableBackpackAbilities.get() && BackpackAbilities.ALLOWED_ABILITIES.contains(stack.getItem());
     }
 
     public boolean checkBackpack(Player player, Item item) {
-        if(!TravelersBackpackConfig.SERVER.backpackAbilities.enableBackpackAbilities.get() || !BackpackAbilities.ALLOWED_ABILITIES.contains(item)) {
+        if((TravelersBackpackConfig.serverSpec.isLoaded() && !TravelersBackpackConfig.SERVER.backpackAbilities.enableBackpackAbilities.get()) || !BackpackAbilities.ALLOWED_ABILITIES.contains(item)) {
             return false;
         }
         return AttachmentUtils.isWearingBackpack(player) && AttachmentUtils.getWearingBackpack(player).getItem() == item && AttachmentUtils.getWearingBackpack(player).getOrDefault(ModDataComponents.ABILITY_ENABLED, true);

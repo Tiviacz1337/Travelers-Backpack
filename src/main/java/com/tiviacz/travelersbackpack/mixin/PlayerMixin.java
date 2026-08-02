@@ -56,17 +56,17 @@ public abstract class PlayerMixin extends LivingEntity {
                 if(AttachmentUtils.isWearingBackpack(player)) {
                     BackpackWrapper.tick(AttachmentUtils.getWearingBackpack(player), player, false);
                 }
-                if(TravelersBackpackConfig.SERVER.backpackAbilities.enableBackpackAbilities.get() && BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, AttachmentUtils.getWearingBackpack(player))) {
+                if(TravelersBackpackConfig.serverSpec.isLoaded() && TravelersBackpackConfig.SERVER.backpackAbilities.enableBackpackAbilities.get() && BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, AttachmentUtils.getWearingBackpack(player))) {
                     if(!checkAbilitiesForRemoval && BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_REMOVAL_LIST, AttachmentUtils.getWearingBackpack(player)))
                         checkAbilitiesForRemoval = true;
                 }
-                if(checkAbilitiesForRemoval && !player.level().isClientSide() && (!AttachmentUtils.isWearingBackpack(player) || !TravelersBackpackConfig.SERVER.backpackAbilities.enableBackpackAbilities.get())) {
+                if(checkAbilitiesForRemoval && !player.level().isClientSide() && (!AttachmentUtils.isWearingBackpack(player) || (TravelersBackpackConfig.serverSpec.isLoaded() && !TravelersBackpackConfig.SERVER.backpackAbilities.enableBackpackAbilities.get()))) {
                     ServerActions.runAbilitiesRemoval(player);
                     checkAbilitiesForRemoval = false;
                 }
 
                 //Slowness
-                if(TravelersBackpackConfig.SERVER.slownessDebuff.tooManyBackpacksSlowness.get() && !player.isCreative()) {
+                if(TravelersBackpackConfig.serverSpec.isLoaded() && TravelersBackpackConfig.SERVER.slownessDebuff.tooManyBackpacksSlowness.get() && !player.isCreative()) {
                     if(nextBackpackCountCheck > player.level().getGameTime()) {
                         return;
                     }
@@ -90,7 +90,7 @@ public abstract class PlayerMixin extends LivingEntity {
 
     @Inject(at = @At(value = "HEAD"), method = "attack")
     private void attack(Entity target, CallbackInfo ci) {
-        if(TravelersBackpackConfig.SERVER.backpackAbilities.enableBackpackAbilities.get()) {
+        if(TravelersBackpackConfig.serverSpec.isLoaded() && TravelersBackpackConfig.SERVER.backpackAbilities.enableBackpackAbilities.get()) {
             if(this instanceof Object) {
                 if((Object)this instanceof Player player) {
                     BackpackAbilities.beeAbility(player, target);

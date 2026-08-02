@@ -107,7 +107,7 @@ public class KeybindHandler {
                 Player player = Minecraft.getInstance().player;
                 if(player == null) return;
 
-                if(!TravelersBackpackConfig.SERVER.backpackSettings.allowOpeningFromSlot.get()) {
+                if(TravelersBackpackConfig.serverSpec.isLoaded() && !TravelersBackpackConfig.SERVER.backpackSettings.allowOpeningFromSlot.get()) {
                     return;
                 }
                 if(screen instanceof AbstractContainerScreen<?> containerScreen && client.player != null) {
