@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "A": "minecraft:milk_bucket",
-    "B": "minecraft:egg",
+    "B": "#c:eggs",
     "C": "minecraft:sugar",
     "D": "travelersbackpack:standard",
     "E": "#c:crops/wheat"

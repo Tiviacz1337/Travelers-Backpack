@@ -181,15 +181,15 @@ public class ModRecipeProvider extends FabricRecipeProvider {
 
                 //Cake
                 ShapedBackpackRecipeBuilder.shaped(registries.lookupOrThrow(Registries.ITEM), RecipeCategory.MISC, ModItems.CAKE_TRAVELERS_BACKPACK)
-                        .define('A', Items.MILK_BUCKET).define('B', Items.EGG).define('C', Items.SUGAR)
+                        .define('A', Items.MILK_BUCKET).define('B', ConventionalItemTags.EGGS).define('C', Items.SUGAR)
                         .define('D', ModItems.STANDARD_TRAVELERS_BACKPACK).define('E', ConventionalItemTags.WHEAT_CROPS)
                         .pattern("ABA").pattern("CDC").pattern("EEE")
-                        .unlockedBy(getHasName(Items.EGG), has(Items.EGG)).save(writer);
+                        .unlockedBy("has_egg", has(ConventionalItemTags.EGGS)).save(writer);
 
                 //Chicken
                 ShapedBackpackRecipeBuilder.shaped(registries.lookupOrThrow(Registries.ITEM), RecipeCategory.MISC, ModItems.CHICKEN_TRAVELERS_BACKPACK)
                         .define('A', Items.FEATHER).define('B', ModItems.STANDARD_TRAVELERS_BACKPACK)
-                        .define('C', Items.EGG).pattern(" A ").pattern("ABA").pattern("CCC")
+                        .define('C', ConventionalItemTags.EGGS).pattern(" A ").pattern("ABA").pattern("CCC")
                         .unlockedBy(getHasName(Items.FEATHER), has(Items.FEATHER)).save(writer);
 
                 //Cow
