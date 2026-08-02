@@ -56,7 +56,6 @@
   "screen.travelersbackpack.toggle_supporter_badge_visibility": "Supporter-Abzeichen ein-/ausblenden",
   "screen.travelersbackpack.crafting_to_backpack": "Shift-Klick: Ergebnis in den Rucksack",
   "screen.travelersbackpack.crafting_to_player": "Shift-Klick: Ergebnis ins Spielerinventar",
-  "screen.travelersbackpack.add_to_tools": "Gegenstand hinzufügen",
   "screen.travelersbackpack.add_to_backpack": "Rechtsklick zum Hinzufügen",
   "screen.travelersbackpack.inventory": "Inventar",
   "screen.travelersbackpack.upgrades": "Upgrades",
@@ -359,5 +358,18 @@
   "advancements.travelersbackpack.hose_drink_potion.title": "Tränke trinken",
   "advancements.travelersbackpack.hose_drink_potion.description": "Trank trinken",
   "advancements.travelersbackpack.hose_spill_potion.title": "Tränke verschütten",
-  "advancements.travelersbackpack.hose_spill_potion.description": "Fülle die Rucksacktanks mit Verweil- oder Wurftränken und wirf sie mit dem Schlauch in die Welt"
+  "advancements.travelersbackpack.hose_spill_potion.description": "Fülle die Rucksacktanks mit Verweil- oder Wurftränken und wirf sie mit dem Schlauch in die Welt",
+  "key.travelersbackpack.toggle_upgrade_0": "Toggle Upgrade in the 1st slot",
+  "key.travelersbackpack.toggle_upgrade_1": "Toggle Upgrade in the 2nd slot",
+  "key.travelersbackpack.toggle_upgrade_2": "Toggle Upgrade in the 3rd slot",
+  "key.travelersbackpack.toggle_upgrade_3": "Toggle Upgrade in the 4th slot",
+  "screen.travelersbackpack.upgrade_enabled": "%s Enabled",
+  "screen.travelersbackpack.upgrade_disabled": "%s Disabled",
+  "screen.travelersbackpack.add": "Add",
+  "screen.travelersbackpack.take": "Take",
+  "screen.travelersbackpack.swap": "Swap",
+  "travelersbackpack.configuration.swapOnClose": "Swap on Close",
+  "travelersbackpack.configuration.showTooltip": "Show Tooltip",
+  "travelersbackpack.configuration.renderBackpackIconInCenter": "Render Backpack Icon In Center",
+  "travelersbackpack.configuration.opacity": "Opacity"
 }
