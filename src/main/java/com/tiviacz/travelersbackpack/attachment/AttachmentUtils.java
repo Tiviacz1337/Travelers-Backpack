@@ -6,6 +6,7 @@ import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
 import dev.emi.trinkets.api.TrinketsApi;
 import io.wispforest.accessories.api.AccessoriesCapability;
+import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -26,6 +27,12 @@ public class AttachmentUtils {
 
     public static void registerJoinEquip() {
         ServerPlayerEvents.JOIN.register((player) -> {
+            AttachmentUtils.getAttachment(player).ifPresent(attachment -> {
+                attachment.equipBackpack(attachment.getBackpack(), player);
+            });
+        });
+
+        ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register((player, origin, destination) -> {
             AttachmentUtils.getAttachment(player).ifPresent(attachment -> {
                 attachment.equipBackpack(attachment.getBackpack(), player);
             });
