@@ -134,7 +134,8 @@ dependencies {
 
 	//Trinkets
 	//modCompileOnly("dev.emi:trinkets:${trinkets_version}")
-	modCompileOnly "maven.modrinth:trinkets-canary:${trinkets_canary_version}"
+	modCompileOnly "maven.modrinth:trinkets-updated:DHE2OnLP"
+	//modCompileOnly "maven.modrinth:trinkets-canary:${trinkets_canary_version}"
 
 	//Accessories
 	modCompileOnly("io.wispforest:accessories-fabric:${project.accessories_version}")
