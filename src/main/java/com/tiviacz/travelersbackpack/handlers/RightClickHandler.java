@@ -236,7 +236,7 @@ public class RightClickHandler {
                         if(itemStack.isItemEnabled(level.enabledFeatures())) {
                             Inventory inventory = player.getInventory();
                             //If found in inventory, do vanilla pick item
-                            if(inventory.findSlotMatchingItem(itemStack) != -1) {
+                            if(inventory.findSlotMatchingItem(itemStack) != -1 || player.hasInfiniteMaterials()) {
                                 return null;
                             }
                             BackpackWrapper wrapper = AttachmentUtils.getBackpackWrapper(player, AttachmentUtils.STORAGE_ONLY.get());
