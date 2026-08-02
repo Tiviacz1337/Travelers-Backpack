@@ -26,7 +26,7 @@ public record ServerboundVinURLStopPacket(ItemStack stack, boolean cancelable) i
         ctx.server().execute(() -> {
             if(TravelersBackpack.vinurlLoaded) {
                 if(ctx.player().level() instanceof ServerLevel serverLevel) {
-                    VinURLSound.stopFor(serverLevel, message.stack, ctx.player().getUUID(), message.cancelable);
+                    VinURLSound.stopFor(serverLevel, message.stack, ctx.player().getId(), message.cancelable);
                 }
             }
         });
