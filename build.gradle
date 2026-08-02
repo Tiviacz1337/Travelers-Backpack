@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '1.15-SNAPSHOT'
+	id 'net.fabricmc.fabric-loom-remap' version "${loom_version}"
 }
 
 version = "${mod_loader}-${minecraft_version}-${mod_version}"
@@ -88,10 +88,7 @@ fabricApi {
 dependencies {
 	// To change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	mappings loom.layered() {
-		officialMojangMappings()
-		parchment("org.parchmentmc.data:parchment-1.21.4:2025.03.23@zip")
-	}
+	mappings loom.officialMojangMappings()
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
@@ -129,7 +126,7 @@ dependencies {
 	modImplementation("maven.modrinth:modmenu:JWQVh32x")
 
 	//VinURL
-	modCompileOnly("maven.modrinth:vinurl:2fqfxH7T")
+	modCompileOnly("maven.modrinth:vinurl:brBqeAvG")
 
 	//Trinkets
 	//modCompileOnly("dev.emi:trinkets:${trinkets_version}")
