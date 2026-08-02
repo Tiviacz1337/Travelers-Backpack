@@ -62,7 +62,7 @@ jobs:
           dependencies: |
             fabric-api(required){modrinth:P7dR8mSH}{curseforge:306612}
             forge-config-api-port(required){modrinth:ohNO6lps}{curseforge:547434}
-            trinkets(optional){modrinth:5aaWibi9}{curseforge:341284}
+            trinkets(optional){modrinth:XaT8sLP6}{curseforge:1509777}
             accessories(optional){modrinth:jtmvUHXj}{curseforge:938917}
             crafting-tweaks(optional){modrinth:DMu0oBKf}{curseforge:233071}
             polymorph(optional){modrinth:tagwiZkJ}{curseforge:388800}
