@@ -818,6 +818,7 @@ public class BackpackWrapper {
                             if(ticks % 100 == 0) {
                                 if(decreaseCooldown) {
                                     wrapper = AttachmentUtils.getBackpackWrapper(player, stack, AttachmentUtils.NO_ITEMS.get());
+                                    if(wrapper == null) return; //Carpet mod fix
                                     int cooldown = wrapper.getCooldown();
                                     if(player.level().isClientSide()) return;
                                     if(cooldown - 100 < 0) {
@@ -833,6 +834,7 @@ public class BackpackWrapper {
                             BackpackWrapper wrapper;
                             if(ticks % 100 == 0) {
                                 wrapper = AttachmentUtils.getBackpackWrapper(player, stack, AttachmentUtils.NO_ITEMS.get());
+                                if(wrapper == null) return; //Carpet mod fix
                                 int cooldown = wrapper.getCooldown();
                                 if(player.level().isClientSide()) return;
                                 if(cooldown - 100 < 0) {
@@ -854,6 +856,7 @@ public class BackpackWrapper {
                 BackpackWrapper wrapper;
                 if(ticks % upgradeTicks == 0) {
                     wrapper = AttachmentUtils.getBackpackWrapper(player, stack, AttachmentUtils.UPGRADES_ONLY.get());
+                    if(wrapper == null) return; //Carpet mod fix
                     wrapper.getUpgradeManager().upgrades.forEach(upgradeBase -> {
                         if(upgradeBase instanceof ITickableUpgrade tickable) {
                             boolean tick = true;
