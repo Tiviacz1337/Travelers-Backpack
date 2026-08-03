@@ -48,7 +48,6 @@ import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
@@ -72,7 +71,7 @@ public class TravelersBackpackItem extends BlockItem {
     public TravelersBackpackItem(Properties properties, Block block) {
         super(block, properties.useBlockDescriptionPrefix().stacksTo(1)
                 .component(ModDataComponents.TIER, 0)
-                .component(ModDataComponents.SLEEPING_BAG_COLOR, DyeColor.RED.getId())
+                //.component(ModDataComponents.SLEEPING_BAG_COLOR, DyeColor.RED.getId())
                 .component(ModDataComponents.IS_VISIBLE, true));
     }
 
