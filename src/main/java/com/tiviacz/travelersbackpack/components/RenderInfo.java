@@ -21,46 +21,55 @@ public record RenderInfo(CompoundTag compoundTag) {
             ByteBufCodecs.fromCodec(CompoundTag.CODEC), RenderInfo::compoundTag, RenderInfo::new
     );
 
+    public static final String LEFT_TANK = "LeftTank";
+    public static final String RIGHT_TANK = "RightTank";
+    public static final String CAPACITY = "Capacity";
+    public static final String LANTERN = "Lantern";
+
     public boolean isEmpty() {
         return this.compoundTag.isEmpty();
     }
 
     public boolean hasTanks() {
-        return this.compoundTag.contains("LeftTank") || this.compoundTag.contains("RightTank");
+        return this.compoundTag.contains(LEFT_TANK) || this.compoundTag.contains(RIGHT_TANK);
+    }
+
+    public boolean hasLantern() {
+        return this.compoundTag.contains(LANTERN);
     }
 
     public FluidVariantWrapper getLeftFluidStack() {
-        if(this.compoundTag.contains("LeftTank")) {
-            return FluidVariantWrapper.parseOptional(this.compoundTag.getCompoundOrEmpty("LeftTank"));
+        if(this.compoundTag.contains(LEFT_TANK)) {
+            return FluidVariantWrapper.parseOptional(this.compoundTag.getCompoundOrEmpty(LEFT_TANK));
         }
         return FluidVariantWrapper.blank();
     }
 
     public FluidVariantWrapper getRightFluidStack() {
-        if(this.compoundTag.contains("RightTank")) {
-            return FluidVariantWrapper.parseOptional(this.compoundTag.getCompoundOrEmpty("RightTank"));
+        if(this.compoundTag.contains(RIGHT_TANK)) {
+            return FluidVariantWrapper.parseOptional(this.compoundTag.getCompoundOrEmpty(RIGHT_TANK));
         }
         return FluidVariantWrapper.blank();
     }
 
     public void updateCapacity(long capacity) {
-        if(this.compoundTag.contains("Capacity")) {
-            this.compoundTag.putLong("Capacity", capacity);
+        if(this.compoundTag.contains(CAPACITY)) {
+            this.compoundTag.putLong(CAPACITY, capacity);
         }
     }
 
     public long getCapacity() {
-        if(this.compoundTag.contains("Capacity")) {
-            return this.compoundTag.getLongOr("Capacity", 0);
+        if(this.compoundTag.contains(CAPACITY)) {
+            return this.compoundTag.getLongOr(CAPACITY, 0);
         }
         return 0;
     }
 
     public static RenderInfo createCreativeTabInfo() {
         CompoundTag tag = new CompoundTag();
-        tag.put("LeftTank", new FluidVariantWrapper(FluidVariant.of(Fluids.WATER), 1).saveOptional());
-        tag.put("RightTank", new FluidVariantWrapper(FluidVariant.of(Fluids.LAVA), 1).saveOptional());
-        tag.putLong("Capacity", 1);
+        tag.put(LEFT_TANK, new FluidVariantWrapper(FluidVariant.of(Fluids.WATER), 1).saveOptional());
+        tag.put(RIGHT_TANK, new FluidVariantWrapper(FluidVariant.of(Fluids.LAVA), 1).saveOptional());
+        tag.putLong(CAPACITY, 1);
         return new RenderInfo(tag);
     }
 

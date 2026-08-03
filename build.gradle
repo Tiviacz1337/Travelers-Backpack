@@ -77,6 +77,9 @@ repositories {
 			includeGroup "net.blay09.mods"
 		}
 	}
+
+	//LambDynamicLights
+	maven { url("https://maven.gegy.dev")}
 }
 
 fabricApi {
@@ -111,6 +114,10 @@ dependencies {
 	//Cloth Config
 	modCompileOnly("dev.architectury:architectury-fabric:${project.architectury_version}")
 	modCompileOnly("me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}")
+
+	//LambDynamicLights
+	modCompileOnly("dev.lambdaurora.lambdynamiclights:lambdynamiclights-api:4.9.1+1.21.11")
+	modLocalRuntime("dev.lambdaurora.lambdynamiclights:lambdynamiclights-runtime:4.9.1+1.21.11")
 
 	//OPTIONAL
 

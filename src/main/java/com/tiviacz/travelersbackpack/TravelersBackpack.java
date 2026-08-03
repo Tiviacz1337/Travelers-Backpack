@@ -43,6 +43,7 @@ public class TravelersBackpack implements ModInitializer {
 
     public static boolean polymorphLoaded;
     public static boolean trashSlotLoaded;
+    public static boolean lambDynamicLightsLoaded;
 
     @Override
     public void onInitialize() {
@@ -111,6 +112,8 @@ public class TravelersBackpack implements ModInitializer {
         trashSlotLoaded = fabricLoader.isModLoaded("trashslot");
         vinurlLoaded = fabricLoader.isModLoaded("vinurl");
         if(vinurlLoaded) VinURLNetwork.register();
+
+        lambDynamicLightsLoaded = fabricLoader.isModLoaded("lambdynlights");
 
         //Fetch supporters
         Supporters.fetchSupporters();
