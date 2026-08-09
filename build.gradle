@@ -58,12 +58,6 @@ neoForge {
     }
 }
 
-//minecraft {
-//    accessTransformers {
-//        file('src/main/resources/META-INF/accesstransformer.cfg')
-//    }
-//}
-
 configurations {
     runtimeClasspath.extendsFrom localRuntime
 }
@@ -74,49 +68,6 @@ repositories {
 
     //LambDynamicLights
     maven { url "https://maven.gegy.dev" }
-
-    maven {
-        url = "https://maven.shedaniel.me/"
-    }
-    maven { url "https://maven.architectury.dev/" }
-
-    maven {
-        name = "TerraformersMC"
-        url = "https://maven.terraformersmc.com/"
-    }
-
-    maven {
-        url = "https://maven.theillusivec4.top/"
-    }
-
-    maven {
-        // location of the maven that hosts JEI files
-        name = "Progwml6 maven"
-        url = "https://dvs1.progwml6.com/files/maven/"
-    }
-    maven {
-        // location of a maven mirror for JEI files, as a fallback
-        name = "ModMaven"
-        url = "https://modmaven.k-4u.nl"
-    }
-
-    maven {
-        url "https://cursemaven.com"
-        content {
-            includeGroup "curse.maven"
-        }
-    }
-
-    maven { url 'https://api.modrinth.com/maven' }
-    maven { url 'https://maven.wispforest.io/releases' }
-    maven { url 'https://maven.su5ed.dev/releases' }
-    maven { url 'https://maven.fabricmc.net' }
-    maven { url 'https://maven.shedaniel.me/' }
-
-    maven {
-        name = "OctoStudios"
-        url = uri("https://maven.octo-studios.com/releases")
-    }
 }
 
 dependencies {
@@ -124,7 +75,7 @@ dependencies {
     implementation "net.neoforged:neoforge:${neo_version}"
 
     //Curios Continuation
-    compileOnly "top.theillusivec4.curios:curios-neoforge:${curios_continuation_version}"
+    compileOnly("maven.modrinth:curios:MPGhs9Rw")
 
     //JEI
     implementation("maven.modrinth:jei:5VCxZEmH")
