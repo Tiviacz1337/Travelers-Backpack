@@ -590,20 +590,6 @@ public class NeoForgeEventHandler {
                 if(pickupUpgrade.canPickup(itemEntity.getItem()) && pickupUpgrade.tryPickup(itemEntity, level, player.blockPosition())) {
                     event.setCanPickup(TriState.FALSE);
                 }});
-
-        /*if(AttachmentUtils.isWearingBackpack(player)) {
-            BackpackWrapper wrapper = AttachmentUtils.getBackpackWrapper(player);
-            if(wrapper.getUpgradeManager().getUpgrade(AutoPickupUpgrade.class).isPresent() && wrapper.getUpgradeManager().getUpgrade(AutoPickupUpgrade.class).get().canPickup(itemEntity.getItem())) {
-                ItemStack stackCopy = itemEntity.getItem().copy();
-                //ItemStack remainingStack = ItemUtil.insertItemReturnRemaining(new StorageAccessWrapper(wrapper, wrapper.getStorage()), itemEntity.getItem(), false, null);
-                int inserted = ResourceHandlerUtil.insertStacking(wrapper.getStorageForInputOutput(), ItemResource.of(stackCopy), stackCopy.getCount(), null);
-                if(inserted > 0) {
-                    stackCopy.shrink(inserted);
-                    level.playSound(null, player.blockPosition(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 0.2F, (level.random.nextFloat() - level.random.nextFloat()) * 1.4F + 2.0F);
-                    itemEntity.setItem(stackCopy);
-                    event.setCanPickup(TriState.FALSE);
-                }
-            } */
         }
     }
 }

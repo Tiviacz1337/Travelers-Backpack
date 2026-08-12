@@ -26,7 +26,7 @@ public record ServerboundFilterSettingsPacket(int slot, List<Integer> settings) 
             ServerboundFilterSettingsPacket::new
     );
 
-    public static void handle(final ServerboundFilterSettingsPacket message, IPayloadContext ctx) {
+    public static void handle(ServerboundFilterSettingsPacket message, IPayloadContext ctx) {
         ctx.enqueueWork(() -> {
 
             Player player = ctx.player();

@@ -27,7 +27,7 @@ public record ClientboundUpdateRecipePacket(ItemStack output) implements CustomP
     //     this(recipe == null ? NULL : recipe.id().location(), output);
     // }
 
-    public static void handle(final ClientboundUpdateRecipePacket message, IPayloadContext ctx) {
+    public static void handle(ClientboundUpdateRecipePacket message, IPayloadContext ctx) {
         if(ctx.flow().isClientbound()) {
             ctx.enqueueWork(() -> {
                 //RecipeHolder<?> recipe = message.holder(); //(RecipeHolder<CraftingRecipe>)Minecraft.getInstance().level.recipeAccess().byKey(message.id()).orElse(null);

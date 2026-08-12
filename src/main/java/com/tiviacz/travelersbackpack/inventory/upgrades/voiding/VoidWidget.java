@@ -28,7 +28,6 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class VoidWidget extends FilterUpgradeWidgetBase<VoidWidget, VoidUpgrade> {
     private static final Identifier TRASH_UPGRADE = Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "textures/item/void_upgrade.png");

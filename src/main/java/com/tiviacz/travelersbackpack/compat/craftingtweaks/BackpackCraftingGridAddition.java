@@ -6,8 +6,6 @@ import net.blay09.mods.craftingtweaks.CraftingTweaksProviderManager;
 import net.blay09.mods.craftingtweaks.api.CraftingTweaksClientAPI;
 import net.blay09.mods.craftingtweaks.api.TweakType;
 import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.components.Renderable;
-import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.world.inventory.Slot;
 
 import java.util.ArrayList;

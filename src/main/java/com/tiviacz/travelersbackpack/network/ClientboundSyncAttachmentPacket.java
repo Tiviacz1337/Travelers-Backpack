@@ -3,7 +3,6 @@ package com.tiviacz.travelersbackpack.network;
 import com.mojang.datafixers.util.Pair;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.capability.AttachmentUtils;
-import com.tiviacz.travelersbackpack.capability.ITravelersBackpack;
 import com.tiviacz.travelersbackpack.components.Slots;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import net.minecraft.client.Minecraft;
@@ -18,7 +17,6 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public record ClientboundSyncAttachmentPacket(int entityID, ItemStack backpack,
                                               boolean removeData) implements CustomPacketPayload {
@@ -67,18 +65,17 @@ public record ClientboundSyncAttachmentPacket(int entityID, ItemStack backpack,
         this.removeData = removeData;
     }
 
-    public static void handle(final ClientboundSyncAttachmentPacket message, IPayloadContext ctx) {
+    public static void handle(ClientboundSyncAttachmentPacket message, IPayloadContext ctx) {
         if(ctx.flow().isClientbound()) {
             ctx.enqueueWork(() -> {
-                Player playerEntity = (Player)Minecraft.getInstance().level.getEntity(message.entityID());
-                Optional<ITravelersBackpack> data = AttachmentUtils.getAttachment(playerEntity); //.orElseThrow(() -> new RuntimeException("No player attachment data found!"));
-                if(data.isPresent()) {
+                Player player = (Player)Minecraft.getInstance().level.getEntity(message.entityID());
+                AttachmentUtils.getAttachment(player).ifPresent(data -> {
                     if(message.removeData()) {
-                        data.get().remove();
+                        data.remove();
                     } else {
-                        data.get().updateBackpack(message.backpack());
+                        data.updateBackpack(message.backpack());
                     }
-                }
+                });
             });
         }
     }

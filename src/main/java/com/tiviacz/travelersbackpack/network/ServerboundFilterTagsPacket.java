@@ -26,7 +26,7 @@ public record ServerboundFilterTagsPacket(int slot, List<String> tags) implement
             ServerboundFilterTagsPacket::new
     );
 
-    public static void handle(final ServerboundFilterTagsPacket message, IPayloadContext ctx) {
+    public static void handle(ServerboundFilterTagsPacket message, IPayloadContext ctx) {
         ctx.enqueueWork(() -> {
             Player player = ctx.player();
 

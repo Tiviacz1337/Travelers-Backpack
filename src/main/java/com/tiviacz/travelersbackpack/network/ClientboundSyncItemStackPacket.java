@@ -26,7 +26,7 @@ public record ClientboundSyncItemStackPacket(int entityId, int slot, ItemStack i
             ClientboundSyncItemStackPacket::new
     );
 
-    public static void handle(final ClientboundSyncItemStackPacket message, IPayloadContext ctx) {
+    public static void handle(ClientboundSyncItemStackPacket message, IPayloadContext ctx) {
         if(ctx.flow().isClientbound()) {
             ctx.enqueueWork(() -> {
                 Player player = (Player)Minecraft.getInstance().player.level().getEntity(message.entityId());

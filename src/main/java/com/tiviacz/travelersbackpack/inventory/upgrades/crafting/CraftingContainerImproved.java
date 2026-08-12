@@ -1,6 +1,5 @@
 package com.tiviacz.travelersbackpack.inventory.upgrades.crafting;
 
-import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
 import com.tiviacz.travelersbackpack.util.InventoryHelper;
 import net.minecraft.core.NonNullList;

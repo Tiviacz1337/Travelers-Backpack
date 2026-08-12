@@ -42,7 +42,10 @@ import org.joml.Matrix4fc;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 public class BackpackDynamicModel implements UnbakedModel {
     private final Map<ModelParts, UnbakedModel> modelParts;

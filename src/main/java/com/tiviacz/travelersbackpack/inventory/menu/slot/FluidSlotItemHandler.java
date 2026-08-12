@@ -1,7 +1,7 @@
 package com.tiviacz.travelersbackpack.inventory.menu.slot;
 
-import com.tiviacz.travelersbackpack.inventory.transfer.BackpackResourceHandler;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
+import com.tiviacz.travelersbackpack.inventory.transfer.BackpackResourceHandler;
 import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;
 import net.minecraft.world.entity.player.Player;
 

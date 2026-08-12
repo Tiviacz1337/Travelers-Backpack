@@ -24,7 +24,7 @@ public class SupporterBadgePacket {
             return TYPE;
         }
 
-        public static void handle(final Serverbound message, final IPayloadContext ctx) {
+        public static void handle(Serverbound message, final IPayloadContext ctx) {
             ctx.enqueueWork(() -> {
                 Player player = ctx.player();
                 if(message.isEnabledForPlayer && !Supporters.SUPPORTERS.contains(player.getGameProfile().name())) {
@@ -53,7 +53,7 @@ public class SupporterBadgePacket {
             return TYPE;
         }
 
-        public static void handle(final Clientbound message, final IPayloadContext ctx) {
+        public static void handle(Clientbound message, final IPayloadContext ctx) {
             ctx.enqueueWork(() -> {
                 if(message.isEnabledForPlayer && !Supporters.SUPPORTERS.contains(message.playerName)) {
                     if(Supporters.SUPPORTERS_REFERENCE.contains(message.playerName)) {
