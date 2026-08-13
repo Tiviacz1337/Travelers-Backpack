@@ -5,7 +5,8 @@
   "mixins": [
     "AbstractContainerMenuMixin",
     "ItemStackMixin",
-    "PlayerMixin"
+    "PlayerMixin",
+    "ServerGamePacketListenerImplMixin"
   ],
   "client": [
   ],
