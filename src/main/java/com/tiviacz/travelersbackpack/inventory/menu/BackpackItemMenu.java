@@ -89,9 +89,6 @@ public class BackpackItemMenu extends BackpackBaseMenu {
 
     @Override
     public void removed(Player player) {
-        if(player.containerMenu instanceof BackpackBaseMenu && player.level().isClientSide()) {
-            return;
-        }
         this.wrapper.playersUsing.remove(player);
         super.removed(player);
     }

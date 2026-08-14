@@ -17,9 +17,13 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 
 public record BackpackContainer(ItemStack stack, Player player, int screenID,
-                                int index) implements MenuProvider, Nameable {
+                                int index, boolean triggerClientSideContainerClosing) implements MenuProvider, Nameable {
+    public BackpackContainer(ItemStack stack, Player player, int screenID, int index) {
+        this(stack, player, screenID, index, true);
+    }
+
     public BackpackContainer(ItemStack stack, Player player, int screenID) {
-        this(stack, player, screenID, -1);
+        this(stack, player, screenID, -1, true);
     }
 
     @Override
@@ -40,6 +44,11 @@ public record BackpackContainer(ItemStack stack, Player player, int screenID,
         } else {
             return new BackpackItemMenu(pContainerId, pPlayerInventory, new BackpackWrapper(this.stack, this.screenID, pPlayer, pPlayer.level(), this.index));
         }
+    }
+
+    @Override
+    public boolean shouldTriggerClientSideContainerClosingOnOpen() {
+        return this.triggerClientSideContainerClosing;
     }
 
     public static FriendlyByteBuf saveExtraData(FriendlyByteBuf buf, @Nullable Player target, int screenID) {
@@ -64,7 +73,7 @@ public record BackpackContainer(ItemStack stack, Player player, int screenID,
     //Item
     public static void openBackpack(ServerPlayer serverPlayerEntity, ItemStack stack, int screenID, int index) {
         if(!serverPlayerEntity.level().isClientSide()) {
-            serverPlayerEntity.openMenu(new BackpackContainer(stack, serverPlayerEntity, screenID, index), buf -> saveExtraData(buf, index, screenID));
+            serverPlayerEntity.openMenu(new BackpackContainer(stack, serverPlayerEntity, screenID, index, false), buf -> saveExtraData(buf, index, screenID));
         }
     }
 
