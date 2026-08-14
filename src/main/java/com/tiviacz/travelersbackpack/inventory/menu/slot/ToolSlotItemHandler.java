@@ -38,17 +38,19 @@ public class ToolSlotItemHandler extends ResourceHandlerSlot {
     }
 
     public static boolean isValid(ItemStack stack) {
-        if(stack.getItem() instanceof HoseItem) return false;
+        Item item = stack.getItem();
+        if(item instanceof HoseItem) return false;
 
-        if(TravelersBackpackConfig.SERVER.backpackSettings.toolSlotsAcceptEverything.get()) {
-            return BackpackSlotItemHandler.isItemValid(stack);
-        }
+        boolean isItemValid = BackpackSlotItemHandler.isItemValid(stack);
 
-        //Datapacks :D
+        if(!isItemValid) return false;
+        if(TravelersBackpackConfig.SERVER.backpackSettings.toolSlotsAcceptEverything.get()) return true;
+        if(stack.getMaxStackSize() == 1) return true;
         if(stack.is(ModTags.ACCEPTABLE_TOOLS)) return true;
-
         if(TOOL_SLOTS_ACCEPTABLE_ITEMS.contains(stack.getItem())) return true;
+        if(stack.has(DataComponents.TOOL) || stack.has(DataComponents.WEAPON)) return true;
 
+        //Vanilla tools
         if(stack.getItem() instanceof HoeItem ||
                 stack.getItem() instanceof FishingRodItem ||
                 stack.getItem() instanceof ShearsItem ||
@@ -61,6 +63,6 @@ public class ToolSlotItemHandler extends ResourceHandlerSlot {
                 stack.getItem() instanceof ShieldItem) {
             return true;
         }
-        return stack.has(DataComponents.TOOL) || stack.has(DataComponents.WEAPON);
+        return false;
     }
 }
