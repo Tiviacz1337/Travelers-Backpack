@@ -1,9 +1,11 @@
 package com.tiviacz.travelersbackpack.inventory.menu.slot;
 
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
+import com.tiviacz.travelersbackpack.inventory.InventoryActions;
 import com.tiviacz.travelersbackpack.inventory.transfer.BackpackResourceHandler;
 import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
 public class FluidSlotItemHandler extends UpgradeSlotItemHandler<TanksUpgrade> {
     private final int index;
@@ -24,14 +26,13 @@ public class FluidSlotItemHandler extends UpgradeSlotItemHandler<TanksUpgrade> {
         //3 - right out
     }
 
-    //Fix for buckets bug
-   /* @Override
-    public void set(@NotNull ItemStack stack) {
-        super.set(stack);
+    @Override
+    public void setByPlayer(ItemStack itemStack) {
         if(index == 0 || index == 2) {
-            InventoryActions.transferContainerTank(upgrade, index == 0 ? upgrade.getLeftTank() : upgrade.getRightTank(), index);
+            InventoryActions.transferContainerTank(upgrade, itemStack, index == 0 ? upgrade.getLeftTank() : upgrade.getRightTank(), index);
         }
-    }*/ //#TODO CHECK
+        super.setByPlayer(itemStack);
+    }
 
     @Override
     public boolean mayPickup(Player playerIn) {

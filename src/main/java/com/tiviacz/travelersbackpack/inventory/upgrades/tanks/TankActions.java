@@ -36,8 +36,9 @@ public class TankActions {
                         InventoryActions.playFluidSound(wrapper.getBackpackOwner(), wrapper.getPlayersUsing(), fluidSound, false);
                     }
                     menu.setCarried(result.getResult());
+                    return;
                 }
-            } else if(FluidUtil.getFluidHandler(carried).isPresent() && FluidUtil.getFluidContained(carried).isEmpty()) {
+            } if(FluidUtil.getFluidHandler(carried).isPresent()) {
                 ItemStack carriedCopy = carried.copy();
                 int count = carriedCopy.getCount();
                 carriedCopy.setCount(count - 1);
