@@ -55,6 +55,7 @@ jobs:
           changelog-file: CHANGELOG.md
 
           loaders: neoforge
+          environment: client | server
           game-versions: "${{ env.MINECRAFT_VERSION }}"
           dependencies: |
             curios-api(optional){modrinth:vvuO3ImH}{curseforge:309927}
@@ -63,6 +64,7 @@ jobs:
             polymorph(optional){modrinth:tagwiZkJ}{curseforge:388800}
             comforts(optional){modrinth:SaCpeal4}{curseforge:276951}
             trash-slot(optional){modrinth:vRYk0bv7}{curseforge:235577}
+            lambdynamiclights(optional){modrinth:yBW8D80W}{curseforge:393442}
             jei(optional){modrinth:u6dRKJwZ}{curseforge:238222}
             rei(optional){modrinth:nfn13YXA}{curseforge:310111}
             emi(optional){modrinth:fRiHVvU7}{curseforge:580555}
