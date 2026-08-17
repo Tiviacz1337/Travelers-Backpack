@@ -36,6 +36,7 @@ public class ShapedBackpackRecipe extends ShapedRecipe {
 
         if(!output.isEmpty()) {
             boolean hasTanks = false;
+            boolean hasSleepingBag = false;
             boolean customBackpack = false;
             for(int i = 0; i < pInput.size(); i++) {
                 ItemStack ingredient = pInput.getItem(i);
@@ -49,6 +50,7 @@ public class ShapedBackpackRecipe extends ShapedRecipe {
                 if(ingredient.is(ModTags.SLEEPING_BAGS)) {
                     int color = getProperColor(ingredient.getItem());
                     output.set(ModDataComponents.SLEEPING_BAG_COLOR, color);
+                    hasSleepingBag = true;
                 }
 
                 if(!hasTanks && ingredient.getItem() == ModItems.BACKPACK_TANK.get()) {
@@ -62,6 +64,9 @@ public class ShapedBackpackRecipe extends ShapedRecipe {
                     output.set(ModDataComponents.RENDER_INFO, TanksUpgradeItem.writeToRenderData());
                 } else {
                     output.set(ModDataComponents.RENDER_INFO, RenderInfo.EMPTY);
+                }
+                if(!hasSleepingBag) {
+                    output.set(ModDataComponents.SLEEPING_BAG_COLOR, -1);
                 }
             }
         }

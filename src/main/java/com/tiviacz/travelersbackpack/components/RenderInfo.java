@@ -31,7 +31,7 @@ public record RenderInfo(CompoundTag compoundTag) {
     }
 
     public boolean hasTanks() {
-        return this.compoundTag.contains("LeftTank") || this.compoundTag.contains("RightTank");
+        return this.compoundTag.contains(LEFT_TANK) || this.compoundTag.contains(RIGHT_TANK);
     }
 
     public boolean hasLantern() {
@@ -39,37 +39,37 @@ public record RenderInfo(CompoundTag compoundTag) {
     }
 
     public FluidStack getLeftFluidStack() {
-        if(this.compoundTag.contains("LeftTank")) {
-            return FluidStack.CODEC.parse(NbtOps.INSTANCE, this.compoundTag.getCompoundOrEmpty("LeftTank")).result().orElse(FluidStack.EMPTY);
+        if(this.compoundTag.contains(LEFT_TANK)) {
+            return FluidStack.CODEC.parse(NbtOps.INSTANCE, this.compoundTag.getCompoundOrEmpty(LEFT_TANK)).result().orElse(FluidStack.EMPTY);
         }
         return FluidStack.EMPTY;
     }
 
     public FluidStack getRightFluidStack() {
-        if(this.compoundTag.contains("RightTank")) {
-            return FluidStack.CODEC.parse(NbtOps.INSTANCE, this.compoundTag.getCompoundOrEmpty("RightTank")).result().orElse(FluidStack.EMPTY);
+        if(this.compoundTag.contains(RIGHT_TANK)) {
+            return FluidStack.CODEC.parse(NbtOps.INSTANCE, this.compoundTag.getCompoundOrEmpty(RIGHT_TANK)).result().orElse(FluidStack.EMPTY);
         }
         return FluidStack.EMPTY;
     }
 
     public void updateCapacity(int capacity) {
-        if(this.compoundTag.contains("Capacity")) {
-            this.compoundTag.putInt("Capacity", capacity);
+        if(this.compoundTag.contains(CAPACITY)) {
+            this.compoundTag.putInt(CAPACITY, capacity);
         }
     }
 
     public int getCapacity() {
-        if(this.compoundTag.contains("Capacity")) {
-            return this.compoundTag.getIntOr("Capacity", 0);
+        if(this.compoundTag.contains(CAPACITY)) {
+            return this.compoundTag.getIntOr(CAPACITY, 0);
         }
         return 0;
     }
 
     public static RenderInfo createCreativeTabInfo() {
         CompoundTag tag = new CompoundTag();
-        tag.put("LeftTank", FluidStack.CODEC.encodeStart(NbtOps.INSTANCE, new FluidStack(Fluids.WATER, 1)).result().orElseGet(CompoundTag::new));
-        tag.put("RightTank", FluidStack.CODEC.encodeStart(NbtOps.INSTANCE, new FluidStack(Fluids.LAVA, 1)).result().orElseGet(CompoundTag::new));
-        tag.putInt("Capacity", 1);
+        tag.put(LEFT_TANK, FluidStack.CODEC.encodeStart(NbtOps.INSTANCE, new FluidStack(Fluids.WATER, 1)).result().orElseGet(CompoundTag::new));
+        tag.put(RIGHT_TANK, FluidStack.CODEC.encodeStart(NbtOps.INSTANCE, new FluidStack(Fluids.LAVA, 1)).result().orElseGet(CompoundTag::new));
+        tag.putInt(CAPACITY, 1);
         return new RenderInfo(tag);
     }
 

@@ -272,7 +272,7 @@ public class BackpackScreen extends AbstractBackpackScreen<BackpackBaseMenu> imp
                 xOffset += 12;
             }
 
-            if(TravelersBackpackConfig.SERVER.backpackSettings.quickSleepingBag.get()) {
+            if(wrapper.getSleepingBagColor() != -1 && TravelersBackpackConfig.SERVER.backpackSettings.quickSleepingBag.get()) {
                 buttons.add(new SleepingBagButton(this, true, xOffset));
                 xOffset += 12;
             }
@@ -280,13 +280,26 @@ public class BackpackScreen extends AbstractBackpackScreen<BackpackBaseMenu> imp
             if(BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, getWrapper().getBackpackStack())) {
                 buttons.add(new AbilitySliderButton(this, false, xOffset));
             }
+
+            //Remove More Button if there's no other buttons to show
+            if(buttons.size() == 1 && buttons.get(0) instanceof MoreButton) {
+                buttons.remove(0);
+            }
         }
         if(getWrapper().getScreenID() == Reference.BLOCK_ENTITY_SCREEN_ID) {
             buttons.add(new MoreButton(this));
-            buttons.add(new SleepingBagButton(this, false, 0));
+            if(wrapper.getSleepingBagColor() != -1) {
+                buttons.add(new SleepingBagButton(this, false, xOffset));
+                xOffset += 12;
+            }
 
             if(BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, getWrapper().getBackpackStack())) {
-                buttons.add(new AbilitySliderButton(this, true, 12));
+                buttons.add(new AbilitySliderButton(this, true, xOffset));
+            }
+
+            //Remove More Button if there's no other buttons to show
+            if(buttons.size() == 1 && buttons.get(0) instanceof MoreButton) {
+                buttons.remove(0);
             }
         }
     }

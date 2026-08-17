@@ -151,6 +151,18 @@ public class ModRecipeProvider extends RecipeProvider {
                 .pattern("XBX").pattern(" D ").pattern("XSX")
                 .unlockedBy("has_chest", has(Tags.Items.CHESTS_WOODEN)).save(output, ResourceKey.create(Registries.RECIPE, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "standard_no_tanks")));
 
+        ShapedBackpackRecipeBuilder.shaped(registries.lookupOrThrow(Registries.ITEM), RecipeCategory.MISC, ModItems.STANDARD_TRAVELERS_BACKPACK.get()).group("standard_travelers_backpack")
+                .define('X', Tags.Items.LEATHERS).define('B', Tags.Items.STRINGS)
+                .define('D', Tags.Items.CHESTS_WOODEN)
+                .pattern("XBX").pattern(" D ").pattern("X X")
+                .unlockedBy("has_chest", has(Tags.Items.CHESTS_WOODEN)).save(output, ResourceKey.create(Registries.RECIPE, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "standard_no_tanks_sleeping_bag")));
+
+        ShapedBackpackRecipeBuilder.shaped(registries.lookupOrThrow(Registries.ITEM), RecipeCategory.MISC, ModItems.STANDARD_TRAVELERS_BACKPACK.get()).group("standard_travelers_backpack")
+                .define('X', Tags.Items.LEATHERS).define('B', Tags.Items.STRINGS).define('C', ModItems.BACKPACK_TANK.get())
+                .define('D', Tags.Items.CHESTS_WOODEN)
+                .pattern("XBX").pattern("CDC").pattern("X X")
+                .unlockedBy("has_chest", has(Tags.Items.CHESTS_WOODEN)).save(output, ResourceKey.create(Registries.RECIPE, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "standard_no_sleeping_bag")));
+
         //Netherite backpack
         SmithingTransformRecipeBuilder.smithing(Ingredient.of(Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE),
                         Ingredient.of(ModItems.DIAMOND_TRAVELERS_BACKPACK.get()), ofTag(Tags.Items.INGOTS_NETHERITE),
