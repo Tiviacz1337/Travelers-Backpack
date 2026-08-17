@@ -379,7 +379,6 @@ public class ServerActions {
     public static void toggleSleepingBag(Player player, BlockPos pos, boolean isEquipped, boolean isShiftPressed) {
         Level level = player.level();
         if(isShiftPressed) {
-            //#TODO check server crash on fabric
             if(player.containerMenu instanceof BackpackBaseMenu menu) {
                 ItemStack sleepingBag = BackpackBlockEntity.getProperSleepingBag(menu.getWrapper().getSleepingBagColor()).getBlock().asItem().getDefaultInstance();
                 player.getInventory().placeItemBackInInventory(sleepingBag);
@@ -387,7 +386,9 @@ public class ServerActions {
                 if(menu.getWrapper().getScreenID() == Reference.BLOCK_ENTITY_SCREEN_ID && level.getBlockEntity(menu.getWrapper().getBackpackPos()) instanceof BackpackBlockEntity backpackBlockEntity) {
                     backpackBlockEntity.removeSleepingBag(level, backpackBlockEntity.getBlockDirection());
                 }
-                player.closeContainer();
+                if(player instanceof ServerPlayer serverPlayer) {
+                    serverPlayer.closeContainer();
+                }
 
                 //Sound
                 level.playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER.value(), SoundSource.PLAYERS, 1.0F, (1.0F + (level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.2F) * 0.7F);
