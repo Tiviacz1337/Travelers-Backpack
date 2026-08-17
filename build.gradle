@@ -70,6 +70,8 @@ repositories {
     maven { url "https://maven.gegy.dev" }
 }
 
+def mappingsAttribute = Attribute.of("net.minecraft.mappings", String.class)
+
 dependencies {
 
     implementation "net.neoforged:neoforge:${neo_version}"
@@ -91,6 +93,18 @@ dependencies {
     //Crafting Tweaks
     implementation("maven.modrinth:crafting-tweaks:UG4VEpsU")
     implementation("maven.modrinth:balm:mZ461M3N")
+
+    //LambDynamicLights
+    attributesSchema {
+        attribute(mappingsAttribute)
+    }
+
+    compileOnly("dev.lambdaurora.lambdynamiclights:lambdynamiclights-api:4.9.1+1.21.11") {
+        attributes {
+            attribute(mappingsAttribute, "mojmap")
+        }
+    }
+    //localRuntime("dev.lambdaurora.lambdynamiclights:lambdynamiclights-runtime:4.10.2+26.1.2")
 
     //Carry On
     //runtimeOnly "curse.maven:carryon-274259:5141764"

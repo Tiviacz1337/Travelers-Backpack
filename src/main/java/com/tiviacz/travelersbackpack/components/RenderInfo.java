@@ -21,12 +21,21 @@ public record RenderInfo(CompoundTag compoundTag) {
             ByteBufCodecs.fromCodec(CompoundTag.CODEC), RenderInfo::compoundTag, RenderInfo::new
     );
 
+    public static final String LEFT_TANK = "LeftTank";
+    public static final String RIGHT_TANK = "RightTank";
+    public static final String CAPACITY = "Capacity";
+    public static final String LANTERN = "Lantern";
+
     public boolean isEmpty() {
         return this.compoundTag.isEmpty();
     }
 
     public boolean hasTanks() {
         return this.compoundTag.contains("LeftTank") || this.compoundTag.contains("RightTank");
+    }
+
+    public boolean hasLantern() {
+        return this.compoundTag.contains(LANTERN);
     }
 
     public FluidStack getLeftFluidStack() {

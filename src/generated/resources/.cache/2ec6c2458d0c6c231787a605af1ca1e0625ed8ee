@@ -1,4 +1,4 @@
-// 1.21.10	2025-10-29T14:30:37.1013465	Traveler's Backpack Recipes
+// 1.21.11	2026-08-17T13:58:09.1017423	Traveler's Backpack Recipes
 2e3cef0079faec8c1b6528df8683eca48fed1704 data/travelersbackpack/advancement/recipes/building_blocks/dye_black_sleeping_bag.json
 24c4d575f6e06a0b2bb2efe1b3a698087b17b166 data/travelersbackpack/advancement/recipes/building_blocks/dye_blue_sleeping_bag.json
 f27101e9e2e6b376b8c5a409793c0fb54334c5fe data/travelersbackpack/advancement/recipes/building_blocks/dye_brown_sleeping_bag.json
@@ -84,6 +84,7 @@ fcedeaeafb83f8b23606ecbe05a2487cf865dc9a data/travelersbackpack/advancement/reci
 2e585347465f54bae566db486ab25855b08f1bc3 data/travelersbackpack/advancement/recipes/misc/iron_smithing.json
 18566ec080201bc2e853a91406d04088d8786a21 data/travelersbackpack/advancement/recipes/misc/iron_tier_upgrade.json
 7e4ce68235a38b59d12e9f54aeba9ba6e1539419 data/travelersbackpack/advancement/recipes/misc/jukebox_upgrade.json
+fab1c4346ebbb52918d95e42bccfbb7e03e03125 data/travelersbackpack/advancement/recipes/misc/lantern_upgrade.json
 5de216762396e1e37c64f366b41bef0bbadb30d4 data/travelersbackpack/advancement/recipes/misc/lapis.json
 c88b2c0a48ad6653cd82aec09037b59bc816b3e1 data/travelersbackpack/advancement/recipes/misc/lapis_smithing.json
 759219c86572fdc5b7b86f8b83a284270e03bcba data/travelersbackpack/advancement/recipes/misc/magma_cube.json
@@ -212,6 +213,7 @@ d0bc265a7ca327bc9b3385099f4c18e6b0cb381a data/travelersbackpack/recipe/hose_nozz
 29abc91fe17dfbdadd54a548fdf9881820f2098f data/travelersbackpack/recipe/iron_smithing.json
 b99d5795ff7c123020ad8d37f14e7d6849fc1cf8 data/travelersbackpack/recipe/iron_tier_upgrade.json
 468ca639b571988fcf881486aca47f45fcf0249c data/travelersbackpack/recipe/jukebox_upgrade.json
+62a950930442c410543e6d5a0d66b69db7ef7979 data/travelersbackpack/recipe/lantern_upgrade.json
 641f88a95e75311960b038af000262f910a8c239 data/travelersbackpack/recipe/lapis.json
 77145965c351dd23ae8a4314d7aa14bdcf29870c data/travelersbackpack/recipe/lapis_smithing.json
 0a77f0308a0fdee35f444a0a16c09086ad0cad0a data/travelersbackpack/recipe/light_blue_sleeping_bag.json

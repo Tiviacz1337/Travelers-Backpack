@@ -119,6 +119,10 @@ public class ModRecipeProvider extends RecipeProvider {
                 .define('B', ModItems.BLANK_UPGRADE.get()).define('C', Tags.Items.DUSTS_REDSTONE).pattern("ABA").pattern("CCC")
                 .unlockedBy(getHasName(ModItems.BLANK_UPGRADE), has(ModItems.BLANK_UPGRADE)).save(output);
 
+        ShapedRecipeBuilder.shaped(registries.lookupOrThrow(Registries.ITEM), RecipeCategory.MISC, ModItems.LANTERN_UPGRADE.get()).define('A', Items.LANTERN)
+                .define('B', ModItems.BLANK_UPGRADE).define('C', Tags.Items.DUSTS_REDSTONE).pattern("ABA").pattern("CCC")
+                .unlockedBy(getHasName(ModItems.BLANK_UPGRADE), has(ModItems.BLANK_UPGRADE)).save(output);
+
         //All Recipes
         ShapedRecipeBuilder.shaped(registries.lookupOrThrow(Registries.ITEM), RecipeCategory.MISC, ModItems.BACKPACK_TANK.get())
                 .define('B', Tags.Items.GLASS_BLOCKS_COLORLESS).define('A', Tags.Items.INGOTS_IRON)

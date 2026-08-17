@@ -59,6 +59,7 @@ public class TravelersBackpackConfig {
             public final FeedingUpgradeSettings feedingUpgradeSettings;
             public final RefillUpgradeSettings refillUpgradeSettings;
             public final FilterUpgradeSettings voidUpgradeSettings;
+            public final ModConfigSpec.BooleanValue enableLanternUpgrade;
 
             public BackpackUpgrades(ModConfigSpec.Builder builder, String path) {
                 builder.push(path);
@@ -90,6 +91,8 @@ public class TravelersBackpackConfig {
                 refillUpgradeSettings = new RefillUpgradeSettings(builder, "refillUpgradeSettings");
 
                 voidUpgradeSettings = new FilterUpgradeSettings(builder, "voidUpgradeSettings", "VoidUpgrade");
+
+                enableLanternUpgrade = builder.define("enableLanternUpgrade", true);
 
                 builder.pop();
             }
