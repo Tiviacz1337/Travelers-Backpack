@@ -555,6 +555,9 @@ public class NeoForgeEventHandler {
 
     public static AtomicInteger checkBackpacksForSlowness(Player player) {
         AtomicInteger atomic = new AtomicInteger(0);
+        if(AttachmentUtils.isWearingBackpack(player)) {
+            atomic.incrementAndGet();
+        }
         for(int i = 0; i < player.getInventory().getNonEquipmentItems().size(); i++) {
             if(player.getInventory().getNonEquipmentItems().get(i).getItem() instanceof TravelersBackpackItem) {
                 atomic.incrementAndGet();
