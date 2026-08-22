@@ -56,6 +56,7 @@ public class TravelersBackpack {
     public static boolean emiLoaded;
     public static boolean polymorphLoaded;
     public static boolean trashSlotLoaded;
+    public static boolean mouseTweaksLoaded;
 
     public TravelersBackpack() {
         ForgeMod.enableMilkFluid();
@@ -99,6 +100,7 @@ public class TravelersBackpack {
         emiLoaded = ModList.get().isLoaded("emi");
         polymorphLoaded = ModList.get().isLoaded("polymorph");
         trashSlotLoaded = ModList.get().isLoaded("trashslot");
+        mouseTweaksLoaded = ModList.get().isLoaded("mousetweaks");
 
         //Fetch supporters
         Supporters.fetchSupporters();
