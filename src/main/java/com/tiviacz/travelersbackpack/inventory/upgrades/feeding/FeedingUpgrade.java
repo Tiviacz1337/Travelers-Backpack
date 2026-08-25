@@ -156,7 +156,7 @@ public class FeedingUpgrade extends FilterUpgradeBase<FeedingUpgrade, FeedingFil
     }
 
     private boolean tryFeedingFoodFromStorage(Level level, int hungerLevel, Player player) {
-        ItemStackHandler storage = getUpgradeManager().getWrapper().getStorageForInputOutput();
+        ItemStackHandler storage = getUpgradeManager().getWrapper().getStorageForInputOutput(true);
         return InventoryHelper.iterate(storage, (slot, stack) -> tryFeedingStack(level, hungerLevel, player, slot, stack, storage));
     }
 

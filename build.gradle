@@ -21,6 +21,14 @@ repositories {
 
 	//LambDynamicLights
 	maven { url "https://maven.gegy.dev" }
+
+	//Artifacts
+	maven {
+		url "https://maven.florens.be/releases"
+		content {
+			includeGroup "be.florens"
+		}
+	}
 }
 
 fabricApi {
@@ -105,6 +113,11 @@ dependencies {
 
 	//REI
 	modImplementation("maven.modrinth:rei:nYcMSS03")
+
+	//Artifacts
+	modCompileOnly("maven.modrinth:artifacts:txBP6ArM")
+	modCompileOnly("be.florens:expandability-fabric:9.0.4")
+	modCompileOnly("com.github.emilyploszaj:step-height-entity-attribute:v1.2.0")
 
 	//JEI
 	modCompileOnly("maven.modrinth:jei:wbPLxn0B")
