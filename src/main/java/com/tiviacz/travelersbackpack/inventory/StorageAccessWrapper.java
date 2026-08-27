@@ -11,7 +11,20 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Custom ItemStackHandler for Traveler's Backpack block entity interactions with hoppers, pipes etc. that respects unsortable and memory slots :)
  */
-public record StorageAccessWrapper(BackpackWrapper wrapper, ItemStackHandler parent) implements IItemHandlerModifiable {
+public class StorageAccessWrapper implements IItemHandlerModifiable {
+    public final BackpackWrapper wrapper;
+    public final ItemStackHandler parent;
+    public boolean skipVoiding = false;
+
+    public StorageAccessWrapper(BackpackWrapper wrapper, ItemStackHandler parent, boolean skipVoiding) {
+        this(wrapper, parent);
+        this.skipVoiding = skipVoiding;
+    }
+
+    public StorageAccessWrapper(BackpackWrapper wrapper, ItemStackHandler parent) {
+        this.wrapper = wrapper;
+        this.parent = parent;
+    }
 
     @Override
     public void setStackInSlot(int slot, @NotNull ItemStack stack) {
@@ -31,7 +44,7 @@ public record StorageAccessWrapper(BackpackWrapper wrapper, ItemStackHandler par
     @Override
     public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
         //Voiding
-        if(tryVoiding(stack)) {
+        if(!skipVoiding && tryVoiding(stack)) {
             if(!simulate) {
                 return ItemStack.EMPTY;
             }
