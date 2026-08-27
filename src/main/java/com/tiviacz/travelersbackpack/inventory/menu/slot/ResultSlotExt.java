@@ -108,6 +108,14 @@ public class ResultSlotExt extends ResultSlot {
     }
 
     @Override
+    public ItemStack safeTake(int amount, int maxAmount, Player player) {
+        if(player.level().isClientSide()) {
+            return ItemStack.EMPTY;
+        }
+        return super.safeTake(amount, maxAmount, player);
+    }
+
+    @Override
     public ItemStack getItem() {
         if(player.level().isClientSide) return super.getItem();
         // Crafting Tweaks fakes 64x right click operations to right-click craft a stack to the "held" item, so we need to verify the recipe here.
