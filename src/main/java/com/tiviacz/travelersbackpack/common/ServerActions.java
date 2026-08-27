@@ -69,6 +69,10 @@ public class ServerActions {
                 return;
             }
 
+            if(player.isUsingItem()) {
+                return;
+            }
+
             if(slot == -999) {
                 if(handStack.isEmpty()) return;
 
