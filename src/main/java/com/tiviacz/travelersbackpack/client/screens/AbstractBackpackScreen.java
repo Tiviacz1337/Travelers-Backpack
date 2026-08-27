@@ -18,6 +18,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.Slot;
 
 public abstract class AbstractBackpackScreen<T extends AbstractBackpackMenu> extends AbstractContainerScreen<T> {
     public static final ResourceLocation BACKGROUND_11 = ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "textures/gui/background_11.png");
@@ -212,7 +213,8 @@ public abstract class AbstractBackpackScreen<T extends AbstractBackpackMenu> ext
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
-        if(this.scroll != null) {
+        Slot hovered = getSlotUnderMouse();
+        if(this.scroll != null && !(TravelersBackpack.mouseTweaksLoaded && hovered != null)) {
             return this.scroll.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
         }
         return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
