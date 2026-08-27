@@ -146,8 +146,9 @@ dependencies {
 
     compileOnly("curse.maven:twt-679270:6532318")
 
-    //implementation("curse.maven:easyshulkerboxes-594006:5743829")
-    //implementation("curse.maven:puzzleslib-495476:6013576")
+    implementation("curse.maven:metalbundles-891325:6697871")
+    implementation("curse.maven:easyshulkerboxes-594006:5743829")
+    implementation("curse.maven:puzzleslib-495476:8251525")
 
 }
 
