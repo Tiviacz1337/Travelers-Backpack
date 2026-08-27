@@ -285,6 +285,10 @@ public class BackpackWrapper {
         return new StorageAccessWrapper(this, getStorage());
     }
 
+    public StorageAccessWrapper getStorageForInputOutput(boolean shouldSkipVoiding) {
+        return new StorageAccessWrapper(this, getStorage(), shouldSkipVoiding);
+    }
+
     public ItemStackHandler getStorage() {
         return this.inventory;
     }
