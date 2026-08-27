@@ -190,10 +190,9 @@ public class BackpackBakedModel implements BakedModel {
 
                 newData[index + 4] = Float.floatToRawIntBits(newU);
                 newData[index + 5] = Float.floatToRawIntBits(newV);
-
-                BakedQuad rebaked = new BakedQuad(newData, quad.getTintIndex(), quad.getDirection(), sprite, quad.isShade());
-                emitter.fromVanilla(rebaked, emitter.material(), null).emit();
             }
+            BakedQuad rebaked = new BakedQuad(newData, quad.getTintIndex(), quad.getDirection(), sprite, quad.isShade());
+            emitter.fromVanilla(rebaked, emitter.material(), null).emit();
         });
     }
 
