@@ -212,7 +212,7 @@ public abstract class AbstractBackpackScreen<T extends AbstractBackpackMenu> ext
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollY) {
-        if(this.scroll != null) {
+        if(this.scroll != null && !(TravelersBackpack.mouseTweaksLoaded && hoveredSlot != null)) {
             return this.scroll.mouseScrolled(mouseX, mouseY, scrollY);
         }
         return super.mouseScrolled(mouseX, mouseY, scrollY);

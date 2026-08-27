@@ -42,6 +42,7 @@ public class TravelersBackpack implements ModInitializer {
     public static boolean solValheimLoaded;
     public static boolean ae2Loaded;
     public static boolean lambDynamicLightsLoaded;
+    public static boolean mouseTweaksLoaded;
 
     @Override
     public void onInitialize() {
@@ -95,7 +96,7 @@ public class TravelersBackpack implements ModInitializer {
         trashSlotLoaded = fabricLoader.isModLoaded("trashslot");
         solValheimLoaded = fabricLoader.isModLoaded("sol_valheim");
         lambDynamicLightsLoaded = fabricLoader.isModLoaded("lambdynlights");
-
+        mouseTweaksLoaded = fabricLoader.isModLoaded("mousetweaks");
         //Fix for duplication issue
         ae2Loaded = fabricLoader.isModLoaded("ae2");
 
