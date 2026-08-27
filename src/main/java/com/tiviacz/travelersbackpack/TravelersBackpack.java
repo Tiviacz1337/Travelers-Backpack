@@ -40,6 +40,7 @@ public class TravelersBackpack implements ModInitializer {
     public static boolean polymorphLoaded;
     public static boolean trashSlotLoaded;
     public static boolean lambDynamicLightsLoaded;
+    public static boolean mouseTweaksLoaded;
 
     @Override
     public void onInitialize() {
@@ -96,6 +97,7 @@ public class TravelersBackpack implements ModInitializer {
         if(vinurlLoaded) VinURLNetwork.register();
 
         lambDynamicLightsLoaded = fabricLoader.isModLoaded("lambdynlights");
+        mouseTweaksLoaded = fabricLoader.isModLoaded("mousetweaks");
 
         //Fetch supporters
         Supporters.fetchSupporters();
