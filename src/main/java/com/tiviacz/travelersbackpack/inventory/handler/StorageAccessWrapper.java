@@ -16,6 +16,12 @@ import org.jetbrains.annotations.NotNull;
 public class StorageAccessWrapper extends ItemStackHandler {
     public final BackpackWrapper wrapper;
     public final ItemStackHandler parent;
+    public boolean skipVoiding = false;
+
+    public StorageAccessWrapper(BackpackWrapper wrapper, ItemStackHandler parent, boolean skipVoiding) {
+        this(wrapper, parent);
+        this.skipVoiding = skipVoiding;
+    }
 
     public StorageAccessWrapper(BackpackWrapper wrapper, ItemStackHandler parent) {
         this.wrapper = wrapper;
@@ -36,7 +42,7 @@ public class StorageAccessWrapper extends ItemStackHandler {
 
     public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
         //Voiding
-        if(tryVoiding(stack)) {
+        if(!skipVoiding && tryVoiding(stack)) {
             if(!simulate) {
                 return ItemStack.EMPTY;
             }
