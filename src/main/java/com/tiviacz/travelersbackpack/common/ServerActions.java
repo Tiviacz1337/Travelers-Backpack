@@ -16,6 +16,7 @@ import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackItemMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackSettingsMenu;
+import com.tiviacz.travelersbackpack.inventory.menu.slot.FilterSlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.ToolSlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.sorter.ContainerSorter;
 import com.tiviacz.travelersbackpack.inventory.transfer.BackpackResourceHandler;
@@ -39,6 +40,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.throwableitemprojectile.ThrownLingeringPotion;
 import net.minecraft.world.entity.projectile.throwableitemprojectile.ThrownSplashPotion;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -473,7 +475,16 @@ public class ServerActions {
 
         switch(type) {
             case SLOT: {
-                player.containerMenu.getSlot(index).set(stack);
+                if(index >= 0 && index < player.containerMenu.slots.size()) {
+                    Slot slot = player.containerMenu.getSlot(index);
+                    if(slot instanceof FilterSlotItemHandler filterSlot) {
+                        filterSlot.set(stack);
+                    }
+                    if(stack.isEmpty()) {
+                        player.containerMenu.getSlot(index).set(ItemStack.EMPTY);
+                        return;
+                    }
+                }
                 break;
             }
             case TANK: {
