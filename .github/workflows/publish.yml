@@ -5,9 +5,9 @@ on: [ workflow_dispatch ]
 env:
   MINECRAFT_VERSION: 1.21.11
   JAVA_VERSION: 21
-  VERSION: 1.21.11-10.11.6
-  RELEASE_NAME_CURSEFORGE: "travelersbackpack-neoforge-1.21.11-10.11.6"
-  RELEASE_NAME_MODRINTH: "[1.21.11] Traveler's Backpack 10.11.6"
+  VERSION: 1.21.11-10.11.7
+  RELEASE_NAME_CURSEFORGE: "travelersbackpack-neoforge-1.21.11-10.11.7"
+  RELEASE_NAME_MODRINTH: "[1.21.11] Traveler's Backpack 10.11.7"
   MODRINTH_TOKEN: ${{ secrets.MODRINTH }}
   CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE }}
 
