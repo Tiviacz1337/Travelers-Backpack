@@ -219,7 +219,7 @@ public abstract class AbstractBackpackScreen<T extends AbstractBackpackMenu> ext
                 return true;
             }
         }
-        if(this.scroll != null) {
+        if(this.scroll != null && !(TravelersBackpack.mouseTweaksLoaded && this.hoveredSlot != null)) {
             return this.scroll.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
         }
         return false;
