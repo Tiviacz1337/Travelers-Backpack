@@ -153,7 +153,7 @@ public class ModBlockEntityTypes {
 
         @Override
         public long insert(ItemVariant resource, long maxAmount, TransactionContext transaction) {
-            StoragePreconditions.notBlankNotNegative(resource, maxAmount);
+            StoragePreconditions.notNegative(maxAmount);
             updateSnapshots(transaction);
             long remainingToInsert = maxAmount;
             long totalInserted = 0;
@@ -174,7 +174,7 @@ public class ModBlockEntityTypes {
 
         @Override
         public long extract(ItemVariant resource, long maxAmount, TransactionContext transaction) {
-            StoragePreconditions.notBlankNotNegative(resource, maxAmount);
+            StoragePreconditions.notNegative(maxAmount);
             updateSnapshots(transaction);
             long remainingToExtract = maxAmount;
             long totalExtracted = 0;
