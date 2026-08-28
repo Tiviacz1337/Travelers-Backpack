@@ -135,7 +135,7 @@ public class FeedingUpgrade extends FilterUpgradeBase<FeedingUpgrade, FeedingFil
     }
 
     private boolean tryFeedingFoodFromStorage(Level level, int hungerLevel, Player player) {
-        BackpackResourceHandler storage = getUpgradeManager().getWrapper().getStorage();
+        BackpackResourceHandler storage = getUpgradeManager().getWrapper().getStorage(); //#TODO potential issue with artifacts eternal steak and void upgrade not fixed here
         return InventoryHelper.iterate(storage, (slot, stack) -> tryFeedingStack(level, hungerLevel, player, slot, stack, storage));
     }
 
