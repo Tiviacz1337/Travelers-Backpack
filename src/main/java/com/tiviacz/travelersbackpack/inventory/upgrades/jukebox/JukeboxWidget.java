@@ -122,7 +122,7 @@ public class JukeboxWidget extends UpgradeWidgetBase<JukeboxUpgrade> {
         if(jukeboxSong == null) {
             return;
         }
-        Minecraft.getInstance().getSoundManager().stop(jukeboxSong.soundEvent().value().location(), SoundSource.NEUTRAL);
+        Minecraft.getInstance().getSoundManager().stop(jukeboxSong.soundEvent().value().location(), SoundSource.RECORDS);
     }
 
     public static class MovingSound extends AbstractTickableSoundInstance {
@@ -130,7 +130,7 @@ public class JukeboxWidget extends UpgradeWidgetBase<JukeboxUpgrade> {
         private final Entity entity;
 
         public MovingSound(Entity entityIn, SoundEvent soundIn) {
-            super(soundIn, SoundSource.NEUTRAL, entityIn.level().getRandom());
+            super(soundIn, SoundSource.RECORDS, entityIn.level().getRandom());
             this.entity = entityIn;
             this.looping = false;
             this.delay = 0;
