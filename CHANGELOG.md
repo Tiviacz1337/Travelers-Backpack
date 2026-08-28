@@ -1,8 +1,10 @@
-🔧 Backpack renders if equipped in Curios slot  
-🔧 Slowness debuff now also includes the backpack that is equipped on player's back  
-🔧 Advancements show toast when completed  
-🐛 Fixed sorting not include durability properly  
-🐛 Fixed compatibility with VR  
+🔧 Tweaked scrolling functionality if Mouse Tweaks is installed  
+🐛 Disabled Shulkerboxes in Tool Slots  
+🐛 Fixed duplication issues  
+🐛 Fixed CTRL+Q crash in crafting upgrade  
+🐛 Jukebox upgrade volume can be changed by using Jukebox/Note Blocks slider instead of Friendly Creatures  
+📚 Updated es_ar translation - Thanks Texaliuz!  
+📚 Updated hu_hu translation
 
 ⭐ Want to receive **Supporter Star Badge** for a **lifetime**? - [visit my Ko-Fi page](https://ko-fi.com/tiviacz1337)!  
-![Banner](https://i.imgur.com/OF6652S.png)
+![Banner](https://i.imgur.com/SSrFv58.png)
