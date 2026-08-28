@@ -40,6 +40,7 @@ public class ToolSlotItemHandler extends ResourceHandlerSlot {
     public static boolean isValid(ItemStack stack) {
         Item item = stack.getItem();
         if(item instanceof HoseItem) return false;
+        if(!item.canFitInsideContainerItems() || item instanceof BundleItem) return false;
 
         boolean isItemValid = BackpackSlotItemHandler.isItemValid(stack);
 
