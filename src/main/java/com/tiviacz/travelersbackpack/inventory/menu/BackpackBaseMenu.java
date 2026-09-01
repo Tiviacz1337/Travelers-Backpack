@@ -666,7 +666,7 @@ public class BackpackBaseMenu extends AbstractBackpackMenu {
             // Need to check if the output is empty, because if the recipe book is being used, the recipe will already be set.
             if(oldRecipe != recipe || upgrade.resultSlots.getItem(0).isEmpty()) {
                 for(Player user : getWrapper().getPlayersUsing().stream().filter(p -> p instanceof ServerPlayer).toList()) {
-                    PacketDistributor.sendToPlayer((ServerPlayer)user, new ClientboundUpdateRecipePacket(itemstack, recipe));
+                    PacketDistributor.sendToPlayer((ServerPlayer)user, new ClientboundUpdateRecipePacket(itemstack));
                 }
                 upgrade.resultSlots.setItem(0, itemstack);
                 upgrade.resultSlots.setRecipeUsed(recipe);
@@ -675,7 +675,7 @@ public class BackpackBaseMenu extends AbstractBackpackMenu {
                 // annoying but... bleh
                 if(recipe.value().isSpecial() || !recipe.getClass().getName().startsWith("net.minecraft") && !ItemStack.matches(itemstack, upgrade.resultSlots.getItem(0))) {
                     for(Player user : getWrapper().getPlayersUsing().stream().filter(p -> p instanceof ServerPlayer).toList()) {
-                        PacketDistributor.sendToPlayer((ServerPlayer)user, new ClientboundUpdateRecipePacket(itemstack, recipe));
+                        PacketDistributor.sendToPlayer((ServerPlayer)user, new ClientboundUpdateRecipePacket(itemstack));
                     }
                     upgrade.resultSlots.setItem(0, itemstack);
                     upgrade.resultSlots.setRecipeUsed(recipe);

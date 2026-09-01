@@ -10,33 +10,19 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeHolder;
 
-public record ClientboundUpdateRecipePacket(ItemStack output,
-                                            RecipeHolder<?> recipeHolder) implements CustomPacketPayload {
+public record ClientboundUpdateRecipePacket(ItemStack output) implements CustomPacketPayload {
     public static final Identifier ID = Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "update_recipe");
     public static final Type<ClientboundUpdateRecipePacket> TYPE = new Type<>(ID);
 
     public static final StreamCodec<RegistryFriendlyByteBuf, ClientboundUpdateRecipePacket> STREAM_CODEC = StreamCodec.composite(
             ItemStack.OPTIONAL_STREAM_CODEC, ClientboundUpdateRecipePacket::output,
-            StreamCodec.of((buf, holder) -> {
-                        buf.writeBoolean(holder != null);
-                        if(holder != null) {
-                            RecipeHolder.STREAM_CODEC.encode(buf, holder);
-                        }
-                    },
-                    buf -> buf.readBoolean() ? RecipeHolder.STREAM_CODEC.decode(buf) : null), ClientboundUpdateRecipePacket::recipeHolder,
-            ClientboundUpdateRecipePacket::new
-    );
+            ClientboundUpdateRecipePacket::new);
 
     public static void handle(ClientboundUpdateRecipePacket message, ClientPlayNetworking.Context ctx) {
         ctx.client().execute(() -> {
-            RecipeHolder<?> recipe = message.recipeHolder();
             if(Minecraft.getInstance().screen instanceof BackpackScreen screen) {
-                screen.getMenu().getWrapper().getUpgradeManager().getUpgrade(CraftingUpgrade.class).ifPresent(upgrade -> {
-                    upgrade.resultSlots.setRecipeUsed(recipe);
-                    upgrade.resultSlots.setItem(0, message.output());
-                });
+                screen.getMenu().getWrapper().getUpgradeManager().getUpgrade(CraftingUpgrade.class).ifPresent(upgrade -> upgrade.resultSlots.setItem(0, message.output()));
             }
         });
     }
