@@ -16,25 +16,13 @@ public record ClientboundUpdateRecipePacket(ItemStack output) implements CustomP
     public static final Type<ClientboundUpdateRecipePacket> TYPE = new Type<>(ID);
 
     public static final StreamCodec<RegistryFriendlyByteBuf, ClientboundUpdateRecipePacket> STREAM_CODEC = StreamCodec.composite(
-            //Identifier.STREAM_CODEC, ClientboundUpdateRecipePacket::id,
             ItemStack.OPTIONAL_STREAM_CODEC, ClientboundUpdateRecipePacket::output,
-            ClientboundUpdateRecipePacket::new
-    );
-
-    // public static final Identifier NULL = Identifier.fromNamespaceAndPath("null", "null");
-
-    // public ClientboundUpdateRecipePacket(@Nullable RecipeHolder<CraftingRecipe> recipe, ItemStack output) {
-    //    this(recipe == null ? NULL : recipe.id(), output);
-    //  }
+            ClientboundUpdateRecipePacket::new);
 
     public static void handle(ClientboundUpdateRecipePacket message, ClientPlayNetworking.Context ctx) {
         ctx.client().execute(() -> {
-            //ecipeHolder<CraftingRecipe> recipe = (RecipeHolder<CraftingRecipe>)Minecraft.getInstance().level.getRecipeManager().byKey(message.id()).orElse(null);
             if(Minecraft.getInstance().screen instanceof BackpackScreen screen) {
-                screen.getMenu().getWrapper().getUpgradeManager().getUpgrade(CraftingUpgrade.class).ifPresent(upgrade -> {
-                    //screen.getMenu().getWrapper().getUpgradeManager().craftingUpgrade.get().resultSlots.setRecipeUsed(recipe);
-                    screen.getMenu().getWrapper().getUpgradeManager().getUpgrade(CraftingUpgrade.class).get().resultSlots.setItem(0, message.output());
-                });
+                screen.getMenu().getWrapper().getUpgradeManager().getUpgrade(CraftingUpgrade.class).ifPresent(upgrade -> upgrade.resultSlots.setItem(0, message.output()));
             }
         });
     }
