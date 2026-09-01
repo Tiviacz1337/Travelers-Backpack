@@ -4,6 +4,7 @@
 🐛 Fixed CTRL+Q crash in crafting upgrade  
 🐛 Jukebox upgrade volume can be changed by using Jukebox/Note Blocks slider instead of Friendly Creatures  
 🐛 Fixed crash when using hoppers with Kilt mod installed  
+🐛 Fixed crash with some recipes  
 📚 Updated es_ar translation - Thanks Texaliuz!  
 📚 Updated hu_hu translation
 
