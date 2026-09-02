@@ -375,5 +375,11 @@
   "advancements.travelersbackpack.hose_drink_potion.title": "Drankjes drinken",
   "advancements.travelersbackpack.hose_drink_potion.description": "Drink een drankje",
   "advancements.travelersbackpack.hose_spill_potion.title": "Drankjes gieten",
-  "advancements.travelersbackpack.hose_spill_potion.description": "Vul rugzaktanks met aanhoudende of spatdrankjes en gooi ze in de wereld met behulp van de slang"
+  "advancements.travelersbackpack.hose_spill_potion.description": "Vul rugzaktanks met aanhoudende of spatdrankjes en gooi ze in de wereld met behulp van de slang",
+  "item.travelersbackpack.lantern_upgrade": "Lantaarnupgrade",
+  "item.travelersbackpack.lantern_upgrade_tooltip": "Biedt een lichtbron voor de rugzak",
+  "item.travelersbackpack.lantern_upgrade_active": "§2Dynamische verlichting actief",
+  "item.travelersbackpack.lantern_upgrade_missing": "§4Dynamische verlichting inactief - LambDynamicLights-mod is vereist",
+  "screen.travelersbackpack.lantern_upgrade": "Lantaarn",
+  "travelersbackpack.configuration.enableLanternUpgrade": "Lantaarnupgrade inschakelen",
 }
