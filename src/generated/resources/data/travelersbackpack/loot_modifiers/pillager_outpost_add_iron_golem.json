@@ -1,0 +1,14 @@
+{
+  "type": "travelersbackpack:add_item",
+  "conditions": [
+    {
+      "condition": "neoforge:loot_table_id",
+      "loot_table_id": "minecraft:chests/pillager_outpost"
+    },
+    {
+      "chance": 0.06,
+      "condition": "minecraft:random_chance"
+    }
+  ],
+  "item": "travelersbackpack:iron_golem"
+}

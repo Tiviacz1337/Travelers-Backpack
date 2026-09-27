@@ -4,8 +4,11 @@
     {
       "condition": "neoforge:loot_table_id",
       "loot_table_id": "minecraft:chests/desert_pyramid"
+    },
+    {
+      "chance": 0.05,
+      "condition": "minecraft:random_chance"
     }
   ],
-  "item": "travelersbackpack:standard",
-  "weight": 0.06
+  "item": "travelersbackpack:iron_tier_upgrade"
 }
