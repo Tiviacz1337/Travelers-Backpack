@@ -4,6 +4,7 @@
 ✨ The Netherite Backpack is fire resistant even with the config option disabled   
 ✨ Added new config options to the tools menu: displayEmptySlots, allowHotbarScrolling (default: false, false)   
 🔧 The Iron Golem Backpack can be found in Pillager Outpost chests with a 6% chance  
+🔧 Enderman ability also increases attack range  
 🐛 Fixed Hay Backpack ability  
 📚 Updated nl_be translation - Thanks Reinforged!  
 
