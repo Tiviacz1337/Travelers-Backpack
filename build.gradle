@@ -103,7 +103,7 @@ dependencies {
     //implementation("curse.maven:mousetweaks-60089:5637846")
 
     //Polymorph
-    //implementation("curse.maven:polymorph-388800:5696658")
+    implementation("maven.modrinth:polymorph_plus:pYj910M4")
 
     //Tough as Nails
     compileOnly("maven.modrinth:tough-as-nails:6zSGsGJC") //Not Updated

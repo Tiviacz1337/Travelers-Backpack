@@ -6,6 +6,7 @@ import com.tiviacz.travelersbackpack.compat.accessories.TravelersBackpackAccesso
 import com.tiviacz.travelersbackpack.compat.craftingtweaks.CraftingTweaksCompat;
 import com.tiviacz.travelersbackpack.compat.curios.TravelersBackpackCurio;
 import com.tiviacz.travelersbackpack.compat.curios.TravelersBackpackCurioClient;
+import com.tiviacz.travelersbackpack.compat.polymorph.PolymorphCompatClient;
 import com.tiviacz.travelersbackpack.compat.trashslot.TrashSlotCompat;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
@@ -46,6 +47,7 @@ public class TravelersBackpack {
     public static boolean jeiLoaded;
     public static boolean reiLoaded;
     public static boolean emiLoaded;
+    public static boolean polymorphLoaded;
     public static boolean trashSlotLoaded;
     public static boolean lambDynamicLightsLoaded;
     public static boolean mouseTweaksLoaded;
@@ -94,6 +96,7 @@ public class TravelersBackpack {
         jeiLoaded = ModList.get().isLoaded("jei");
         reiLoaded = ModList.get().isLoaded("roughlyenoughitems");
         emiLoaded = ModList.get().isLoaded("emi");
+        polymorphLoaded = ModList.get().isLoaded("polymorph") || ModList.get().isLoaded("polymorph_plus");
         trashSlotLoaded = ModList.get().isLoaded("trashslot");
         lambDynamicLightsLoaded = ModList.get().isLoaded("lambdynlights");
         mouseTweaksLoaded = ModList.get().isLoaded("mousetweaks");
@@ -119,6 +122,7 @@ public class TravelersBackpack {
         });
         if(accessoriesLoaded) TravelersBackpackAccessoryClient.init();
         if(curiosLoaded && !accessoriesLoaded) TravelersBackpackCurioClient.registerCurioRenderer();
+        if(polymorphLoaded) PolymorphCompatClient.registerWidget();
     }
 
     private static void loadCuriosCompat(IEventBus bus) {
