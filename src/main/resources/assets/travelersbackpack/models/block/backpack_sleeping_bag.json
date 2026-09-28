@@ -1,9 +1,11 @@
 {
   "credit": "Made with Blockbench by TyBraniff for TravelersBackpack x Bluemap",
   "info": "Sleeping bag texture selected during rebaking to dynamically change sleeping bag color",
+  "dev-note": "'particle' texture is dummy to avoid warnings in console",
   "texture_size": [64, 64],
   "textures": {
-    "bag": "travelersbackpack:block/bag/red_sleeping_bag"
+    "bag": "travelersbackpack:block/bag/red_sleeping_bag",
+    "particle": "minecraft:block/dirt"
   },
   "elements": [
     {
