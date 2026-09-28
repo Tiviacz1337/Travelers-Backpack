@@ -111,6 +111,10 @@ dependencies {
 	//Gravestones
 	compileOnly("maven.modrinth:pneumono_gravestones:40yhXn3d")
 	//compileOnly("maven.modrinth:pneumono_core:Y03YVYzM")
+
+	//Entity Model Features
+	implementation("maven.modrinth:4I1XuqiY:6sTHvJaV")
+	implementation("maven.modrinth:BVzZfTc1:2fuEG26n")
 }
 
 processResources {
