@@ -105,6 +105,10 @@ dependencies {
     //Polymorph
     implementation("maven.modrinth:polymorph_plus:pYj910M4")
 
+    //Entity Model Features
+    implementation("maven.modrinth:4I1XuqiY:rP0oY9mo")
+    implementation("maven.modrinth:BVzZfTc1:yDjmF4LI")
+
     //Tough as Nails
     compileOnly("maven.modrinth:tough-as-nails:6zSGsGJC") //Not Updated
     //runtimeOnly("curse.maven:glitchcore-955399:5645390")
