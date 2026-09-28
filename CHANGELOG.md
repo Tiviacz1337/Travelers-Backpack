@@ -1,3 +1,4 @@
+✨ Added compatibility with Polymorph+ (Unofficial port)   
 ✨ Added new config options to provide more control over backpack item entities: neverDespawn, fireResistant, explosionResistant (default: true, true, true)  
 ✨ Backpacks no longer use a custom item entity, which caused issues with datapacks  
 ✨ The Netherite Backpack is fire resistant even with the config option disabled   
