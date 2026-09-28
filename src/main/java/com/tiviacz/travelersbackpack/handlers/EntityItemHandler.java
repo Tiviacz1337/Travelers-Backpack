@@ -11,11 +11,11 @@ public class EntityItemHandler {
         ServerEntityEvents.ENTITY_LOAD.register((entity, world) -> {
             if(entity instanceof ItemEntity itemEntity && itemEntity.getItem().getItem() instanceof TravelersBackpackItem backpack) {
                 if(itemEntity.getType() != ModItems.BACKPACK_ITEM_ENTITY) {
-                    Entity backpackEntity = backpack.createEntity(world, itemEntity, itemEntity.getItem());
+                    /*Entity backpackEntity = backpack.createEntity(world, itemEntity, itemEntity.getItem());
                     if(backpackEntity != null) {
                         itemEntity.discard();
                         world.addFreshEntity(backpackEntity);
-                    }
+                    }*/
                 }
             }
         });
