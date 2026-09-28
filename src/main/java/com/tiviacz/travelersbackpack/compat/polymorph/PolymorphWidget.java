@@ -1,6 +1,12 @@
 package com.tiviacz.travelersbackpack.compat.polymorph;
 
-/*public class PolymorphWidget extends PlayerRecipesWidget {
+import com.illusivesoulworks.polymorph.api.client.widgets.PlayerRecipesWidget;
+import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
+import com.tiviacz.travelersbackpack.inventory.upgrades.crafting.CraftingUpgrade;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.world.inventory.Slot;
+
+public class PolymorphWidget extends PlayerRecipesWidget {
     private final BackpackScreen screen;
 
     public PolymorphWidget(BackpackScreen screen, Slot outputSlot) {
@@ -45,4 +51,3 @@ package com.tiviacz.travelersbackpack.compat.polymorph;
         return false;
     }
 }
-*/

@@ -2,6 +2,7 @@ package com.tiviacz.travelersbackpack.inventory.menu;
 
 import com.mojang.datafixers.util.Pair;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
+import com.tiviacz.travelersbackpack.compat.polymorph.PolymorphCompat;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.handler.ItemStackHandler;
@@ -648,14 +649,14 @@ public class BackpackBaseMenu extends AbstractBackpackMenu {
             RecipeHolder<CraftingRecipe> recipe = oldRecipe;
 
             if(TravelersBackpack.polymorphLoaded) {
-                /*if(PolymorphCompat.shouldResetRecipe(recipe, this, upgrade.craftSlots, world, player)) {
+                if(PolymorphCompat.shouldResetRecipe(recipe, this, upgrade.craftSlots, world, player)) {
                     recipe = null;
-                }*/
+                }
             }
 
             if(recipe == null || !recipe.value().matches(input, world)) {
                 if(TravelersBackpack.polymorphLoaded) {
-                    //recipe = PolymorphCompat.getPolymorphedRecipe(this, upgrade.craftSlots, world, player);
+                    recipe = PolymorphCompat.getPolymorphedRecipe(this, upgrade.craftSlots, world, player);
                 } else {
                     recipe = ((ServerLevel)world).recipeAccess().getRecipeFor(RecipeType.CRAFTING, input, world).orElse(null);
                 }

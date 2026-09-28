@@ -104,7 +104,7 @@ public class TravelersBackpack implements ModInitializer {
         pneumonoGravestonesLoaded = fabricLoader.isModLoaded("gravestones");
         if(pneumonoGravestonesLoaded) PneumonoGravestonesCompat.register();
 
-        polymorphLoaded = fabricLoader.isModLoaded("polymorph");
+        polymorphLoaded = fabricLoader.isModLoaded("polymorph") || fabricLoader.isModLoaded("polymorph_plus");
         trashSlotLoaded = fabricLoader.isModLoaded("trashslot");
         vinurlLoaded = fabricLoader.isModLoaded("vinurl");
         if(vinurlLoaded) VinURLNetwork.register();

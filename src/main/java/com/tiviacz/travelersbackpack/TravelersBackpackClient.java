@@ -16,6 +16,7 @@ import com.tiviacz.travelersbackpack.client.screens.tooltip.BackpackTooltipCompo
 import com.tiviacz.travelersbackpack.client.screens.tooltip.ClientBackpackTooltipComponent;
 import com.tiviacz.travelersbackpack.commands.BackpackIconCommands;
 import com.tiviacz.travelersbackpack.compat.craftingtweaks.CraftingTweaksCompat;
+import com.tiviacz.travelersbackpack.compat.polymorph.PolymorphCompat;
 import com.tiviacz.travelersbackpack.compat.trashslot.TrashSlotCompat;
 import com.tiviacz.travelersbackpack.compat.trinkets.BackpackTrinketRenderer;
 import com.tiviacz.travelersbackpack.component.RenderInfo;
@@ -118,7 +119,7 @@ public class TravelersBackpackClient implements ClientModInitializer {
         registerClientCommands();
 
         //Polymorph Integration
-        //if(TravelersBackpack.polymorphLoaded) PolymorphCompat.registerWidget();
+        if(TravelersBackpack.polymorphLoaded) PolymorphCompat.registerWidget();
         if(TravelersBackpack.trashSlotLoaded) TrashSlotCompat.register();
 
         //Backpack Model Deserializer

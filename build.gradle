@@ -90,7 +90,7 @@ dependencies {
 	implementation ("maven.modrinth:jei:cHJ1j59c")
 
 	//Polymorph
-	//compileOnly("maven.modrinth:polymorph:j4jPy88h")
+	implementation("maven.modrinth:polymorph_plus:QrDv5S9t")
 
 	//Comforts
 	//compileOnly ("maven.modrinth:comforts:vUdakIzK")
