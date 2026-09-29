@@ -98,7 +98,7 @@ public class ModClientEventHandler {
     public static final KeyMapping TOGGLE_UPGRADE_2 = new KeyMapping("key.travelersbackpack.toggle_upgrade_2", GLFW.GLFW_KEY_UNKNOWN, CATEGORY);
     public static final KeyMapping TOGGLE_UPGRADE_3 = new KeyMapping("key.travelersbackpack.toggle_upgrade_3", GLFW.GLFW_KEY_UNKNOWN, CATEGORY);
     public static final List<KeyMapping> TOGGLE_UPGRADE_KEYS = ImmutableList.of(TOGGLE_UPGRADE_0, TOGGLE_UPGRADE_1, TOGGLE_UPGRADE_2, TOGGLE_UPGRADE_3);
-    public static final Identifier STAR_MODEL_LOCATION = Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "item/supporter_star");
+    public static final Identifier STAR_MODEL_LOCATION = Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "block/supporter_star");
     public static final StandaloneModelKey<BlockModelPart> STAR_MODEL = new StandaloneModelKey<>(STAR_MODEL_LOCATION::toString);
 
     @SubscribeEvent
