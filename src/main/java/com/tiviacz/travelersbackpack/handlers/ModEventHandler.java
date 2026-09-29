@@ -2,6 +2,7 @@ package com.tiviacz.travelersbackpack.handlers;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
+import com.tiviacz.travelersbackpack.datagen.ModGlobalLootModifierProvider;
 import com.tiviacz.travelersbackpack.datagen.ModItemTagsProvider;
 import com.tiviacz.travelersbackpack.datagen.ModLootTableProvider;
 import com.tiviacz.travelersbackpack.datagen.ModRecipeProvider;
@@ -33,6 +34,7 @@ public class ModEventHandler {
         generator.addProvider(true, new ModItemTagsProvider(output, event.getLookupProvider()));
         generator.addProvider(true, new ModRecipeProvider.Runner(output, event.getLookupProvider()));
         generator.addProvider(true, ModLootTableProvider.create(output, event.getLookupProvider()));
+        generator.addProvider(true, new ModGlobalLootModifierProvider(output, event.getLookupProvider()));
     }
 
     @SubscribeEvent
