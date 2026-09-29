@@ -39,7 +39,7 @@ neoForge {
         }
         client2 {
             client()
-            programArguments = ["--username Dev2"]
+            programArguments.addAll("--username", "InTivi")
         }
         data {
             //#data
