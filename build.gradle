@@ -132,8 +132,8 @@ dependencies {
     //runtimeOnly("curse.maven:glitchcore-955399:5645390")
 
     //ESB
-    //implementation("curse.maven:esb-594006:6029957")
-    //implementation("curse.maven:pzl-495476:6031757")
+    compileOnly("maven.modrinth:easy-shulker-boxes:shtTIuPR")
+    compileOnly("maven.modrinth:puzzles-lib:HOkyIMYP")
 
 }
 
