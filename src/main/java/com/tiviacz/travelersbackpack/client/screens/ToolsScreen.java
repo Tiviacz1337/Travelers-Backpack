@@ -73,7 +73,7 @@ public class ToolsScreen extends Screen {
 
         //Hose Menu
         if(heldItem.getItem() instanceof HoseItem) {
-            int hoveredResult = RadialToolsOverlay.renderRadial(graphics, backpack, heldItem, hoseMenu, false, scaled.getFirst(), scaled.getSecond(), mouseX, mouseY, partialTick, progress);
+            int hoveredResult = RadialToolsOverlay.renderRadial(graphics, backpack, heldItem, getHoseMenu(), false, scaled.getFirst(), scaled.getSecond(), mouseX, mouseY, partialTick, progress);
 
             if(!NeoForgeClientEventHandler.isKeyDown(ModClientEventHandler.SWAP_TOOL)) {
                 selectHoseAction(mc.player, hoveredResult);
@@ -162,22 +162,28 @@ public class ToolsScreen extends Screen {
         return tools;
     }
 
-    public static final NonNullList<ItemStack> hoseMenu = createHoseMenu();
+    public static NonNullList<ItemStack> hoseMenu = null;
 
-    public static NonNullList<ItemStack> createHoseMenu() {
-        NonNullList<ItemStack> stacks = NonNullList.createWithCapacity(5);
-        ItemStack suckHose = new ItemStack(ModItems.HOSE.get());
-        suckHose.set(ModDataComponents.HOSE_MODES, List.of(1, 0));
-        ItemStack spitHose = new ItemStack(ModItems.HOSE.get());
-        spitHose.set(ModDataComponents.HOSE_MODES, List.of(2, 0));
-        ItemStack drinkHose = new ItemStack(ModItems.HOSE.get());
-        drinkHose.set(ModDataComponents.HOSE_MODES, List.of(3, 0));
-        stacks.add(suckHose);
-        stacks.add(drinkHose);
-        stacks.add(new ItemStack(ModItems.BACKPACK_TANK.get()));
-        stacks.add(new ItemStack(ModItems.BACKPACK_TANK.get()));
-        stacks.add(spitHose);
-        return stacks;
+    public static NonNullList<ItemStack> getHoseMenu() {
+        if(hoseMenu == null) {
+            hoseMenu = NonNullList.createWithCapacity(5);
+
+            ItemStack suckHose = new ItemStack(ModItems.HOSE.get());
+            suckHose.set(ModDataComponents.HOSE_MODES, List.of(1, 0));
+
+            ItemStack spitHose = new ItemStack(ModItems.HOSE.get());
+            spitHose.set(ModDataComponents.HOSE_MODES, List.of(2, 0));
+
+            ItemStack drinkHose = new ItemStack(ModItems.HOSE.get());
+            drinkHose.set(ModDataComponents.HOSE_MODES, List.of(3, 0));
+
+            hoseMenu.add(suckHose);
+            hoseMenu.add(drinkHose);
+            hoseMenu.add(new ItemStack(ModItems.BACKPACK_TANK.get()));
+            hoseMenu.add(new ItemStack(ModItems.BACKPACK_TANK.get()));
+            hoseMenu.add(spitHose);
+        }
+        return hoseMenu;
     }
 
     @Override
