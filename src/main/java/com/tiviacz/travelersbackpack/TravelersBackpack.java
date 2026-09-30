@@ -50,6 +50,7 @@ public class TravelersBackpack {
     public static boolean trashSlotLoaded;
     public static boolean lambDynamicLightsLoaded;
     public static boolean mouseTweaksLoaded;
+    public static boolean polymorphLoaded;
 
     public TravelersBackpack(IEventBus eventBus, ModContainer modContainer) {
         NeoForgeMod.enableMilkFluid();
@@ -98,6 +99,7 @@ public class TravelersBackpack {
         trashSlotLoaded = ModList.get().isLoaded("trashslot");
         lambDynamicLightsLoaded = ModList.get().isLoaded("lambdynlights");
         mouseTweaksLoaded = ModList.get().isLoaded("mousetweaks");
+        polymorphLoaded = ModList.get().isLoaded("polymorph") || ModList.get().isLoaded("polymorph_plus");
 
         //Fetch supporters
         Supporters.fetchSupporters();
@@ -121,6 +123,7 @@ public class TravelersBackpack {
         });
         if(accessoriesLoaded) TravelersBackpackAccessoryClient.init();
         if(curiosLoaded && !accessoriesLoaded) TravelersBackpackCurioClient.registerCurioRenderer();
+        if(polymorphLoaded) PolymorphCompatClient.registerWidget();
     }
 
     private static void loadCuriosCompat(IEventBus bus) {
