@@ -3,7 +3,9 @@
   "package": "com.tiviacz.travelersbackpack.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "PlayerMixin"
+    "PlayerMixin",
+    "entity.item.EntityMixin",
+    "entity.item.ItemEntityMixin"
   ],
   "client": [
     "MinecraftMixin"
