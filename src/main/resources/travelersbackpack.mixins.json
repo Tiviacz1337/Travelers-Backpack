@@ -6,7 +6,9 @@
     "AbstractContainerMenuMixin",
     "ItemStackMixin",
     "PlayerMixin",
-    "ServerGamePacketListenerImplMixin"
+    "ServerGamePacketListenerImplMixin",
+    "entity.item.EntityMixin",
+    "entity.item.ItemEntityMixin"
   ],
   "client": [
   ],

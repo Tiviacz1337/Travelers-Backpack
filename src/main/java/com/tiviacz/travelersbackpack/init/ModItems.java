@@ -33,7 +33,7 @@ public class ModItems {
     public static final DeferredItem<TravelersBackpackItem> STANDARD_TRAVELERS_BACKPACK = ITEMS.registerItem("standard", (props) -> new TravelersBackpackItem(props, ModBlocks.STANDARD_TRAVELERS_BACKPACK.get()));
 
     //Blocks
-    public static final DeferredItem<TravelersBackpackItem> NETHERITE_TRAVELERS_BACKPACK = ITEMS.registerItem("netherite", (props) -> new TravelersBackpackItem(props, ModBlocks.NETHERITE_TRAVELERS_BACKPACK.get()));
+    public static final DeferredItem<TravelersBackpackItem> NETHERITE_TRAVELERS_BACKPACK = ITEMS.registerItem("netherite", (props) -> new TravelersBackpackItem(props.fireResistant(), ModBlocks.NETHERITE_TRAVELERS_BACKPACK.get()));
     public static final DeferredItem<TravelersBackpackItem> DIAMOND_TRAVELERS_BACKPACK = ITEMS.registerItem("diamond", (props) -> new TravelersBackpackItem(props, ModBlocks.DIAMOND_TRAVELERS_BACKPACK.get()));
     public static final DeferredItem<TravelersBackpackItem> GOLD_TRAVELERS_BACKPACK = ITEMS.registerItem("gold", (props) -> new TravelersBackpackItem(props, ModBlocks.GOLD_TRAVELERS_BACKPACK.get()));
     public static final DeferredItem<TravelersBackpackItem> EMERALD_TRAVELERS_BACKPACK = ITEMS.registerItem("emerald", (props) -> new TravelersBackpackItem(props, ModBlocks.EMERALD_TRAVELERS_BACKPACK.get()));
