@@ -17,6 +17,7 @@ import net.fabricmc.fabric.api.transfer.v1.storage.SlottedStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
@@ -135,7 +136,7 @@ public class ModBlockEntityTypes {
         return new FluidTank(0);
     }
 
-    public static class BackpackStorage extends SnapshotParticipant<ItemStack[]> implements Storage<ItemVariant> {
+    public static class BackpackStorage extends SnapshotParticipant<ItemStack[]> implements SlottedStorage<ItemVariant> {
         private final SlottedStorage<ItemVariant> storage;
         private final StorageAccessWrapper backingStorage;
 
@@ -187,6 +188,19 @@ public class ModBlockEntityTypes {
         }
 
         @Override
+        public int getSlotCount() {
+            return storage.getSlotCount();
+        }
+
+        @Override
+        public SingleSlotStorage<ItemVariant> getSlot(int slot) {
+            if(slot < 0 || slot >= getSlotCount()) {
+                throw new IndexOutOfBoundsException("Slot " + slot + " not in valid range - [0," + getSlotCount() + ")");
+            }
+            return new BackpackStorageView(slot);
+        }
+
+        @Override
         public Iterator<StorageView<ItemVariant>> iterator() {
             return IntStream.range(0, storage.getSlotCount())
                     .mapToObj(i -> (StorageView<ItemVariant>)new BackpackStorageView(i))
@@ -209,7 +223,7 @@ public class ModBlockEntityTypes {
             }
         }
 
-        private class BackpackStorageView implements StorageView<ItemVariant> {
+        private class BackpackStorageView implements SingleSlotStorage<ItemVariant> {
             private final int slotIndex;
 
             public BackpackStorageView(int slotIndex) {
@@ -217,8 +231,27 @@ public class ModBlockEntityTypes {
             }
 
             @Override
+            public long insert(ItemVariant resource, long maxAmount, TransactionContext transaction) {
+                StoragePreconditions.notNegative(maxAmount);
+                BackpackStorage.this.updateSnapshots(transaction);
+                int attemptAmount = (int)Math.min(maxAmount, resource.toStack().getMaxStackSize());
+                ItemStack insertStack = resource.toStack(attemptAmount);
+                ItemStack remainder = backingStorage.insertItem(slotIndex, insertStack, false);
+                return attemptAmount - remainder.getCount();
+            }
+
+            @Override
             public long extract(ItemVariant resource, long maxAmount, TransactionContext transaction) {
-                return BackpackStorage.this.extract(resource, maxAmount, transaction);
+                StoragePreconditions.notNegative(maxAmount);
+                BackpackStorage.this.updateSnapshots(transaction);
+                int attemptAmount = (int)Math.min(maxAmount, Integer.MAX_VALUE);
+                ItemStack simulatedStack = backingStorage.extractItem(slotIndex, attemptAmount, true);
+                if(!simulatedStack.isEmpty() && resource.matches(simulatedStack)) {
+                    int amountExtracted = simulatedStack.getCount();
+                    backingStorage.extractItem(slotIndex, amountExtracted, false);
+                    return amountExtracted;
+                }
+                return 0;
             }
 
             @Override
