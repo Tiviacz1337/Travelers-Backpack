@@ -4,6 +4,7 @@ import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.level.Explosion;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -25,7 +26,7 @@ public abstract class EntityMixin {
     private void travelersbackpack$isInWater(CallbackInfoReturnable<Boolean> cir) {
         if(this.travelersbackpack$isBackpack() && TravelersBackpackConfig.SERVER.backpackSettings.voidProtection.get()) {
             Entity entity = (Entity)(Object)this;
-            if(entity.getY() < entity.level().getMinY() + 1) {
+            if(entity.getY() < entity.level().getMinBuildHeight() + 1) {
                 cir.setReturnValue(true);
             }
         }
@@ -42,6 +43,13 @@ public abstract class EntityMixin {
     private void travelersbackpack$onBelowWorld(CallbackInfo ci) {
         if(this.travelersbackpack$isBackpack() && TravelersBackpackConfig.SERVER.backpackSettings.voidProtection.get()) {
             ci.cancel();
+        }
+    }
+
+    @Inject(method = "ignoreExplosion", at = @At("HEAD"), cancellable = true)
+    private void travelersbackpack$ignoreExplosion(Explosion explosion, CallbackInfoReturnable<Boolean> cir) {
+        if(this.travelersbackpack$isBackpack() && TravelersBackpackConfig.SERVER.backpackSettings.explosionResistant.get()) {
+            cir.setReturnValue(true);
         }
     }
 }
