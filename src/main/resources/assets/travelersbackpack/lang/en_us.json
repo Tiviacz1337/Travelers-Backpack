@@ -77,7 +77,7 @@
   "tier.travelersbackpack.diamond": "§bDiamond",
   "tier.travelersbackpack.netherite": "§8Netherite",
   "obtain.travelersbackpack.bat": "Backpack obtainable in Mine shafts and Dungeons",
-  "obtain.travelersbackpack.iron_golem": "Backpack obtainable in Armorer villager's chests",
+  "obtain.travelersbackpack.iron_golem": "Backpack obtainable in Pillager Outposts",
   "obtain.travelersbackpack.villager": "Can only be acquired by buying it from a Librarian villager",
   "ability.travelersbackpack.hold_shift": "Hold <Shift> for Special Ability Description",
   "ability.travelersbackpack.item_and_block": "§6Ability available for: §eBlock & Equipped Backpack",
