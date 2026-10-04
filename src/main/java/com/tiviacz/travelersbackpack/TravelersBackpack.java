@@ -6,6 +6,7 @@ import com.tiviacz.travelersbackpack.compat.accessories.TravelersBackpackAccesso
 import com.tiviacz.travelersbackpack.compat.craftingtweaks.CraftingTweaksCompat;
 import com.tiviacz.travelersbackpack.compat.curios.TravelersBackpackCurio;
 import com.tiviacz.travelersbackpack.compat.curios.TravelersBackpackCurioClient;
+import com.tiviacz.travelersbackpack.compat.polymorph.PolymorphCompatClient;
 import com.tiviacz.travelersbackpack.compat.trashslot.TrashSlotCompat;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
