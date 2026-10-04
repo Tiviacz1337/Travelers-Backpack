@@ -7,7 +7,6 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.MapColor;
-import net.minecraft.world.level.material.PushReaction;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -72,20 +71,20 @@ public class ModBlocks {
     public static final DeferredBlock<TravelersBackpackBlock> IRON_GOLEM_TRAVELERS_BACKPACK = BLOCKS.register("iron_golem", () -> new TravelersBackpackBlock(Block.Properties.of().mapColor(MapColor.METAL).sound(SoundType.METAL)));
 
     //Other Blocks
-    public static final DeferredBlock<SleepingBagBlock> WHITE_SLEEPING_BAG = BLOCKS.register("white_sleeping_bag", () -> new SleepingBagBlock(DyeColor.WHITE, Block.Properties.of().mapColor(MapColor.SNOW).sound(SoundType.WOOL).strength(0.2F).noOcclusion().pushReaction(PushReaction.DESTROY)));
-    public static final DeferredBlock<SleepingBagBlock> ORANGE_SLEEPING_BAG = BLOCKS.register("orange_sleeping_bag", () -> new SleepingBagBlock(DyeColor.ORANGE, Block.Properties.of().mapColor(MapColor.COLOR_ORANGE).sound(SoundType.WOOL).strength(0.2F).noOcclusion().pushReaction(PushReaction.DESTROY)));
-    public static final DeferredBlock<SleepingBagBlock> MAGENTA_SLEEPING_BAG = BLOCKS.register("magenta_sleeping_bag", () -> new SleepingBagBlock(DyeColor.MAGENTA, Block.Properties.of().mapColor(MapColor.COLOR_MAGENTA).sound(SoundType.WOOL).strength(0.2F).noOcclusion().pushReaction(PushReaction.DESTROY)));
-    public static final DeferredBlock<SleepingBagBlock> LIGHT_BLUE_SLEEPING_BAG = BLOCKS.register("light_blue_sleeping_bag", () -> new SleepingBagBlock(DyeColor.LIGHT_BLUE, Block.Properties.of().mapColor(MapColor.COLOR_LIGHT_BLUE).sound(SoundType.WOOL).strength(0.2F).noOcclusion().pushReaction(PushReaction.DESTROY)));
-    public static final DeferredBlock<SleepingBagBlock> YELLOW_SLEEPING_BAG = BLOCKS.register("yellow_sleeping_bag", () -> new SleepingBagBlock(DyeColor.YELLOW, Block.Properties.of().mapColor(MapColor.COLOR_YELLOW).sound(SoundType.WOOL).strength(0.2F).noOcclusion().pushReaction(PushReaction.DESTROY)));
-    public static final DeferredBlock<SleepingBagBlock> LIME_SLEEPING_BAG = BLOCKS.register("lime_sleeping_bag", () -> new SleepingBagBlock(DyeColor.LIME, Block.Properties.of().mapColor(MapColor.COLOR_LIGHT_GREEN).sound(SoundType.WOOL).strength(0.2F).noOcclusion().pushReaction(PushReaction.DESTROY)));
-    public static final DeferredBlock<SleepingBagBlock> PINK_SLEEPING_BAG = BLOCKS.register("pink_sleeping_bag", () -> new SleepingBagBlock(DyeColor.PINK, Block.Properties.of().mapColor(MapColor.COLOR_PINK).sound(SoundType.WOOL).strength(0.2F).noOcclusion().pushReaction(PushReaction.DESTROY)));
-    public static final DeferredBlock<SleepingBagBlock> GRAY_SLEEPING_BAG = BLOCKS.register("gray_sleeping_bag", () -> new SleepingBagBlock(DyeColor.GRAY, Block.Properties.of().mapColor(MapColor.COLOR_GRAY).sound(SoundType.WOOL).strength(0.2F).noOcclusion().pushReaction(PushReaction.DESTROY)));
-    public static final DeferredBlock<SleepingBagBlock> LIGHT_GRAY_SLEEPING_BAG = BLOCKS.register("light_gray_sleeping_bag", () -> new SleepingBagBlock(DyeColor.LIGHT_GRAY, Block.Properties.of().mapColor(MapColor.COLOR_LIGHT_GRAY).sound(SoundType.WOOL).strength(0.2F).noOcclusion().pushReaction(PushReaction.DESTROY)));
-    public static final DeferredBlock<SleepingBagBlock> CYAN_SLEEPING_BAG = BLOCKS.register("cyan_sleeping_bag", () -> new SleepingBagBlock(DyeColor.CYAN, Block.Properties.of().mapColor(MapColor.COLOR_CYAN).sound(SoundType.WOOL).strength(0.2F).noOcclusion().pushReaction(PushReaction.DESTROY)));
-    public static final DeferredBlock<SleepingBagBlock> PURPLE_SLEEPING_BAG = BLOCKS.register("purple_sleeping_bag", () -> new SleepingBagBlock(DyeColor.PURPLE, Block.Properties.of().mapColor(MapColor.COLOR_PURPLE).sound(SoundType.WOOL).strength(0.2F).noOcclusion().pushReaction(PushReaction.DESTROY)));
-    public static final DeferredBlock<SleepingBagBlock> BLUE_SLEEPING_BAG = BLOCKS.register("blue_sleeping_bag", () -> new SleepingBagBlock(DyeColor.BLUE, Block.Properties.of().mapColor(MapColor.COLOR_BLUE).sound(SoundType.WOOL).strength(0.2F).noOcclusion().pushReaction(PushReaction.DESTROY)));
-    public static final DeferredBlock<SleepingBagBlock> BROWN_SLEEPING_BAG = BLOCKS.register("brown_sleeping_bag", () -> new SleepingBagBlock(DyeColor.BROWN, Block.Properties.of().mapColor(MapColor.COLOR_BROWN).sound(SoundType.WOOL).strength(0.2F).noOcclusion().pushReaction(PushReaction.DESTROY)));
-    public static final DeferredBlock<SleepingBagBlock> GREEN_SLEEPING_BAG = BLOCKS.register("green_sleeping_bag", () -> new SleepingBagBlock(DyeColor.GREEN, Block.Properties.of().mapColor(MapColor.COLOR_GREEN).sound(SoundType.WOOL).strength(0.2F).noOcclusion().pushReaction(PushReaction.DESTROY)));
-    public static final DeferredBlock<SleepingBagBlock> RED_SLEEPING_BAG = BLOCKS.register("red_sleeping_bag", () -> new SleepingBagBlock(DyeColor.RED, Block.Properties.of().mapColor(MapColor.COLOR_RED).sound(SoundType.WOOL).strength(0.2F).noOcclusion().pushReaction(PushReaction.DESTROY)));
-    public static final DeferredBlock<SleepingBagBlock> BLACK_SLEEPING_BAG = BLOCKS.register("black_sleeping_bag", () -> new SleepingBagBlock(DyeColor.BLACK, Block.Properties.of().mapColor(MapColor.COLOR_BLACK).sound(SoundType.WOOL).strength(0.2F).noOcclusion().pushReaction(PushReaction.DESTROY)));
+    public static final DeferredBlock<SleepingBagBlock> WHITE_SLEEPING_BAG = BLOCKS.register("white_sleeping_bag", () -> new SleepingBagBlock(DyeColor.WHITE));
+    public static final DeferredBlock<SleepingBagBlock> ORANGE_SLEEPING_BAG = BLOCKS.register("orange_sleeping_bag", () -> new SleepingBagBlock(DyeColor.ORANGE));
+    public static final DeferredBlock<SleepingBagBlock> MAGENTA_SLEEPING_BAG = BLOCKS.register("magenta_sleeping_bag", () -> new SleepingBagBlock(DyeColor.MAGENTA));
+    public static final DeferredBlock<SleepingBagBlock> LIGHT_BLUE_SLEEPING_BAG = BLOCKS.register("light_blue_sleeping_bag", () -> new SleepingBagBlock(DyeColor.LIGHT_BLUE));
+    public static final DeferredBlock<SleepingBagBlock> YELLOW_SLEEPING_BAG = BLOCKS.register("yellow_sleeping_bag", () -> new SleepingBagBlock(DyeColor.YELLOW));
+    public static final DeferredBlock<SleepingBagBlock> LIME_SLEEPING_BAG = BLOCKS.register("lime_sleeping_bag", () -> new SleepingBagBlock(DyeColor.LIME));
+    public static final DeferredBlock<SleepingBagBlock> PINK_SLEEPING_BAG = BLOCKS.register("pink_sleeping_bag", () -> new SleepingBagBlock(DyeColor.PINK));
+    public static final DeferredBlock<SleepingBagBlock> GRAY_SLEEPING_BAG = BLOCKS.register("gray_sleeping_bag", () -> new SleepingBagBlock(DyeColor.GRAY));
+    public static final DeferredBlock<SleepingBagBlock> LIGHT_GRAY_SLEEPING_BAG = BLOCKS.register("light_gray_sleeping_bag", () -> new SleepingBagBlock(DyeColor.LIGHT_GRAY));
+    public static final DeferredBlock<SleepingBagBlock> CYAN_SLEEPING_BAG = BLOCKS.register("cyan_sleeping_bag", () -> new SleepingBagBlock(DyeColor.CYAN));
+    public static final DeferredBlock<SleepingBagBlock> PURPLE_SLEEPING_BAG = BLOCKS.register("purple_sleeping_bag", () -> new SleepingBagBlock(DyeColor.PURPLE));
+    public static final DeferredBlock<SleepingBagBlock> BLUE_SLEEPING_BAG = BLOCKS.register("blue_sleeping_bag", () -> new SleepingBagBlock(DyeColor.BLUE));
+    public static final DeferredBlock<SleepingBagBlock> BROWN_SLEEPING_BAG = BLOCKS.register("brown_sleeping_bag", () -> new SleepingBagBlock(DyeColor.BROWN));
+    public static final DeferredBlock<SleepingBagBlock> GREEN_SLEEPING_BAG = BLOCKS.register("green_sleeping_bag", () -> new SleepingBagBlock(DyeColor.GREEN));
+    public static final DeferredBlock<SleepingBagBlock> RED_SLEEPING_BAG = BLOCKS.register("red_sleeping_bag", () -> new SleepingBagBlock(DyeColor.RED));
+    public static final DeferredBlock<SleepingBagBlock> BLACK_SLEEPING_BAG = BLOCKS.register("black_sleeping_bag", () -> new SleepingBagBlock(DyeColor.BLACK));
 }
