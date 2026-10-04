@@ -55,6 +55,10 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Locale;
@@ -83,6 +87,14 @@ public class TravelersBackpackItem extends BlockItem {
 
         //Texture location
         this.texture = texture;
+    }
+
+    public TravelersBackpackItem(Properties properties, Block block) {
+        super(block, properties.stacksTo(1)
+                .component(ModDataComponents.TIER, 0)
+                .component(ModDataComponents.IS_VISIBLE, true));
+
+        this.texture = ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "");
     }
 
     @Deprecated(forRemoval = true)
@@ -351,6 +363,9 @@ public class TravelersBackpackItem extends BlockItem {
     @Override
     public Entity createEntity(Level level, Entity entity, ItemStack itemstack) {
         if(!(entity instanceof ItemEntity itemEntity)) {
+            return null;
+        }
+        if(!TravelersBackpackConfig.SERVER.backpackSettings.invulnerableBackpack.get() && !TravelersBackpackConfig.SERVER.backpackSettings.voidProtection.get()) {
             return null;
         }
         return createBackpackEntity(level, itemEntity, itemstack);
