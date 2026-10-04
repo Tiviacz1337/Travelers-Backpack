@@ -14,13 +14,11 @@ import com.tiviacz.travelersbackpack.inventory.menu.slot.ToolSlotItemHandler;
 import com.tiviacz.travelersbackpack.items.HoseItem;
 import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.ScrollWheelHandler;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.lwjgl.glfw.GLFW;
@@ -182,8 +180,7 @@ public class ToolsScreen extends Screen {
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
         if(TravelersBackpackConfig.CLIENT.toolsOverlay.allowHotbarScrolling.get() && this.minecraft.player != null) {
-            Inventory inventory = this.minecraft.player.getInventory();
-            inventory.setSelectedSlot(ScrollWheelHandler.getNextScrollWheelSelection(scrollY, inventory.getSelectedSlot(), Inventory.getSelectionSize()));
+            this.minecraft.player.getInventory().swapPaint(scrollY);
             return true;
         }
         return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
