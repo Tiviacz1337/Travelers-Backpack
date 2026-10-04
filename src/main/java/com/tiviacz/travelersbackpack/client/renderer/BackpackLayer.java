@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.client.model.BackpackModel;
 import com.tiviacz.travelersbackpack.client.model.StackModelPart;
+import com.tiviacz.travelersbackpack.compat.emf.EntityModelFeaturesCompat;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.Supporters;
@@ -74,6 +75,9 @@ public class BackpackLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
     }
 
     public static void alignModel(PoseStack poseStack, HumanoidModel parent, BackpackModel backpackModel, HumanoidRenderState state) {
+        if(TravelersBackpack.entityModelFeaturesLoaded) {
+            EntityModelFeaturesCompat.alignModel(poseStack, parent, backpackModel, state);
+        }
         backpackModel.copyFrom(parent.body);
         backpackModel.supporterBadgeModel.copyFrom(parent.body);
 

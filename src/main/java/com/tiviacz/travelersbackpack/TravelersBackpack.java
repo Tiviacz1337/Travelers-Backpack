@@ -52,6 +52,7 @@ public class TravelersBackpack {
     public static boolean lambDynamicLightsLoaded;
     public static boolean mouseTweaksLoaded;
     public static boolean polymorphLoaded;
+    public static boolean entityModelFeaturesLoaded;
 
     public TravelersBackpack(IEventBus eventBus, ModContainer modContainer) {
         NeoForgeMod.enableMilkFluid();
@@ -101,6 +102,7 @@ public class TravelersBackpack {
         lambDynamicLightsLoaded = ModList.get().isLoaded("lambdynlights");
         mouseTweaksLoaded = ModList.get().isLoaded("mousetweaks");
         polymorphLoaded = ModList.get().isLoaded("polymorph") || ModList.get().isLoaded("polymorph_plus");
+        entityModelFeaturesLoaded = ModList.get().isLoaded("entity_model_features");
 
         //Fetch supporters
         Supporters.fetchSupporters();

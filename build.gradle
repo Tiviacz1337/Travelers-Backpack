@@ -136,6 +136,10 @@ dependencies {
     compileOnly("maven.modrinth:easy-shulker-boxes:shtTIuPR")
     compileOnly("maven.modrinth:puzzles-lib:HOkyIMYP")
 
+    //Entity Model Features
+    implementation("maven.modrinth:4I1XuqiY:UXxi17CO")
+    implementation("maven.modrinth:BVzZfTc1:A6wb0Mn2")
+
 }
 
 var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {

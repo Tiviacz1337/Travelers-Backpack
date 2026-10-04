@@ -5,6 +5,7 @@
 ✨ Added new config options to the tools menu: displayEmptySlots, allowHotbarScrolling (default: false, false)   
 🔧 The Iron Golem Backpack can be found in Pillager Outpost chests with a 6% chance  
 🔧 Enderman ability also increases attack range  
+🔧 Added compatibility with Entity Model Features, allowing the backpack to display properly on the player model when using resource packs like Fresh Animations  
 🐛 Fixed Hay Backpack ability  
 📚 Updated nl_be translation - Thanks Reinforged!  
 
