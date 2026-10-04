@@ -3,6 +3,7 @@ package com.tiviacz.travelersbackpack.handlers;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.compat.vinurl.VinURLNetwork;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
+import com.tiviacz.travelersbackpack.datagen.ModGlobalLootModifierProvider;
 import com.tiviacz.travelersbackpack.datagen.ModLootTableProvider;
 import com.tiviacz.travelersbackpack.datagen.ModRecipeProvider;
 import com.tiviacz.travelersbackpack.init.ModBlockEntityTypes;
@@ -32,6 +33,7 @@ public class ModEventHandler {
         boolean includeServer = event.includeServer();
         generator.addProvider(includeServer, new ModRecipeProvider(output, event.getLookupProvider()));
         generator.addProvider(includeServer, ModLootTableProvider.create(output, event.getLookupProvider()));
+        generator.addProvider(includeServer, new ModGlobalLootModifierProvider(output, event.getLookupProvider()));
     }
 
     @SubscribeEvent

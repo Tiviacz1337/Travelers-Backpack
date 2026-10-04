@@ -4,8 +4,11 @@
     {
       "condition": "neoforge:loot_table_id",
       "loot_table_id": "minecraft:chests/abandoned_mineshaft"
+    },
+    {
+      "chance": 0.05,
+      "condition": "minecraft:random_chance"
     }
   ],
-  "item": "travelersbackpack:iron_tier_upgrade",
-  "weight": 0.05
+  "item": "travelersbackpack:iron_tier_upgrade"
 }

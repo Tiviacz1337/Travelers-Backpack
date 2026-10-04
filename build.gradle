@@ -90,6 +90,8 @@ dependencies {
 
     //JEI
     implementation("maven.modrinth:jei:KbENlUcA")
+    implementation("maven.modrinth:PEPVViac:nmQAgzDw")
+    implementation("maven.modrinth:BaR4ijFC:XpK6TnmI")
 
     //EMI
     compileOnly("maven.modrinth:emi:ouSj7NfF")
@@ -107,8 +109,8 @@ dependencies {
     implementation("maven.modrinth:trashslot:xyqrX19y")
 
     //Quark
-    implementation("maven.modrinth:qnQsVE2z:yvp3Jbmk")
-    implementation("maven.modrinth:MVARlG2f:9GjNW2Gf")
+    compileOnly("maven.modrinth:qnQsVE2z:yvp3Jbmk")
+    compileOnly("maven.modrinth:MVARlG2f:9GjNW2Gf")
 
     //VinURL
     compileOnly("maven.modrinth:vinurl:5NlvMz3w")
