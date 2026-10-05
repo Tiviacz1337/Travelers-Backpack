@@ -1,4 +1,4 @@
-package com.tiviacz.travelersbackpack.api.events;
+package com.tiviacz.travelersbackpack.api.event;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
