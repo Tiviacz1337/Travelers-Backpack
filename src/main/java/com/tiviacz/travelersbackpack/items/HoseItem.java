@@ -1,6 +1,7 @@
 package com.tiviacz.travelersbackpack.items;
 
 import com.tiviacz.travelersbackpack.advancements.ActionTypeTrigger;
+import com.tiviacz.travelersbackpack.api.event.HoseEvent;
 import com.tiviacz.travelersbackpack.capability.AttachmentUtils;
 import com.tiviacz.travelersbackpack.common.ServerActions;
 import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
@@ -61,7 +62,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
-import com.tiviacz.travelersbackpack.api.event.HoseEvent;
 import net.neoforged.neoforge.common.NeoForge;
 
 public class HoseItem extends Item {

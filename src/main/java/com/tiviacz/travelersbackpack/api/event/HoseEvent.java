@@ -8,95 +8,78 @@ import net.neoforged.bus.api.Event;
 import net.neoforged.bus.api.ICancellableEvent;
 import net.neoforged.neoforge.fluids.FluidStack;
 
-public abstract class HoseEvent extends Event implements ICancellableEvent
-{
+public abstract class HoseEvent extends Event implements ICancellableEvent {
     private final Player player;
     private final Level level;
     protected FluidStack fluid;
 
-    protected HoseEvent(Player player, Level level, FluidStack fluid)
-    {
+    protected HoseEvent(Player player, Level level, FluidStack fluid) {
         this.player = player;
         this.level = level;
         this.fluid = fluid;
     }
 
-    public Player getPlayer()
-    {
+    public Player getPlayer() {
         return player;
     }
 
-    public Level getLevel()
-    {
+    public Level getLevel() {
         return level;
     }
 
-    public FluidStack getFluid()
-    {
+    public FluidStack getFluid() {
         return fluid;
     }
 
-    public static class PickUp extends HoseEvent
-    {
+    public static class PickUp extends HoseEvent {
         private final BlockPos pos;
         private final BlockState state;
 
-        public PickUp(Player player, Level level, BlockPos pos, BlockState state, FluidStack fluid)
-        {
+        public PickUp(Player player, Level level, BlockPos pos, BlockState state, FluidStack fluid) {
             super(player, level, fluid);
             this.pos = pos;
             this.state = state;
         }
 
-        public BlockPos getPos()
-        {
+        public BlockPos getPos() {
             return pos;
         }
 
-        public BlockState getState()
-        {
+        public BlockState getState() {
             return state;
         }
 
-        public void setFluid(FluidStack fluid)
-        {
+        public void setFluid(FluidStack fluid) {
             this.fluid = fluid;
         }
     }
 
-    public static class Drink extends HoseEvent
-    {
+    public static class Drink extends HoseEvent {
         private int amount;
 
-        public Drink(Player player, Level level, FluidStack fluid, int amount)
-        {
+        public Drink(Player player, Level level, FluidStack fluid, int amount) {
             super(player, level, fluid);
             this.amount = amount;
         }
 
-        public int getAmount()
-        {
+        public int getAmount() {
             return amount;
         }
 
-        public void setAmount(int amount)
-        {
+        public void setAmount(int amount) {
             this.amount = amount;
         }
     }
 
-    public static class Spill extends HoseEvent
-    {
+    public static class Spill extends HoseEvent {
         private final BlockPos pos;
 
-        public Spill(Player player, Level level, BlockPos pos, FluidStack fluid)
-        {
+        public Spill(Player player, Level level, BlockPos pos, FluidStack fluid) {
             super(player, level, fluid);
             this.pos = pos;
         }
 
-        public BlockPos getPos()
-        {
+        public BlockPos getPos() {
             return pos;
         }
     }
