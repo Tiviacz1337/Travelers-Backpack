@@ -61,7 +61,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
-import com.tiviacz.travelersbackpack.api.events.HoseEvent;
+import com.tiviacz.travelersbackpack.api.event.HoseEvent;
 import net.neoforged.neoforge.common.NeoForge;
 
 public class HoseItem extends Item {
