@@ -1,6 +1,7 @@
 package com.tiviacz.travelersbackpack.items;
 
 import com.tiviacz.travelersbackpack.advancements.ActionTypeTrigger;
+import com.tiviacz.travelersbackpack.api.event.HoseEvent;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.common.ServerActions;
 import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
@@ -49,6 +50,7 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.SoundActions;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
@@ -126,7 +128,12 @@ public class HoseItem extends Item {
                         if(blockState.getBlock() instanceof BucketPickup bucketPickupBlock) {
                             Fluid fluid = blockState.getFluidState().getType();
                             if(fluid != Fluids.EMPTY) {
-                                FluidStack fluidStack = new FluidStack(fluid, FluidType.BUCKET_VOLUME);
+                                HoseEvent.PickUp event = new HoseEvent.PickUp(player, level, pos, blockState, new FluidStack(fluid, FluidType.BUCKET_VOLUME));
+                                MinecraftForge.EVENT_BUS.post(event);
+                                if(event.isCanceled()) {
+                                    return InteractionResultHolder.pass(stack);
+                                }
+                                FluidStack fluidStack = event.getFluid();
                                 int tankAmount = tank.isEmpty() ? 0 : tank.getFluidAmount();
                                 boolean canFill = tank.isEmpty() || tank.getFluid().isFluidEqual(fluidStack);
                                 if(canFill && (fluidStack.getAmount() + tankAmount <= tank.getCapacity())) {
@@ -135,7 +142,7 @@ public class HoseItem extends Item {
                                         player.awardStat(Stats.ITEM_USED.get(this));
                                         bucketPickupBlock.getPickupSound().ifPresent(soundEvent -> player.playSound(soundEvent, 1.0F, 1.0F));
                                         level.gameEvent(player, GameEvent.FLUID_PICKUP, pos);
-                                        tank.fill(new FluidStack(fluid, FluidType.BUCKET_VOLUME), IFluidHandler.FluidAction.EXECUTE);
+                                        tank.fill(fluidStack.copy(), IFluidHandler.FluidAction.EXECUTE);
                                         triggerAdvancement(player, ActionTypeTrigger.HOSE_SUCK);
                                         //ItemStack result = ItemUtils.createFilledResult(itemStack, player, taken);
                                         if(!level.isClientSide()) {
@@ -172,7 +179,9 @@ public class HoseItem extends Item {
                     Fluid fluid = fluidStack.getFluid();
                     BlockState clicked = level.getBlockState(pos);
                     BlockPos placePos = clicked.getBlock() instanceof LiquidBlockContainer && fluid == Fluids.WATER ? pos : directionOffsetPos;
-                    if(tank.getFluidAmount() >= FluidType.BUCKET_VOLUME && this.emptyContents(fluidStack, player, level, placePos, hitResult)) {
+                    HoseEvent.Spill event = new HoseEvent.Spill(player, level, placePos, fluidStack.copy());
+                    MinecraftForge.EVENT_BUS.post(event);
+                    if(tank.getFluidAmount() >= FluidType.BUCKET_VOLUME && !event.isCanceled() && this.emptyContents(fluidStack, player, level, placePos, hitResult)) {
                         //this.checkExtraContent(player, level, itemStack, placePos);
                         if(player instanceof ServerPlayer) {
                             CriteriaTriggers.PLACED_BLOCK.trigger((ServerPlayer)player, placePos, stack);
@@ -310,8 +319,10 @@ public class HoseItem extends Item {
                 FluidTank tank = this.getSelectedFluidTank(stack, wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).get());
                 if(getHoseMode(stack) == DRINK_MODE) {
                     if(tank != null) {
-                        if(ServerActions.setFluidEffect(level, player, tank)) {
-                            int drainAmount = EffectFluidRegistry.getHighestFluidEffectAmount(tank.getFluid().getFluid());
+                        HoseEvent.Drink event = new HoseEvent.Drink(player, level, tank.getFluid().copy(), EffectFluidRegistry.getHighestFluidEffectAmount(tank.getFluid().getFluid()));
+                        MinecraftForge.EVENT_BUS.post(event);
+                        if(!event.isCanceled() && ServerActions.setFluidEffect(level, player, tank)) {
+                            int drainAmount = event.getAmount();
                             if(tank.getFluid().getFluid() == ModFluids.POTION_FLUID.get()) {
                                 triggerAdvancement(player, ActionTypeTrigger.HOSE_DRINK_POTION);
                             }
