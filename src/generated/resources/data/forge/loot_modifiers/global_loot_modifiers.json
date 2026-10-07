@@ -1,0 +1,26 @@
+{
+  "entries": [
+    "travelersbackpack:desert_pyramid_add_iron_tier_upgrade",
+    "travelersbackpack:shipwreck_treasure_add_gold_tier_upgrade",
+    "travelersbackpack:pillager_outpost_add_iron_golem",
+    "travelersbackpack:abandoned_mineshaft_add_gold_tier_upgrade",
+    "travelersbackpack:woodland_mansion_add_gold_tier_upgrade",
+    "travelersbackpack:nether_bridge_add_iron_tier_upgrade",
+    "travelersbackpack:abandoned_mineshaft_add_iron_tier_upgrade",
+    "travelersbackpack:bastion_treasure_add_gold_tier_upgrade",
+    "travelersbackpack:end_city_treasure_add_diamond_tier_upgrade",
+    "travelersbackpack:shipwreck_treasure_add_iron_tier_upgrade",
+    "travelersbackpack:bastion_treasure_add_iron_tier_upgrade",
+    "travelersbackpack:abandoned_mineshaft_add_bat",
+    "travelersbackpack:woodland_mansion_add_iron_tier_upgrade",
+    "travelersbackpack:abandoned_mineshaft_add_standard",
+    "travelersbackpack:end_city_treasure_add_gold_tier_upgrade",
+    "travelersbackpack:simple_dungeon_add_iron_tier_upgrade",
+    "travelersbackpack:nether_bridge_add_gold_tier_upgrade",
+    "travelersbackpack:hay_backpack_ability",
+    "travelersbackpack:desert_pyramid_add_standard",
+    "travelersbackpack:simple_dungeon_add_standard",
+    "travelersbackpack:desert_pyramid_add_gold_tier_upgrade"
+  ],
+  "replace": false
+}

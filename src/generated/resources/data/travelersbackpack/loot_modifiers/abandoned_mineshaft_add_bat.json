@@ -4,8 +4,11 @@
     {
       "condition": "forge:loot_table_id",
       "loot_table_id": "minecraft:chests/abandoned_mineshaft"
+    },
+    {
+      "chance": 0.05,
+      "condition": "minecraft:random_chance"
     }
   ],
-  "item": "travelersbackpack:gold_tier_upgrade",
-  "weight": 0.04
+  "item": "travelersbackpack:bat"
 }

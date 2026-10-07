@@ -9,6 +9,7 @@ import com.tiviacz.travelersbackpack.init.ModItems;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.TallGrassBlock;
@@ -18,6 +19,7 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraftforge.common.loot.IGlobalLootModifier;
 import net.minecraftforge.common.loot.LootModifier;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -25,23 +27,22 @@ import java.util.List;
 public class HayBackpackLootModifier extends LootModifier {
     public static final Supplier<Codec<HayBackpackLootModifier>> CODEC = Suppliers.memoize(() -> RecordCodecBuilder
             .create(inst -> codecStart(inst)
-                    .and(ItemStack.CODEC.listOf().fieldOf("possibleCropItems").forGetter(m -> m.possibleCropItems))
+                    .and(ForgeRegistries.ITEMS.getCodec().listOf().fieldOf("possibleCropItems").forGetter(m -> m.possibleCropItems))
                     .and(Codec.FLOAT.fieldOf("cropFromGrassChance").forGetter(m -> m.cropFromGrassChance))
                     .and(Codec.FLOAT.fieldOf("multiplierChance").forGetter(m -> m.multiplierChance))
                     .and(Codec.INT.fieldOf("multiplierAmount").forGetter(m -> m.multiplierAmount))
                     .apply(inst, HayBackpackLootModifier::new)));
-    private final List<ItemStack> possibleCropItems;
+    private final List<Item> possibleCropItems;
     private final float cropFromGrassChance;
     private final float multiplierChance;
     private final int multiplierAmount;
 
-    protected HayBackpackLootModifier(LootItemCondition[] conditionsIn, List<ItemStack> possibleCropItems, float cropFromGrassChance, float multiplierChance, int multiplierAmount) {
+    public HayBackpackLootModifier(LootItemCondition[] conditionsIn, List<Item> possibleCropItems, float cropFromGrassChance, float multiplierChance, int multiplierAmount) {
         super(conditionsIn);
         this.possibleCropItems = possibleCropItems;
         this.cropFromGrassChance = cropFromGrassChance;
         this.multiplierChance = multiplierChance;
         this.multiplierAmount = multiplierAmount;
-
     }
 
     @Override
@@ -68,7 +69,7 @@ public class HayBackpackLootModifier extends LootModifier {
             if(grassVariant) {
                 if(context.getRandom().nextFloat() < this.cropFromGrassChance) {
                     if(!this.possibleCropItems.isEmpty()) {
-                        ItemStack randomCrop = possibleCropItems.get(context.getRandom().nextInt(possibleCropItems.size()));
+                        ItemStack randomCrop = possibleCropItems.get(context.getRandom().nextInt(possibleCropItems.size())).getDefaultInstance();
                         generatedLoot.add(randomCrop);
                     }
                 }

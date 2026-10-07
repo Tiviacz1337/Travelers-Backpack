@@ -2,6 +2,7 @@ package com.tiviacz.travelersbackpack.handlers;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
+import com.tiviacz.travelersbackpack.datagen.ModGlobalLootModifierProvider;
 import com.tiviacz.travelersbackpack.datagen.ModLootTableProvider;
 import com.tiviacz.travelersbackpack.datagen.ModRecipeProvider;
 import net.minecraft.data.DataGenerator;
@@ -20,6 +21,7 @@ public class ModEventHandler {
         boolean includeServer = event.includeServer();
         generator.addProvider(includeServer, new ModRecipeProvider(output));
         generator.addProvider(includeServer, ModLootTableProvider.create(output));
+        generator.addProvider(includeServer, new ModGlobalLootModifierProvider(output));
     }
 
     @SubscribeEvent

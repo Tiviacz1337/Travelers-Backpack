@@ -4,8 +4,11 @@
     {
       "condition": "forge:loot_table_id",
       "loot_table_id": "minecraft:chests/abandoned_mineshaft"
+    },
+    {
+      "chance": 0.06,
+      "condition": "minecraft:random_chance"
     }
   ],
-  "item": "travelersbackpack:standard",
-  "weight": 0.06
+  "item": "travelersbackpack:standard"
 }

@@ -4,8 +4,11 @@
     {
       "condition": "forge:loot_table_id",
       "loot_table_id": "minecraft:chests/shipwreck_treasure"
+    },
+    {
+      "chance": 0.06,
+      "condition": "minecraft:random_chance"
     }
   ],
-  "item": "travelersbackpack:iron_tier_upgrade",
-  "weight": 0.06
+  "item": "travelersbackpack:iron_tier_upgrade"
 }
