@@ -27,7 +27,7 @@ public class ModItems {
     public static final RegistryObject<TravelersBackpackItem> STANDARD_TRAVELERS_BACKPACK = ITEMS.register("standard", () -> new TravelersBackpackItem(ModBlocks.STANDARD_TRAVELERS_BACKPACK.get()));
 
     //Blocks
-    public static final RegistryObject<TravelersBackpackItem> NETHERITE_TRAVELERS_BACKPACK = ITEMS.register("netherite", () -> new TravelersBackpackItem(ModBlocks.NETHERITE_TRAVELERS_BACKPACK.get()));
+    public static final RegistryObject<TravelersBackpackItem> NETHERITE_TRAVELERS_BACKPACK = ITEMS.register("netherite", () -> new TravelersBackpackItem(new Item.Properties().fireResistant(), ModBlocks.NETHERITE_TRAVELERS_BACKPACK.get()));
     public static final RegistryObject<TravelersBackpackItem> DIAMOND_TRAVELERS_BACKPACK = ITEMS.register("diamond", () -> new TravelersBackpackItem(ModBlocks.DIAMOND_TRAVELERS_BACKPACK.get()));
     public static final RegistryObject<TravelersBackpackItem> GOLD_TRAVELERS_BACKPACK = ITEMS.register("gold", () -> new TravelersBackpackItem(ModBlocks.GOLD_TRAVELERS_BACKPACK.get()));
     public static final RegistryObject<TravelersBackpackItem> EMERALD_TRAVELERS_BACKPACK = ITEMS.register("emerald", () -> new TravelersBackpackItem(ModBlocks.EMERALD_TRAVELERS_BACKPACK.get()));

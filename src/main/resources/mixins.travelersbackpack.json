@@ -4,7 +4,9 @@
   "compatibilityLevel": "JAVA_17",
   "refmap": "mixins.travelersbackpack.refmap.json",
   "mixins": [
-    "PlayerMixin"
+    "PlayerMixin",
+    "entity.item.EntityMixin",
+    "entity.item.ItemEntityMixin"
   ],
   "client": [
     "MinecraftMixin"

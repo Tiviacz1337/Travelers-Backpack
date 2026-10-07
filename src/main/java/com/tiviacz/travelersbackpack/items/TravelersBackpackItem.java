@@ -12,7 +12,6 @@ import com.tiviacz.travelersbackpack.common.ServerActions;
 import com.tiviacz.travelersbackpack.common.recipes.BackpackDyeRecipe;
 import com.tiviacz.travelersbackpack.compat.curios.TravelersBackpackCurio;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
-import com.tiviacz.travelersbackpack.entity.BackpackItemEntity;
 import com.tiviacz.travelersbackpack.init.ModDataHelper;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.BackpackContainer;
@@ -30,7 +29,6 @@ import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.NonNullList;
 import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.CommonComponents;
@@ -50,7 +48,6 @@ import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.inventory.Slot;
@@ -110,6 +107,12 @@ public class TravelersBackpackItem extends BlockItem {
 
         //Texture location
         this.texture = texture;
+    }
+
+    public TravelersBackpackItem(Properties properties, Block block) {
+        super(block, properties.stacksTo(1));
+
+        this.texture = ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "");
     }
 
     @Deprecated(forRemoval = true)
@@ -432,7 +435,7 @@ public class TravelersBackpackItem extends BlockItem {
         }
     }
 
-    @Override
+    /*@Override
     public boolean hasCustomEntity(ItemStack stack) {
         return hasCustomData(stack);
     }
@@ -477,7 +480,7 @@ public class TravelersBackpackItem extends BlockItem {
             backpackItemEntity.setDeltaMovement(itemEntity.getDeltaMovement());
         }
         return backpackItemEntity;
-    }
+    }*/
 
     @Override
     public Optional<TooltipComponent> getTooltipImage(ItemStack stack) {
