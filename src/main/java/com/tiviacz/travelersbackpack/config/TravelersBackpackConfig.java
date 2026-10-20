@@ -760,6 +760,8 @@ public class TravelersBackpackConfig {
         public static class ToolsOverlay {
             public final ForgeConfigSpec.BooleanValue swapOnClose;
             public final ForgeConfigSpec.BooleanValue showTooltip;
+            public final ForgeConfigSpec.BooleanValue displayEmptySlots;
+            public final ForgeConfigSpec.BooleanValue allowHotbarScrolling;
             public final ForgeConfigSpec.BooleanValue renderBackpackIconInCenter;
             public final ForgeConfigSpec.DoubleValue opacity;
             public final ForgeConfigSpec.IntValue offsetX;
@@ -776,6 +778,14 @@ public class TravelersBackpackConfig {
                 showTooltip = builder
                         .comment("Displays the full tooltip when hovering over an item in the tool belt. If false, only the item name is shown")
                         .define("showTooltip", false);
+
+                displayEmptySlots = builder
+                        .comment("The tool belt GUI will always display all the slots, even when empty")
+                        .define("displayEmptySlots", false);
+
+                allowHotbarScrolling = builder
+                        .comment("Allows to scroll through hotbar slots while the tool belt GUI is open")
+                        .define("allowHotbarScrolling", false);
 
                 renderBackpackIconInCenter = builder
                         .comment("Render backpack icon in the center of the tools overlay")

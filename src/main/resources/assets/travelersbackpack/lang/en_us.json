@@ -327,6 +327,8 @@
   "travelersbackpack.configuration.toolsOverlay": "Tools Overlay",
   "travelersbackpack.configuration.swapOnClose": "Swap on Close",
   "travelersbackpack.configuration.showTooltip": "Show Tooltip",
+  "travelersbackpack.configuration.displayEmptySlots": "Display Empty Slots",
+  "travelersbackpack.configuration.allowHotbarScrolling": "Allow Hotbar Scrolling",
   "travelersbackpack.configuration.renderBackpackIconInCenter": "Render Backpack Icon In Center",
   "travelersbackpack.configuration.opacity": "Opacity",
   "travelersbackpack.configuration.overlay": "Overlay",
