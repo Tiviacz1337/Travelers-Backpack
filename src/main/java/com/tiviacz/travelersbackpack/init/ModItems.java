@@ -135,7 +135,7 @@ public class ModItems {
     public static final List<Item> COMPATIBLE_NETHER_BACKPACK_ENTRIES = new ArrayList<>();
 
     public static void registerCapability(RegisterCapabilitiesEvent event) {
-        event.registerItem(Capabilities.Item.ITEM, (stack, access) -> new BackpackItemAccess(ItemAccess.forStack(stack), BackpackWrapper.fromStack(stack), ModDataComponents.BACKPACK_CONTAINER.get()),
+        event.registerItem(Capabilities.Item.ITEM, (stack, access) -> new BackpackItemAccess(access, BackpackWrapper.fromStack(stack), ModDataComponents.BACKPACK_CONTAINER.get()),
                 ModItems.STANDARD_TRAVELERS_BACKPACK.get(),
                 ModItems.NETHERITE_TRAVELERS_BACKPACK.get(),
                 ModItems.DIAMOND_TRAVELERS_BACKPACK.get(),

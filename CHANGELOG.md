@@ -7,6 +7,7 @@
 🔧 Enderman ability also increases attack range  
 🔧 Added compatibility with Entity Model Features, allowing the backpack to display properly on the player model when using resource packs like Fresh Animations  
 🐛 Fixed Hay Backpack ability  
+🐛 Fixed Backpack Item Capability  
 📚 Updated nl_be translation - Thanks Reinforged!  
 
 ⭐ Want to receive **Supporter Star Badge** for a **lifetime**? - [visit my Ko-Fi page](https://ko-fi.com/tiviacz1337)!  
