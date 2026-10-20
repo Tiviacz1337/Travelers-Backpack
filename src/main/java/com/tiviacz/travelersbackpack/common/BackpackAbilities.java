@@ -178,6 +178,7 @@ public class BackpackAbilities {
 
             if(backpackItem == ModItems.ENDERMAN_TRAVELERS_BACKPACK.get()) {
                 attributeAbility(player, false, ForgeMod.BLOCK_REACH.get(), ENDERMAN_REACH_DISTANCE_MODIFIER);
+                attributeAbility(player, false, ForgeMod.ENTITY_REACH.get(), ENDERMAN_REACH_DISTANCE_MODIFIER);
                 return false;
             }
 
@@ -272,6 +273,7 @@ public class BackpackAbilities {
 
         if(stack.getItem() == ModItems.ENDERMAN_TRAVELERS_BACKPACK.get()) {
             attributeAbility(player, true, ForgeMod.BLOCK_REACH.get(), ENDERMAN_REACH_DISTANCE_MODIFIER);
+            attributeAbility(player, true, ForgeMod.ENTITY_REACH.get(), ENDERMAN_REACH_DISTANCE_MODIFIER);
         }
 
         if(stack.getItem() == ModItems.WARDEN_TRAVELERS_BACKPACK.get()) {
@@ -330,6 +332,7 @@ public class BackpackAbilities {
         }
         if(backpack.getItem() == ModItems.ENDERMAN_TRAVELERS_BACKPACK.get()) {
             multimap.put(ForgeMod.BLOCK_REACH.get(), ENDERMAN_REACH_DISTANCE_MODIFIER);
+            multimap.put(ForgeMod.ENTITY_REACH.get(), ENDERMAN_REACH_DISTANCE_MODIFIER);
             return multimap;
         }
         if(backpack.getItem() == ModItems.WARDEN_TRAVELERS_BACKPACK.get()) {
@@ -366,6 +369,7 @@ public class BackpackAbilities {
         attributeAbility(player, true, Attributes.LUCK, EMERALD_LUCK);
 
         attributeAbility(player, true, ForgeMod.BLOCK_REACH.get(), ENDERMAN_REACH_DISTANCE_MODIFIER);
+        attributeAbility(player, true, ForgeMod.ENTITY_REACH.get(), ENDERMAN_REACH_DISTANCE_MODIFIER);
         attributeAbility(player, true, Attributes.MAX_HEALTH, WARDEN_MAX_HEALTH_MODIFIER);
         attributeAbility(player, true, Attributes.MOVEMENT_SPEED, FOX_MOVEMENT_SPEED_MODIFIER);
     }
