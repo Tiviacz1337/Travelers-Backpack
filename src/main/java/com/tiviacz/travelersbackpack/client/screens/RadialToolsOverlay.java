@@ -164,14 +164,15 @@ public final class RadialToolsOverlay {
                 }
                 guiGraphics.setTooltipForNextFrame(font, tooltip, hoveredStack.getTooltipImage(), hoveredStack, mouseX, mouseY);
             }
+        } else if(hoveredIsEmpty) {
+            renderCenteredItem = false;
+            renderCenteredText(guiGraphics, Component.translatable("screen.travelersbackpack.empty"), centerX, centerY);
         }
         if(renderCenteredItem) {
             if(TravelersBackpackConfig.CLIENT.toolsOverlay.renderBackpackIconInCenter.get()) {
                 drawCrosshair = false;
                 renderCenteredItem(guiGraphics, font, backpack, centerX, centerY, 1.25F);
             }
-        } else if(hoveredIsEmpty) {
-            renderCenteredText(guiGraphics, Component.translatable("screen.travelertoolbelt.empty"), centerX, centerY);
         }
         return hoveredResult;
     }
