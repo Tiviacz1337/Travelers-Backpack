@@ -56,6 +56,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 
@@ -159,11 +160,12 @@ public class TravelersBackpackItem extends BlockItem {
         }
         ItemStack itemstack = slot.getItem();
         if(BackpackSlotItemHandler.isItemValid(itemstack)) {
-            int count = add(player, stack, itemstack, true);
+            ItemAccess context = ItemAccess.forPlayerCursor(player, player.containerMenu);
+            int count = add(player, context, stack, itemstack, true);
             if(count <= 0) {
                 return false;
             }
-            int j = add(player, stack, slot.safeTake(count, count, player), false);
+            int j = add(player, context, stack, slot.safeTake(count, count, player), false);
             if(j > 0) {
                 this.playInsertSound(player);
             }
@@ -178,7 +180,7 @@ public class TravelersBackpackItem extends BlockItem {
             return super.overrideOtherStackedOnMe(stack, other, slot, action, player, access);
         }
         if(slot.allowModification(player)) {
-            int i = add(player, stack, other, false);
+            int i = add(player, ItemAccess.forStack(stack), stack, other, false);
             if(i > 0) {
                 this.playInsertSound(player);
                 other.shrink(i);
@@ -188,9 +190,9 @@ public class TravelersBackpackItem extends BlockItem {
         return super.overrideOtherStackedOnMe(stack, other, slot, action, player, access);
     }
 
-    private static int add(Player player, ItemStack backpackStack, ItemStack insertedStack, boolean simulate) {
+    private static int add(Player player, ItemAccess context, ItemStack backpackStack, ItemStack insertedStack, boolean simulate) {
         if(!insertedStack.isEmpty() && BackpackSlotItemHandler.isItemValid(insertedStack)) {
-            var handler = backpackStack.getCapability(Capabilities.Item.ITEM, null);
+            var handler = backpackStack.getCapability(Capabilities.Item.ITEM, context);
             if(handler == null) {
                 return 0;
             }
