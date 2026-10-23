@@ -82,8 +82,8 @@ public class BackpackItemModel implements ItemModel {
                         new Vector3f(0, 2.25f / 16f, 0),
                         new Vector3f(1, 1, 1), DEFAULT_ROTATION
                 ),
-                new ItemTransform( //CHECK
-                        new Vector3f(0, 180, 0),
+                new ItemTransform(
+                        new Vector3f(0, 0, 0),
                         new Vector3f(0, 2.25f / 16f, 0),
                         new Vector3f(1, 1, 1), DEFAULT_ROTATION
                 ), //CHECK
