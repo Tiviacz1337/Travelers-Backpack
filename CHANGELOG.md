@@ -1,3 +1,4 @@
+🔧 Updated Iron Golem Backpack obtain tips tooltip  
 🐛 Fixed Backpack Item Capability  
 🐛 Fixed backpack's rotation if placed on the shelf  
 
