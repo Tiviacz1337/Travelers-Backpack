@@ -1,6 +1,7 @@
 package com.tiviacz.travelersbackpack.items;
 
 import com.tiviacz.travelersbackpack.advancements.ActionTypeTrigger;
+import com.tiviacz.travelersbackpack.api.event.HoseEvent;
 import com.tiviacz.travelersbackpack.common.ServerActions;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
@@ -125,7 +126,12 @@ public class HoseItem extends Item {
                         if(blockState.getBlock() instanceof BucketPickup bucketPickupBlock) {
                             Fluid fluid = blockState.getFluidState().getType();
                             if(fluid != Fluids.EMPTY) {
-                                FluidVariantWrapper fluidStack = new FluidVariantWrapper(FluidVariant.of(fluid), FluidConstants.BUCKET);
+                                HoseEvent.PickUp event = new HoseEvent.PickUp(player, level, pos, blockState, new FluidVariantWrapper(FluidVariant.of(fluid), FluidConstants.BUCKET));
+                                HoseEvent.PickUp.EVENT.invoker().onPickUp(event);
+                                if(event.isCanceled()) {
+                                    return InteractionResultHolder.pass(stack);
+                                }
+                                FluidVariantWrapper fluidStack = event.getFluid();
                                 long tankAmount = tank.isEmpty() ? 0 : tank.getFluidAmount();
                                 boolean canFill = tank.isEmpty() || FluidUtil.isSameVariant(tank.getFluid().fluidVariant(), fluidStack.fluidVariant());
                                 if(canFill && (fluidStack.getAmount() + tankAmount <= tank.getCapacity())) {
@@ -134,7 +140,7 @@ public class HoseItem extends Item {
                                         player.awardStat(Stats.ITEM_USED.get(this));
                                         bucketPickupBlock.getPickupSound().ifPresent(soundEvent -> player.playSound(soundEvent, 1.0F, 1.0F));
                                         level.gameEvent(player, GameEvent.FLUID_PICKUP, pos);
-                                        tank.fill(new FluidVariantWrapper(FluidVariant.of(fluid), FluidConstants.BUCKET), false);
+                                        tank.fill(fluidStack.copy(), false);
                                         triggerAdvancement(player, ActionTypeTrigger.HOSE_SUCK);
                                         //ItemStack result = ItemUtils.createFilledResult(itemStack, player, taken);
                                         if(!level.isClientSide()) {
@@ -173,7 +179,9 @@ public class HoseItem extends Item {
                     Fluid fluid = fluidStack.fluidVariant().getFluid();
                     BlockState clicked = level.getBlockState(pos);
                     BlockPos placePos = clicked.getBlock() instanceof LiquidBlockContainer && fluid == Fluids.WATER ? pos : directionOffsetPos;
-                    if(tank.getFluidAmount() >= FluidConstants.BUCKET && this.emptyContents(fluidStack, player, level, placePos, hitResult)) {
+                    HoseEvent.Spill event = new HoseEvent.Spill(player, level, placePos, fluidStack.copy());
+                    HoseEvent.Spill.EVENT.invoker().onSpill(event);
+                    if(tank.getFluidAmount() >= FluidConstants.BUCKET && !event.isCanceled() && this.emptyContents(fluidStack, player, level, placePos, hitResult)) {
                         //this.checkExtraContent(player, level, itemStack, placePos);
                         if(player instanceof ServerPlayer) {
                             CriteriaTriggers.PLACED_BLOCK.trigger((ServerPlayer)player, placePos, stack);
@@ -308,8 +316,10 @@ public class HoseItem extends Item {
                 FluidTank tank = this.getSelectedFluidTank(stack, wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).get());
                 if(getHoseMode(stack) == DRINK_MODE) {
                     if(tank != null) {
-                        if(ServerActions.setFluidEffect(level, player, tank)) {
-                            long drainAmount = EffectFluidRegistry.getHighestFluidEffectAmount(tank.getFluid().fluidVariant().getFluid());
+                        HoseEvent.Drink event = new HoseEvent.Drink(player, level, tank.getFluid().copy(), EffectFluidRegistry.getHighestFluidEffectAmount(tank.getFluid().fluidVariant().getFluid()));
+                        HoseEvent.Drink.EVENT.invoker().onDrink(event);
+                        if(!event.isCanceled() && ServerActions.setFluidEffect(level, player, tank)) {
+                            long drainAmount = event.getAmount();
                             if(tank.getFluid().fluidVariant().getFluid() == ModFluids.POTION_STILL) {
                                 triggerAdvancement(player, ActionTypeTrigger.HOSE_DRINK_POTION);
                             }
