@@ -1,8 +1,10 @@
 {
   "credit": "Made with Blockbench by TyBraniff for TravelersBackpack x Bluemap",
   "texture_size": [64, 64],
+  "dev-note": "'particle' texture is dummy to avoid warnings in console",
   "textures": {
-    "1": "travelersbackpack:block/backpack/dyed"
+    "1": "travelersbackpack:block/backpack/dyed",
+    "particle": "minecraft:block/dirt"
   },
   "elements": [
     {

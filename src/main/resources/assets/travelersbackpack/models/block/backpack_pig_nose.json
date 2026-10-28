@@ -1,6 +1,11 @@
 {
   "credit": "Made with Blockbench by TyBraniff for TravelersBackpack x Bluemap",
   "texture_size": [64, 64],
+  "dev-note": "Textures here are dummy textures to avoid warnings in console. Proper textures are defined in the backpack models",
+  "textures": {
+    "0": "minecraft:block/dirt",
+    "particle": "minecraft:block/dirt"
+  },
   "elements": [
     {
       "name": "PigNose",

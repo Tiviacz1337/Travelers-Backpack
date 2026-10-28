@@ -2,8 +2,10 @@
   "credit": "Made with Blockbench by TyBraniff for TravelersBackpack x Bluemap",
   "info": "Extra model for dyed backpack",
   "texture_size": [64, 64],
+  "dev-note": "'1' texture is dummy to avoid warnings in console",
   "textures": {
-    "1": "travelersbackpack:block/backpack/dyed_extras"
+    "1": "travelersbackpack:block/backpack/dyed_extras",
+    "particle": "minecraft:block/dirt"
   },
   "elements": [
     {
