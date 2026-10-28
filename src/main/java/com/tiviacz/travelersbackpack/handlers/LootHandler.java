@@ -23,8 +23,8 @@ public class LootHandler {
                     addLootPool(tableBuilder, ModItems.GOLD_TIER_UPGRADE, 0.04F);
                 }
 
-                if(BuiltInLootTables.VILLAGE_ARMORER.equals(key)) {
-                    addLootPool(tableBuilder, ModItems.IRON_GOLEM_TRAVELERS_BACKPACK, 0.1F);
+                if(BuiltInLootTables.PILLAGER_OUTPOST.equals(key)) {
+                    addLootPool(tableBuilder, ModItems.IRON_GOLEM_TRAVELERS_BACKPACK, 0.06F);
                 }
 
                 if(BuiltInLootTables.SIMPLE_DUNGEON.equals(key)) {
