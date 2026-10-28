@@ -1,3 +1,4 @@
+🐛 Fixed backpack's rotation if placed on the shelf  
 🔧 Updated Iron Golem Backpack obtain tips tooltip  
 
 ⭐ Want to receive **Supporter Star Badge** for a **lifetime**? - [visit my Ko-Fi page](https://ko-fi.com/tiviacz1337)!  
