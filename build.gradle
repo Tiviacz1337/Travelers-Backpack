@@ -78,6 +78,11 @@ repositories {
 		}
 	}
 
+	maven {
+		name = "Fuzs Mod Resources"
+		url = uri("https://raw.githubusercontent.com/Fuzss/modresources/main/maven/")
+	}
+
 	//LambDynamicLights
 	maven { url("https://maven.gegy.dev")}
 }
@@ -178,8 +183,9 @@ dependencies {
 	modCompileOnly("maven.modrinth:pneumono_core:Y03YVYzM")
 
 	//ESB
-	//modImplementation ("maven.modrinth:easy-shulker-boxes:fDksdgiC")
-	//modImplementation ("maven.modrinth:puzzles-lib:HJGSxOtN")
+	modImplementation("maven.modrinth:easy-shulker-boxes:bYZtnl61")
+	modImplementation("maven.modrinth:puzzles-lib:xTX7sOwU")
+	modImplementation("fuzs.iteminteractions:iteminteractions-fabric:21.11.0")
 	//modImplementation ("maven.modrinth:forge-config-api-port:IKHTwwTv")
 
 	//modImplementation("maven.modrinth:lithium:5szYtenV")
