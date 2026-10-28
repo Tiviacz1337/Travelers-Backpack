@@ -151,11 +151,11 @@ dependencies {
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}")
 
 	//JEI
-	modImplementation ("maven.modrinth:jei:9i2DXscL")
+	modImplementation ("maven.modrinth:jei:XkxFBZUF")
 
 	//Polymorph
 	//modCompileOnly("maven.modrinth:polymorph:j4jPy88h")
-	modImplementation("maven.modrinth:3uT4J18I:NKRDPEEL")
+	modCompileOnly("maven.modrinth:3uT4J18I:NKRDPEEL")
 
 	//Comforts
 	modCompileOnly ("maven.modrinth:comforts:vUdakIzK")
