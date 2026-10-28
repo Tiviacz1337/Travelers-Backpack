@@ -6,7 +6,6 @@
   "plugin": "com.tiviacz.travelersbackpack.TravelersBackpackMixinPlugin",
   "mixins": [
     "AbstractContainerMenuMixin",
-    "ItemEntityMixin",
     "ItemStackMixin",
     "LevelResourceMixin",
     "LivingEntityPriorityMixin",
@@ -17,7 +16,9 @@
     "abilities.ExperienceOrbEntityMixin",
     "abilities.GhastEntityMixin",
     "abilities.LootTableMixin",
-    "abilities.SmallFireballEntityMixin"
+    "abilities.SmallFireballEntityMixin",
+    "entity.item.EntityMixin",
+    "entity.item.ItemEntityMixin"
   ],
   "client": [
     "AbstractContainerScreenMixin",

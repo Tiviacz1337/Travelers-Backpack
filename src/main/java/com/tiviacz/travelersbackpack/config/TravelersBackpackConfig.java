@@ -213,12 +213,15 @@ public class TravelersBackpackConfig {
             public final ModConfigSpec.BooleanValue allowOnlyEquippedBackpack;
             public final ModConfigSpec.BooleanValue allowOpeningFromSlot;
             public final ModConfigSpec.BooleanValue preventMultiplePlayersAccess;
-            public final ModConfigSpec.BooleanValue invulnerableBackpack;
             public final ModConfigSpec.BooleanValue allowToolSwapping;
             public final ModConfigSpec.BooleanValue toolSlotsAcceptEverything;
             public final ModConfigSpec.ConfigValue<List<? extends String>> toolSlotsAcceptableItems;
             public final ModConfigSpec.ConfigValue<List<? extends String>> blacklistedItems;
             public final ModConfigSpec.BooleanValue allowShulkerBoxes;
+            public final ModConfigSpec.BooleanValue neverDespawn;
+            public final ModConfigSpec.BooleanValue fireResistant;
+            public final ModConfigSpec.BooleanValue explosionResistant;
+            public final ModConfigSpec.BooleanValue invulnerableBackpack;
             public final ModConfigSpec.BooleanValue voidProtection;
             public final ModConfigSpec.BooleanValue backpackDeathPlace;
             public final ModConfigSpec.BooleanValue backpackForceDeathPlace;
@@ -256,10 +259,6 @@ public class TravelersBackpackConfig {
                         .comment("Prevents more than one player from accessing the backpack at the same time when it's placed on the ground")
                         .define("preventMultiplePlayersAccess", false);
 
-                invulnerableBackpack = builder
-                        .comment("Backpack immune to any damage source (lava, fire), can't be destroyed, never disappears as floating item")
-                        .define("invulnerableBackpack", true);
-
                 allowToolSwapping = builder
                         .comment("Allows swapping tools between tool slots and the player’s inventory via a quick-swap menu")
                         .define("allowToolSwapping", true);
@@ -279,6 +278,22 @@ public class TravelersBackpackConfig {
                 allowShulkerBoxes = builder
                         .comment("Allows putting shulker boxes and other items with inventory in backpack")
                         .define("allowShulkerBoxes", false);
+
+                neverDespawn = builder
+                        .comment("Prevents the backpack from despawning when dropped on the ground")
+                        .define("neverDespawn", true);
+
+                fireResistant = builder
+                        .comment("Makes the backpack fire-resistant (won't burn in fire or lava)")
+                        .define("fireResistant", true);
+
+                explosionResistant = builder
+                        .comment("Makes the backpack explosion-resistant (won't be destroyed by explosions)")
+                        .define("explosionResistant", true);
+
+                invulnerableBackpack = builder
+                        .comment("Makes the backpack resistant to all types of damage (e.g., cactus damage). This also includes fire and explosions, but does not grant void protection")
+                        .define("invulnerableBackpack", true);
 
                 voidProtection = builder
                         .comment("Prevents backpack disappearing in void, spawns floating backpack above minimum Y when player dies in void")
