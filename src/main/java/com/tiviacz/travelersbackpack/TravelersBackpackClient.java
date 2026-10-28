@@ -41,6 +41,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.*;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.color.item.ItemTintSource;
 import net.minecraft.client.color.item.ItemTintSources;
 import net.minecraft.client.gui.screens.MenuScreens;
@@ -65,6 +66,8 @@ import org.jetbrains.annotations.Nullable;
 
 @Environment(EnvType.CLIENT)
 public class TravelersBackpackClient implements ClientModInitializer {
+    public static boolean entityModelFeaturesLoaded;
+
     @Override
     public void onInitializeClient() {
         //Register client config
@@ -131,6 +134,8 @@ public class TravelersBackpackClient implements ClientModInitializer {
         if(TravelersBackpack.accessoriesLoaded) TravelersBackpackAccessory.initClient();
         if(TravelersBackpack.trinketsLoaded && !TravelersBackpack.accessoriesLoaded)
             TravelersBackpackTrinket.initClient();
+
+        entityModelFeaturesLoaded = FabricLoader.getInstance().isModLoaded("entity_model_features");
     }
 
     public static final Identifier STAR_MODEL = Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "block/supporter_star");

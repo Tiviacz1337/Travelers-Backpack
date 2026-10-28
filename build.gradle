@@ -188,6 +188,10 @@ dependencies {
 	modImplementation("fuzs.iteminteractions:iteminteractions-fabric:21.11.0")
 	//modImplementation ("maven.modrinth:forge-config-api-port:IKHTwwTv")
 
+	//Entity Model Features
+	modImplementation("maven.modrinth:4I1XuqiY:x4GbWVyx")
+	modImplementation("maven.modrinth:BVzZfTc1:KqDOIaTU")
+
 	//modImplementation("maven.modrinth:lithium:5szYtenV")
 
 	//modRuntimeOnly("net.fabricmc:fabric-language-kotlin:1.11.0+kotlin.2.0.0")
