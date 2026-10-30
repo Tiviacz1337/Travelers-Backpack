@@ -3,6 +3,7 @@
 ✨ Backpacks no longer use a custom item entity, which caused issues with datapacks  
 ✨ The Netherite Backpack is fire resistant even with the config option disabled   
 ✨ Added new config options to the tools menu: displayEmptySlots, allowHotbarScrolling (default: false, false)   
+✨ Added Hose events  
 🔧 Fixed compatibility with Terrastorage - Thanks TimVincii!  
 🔧 Updated Iron Golem Backpack obtain tips tooltip  
 🔧 Removed background from some icons in icons.png texture  
