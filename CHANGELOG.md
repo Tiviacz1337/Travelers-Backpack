@@ -1,3 +1,4 @@
+✨ Added Hose events  
 🔧 Fixed compatibility with Terrastorage - Thanks TimVincii!  
 🔧 Updated Iron Golem Backpack obtain tips tooltip  
 🔧 Removed background from some icons in icons.png texture  
