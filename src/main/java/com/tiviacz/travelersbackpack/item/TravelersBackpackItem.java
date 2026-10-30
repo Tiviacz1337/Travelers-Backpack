@@ -7,22 +7,22 @@ import com.tiviacz.travelersbackpack.client.screens.tooltip.BackpackTooltipCompo
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.common.ServerActions;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
-import com.tiviacz.travelersbackpack.components.BackpackContainerContents;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
-import com.tiviacz.travelersbackpack.entity.BackpackItemEntity;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.BackpackContainer;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.BackpackSlotItemHandler;
-import com.tiviacz.travelersbackpack.util.*;
+import com.tiviacz.travelersbackpack.util.InventoryHelper;
+import com.tiviacz.travelersbackpack.util.KeyHelper;
+import com.tiviacz.travelersbackpack.util.Reference;
+import com.tiviacz.travelersbackpack.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.core.NonNullList;
 import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -39,13 +39,11 @@ import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
@@ -67,6 +65,15 @@ import java.util.Optional;
 public class TravelersBackpackItem extends BlockItem {
     @Deprecated(forRemoval = true)
     public final ResourceLocation texture;
+
+    public TravelersBackpackItem(Block block, Properties properties) {
+        super(block, properties.stacksTo(1)
+                .component(ModDataComponents.TIER, 0)
+                .component(ModDataComponents.IS_VISIBLE, true));
+
+        //Texture location
+        this.texture = ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "textures/model/" + "".toLowerCase(Locale.ENGLISH) + ".png");
+    }
 
     public TravelersBackpackItem(Block block) {
         this(block, "");
@@ -341,7 +348,7 @@ public class TravelersBackpackItem extends BlockItem {
         }
     }
 
-    @Nullable
+    /*@Nullable
     public Entity createEntity(Level level, Entity entity, ItemStack itemstack) {
         if(!(entity instanceof ItemEntity itemEntity)) {
             return null;
@@ -386,7 +393,7 @@ public class TravelersBackpackItem extends BlockItem {
             backpackItemEntity.setDeltaMovement(itemEntity.getDeltaMovement());
         }
         return backpackItemEntity;
-    }
+    }*/
 
     @Override
     public Optional<TooltipComponent> getTooltipImage(ItemStack pStack) {

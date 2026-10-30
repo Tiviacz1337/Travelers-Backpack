@@ -120,7 +120,7 @@ public class ModItems {
     public static void init() {
         STANDARD_TRAVELERS_BACKPACK = Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "standard"), new TravelersBackpackItem(ModBlocks.STANDARD_TRAVELERS_BACKPACK));
 
-        NETHERITE_TRAVELERS_BACKPACK = Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "netherite"), new TravelersBackpackItem(ModBlocks.NETHERITE_TRAVELERS_BACKPACK));
+        NETHERITE_TRAVELERS_BACKPACK = Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "netherite"), new TravelersBackpackItem(ModBlocks.NETHERITE_TRAVELERS_BACKPACK, new Item.Properties().fireResistant()));
         DIAMOND_TRAVELERS_BACKPACK = Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "diamond"), new TravelersBackpackItem(ModBlocks.DIAMOND_TRAVELERS_BACKPACK));
         GOLD_TRAVELERS_BACKPACK = Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "gold"), new TravelersBackpackItem(ModBlocks.GOLD_TRAVELERS_BACKPACK));
         EMERALD_TRAVELERS_BACKPACK = Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "emerald"), new TravelersBackpackItem(ModBlocks.EMERALD_TRAVELERS_BACKPACK));
