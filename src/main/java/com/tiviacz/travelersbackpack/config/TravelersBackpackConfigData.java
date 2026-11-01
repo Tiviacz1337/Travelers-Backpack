@@ -544,6 +544,12 @@ public class TravelersBackpackConfigData implements ConfigData {
             @Comment("Displays the full tooltip when hovering over an item in the tool belt. If false, only the item name is shown")
             public boolean showTooltip = false;
 
+            @Comment("The tool belt GUI will always display all the slots, even when empty")
+            public boolean displayEmptySlots = false;
+
+            @Comment("Allows to scroll through hotbar slots while the tool belt GUI is open")
+            public boolean allowHotbarScrolling = false;
+
             @Comment("Render backpack icon in the center of the tools overlay")
             public boolean renderBackpackIconInCenter = true;
 

@@ -177,6 +177,15 @@ public class ToolsScreen extends Screen {
     }
 
     @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        if(TravelersBackpackConfig.getConfig().client.toolsOverlay.allowHotbarScrolling && this.minecraft.player != null) {
+            this.minecraft.player.getInventory().swapPaint(scrollY);
+            return true;
+        }
+        return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
+    }
+
+    @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if(this.hoveredResult != -1) {
             swapWithRelease = false;

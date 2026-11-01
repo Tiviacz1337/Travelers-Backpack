@@ -226,6 +226,8 @@ public class TravelersBackpackConfig {
         //Tools Overlay
         data.client.toolsOverlay.swapOnClose = client.client.toolsOverlay.swapOnClose;
         data.client.toolsOverlay.showTooltip = client.client.toolsOverlay.showTooltip;
+        data.client.toolsOverlay.displayEmptySlots = client.client.toolsOverlay.displayEmptySlots;
+        data.client.toolsOverlay.allowHotbarScrolling = client.client.toolsOverlay.allowHotbarScrolling;
         data.client.toolsOverlay.renderBackpackIconInCenter = client.client.toolsOverlay.renderBackpackIconInCenter;
         data.client.toolsOverlay.opacity = client.client.toolsOverlay.opacity;
         data.client.toolsOverlay.offsetX = client.client.toolsOverlay.offsetX;

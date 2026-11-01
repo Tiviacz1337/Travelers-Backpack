@@ -354,6 +354,8 @@
   "text.autoconfig.travelersbackpack.option.client.toolsOverlay": "Tools Overlay",
   "text.autoconfig.travelersbackpack.option.client.toolsOverlay.swapOnClose": "Swap on Close",
   "text.autoconfig.travelersbackpack.option.client.toolsOverlay.showTooltip": "Show Tooltip",
+  "text.autoconfig.travelersbackpack.option.client.toolsOverlay.displayEmptySlots": "Display Empty Slots",
+  "text.autoconfig.travelersbackpack.option.client.toolsOverlay.allowHotbarScrolling": "Allow Hotbar Scrolling",
   "text.autoconfig.travelersbackpack.option.client.toolsOverlay.renderBackpackIconInCenter": "Render Backpack Icon In Center",
   "text.autoconfig.travelersbackpack.option.client.toolsOverlay.opacity": "Opacity",
   "text.autoconfig.travelersbackpack.option.client.toolsOverlay.offsetX": "Offset X",
