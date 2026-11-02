@@ -139,6 +139,7 @@ public class BackpackAbilities {
 
             if(backpackItem == ModItems.ENDERMAN_TRAVELERS_BACKPACK) {
                 attributeAbility(player, false, ReachEntityAttributes.REACH, ENDERMAN_REACH_DISTANCE_MODIFIER);
+                attributeAbility(player, false, ReachEntityAttributes.ATTACK_RANGE, ENDERMAN_REACH_DISTANCE_MODIFIER);
                 return false;
             }
 
@@ -229,6 +230,7 @@ public class BackpackAbilities {
 
         if(stack.getItem() == ModItems.ENDERMAN_TRAVELERS_BACKPACK) {
             attributeAbility(player, true, ReachEntityAttributes.REACH, ENDERMAN_REACH_DISTANCE_MODIFIER);
+            attributeAbility(player, true, ReachEntityAttributes.ATTACK_RANGE, ENDERMAN_REACH_DISTANCE_MODIFIER);
         }
 
         if(stack.getItem() == ModItems.WARDEN_TRAVELERS_BACKPACK) {
@@ -289,6 +291,7 @@ public class BackpackAbilities {
         }
         if(backpack.getItem() == ModItems.ENDERMAN_TRAVELERS_BACKPACK) {
             multimap.put(ReachEntityAttributes.REACH, ENDERMAN_REACH_DISTANCE_MODIFIER);
+            multimap.put(ReachEntityAttributes.ATTACK_RANGE, ENDERMAN_REACH_DISTANCE_MODIFIER);
             return multimap;
         }
         if(backpack.getItem() == ModItems.WARDEN_TRAVELERS_BACKPACK) {
@@ -323,6 +326,7 @@ public class BackpackAbilities {
         attributeAbility(player, true, Attributes.ARMOR, GOLD_ARMOR_MODIFIER);
 
         attributeAbility(player, true, ReachEntityAttributes.REACH, ENDERMAN_REACH_DISTANCE_MODIFIER);
+        attributeAbility(player, true, ReachEntityAttributes.ATTACK_RANGE, ENDERMAN_REACH_DISTANCE_MODIFIER);
         attributeAbility(player, true, Attributes.MAX_HEALTH, WARDEN_MAX_HEALTH_MODIFIER);
         attributeAbility(player, true, Attributes.MOVEMENT_SPEED, FOX_MOVEMENT_SPEED_MODIFIER);
         attributeAbility(player, true, Attributes.LUCK, LUCK_MODIFIER);
