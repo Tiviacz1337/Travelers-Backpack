@@ -13,16 +13,23 @@ import net.minecraft.world.phys.Vec3;
 
 public class BackpackItemEntity extends ItemEntity {
     public boolean wasFloatingUp = false;
-    public boolean isInvulnerable;
+    public boolean fireResistant;
+    public boolean explosionResistant;
+    public boolean invulnerableBackpack;
 
     //Fix for item entity floating
     public int backpackAge;
 
     public BackpackItemEntity(EntityType<? extends ItemEntity> entityType, Level level) {
         super(entityType, level);
+        boolean neverDespawn = TravelersBackpackConfig.getConfig().backpackSettings.neverDespawn;
+        if(neverDespawn) {
+            this.setUnlimitedLifetime();
+        }
+        this.fireResistant = TravelersBackpackConfig.getConfig().backpackSettings.fireResistant;
+        this.explosionResistant = TravelersBackpackConfig.getConfig().backpackSettings.explosionResistant;
+        this.invulnerableBackpack = TravelersBackpackConfig.getConfig().backpackSettings.invulnerableBackpack;
         this.backpackAge = 0;
-        this.age = Integer.MAX_VALUE;
-        this.isInvulnerable = TravelersBackpackConfig.getConfig().backpackSettings.invulnerableBackpack;
     }
 
     @Override
@@ -62,17 +69,17 @@ public class BackpackItemEntity extends ItemEntity {
 
     @Override
     public boolean fireImmune() {
-        return this.isInvulnerable;
+        return this.fireResistant;
     }
 
     @Override
     public boolean ignoreExplosion() {
-        return this.isInvulnerable;
+        return this.explosionResistant;
     }
 
     @Override
     public boolean isInvulnerableTo(DamageSource source) {
-        return this.isInvulnerable;
+        return this.invulnerableBackpack;
     }
 
     @Override

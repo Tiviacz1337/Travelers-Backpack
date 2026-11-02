@@ -185,10 +185,6 @@ public class TravelersBackpackConfigData implements ConfigData {
         public boolean preventMultiplePlayersAccess = false;
 
         @ConfigEntry.Gui.RequiresRestart
-        @Comment("Backpack immune to any damage source (lava, fire), can't be destroyed, never disappears as floating item")
-        public boolean invulnerableBackpack = true;
-
-        @ConfigEntry.Gui.RequiresRestart
         @Comment("Allows swapping tools between tool slots and the player’s inventory via a quick-swap menu")
         public boolean allowToolSwapping = true;
 
@@ -207,6 +203,22 @@ public class TravelersBackpackConfigData implements ConfigData {
         @ConfigEntry.Gui.RequiresRestart
         @Comment("Allows putting shulker boxes and other items with inventory in backpack")
         public boolean allowShulkerBoxes = false;
+
+        @ConfigEntry.Gui.RequiresRestart
+        @Comment("Prevents the backpack from despawning when dropped on the ground")
+        public boolean neverDespawn = true;
+
+        @ConfigEntry.Gui.RequiresRestart
+        @Comment("Makes the backpack fire-resistant (won't burn in fire or lava)")
+        public boolean fireResistant = true;
+
+        @ConfigEntry.Gui.RequiresRestart
+        @Comment("Makes the backpack explosion-resistant (won't be destroyed by explosions)")
+        public boolean explosionResistant = true;
+
+        @ConfigEntry.Gui.RequiresRestart
+        @Comment("Makes the backpack resistant to all types of damage (e.g., cactus damage). This also includes fire and explosions, but does not grant void protection")
+        public boolean invulnerableBackpack = true;
 
         @ConfigEntry.Gui.RequiresRestart
         @Comment("Prevents backpack disappearing in void, spawns floating backpack above minimum Y when player dies in void")

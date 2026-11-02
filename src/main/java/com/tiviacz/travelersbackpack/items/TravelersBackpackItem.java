@@ -10,7 +10,6 @@ import com.tiviacz.travelersbackpack.common.ServerActions;
 import com.tiviacz.travelersbackpack.common.recipes.BackpackDyeRecipe;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
-import com.tiviacz.travelersbackpack.entity.BackpackItemEntity;
 import com.tiviacz.travelersbackpack.init.ModDataHelper;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.BackpackContainer;
@@ -25,7 +24,6 @@ import net.minecraft.Util;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.NonNullList;
 import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -44,7 +42,6 @@ import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.inventory.Slot;
@@ -62,7 +59,6 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
-import org.jetbrains.annotations.Nullable;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -76,6 +72,13 @@ public class TravelersBackpackItem extends BlockItem {
             new DecimalFormat("#.##"), decimalFormat -> decimalFormat.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.ROOT))
     );
     public final ResourceLocation texture;
+
+    public TravelersBackpackItem(Block block, Properties properties) {
+        super(block, properties.stacksTo(1));
+
+        //Texture location
+        this.texture = new ResourceLocation(TravelersBackpack.MODID, "textures/model/" + "".toLowerCase(Locale.ENGLISH) + ".png");
+    }
 
     //Internal only
     public TravelersBackpackItem(Block block, String name) {
@@ -377,7 +380,7 @@ public class TravelersBackpackItem extends BlockItem {
         }
     }
 
-    public boolean hasCustomEntity(ItemStack stack) {
+    /*public boolean hasCustomEntity(ItemStack stack) {
         return hasCustomData(stack);
     }
 
@@ -425,7 +428,7 @@ public class TravelersBackpackItem extends BlockItem {
             backpackItemEntity.setDeltaMovement(itemEntity.getDeltaMovement());
         }
         return backpackItemEntity;
-    }
+    } */
 
     @Override
     public Optional<TooltipComponent> getTooltipImage(ItemStack pStack) {
