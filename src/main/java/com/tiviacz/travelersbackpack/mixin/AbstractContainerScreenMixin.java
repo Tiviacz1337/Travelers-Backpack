@@ -1,15 +1,14 @@
 package com.tiviacz.travelersbackpack.mixin;
 
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;
-import com.llamalad7.mixinextras.sugar.ref.LocalBooleanRef;
+import com.tiviacz.travelersbackpack.client.screens.AbstractBackpackScreen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.world.inventory.Slot;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(AbstractContainerScreen.class)
 public abstract class AbstractContainerScreenMixin {
@@ -17,12 +16,12 @@ public abstract class AbstractContainerScreenMixin {
     @Nullable
     protected abstract Slot findSlot(double mouseX, double mouseY);
 
-    @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;hasClickedOutside(DDIII)Z", shift = At.Shift.BY, by = 2), method = "mouseClicked")
-    private void mouseClicked(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir, @Local(ordinal = 1) LocalBooleanRef localRef) {
-        Slot slot = this.findSlot(mouseX, mouseY);
-
-        if(slot != null) {
-            localRef.set(false);
+    @ModifyExpressionValue(method = "mouseClicked", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;hasClickedOutside(DDIII)Z"))
+    private boolean mouseClickedInject(boolean outside, @Local(argsOnly = true, ordinal = 0) double mouseX, @Local(argsOnly = true, ordinal = 1) double mouseY) {
+        if((Object)this instanceof AbstractBackpackScreen<?>) {
+            Slot slot = this.findSlot(mouseX, mouseY);
+            return outside && slot == null;
         }
+        return outside;
     }
 }
