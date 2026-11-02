@@ -79,20 +79,33 @@ public final class RadialToolsOverlay {
         Minecraft mc = Minecraft.getInstance();
         Font font = mc.font;
 
+        boolean displayEmpty = TravelersBackpackConfig.getConfig().client.toolsOverlay.displayEmptySlots;
+
         int segments = segToSlot.size();
+        if(segments == 0) return -1;
+
         int hoveredSeg = getHoveredIndex(centerX, centerY, mouseX, mouseY, segments);
 
         int hoveredResult = -1;
         boolean hoveredIsPlus = false;
+        boolean hoveredIsEmpty = false;
 
-        if(hoveredSeg >= 0 && hoveredSeg < segToSlot.size()) {
+        if(hoveredSeg >= 0 && hoveredSeg < segments) {
             int slot = segToSlot.get(hoveredSeg);
-            hoveredIsPlus = (canAdd && plusSlot != -1 && slot == plusSlot && tools.get(slot).isEmpty());
-            hoveredResult = hoveredIsPlus ? ADD_NEW : slot;
-        }
-
-        if(segments == 0 && hoveredSeg == -1) {
-            return -1;
+            if(tools.get(slot).isEmpty()) {
+                if(displayEmpty) {
+                    hoveredIsPlus = canAdd;
+                    hoveredResult = canAdd ? slot : -1;
+                    if(hoveredResult == -1) {
+                        hoveredIsEmpty = true;
+                    }
+                } else {
+                    hoveredIsPlus = (canAdd && plusSlot != -1 && slot == plusSlot);
+                    hoveredResult = hoveredIsPlus ? ADD_NEW : -1;
+                }
+            } else {
+                hoveredResult = slot;
+            }
         }
 
         float step = (float)(2.0 * Math.PI / segments);
@@ -104,18 +117,21 @@ public final class RadialToolsOverlay {
             int x = centerX + Mth.floor(Mth.cos(ang) * ITEM_RING_RADIUS) - ICON_SIZE / 2;
             int y = centerY + Mth.floor(Mth.sin(ang) * ITEM_RING_RADIUS) - ICON_SIZE / 2;
 
-            boolean isHovered = (seg == hoveredSeg);
-            if(isHovered) {
+            int slot = segToSlot.get(seg);
+            ItemStack stack = tools.get(slot);
+            boolean slotEmpty = stack.isEmpty();
+
+            if(seg == hoveredSeg && (!slotEmpty || canAdd || hoveredIsEmpty)) {
                 guiGraphics.fill(x - 2, y - 2, x + ICON_SIZE + 2, y + ICON_SIZE + 2, 0x80FFFFFF);
             }
 
-            int slot = segToSlot.get(seg);
-            boolean isPlusHere = (canAdd && plusSlot != -1 && slot == plusSlot && tools.get(slot).isEmpty());
-
-            if(isPlusHere) {
-                renderPlusButton(guiGraphics, font, x, y);
+            if(slotEmpty) {
+                if(!canAdd) {
+                    renderPlusButton(guiGraphics, font, x, y, "-");
+                } else {
+                    renderPlusButton(guiGraphics, font, x, y, "+");
+                }
             } else {
-                ItemStack stack = tools.get(slot);
                 guiGraphics.renderItem(stack, x, y);
                 guiGraphics.renderItemDecorations(font, stack, x, y);
             }
@@ -150,6 +166,9 @@ public final class RadialToolsOverlay {
                 }
                 guiGraphics.renderTooltip(font, tooltip, hoveredStack.getTooltipImage(), mouseX, mouseY);
             }
+        } else if(hoveredIsEmpty) {
+            renderCenteredItem = false;
+            renderCenteredText(guiGraphics, Component.translatable("screen.travelersbackpack.empty"), centerX, centerY);
         }
 
         if(renderCenteredItem) {
@@ -164,6 +183,14 @@ public final class RadialToolsOverlay {
 
     private static ArrayList<Integer> buildSegToSlot(NonNullList<ItemStack> tools, boolean canAdd, int[] outPlusSlot) {
         ArrayList<Integer> segToSlot = new ArrayList<>();
+
+        if(TravelersBackpackConfig.getConfig().client.toolsOverlay.displayEmptySlots) {
+            for(int i = 0; i < tools.size(); i++) {
+                segToSlot.add(i);
+            }
+            outPlusSlot[0] = -1;
+            return segToSlot;
+        }
 
         for(int i = 0; i < tools.size(); i++) {
             if(!tools.get(i).isEmpty()) segToSlot.add(i);
@@ -229,11 +256,10 @@ public final class RadialToolsOverlay {
         guiGraphics.drawString(Minecraft.getInstance().font, text, textX, textY, 0xFFFFFF, true);
     }
 
-    private static void renderPlusButton(GuiGraphics g, Font font, int x, int y) {
-        String plus = "+";
+    private static void renderPlusButton(GuiGraphics g, Font font, int x, int y, String icon) {
         float s = 1.25F;
 
-        float px = x + ICON_SIZE / 2f - font.width(plus) / 2f;
+        float px = x + ICON_SIZE / 2f - font.width(icon) / 2f;
         float py = y + ICON_SIZE / 2f - font.lineHeight / 2f;
 
         float cx = x + ICON_SIZE / 2f;
@@ -245,7 +271,7 @@ public final class RadialToolsOverlay {
         g.pose().scale(s, s, 1.0F);
         g.pose().translate(-cx, -cy, 0);
 
-        drawString(g, font, plus, px + 0.5F, py + 1.0F, 0xFFFFFF, false);
+        drawString(g, font, icon, px + 0.5F, py + 1.0F, 0xFFFFFF, false);
 
         g.pose().popPose();
     }
