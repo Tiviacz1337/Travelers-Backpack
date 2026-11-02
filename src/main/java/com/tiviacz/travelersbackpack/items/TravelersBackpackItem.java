@@ -386,6 +386,9 @@ public class TravelersBackpackItem extends BlockItem {
         if(!(entity instanceof ItemEntity itemEntity)) {
             return null;
         }
+        if(!TravelersBackpackConfig.getConfig().backpackSettings.invulnerableBackpack && !TravelersBackpackConfig.getConfig().backpackSettings.voidProtection) {
+            return null;
+        }
         if(!hasCustomData(itemEntity.getItem())) {
             return null;
         }
