@@ -29,7 +29,7 @@ import net.neoforged.neoforge.transfer.resource.ResourceStack;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
+import java.util.LinkedHashSet;
 import java.util.Optional;
 
 public class InventoryActions {
@@ -227,7 +227,7 @@ public class InventoryActions {
         return false;
     }
 
-    public static void playFluidSound(@Nullable Player player, List<Player> usingPlayers, SoundEvent soundEvent, boolean fill) {
+    public static void playFluidSound(@Nullable Player player, LinkedHashSet<Player> usingPlayers, SoundEvent soundEvent, boolean fill) {
         if(soundEvent == null) {
             if(fill) {
                 soundEvent = SoundEvents.BUCKET_FILL;
@@ -239,7 +239,7 @@ public class InventoryActions {
         if(player != null) {
             player.level().playSound(null, player.position().x(), player.position().y() + 0.5, player.position().z(), soundEvent, SoundSource.BLOCKS, 1.0F, 1.0F);
         } else if(!usingPlayers.isEmpty()) {
-            Player user = usingPlayers.get(0);
+            Player user = usingPlayers.getFirst();
             if(user.containerMenu instanceof BackpackBlockEntityMenu menu) {
                 Vec3 backpackPos = menu.getWrapper().getBackpackPos().getCenter();
                 menu.player.level().playSound(null, backpackPos.x(), backpackPos.y() + 0.5, backpackPos.z(), soundEvent, SoundSource.BLOCKS, 1.0F, 1.0F);

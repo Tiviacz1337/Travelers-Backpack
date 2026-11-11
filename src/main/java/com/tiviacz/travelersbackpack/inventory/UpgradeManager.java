@@ -22,6 +22,13 @@ public class UpgradeManager {
     public BiMap<Integer, Optional<UpgradeBase<?>>> mappedUpgrades;
     public List<UpgradeBase<?>> upgrades = new ArrayList<>();
 
+    //Dummy manager
+    public UpgradeManager() {
+        this.wrapper = BackpackWrapper.DUMMY;
+        this.upgradesHandler = new ItemStacksResourceHandler(0);
+        this.mappedUpgrades = HashBiMap.create();
+    }
+
     public UpgradeManager(BackpackWrapper wrapper) {
         this.wrapper = wrapper;
         this.upgradesHandler = wrapper.getUpgrades();

@@ -11,6 +11,7 @@ import com.tiviacz.travelersbackpack.component.Slots;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.init.ModItems;
+import com.tiviacz.travelersbackpack.inventory.menu.AbstractBackpackMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackItemMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.BackpackSlotItemHandler;
@@ -51,27 +52,29 @@ import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class BackpackWrapper {
     public static final BackpackWrapper DUMMY = new BackpackWrapper(ModItems.STANDARD_TRAVELERS_BACKPACK.toStack(), Reference.BLOCK_ENTITY_SCREEN_ID, null, null);
 
     protected ItemStack stack;
-    private ItemStacksResourceHandler inventory;
-    private ItemStacksResourceHandler upgrades;
-    private ItemStacksResourceHandler tools;
+    private ItemStacksResourceHandler inventory = new ItemStacksResourceHandler(0);
+    private ItemStacksResourceHandler upgrades = new ItemStacksResourceHandler(0);
+    private ItemStacksResourceHandler tools = new ItemStacksResourceHandler(0);
 
-    private final UpgradeManager upgradeManager;
-    private Player owner;
-    public ArrayList<Player> playersUsing = new ArrayList<>();
-    private Level level;
+    private UpgradeManager upgradeManager = new UpgradeManager();
+    private final LinkedHashSet<Player> playersUsing = new LinkedHashSet<>();
     private final int screenID;
     private int tanksCapacity = 0;
     public int index = -1;
+
+    @Nullable
+    private UUID owner = null;
+    private Supplier<@Nullable Level> levelSupplier = () -> null;
+    private Supplier<@Nullable BlockPos> backpackPosSupplier = () -> null;
 
     //Storage, Upgrades, Tools
     //0 - off, 1 - on
@@ -81,7 +84,6 @@ public class BackpackWrapper {
     };
     public Runnable abilityHandler = () -> {
     };
-    public BlockPos backpackPos;
 
     public static final int STORAGE_ID = 0;
     public static final int UPGRADES_ID = 1;
@@ -98,23 +100,32 @@ public class BackpackWrapper {
 
     public BackpackWrapper(ItemStack stack, int screenID, @Nullable Player player, @Nullable Level level, int[] dataLoad) {
         if(player != null) {
-            this.playersUsing.add(player);
+            addUser(player);
+            setLevel(player::level);
+            setBackpackPos(player::blockPosition);
+        } else {
+            setLevel(() -> level);
         }
-        if(screenID == Reference.WEARABLE_SCREEN_ID) {
+        if(screenID == Reference.WEARABLE_SCREEN_ID && player != null) {
             this.setBackpackOwner(player);
         }
-
-        this.stack = stack;
 
         initializeSleepingBag(stack);
         if(!isSizeInitialized(stack)) {
             initializeSize(stack);
         }
 
+        this.stack = stack;
         this.screenID = screenID;
-        this.level = level;
         this.dataLoad = dataLoad;
 
+        if(getLevel() == null && screenID == Reference.BLOCK_ENTITY_SCREEN_ID) {
+            return;
+        }
+        this.loadBackpackData();
+    }
+
+    public void loadBackpackData() {
         this.loadHandlers();
         this.setBackpackTankCapacity();
         this.upgradeManager = new UpgradeManager(this);
@@ -159,30 +170,43 @@ public class BackpackWrapper {
     }
 
     public void setBackpackOwner(Player player) {
-        this.owner = player;
+        this.owner = player.getUUID();
     }
 
     @Nullable
     public Player getBackpackOwner() {
-        return this.owner;
+        Level level = this.levelSupplier.get();
+        if(level == null || this.owner == null) {
+            return null;
+        }
+        return (Player)level.getEntity(this.owner);
     }
 
-    public ArrayList<Player> getPlayersUsing() {
+    public LinkedHashSet<Player> getPlayersUsing() {
         return this.playersUsing;
     }
 
     public void addUser(Player player) {
-        if(!this.playersUsing.contains(player)) {
-            this.playersUsing.add(player);
+        this.playersUsing.add(player);
+    }
+
+    public void invalidateUser(Player player) {
+        if(!(player.containerMenu instanceof AbstractBackpackMenu)) {
+            this.playersUsing.remove(player);
         }
     }
 
-    public void setLevel(Level level) {
-        this.level = level;
+    public void invalidateUserDirect(Player player) {
+        this.playersUsing.remove(player);
     }
 
+    public void setLevel(Supplier<Level> levelSupplier) {
+        this.levelSupplier = levelSupplier;
+    }
+
+    @Nullable
     public Level getLevel() {
-        return this.level;
+        return this.levelSupplier.get();
     }
 
     @Nullable
@@ -191,6 +215,23 @@ public class BackpackWrapper {
             return serverLevel;
         }
         return null;
+    }
+
+    public void setBackpackPos(Supplier<BlockPos> pos) {
+        this.backpackPosSupplier = pos;
+    }
+
+    @Nullable
+    public BlockPos getBackpackPos() {
+        return this.backpackPosSupplier.get();
+    }
+
+    public Optional<ContainerLevelAccess> getContainerLevelAccess() {
+        if(getLevel() == null || getBackpackPos() == null) {
+            return Optional.empty();
+        } else {
+            return Optional.of(ContainerLevelAccess.create(getLevel(), getBackpackPos()));
+        }
     }
 
     public ItemStacksResourceHandler loadHandler(DataComponentType<ItemContainerContents> data, int defaultSize, int dataId, BiFunction<NonNullList<ItemStack>, Integer, ItemStacksResourceHandler> handlerFunction) {
@@ -290,8 +331,8 @@ public class BackpackWrapper {
         if(this.getLevel() != null) {
             return this.getLevel().registryAccess();
         }
-        if(!playersUsing.isEmpty() && playersUsing.get(0).level().registryAccess() != null) {
-            return playersUsing.get(0).level().registryAccess();
+        if(!getPlayersUsing().isEmpty() && getPlayersUsing().getFirst().level().registryAccess() != null) {
+            return getPlayersUsing().getFirst().level().registryAccess();
         }
         if(RegistryHelper.getRegistryAccess().isPresent()) {
             return RegistryHelper.getRegistryAccess().get();
@@ -362,22 +403,6 @@ public class BackpackWrapper {
 
     public int getBackpackTankCapacity() {
         return this.tanksCapacity;
-    }
-
-    public void setBackpackPos(BlockPos pos) {
-        this.backpackPos = pos;
-    }
-
-    public BlockPos getBackpackPos() {
-        return this.backpackPos;
-    }
-
-    public Optional<ContainerLevelAccess> getContainerLevelAccess() {
-        if(getLevel() == null || getBackpackPos() == null) {
-            return Optional.empty();
-        } else {
-            return Optional.of(ContainerLevelAccess.create(getLevel(), getBackpackPos()));
-        }
     }
 
     public void setBackpackTankCapacity() {
@@ -495,8 +520,8 @@ public class BackpackWrapper {
 
         //Sync stack in slot or hand
         if(getScreenID() == Reference.ITEM_SCREEN_ID && !getPlayersUsing().stream().filter(p -> !p.level().isClientSide()).toList().isEmpty()) {
-            int slotIndex = this.index == -1 ? getPlayersUsing().get(0).getInventory().getSelectedSlot() : this.index;
-            PacketDistributor.sendToPlayer((ServerPlayer)this.getPlayersUsing().get(0), new ClientboundSyncItemStackPacket(getPlayersUsing().get(0).getId(), slotIndex, getBackpackStack().typeHolder(), ItemStackUtils.createDataComponentMap(getBackpackStack(), dataComponentTypes)));
+            int slotIndex = this.index == -1 ? getPlayersUsing().getFirst().getInventory().getSelectedSlot() : this.index;
+            PacketDistributor.sendToPlayer((ServerPlayer)this.getPlayersUsing().getFirst(), new ClientboundSyncItemStackPacket(getPlayersUsing().getFirst().getId(), slotIndex, getBackpackStack().typeHolder(), ItemStackUtils.createDataComponentMap(getBackpackStack(), dataComponentTypes)));
             return;
         }
         //Sync stack equipped in back slot
