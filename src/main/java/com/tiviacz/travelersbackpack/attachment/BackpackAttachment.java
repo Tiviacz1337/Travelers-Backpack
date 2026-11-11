@@ -37,7 +37,7 @@ public class BackpackAttachment {
         if(!(stack.getItem() instanceof TravelersBackpackItem)) return;
 
         this.backpack = stack;
-        this.backpackWrapper = new BackpackWrapper(this.backpack, Reference.WEARABLE_SCREEN_ID, this.player, this.player.level());
+        this.backpackWrapper = new BackpackWrapper(this.backpack, Reference.WEARABLE_SCREEN_ID, this.player);
         this.backpackWrapper.setBackpackOwner(this.player);
 
         //Update client

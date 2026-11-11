@@ -58,7 +58,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class BackpackWrapper {
-    public static final BackpackWrapper DUMMY = new BackpackWrapper(ModItems.STANDARD_TRAVELERS_BACKPACK.toStack(), Reference.BLOCK_ENTITY_SCREEN_ID, null, null);
+    public static final BackpackWrapper DUMMY = new BackpackWrapper(ModItems.STANDARD_TRAVELERS_BACKPACK.toStack(), Reference.BLOCK_ENTITY_SCREEN_ID, (Level)null);
 
     protected ItemStack stack;
     private ItemStacksResourceHandler inventory = new ItemStacksResourceHandler(0);
@@ -89,15 +89,24 @@ public class BackpackWrapper {
     public static final int UPGRADES_ID = 1;
     public static final int TOOLS_ID = 2;
 
-    public BackpackWrapper(ItemStack stack, int screenID, @Nullable Player player, @Nullable Level level, int index) {
-        this(stack, screenID, player, level);
+    //Equipped
+    public BackpackWrapper(ItemStack stack, int screenID, @Nullable Player player) {
+        this(stack, screenID, player, -1);
+    }
+
+    //Item in slot
+    public BackpackWrapper(ItemStack stack, int screenID, @Nullable Player player, int index) {
+        this(stack, screenID, player, player == null ? null : player.level(), new int[]{1, 1, 1});
+        //Index argument to disable slot with backpack
         this.index = index;
     }
 
-    public BackpackWrapper(ItemStack stack, int screenID, @Nullable Player player, @Nullable Level level) {
-        this(stack, screenID, player, level, new int[]{1, 1, 1});
+    //Block Entity
+    public BackpackWrapper(ItemStack stack, int screenID, @Nullable Level level) {
+        this(stack, screenID, null, level, new int[]{1, 1, 1});
     }
 
+    //Custom data context
     public BackpackWrapper(ItemStack stack, int screenID, @Nullable Player player, @Nullable Level level, int[] dataLoad) {
         if(player != null) {
             addUser(player);
@@ -147,7 +156,7 @@ public class BackpackWrapper {
 
     //Create wrapper from the Backpack Stack
     public static BackpackWrapper fromStack(ItemStack backpackStack) {
-        return new BackpackWrapper(backpackStack, Reference.ITEM_SCREEN_ID, null, null);
+        return new BackpackWrapper(backpackStack, Reference.ITEM_SCREEN_ID, (Level)null);
     }
 
     public void setBackpackStack(ItemStack backpack) {
