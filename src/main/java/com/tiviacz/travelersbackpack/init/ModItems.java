@@ -115,6 +115,7 @@ public class ModItems {
     public static final DeferredItem<TierUpgrade> NETHERITE_TIER_UPGRADE = ITEMS.registerItem("netherite_tier_upgrade", (props) -> new TierUpgrade(props.stacksTo(16), TierUpgrade.Upgrade.NETHERITE_TIER_UPGRADE));
     public static final DeferredItem<TanksUpgradeItem> TANKS_UPGRADE = ITEMS.registerItem("tanks_upgrade", (props) -> new TanksUpgradeItem(props.stacksTo(16)));
     public static final DeferredItem<CraftingUpgradeItem> CRAFTING_UPGRADE = ITEMS.registerItem("crafting_upgrade", (props) -> new CraftingUpgradeItem(props.stacksTo(16)));
+    public static final DeferredItem<StonecutterUpgradeItem> STONECUTTER_UPGRADE = ITEMS.registerItem("stonecutter_upgrade", (props) -> new StonecutterUpgradeItem(props.stacksTo(16)));
     public static final DeferredItem<FurnaceUpgradeItem> FURNACE_UPGRADE = ITEMS.registerItem("furnace_upgrade", (props) -> new FurnaceUpgradeItem(props.stacksTo(16)));
     public static final DeferredItem<SmokerUpgradeItem> SMOKER_UPGRADE = ITEMS.registerItem("smoker_upgrade", (props) -> new SmokerUpgradeItem(props.stacksTo(16)));
     public static final DeferredItem<BlastFurnaceUpgradeItem> BLAST_FURNACE_UPGRADE = ITEMS.registerItem("blast_furnace_upgrade", (props) -> new BlastFurnaceUpgradeItem(props.stacksTo(16)));

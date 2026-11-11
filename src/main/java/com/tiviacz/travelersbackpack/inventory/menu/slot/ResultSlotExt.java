@@ -15,7 +15,7 @@ import net.neoforged.neoforge.event.EventHooks;
 
 import java.util.Collections;
 
-public class ResultSlotExt extends ResultSlot {
+public class ResultSlotExt extends ResultSlot implements PickAllPreventable {
     protected final ResultContainer inv;
     protected final BackpackWrapper wrapper;
 

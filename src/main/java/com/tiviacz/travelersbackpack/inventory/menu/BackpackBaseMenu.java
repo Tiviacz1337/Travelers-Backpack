@@ -9,6 +9,7 @@ import com.tiviacz.travelersbackpack.inventory.menu.slot.*;
 import com.tiviacz.travelersbackpack.inventory.upgrades.IUpgrade;
 import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
 import com.tiviacz.travelersbackpack.inventory.upgrades.crafting.CraftingUpgrade;
+import com.tiviacz.travelersbackpack.inventory.upgrades.stonecutter.StonecutterResultSlot;
 import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;
 import com.tiviacz.travelersbackpack.item.upgrade.UpgradeItem;
 import com.tiviacz.travelersbackpack.network.ClientboundUpdateRecipePacket;
@@ -393,13 +394,20 @@ public class BackpackBaseMenu extends AbstractBackpackMenu {
 
     @Override
     public boolean canTakeItemForPickAll(ItemStack stack, Slot slot) {
-        if(this.wrapper.getUpgradeManager().getUpgrade(CraftingUpgrade.class).isPresent()) {
-            return slot.container != this.wrapper.getUpgradeManager().getUpgrade(CraftingUpgrade.class).get().resultSlots;
-        }
-        if(slot instanceof FilterSlotItemHandler) {
+        if(slot instanceof PickAllPreventable) {
             return false;
         }
         return super.canTakeItemForPickAll(stack, slot);
+    }
+
+    @Override
+    public boolean clickMenuButton(Player player, int buttonId) {
+        for(Optional<UpgradeBase<?>> upgrade : wrapper.getUpgradeManager().mappedUpgrades.values()) {
+            if(upgrade.isPresent() && upgrade.get().clickMenuButton(player, buttonId)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -437,8 +445,11 @@ public class BackpackBaseMenu extends AbstractBackpackMenu {
                     }
                 }
             }
-            if(slot instanceof UpgradeSlotItemHandler<?> upgradeSlotItemHandler) {
-                if(upgradeSlotItemHandler.shiftClickToBackpack()) {
+            if(slot instanceof ShiftDirectionProvider<?> provider) {
+                if(slot instanceof StonecutterResultSlot<?>) {
+                    stack.getItem().onCraftedBy(stack, player);
+                }
+                if(provider.shiftClickToBackpack()) {
                     if(!moveItemStackTo(stack, BACKPACK_INV_START, BACKPACK_INV_END, false)) {
                         if(!moveItemStackTo(stack, PLAYER_INV_START, PLAYER_HOT_END, true)) {
                             return ItemStack.EMPTY;
@@ -450,6 +461,9 @@ public class BackpackBaseMenu extends AbstractBackpackMenu {
                             return ItemStack.EMPTY;
                         }
                     }
+                }
+                if(slot instanceof StonecutterResultSlot<?>) {
+                    slot.onQuickCraft(stack, result);
                 }
             }
             if(slot instanceof ToolSlotItemHandler) {

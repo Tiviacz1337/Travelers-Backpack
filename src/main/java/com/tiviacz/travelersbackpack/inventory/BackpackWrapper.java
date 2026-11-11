@@ -20,6 +20,7 @@ import com.tiviacz.travelersbackpack.inventory.upgrades.IEnable;
 import com.tiviacz.travelersbackpack.inventory.upgrades.ITickableUpgrade;
 import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
 import com.tiviacz.travelersbackpack.inventory.upgrades.smelting.FurnaceUpgrade;
+import com.tiviacz.travelersbackpack.inventory.upgrades.stonecutter.StonecutterUpgrade;
 import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;
 import com.tiviacz.travelersbackpack.item.SleepingBagItem;
 import com.tiviacz.travelersbackpack.item.upgrade.TanksUpgradeItem;
@@ -38,6 +39,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -66,7 +68,7 @@ public class BackpackWrapper {
     private final UpgradeManager upgradeManager;
     private Player owner;
     public ArrayList<Player> playersUsing = new ArrayList<>();
-    protected Level level;
+    private Level level;
     private final int screenID;
     private int tanksCapacity = 0;
     public int index = -1;
@@ -143,6 +145,7 @@ public class BackpackWrapper {
         //Update client tanks if present
         getUpgradeManager().getUpgrade(TanksUpgrade.class).ifPresent(tanksUpgrade -> tanksUpgrade.syncClients(backpack));
         getUpgradeManager().getUpgrade(FurnaceUpgrade.class).ifPresent(furnaceUpgrade -> furnaceUpgrade.syncClient(backpack));
+        getUpgradeManager().getUpgrade(StonecutterUpgrade.class).ifPresent(stonecutterUpgrade -> stonecutterUpgrade.syncClient(backpack));
         //Update Sleeping Bag after detachment
         setSleepingBagColor(backpack.getOrDefault(ModDataComponents.SLEEPING_BAG_COLOR, DyeColor.RED.getId()));
     }
@@ -182,8 +185,9 @@ public class BackpackWrapper {
         return this.level;
     }
 
+    @Nullable
     public ServerLevel getServerLevel() {
-        if(this.level instanceof ServerLevel serverLevel) {
+        if(getLevel() instanceof ServerLevel serverLevel) {
             return serverLevel;
         }
         return null;
@@ -232,10 +236,10 @@ public class BackpackWrapper {
     }
 
     public void setStarterUpgrade(ItemStack upgrade) {
-        if(this.level == null) {
+        if(this.getLevel() == null) {
             return;
         }
-        if(upgrade.getItem().isEnabled(this.level.enabledFeatures())) {
+        if(upgrade.getItem().isEnabled(this.getLevel().enabledFeatures())) {
             for(int i = 0; i < this.upgrades.size(); i++) {
                 if(this.upgrades.getResource(i).isEmpty()) {
                     this.upgrades.set(i, ItemResource.of(upgrade), upgrade.getCount());
@@ -283,8 +287,8 @@ public class BackpackWrapper {
 
     @Nullable
     public RegistryAccess getRegistryAccess() {
-        if(level != null) {
-            return level.registryAccess();
+        if(this.getLevel() != null) {
+            return this.getLevel().registryAccess();
         }
         if(!playersUsing.isEmpty() && playersUsing.get(0).level().registryAccess() != null) {
             return playersUsing.get(0).level().registryAccess();
@@ -366,6 +370,14 @@ public class BackpackWrapper {
 
     public BlockPos getBackpackPos() {
         return this.backpackPos;
+    }
+
+    public Optional<ContainerLevelAccess> getContainerLevelAccess() {
+        if(getLevel() == null || getBackpackPos() == null) {
+            return Optional.empty();
+        } else {
+            return Optional.of(ContainerLevelAccess.create(getLevel(), getBackpackPos()));
+        }
     }
 
     public void setBackpackTankCapacity() {
@@ -579,7 +591,7 @@ public class BackpackWrapper {
     }
 
     public void updateMinimalTickInterval(ItemStack newStack) {
-        if(level != null && level.isClientSide()) return;
+        if(this.getLevel() != null && this.getLevel().isClientSide()) return;
 
         boolean applyLowestTickInterval = false;
         if(newStack.getItem() instanceof UpgradeItem upgradeItem) {

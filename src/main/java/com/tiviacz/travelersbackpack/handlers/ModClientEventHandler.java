@@ -43,6 +43,8 @@ import com.tiviacz.travelersbackpack.inventory.upgrades.smelting.AbstractSmeltin
 import com.tiviacz.travelersbackpack.inventory.upgrades.smelting.BlastFurnaceUpgrade;
 import com.tiviacz.travelersbackpack.inventory.upgrades.smelting.FurnaceUpgrade;
 import com.tiviacz.travelersbackpack.inventory.upgrades.smelting.SmokerUpgrade;
+import com.tiviacz.travelersbackpack.inventory.upgrades.stonecutter.StonecutterUpgrade;
+import com.tiviacz.travelersbackpack.inventory.upgrades.stonecutter.StonecutterWidget;
 import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TankWidget;
 import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;
 import com.tiviacz.travelersbackpack.inventory.upgrades.voiding.VoidUpgrade;
@@ -323,6 +325,9 @@ public class ModClientEventHandler {
     public static void registerUpgradeWidgets() {
         UpgradeWidgetRegistry.register(CraftingUpgrade.class, (screen, upgrade, x, y) ->
                 new CraftingWidget(screen, upgrade, new Point(screen.getGuiLeft() + x, screen.getGuiTop() + y))
+        );
+        UpgradeWidgetRegistry.register(StonecutterUpgrade.class, (screen, upgrade, x, y) ->
+                new StonecutterWidget(screen, upgrade, new Point(screen.getLeftPos() + x, screen.getTopPos() + y))
         );
         UpgradeWidgetRegistry.register(FeedingUpgrade.class, (screen, upgrade, x, y) ->
                 new FeedingWidget(screen, upgrade, new Point(screen.getGuiLeft() + x, screen.getGuiTop() + y))

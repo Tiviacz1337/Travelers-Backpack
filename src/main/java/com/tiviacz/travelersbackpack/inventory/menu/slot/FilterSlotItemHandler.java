@@ -8,7 +8,7 @@ import net.neoforged.neoforge.transfer.item.ResourceHandlerSlot;
 
 import java.util.Optional;
 
-public class FilterSlotItemHandler extends ResourceHandlerSlot {
+public class FilterSlotItemHandler extends ResourceHandlerSlot implements PickAllPreventable {
     protected final UpgradeBase upgrade;
     protected final int activeSlotCount;
     protected final int index;
