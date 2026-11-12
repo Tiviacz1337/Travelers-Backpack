@@ -44,6 +44,8 @@ public class AbstractSmeltingUpgrade<T> extends UpgradeBase<T> implements IEnabl
     private final RecipeManager.CachedCheck<SingleRecipeInput, ? extends AbstractCookingRecipe> quickCheck;
     private final String upgradeName;
 
+    private boolean checkSmelting = false;
+
     public AbstractSmeltingUpgrade(UpgradeManager manager, int dataHolderSlot, NonNullList<ItemStack> furnaceContents, RecipeType<? extends AbstractCookingRecipe> recipeType, String upgradeName) {
         super(manager, dataHolderSlot, new Point(66, 82));
         this.level = () -> manager.getWrapper().getServerLevel();
@@ -115,6 +117,13 @@ public class AbstractSmeltingUpgrade<T> extends UpgradeBase<T> implements IEnabl
     public void tick(@Nullable Player player, Level level, BlockPos pos, int currentTick) {
         if(level.isClientSide() || !isEnabled(this)) {
             return;
+        }
+
+        if(this.checkSmelting) {
+            this.checkSmelting = false;
+            if(level instanceof ServerLevel serverLevel) {
+                checkCooking(serverLevel, false);
+            }
         }
 
         long currentTime = level.getGameTime();
@@ -376,7 +385,7 @@ public class AbstractSmeltingUpgrade<T> extends UpgradeBase<T> implements IEnabl
                 updateDataHolderUnchecked(dataHolderStack -> setSlotChanged(dataHolderStack, slot, StacksHandlerUtils.getStackInSlot(this, slot)));
 
                 if(!getUpgradeManager().getWrapper().getOpenContext().isItem()) {
-                    checkCooking(AbstractSmeltingUpgrade.this.level.get(), false);
+                    AbstractSmeltingUpgrade.this.checkSmelting = true;
                 }
             }
 
