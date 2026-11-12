@@ -28,6 +28,7 @@ public abstract class AbstractBackpackScreen<T extends AbstractBackpackMenu> ext
     public static final Identifier TANKS = Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "textures/gui/tanks.png");
     public static final Identifier ICONS = Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "textures/gui/icons.png");
     public static final Identifier TABS = Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "textures/gui/tabs.png");
+    public static final Identifier TABS_2 = Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "textures/gui/tabs_2.png");
     public static final int TOP_BAR_OFFSET = 17;
     public int slotCount;
     public boolean wider = false;

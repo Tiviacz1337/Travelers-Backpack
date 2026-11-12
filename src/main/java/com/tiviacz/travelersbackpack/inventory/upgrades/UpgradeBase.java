@@ -1,6 +1,7 @@
 package com.tiviacz.travelersbackpack.inventory.upgrades;
 
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
+import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.UpgradeManager;
 import com.tiviacz.travelersbackpack.inventory.upgrades.filter.IFilterSlots;
 import net.minecraft.core.component.DataComponentType;
@@ -21,6 +22,10 @@ public abstract class UpgradeBase<T> implements IUpgrade<T> {
 
     public UpgradeManager getUpgradeManager() {
         return this.upgradeManager;
+    }
+
+    public BackpackWrapper getWrapper() {
+        return getUpgradeManager().getWrapper();
     }
 
     public int getDataHolderSlot() {

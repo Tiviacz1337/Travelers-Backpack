@@ -7,7 +7,7 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.Optional;
 
-public class FilterSlotItemHandler extends SlotItemHandler {
+public class FilterSlotItemHandler extends SlotItemHandler implements PickAllPreventable {
     protected final UpgradeBase upgrade;
     protected final int activeSlotCount;
 

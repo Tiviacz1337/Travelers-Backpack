@@ -53,4 +53,8 @@ public interface IUpgrade<T> {
     Point getTabSize();
 
     boolean isTabOpened();
+
+    default boolean clickMenuButton(Player player, int buttonId) {
+        return false;
+    }
 }

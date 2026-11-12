@@ -106,6 +106,7 @@ public class ModItems {
     public static Item NETHERITE_TIER_UPGRADE;
     public static Item TANKS_UPGRADE;
     public static Item CRAFTING_UPGRADE;
+    public static Item STONECUTTER_UPGRADE;
     public static Item FURNACE_UPGRADE;
     public static Item SMOKER_UPGRADE;
     public static Item BLAST_FURNACE_UPGRADE;
@@ -198,6 +199,7 @@ public class ModItems {
         NETHERITE_TIER_UPGRADE = Registry.register(BuiltInRegistries.ITEM, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "netherite_tier_upgrade"), new TierUpgrade(new Item.Properties().stacksTo(16).setId(resourceKey("netherite_tier_upgrade")), TierUpgrade.Upgrade.NETHERITE_TIER_UPGRADE));
         TANKS_UPGRADE = Registry.register(BuiltInRegistries.ITEM, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "tanks_upgrade"), new TanksUpgradeItem(new Item.Properties().stacksTo(16).setId(resourceKey("tanks_upgrade"))));
         CRAFTING_UPGRADE = Registry.register(BuiltInRegistries.ITEM, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "crafting_upgrade"), new CraftingUpgradeItem(new Item.Properties().stacksTo(16).setId(resourceKey("crafting_upgrade"))));
+        STONECUTTER_UPGRADE = Registry.register(BuiltInRegistries.ITEM, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "stonecutter_upgrade"), new StonecutterUpgradeItem(new Item.Properties().stacksTo(16).setId(resourceKey("stonecutter_upgrade"))));
         FURNACE_UPGRADE = Registry.register(BuiltInRegistries.ITEM, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "furnace_upgrade"), new FurnaceUpgradeItem(new Item.Properties().stacksTo(16).setId(resourceKey("furnace_upgrade"))));
         SMOKER_UPGRADE = Registry.register(BuiltInRegistries.ITEM, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "smoker_upgrade"), new SmokerUpgradeItem(new Item.Properties().stacksTo(16).setId(resourceKey("smoker_upgrade"))));
         BLAST_FURNACE_UPGRADE = Registry.register(BuiltInRegistries.ITEM, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "blast_furnace_upgrade"), new BlastFurnaceUpgradeItem(new Item.Properties().stacksTo(16).setId(resourceKey("blast_furnace_upgrade"))));

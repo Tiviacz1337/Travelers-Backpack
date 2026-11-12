@@ -48,6 +48,7 @@ public class ModItemGroups {
             output.accept(ModItems.NETHERITE_TIER_UPGRADE);
             output.accept(ModItems.TANKS_UPGRADE);
             output.accept(ModItems.CRAFTING_UPGRADE);
+            output.accept(ModItems.STONECUTTER_UPGRADE);
             output.accept(ModItems.FURNACE_UPGRADE);
             output.accept(ModItems.SMOKER_UPGRADE);
             output.accept(ModItems.BLAST_FURNACE_UPGRADE);

@@ -386,14 +386,25 @@ public class BackpackScreen extends AbstractBackpackScreen<BackpackBaseMenu> imp
     }
 
     @Override
+    public boolean mouseReleased(MouseButtonEvent event) {
+        Optional<GuiEventListener> child = getChildAt(event.x(), event.y());
+        if(child.isPresent()) {
+            if(child.get() instanceof UpgradeWidgetBase<?> upgradeWidgetBase) {
+                if(upgradeWidgetBase.isTabOpened() && child.get().mouseReleased(event)) {
+                    return true;
+                }
+            }
+        }
+        return super.mouseReleased(event);
+    }
+
+    @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
         if(getChildAt(mouseX, mouseY).isPresent()) {
             GuiEventListener child = getChildAt(mouseX, mouseY).get();
-            if(child instanceof FilterUpgradeWidgetBase<?, ?> widget) {
-                if(widget.getUpgrade().isTagSelector()) {
-                    if(widget.mouseScrolled(mouseX, mouseY, scrollX, scrollY)) {
-                        return true;
-                    }
+            if(child instanceof UpgradeWidgetBase<?> upgradeWidgetBase) {
+                if(upgradeWidgetBase.isTabOpened() && child.mouseScrolled(mouseX, mouseY, scrollX, scrollY)) {
+                    return true;
                 }
             }
         }

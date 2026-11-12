@@ -48,6 +48,9 @@ public class ModDataComponents {
     public static final DataComponentType<Integer> BURN_TOTAL_TIME = DataComponentType.<Integer>builder().persistent(Codec.INT).networkSynchronized(ByteBufCodecs.INT).build();
     public static final DataComponentType<Integer> COOKING_TOTAL_TIME = DataComponentType.<Integer>builder().persistent(Codec.INT).networkSynchronized(ByteBufCodecs.INT).build();
 
+    //Stonecutter
+    public static final DataComponentType<Integer> INDEX = DataComponentType.<Integer>builder().persistent(Codec.INT).networkSynchronized(ByteBufCodecs.INT).build();
+
     public static void init() {
         Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "tier"), TIER);
         Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "storage_slots"), STORAGE_SLOTS);
@@ -80,5 +83,7 @@ public class ModDataComponents {
         Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "cooking_finish_time"), COOKING_FINISH_TIME);
         Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "burn_total_time"), BURN_TOTAL_TIME);
         Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "cooking_total_time"), COOKING_TOTAL_TIME);
+
+        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "index"), INDEX);
     }
 }

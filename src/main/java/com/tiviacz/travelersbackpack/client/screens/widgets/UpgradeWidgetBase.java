@@ -14,6 +14,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,10 +92,15 @@ public class UpgradeWidgetBase<U extends UpgradeBase> extends WidgetBase<Backpac
                     }
                 }
             } else {
-                guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BackpackScreen.TABS, pos.x(), pos.y(), tabUv.x(), tabUv.y(), width, height, 256, 256);
+                guiGraphics.blit(RenderPipelines.GUI_TEXTURED, this.getBackgroundTexture(), pos.x(), pos.y(), tabUv.x(), tabUv.y(), width, height, 256, 256);
             }
             guiGraphics.item(screen.getWrapper().getUpgrades().getStackInSlot(this.dataHolderSlot), pos.x() + 4, pos.y() + 4);
         }
+    }
+
+    //Override in upgrade widget class
+    public Identifier getBackgroundTexture() {
+        return BackpackScreen.TABS;
     }
 
     @Override

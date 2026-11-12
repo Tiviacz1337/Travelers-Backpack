@@ -52,6 +52,7 @@ public class TravelersBackpackConfig {
             public final ModConfigSpec.BooleanValue enableSleepingBag;
             public final ModConfigSpec.BooleanValue enableTanksUpgrade;
             public final ModConfigSpec.BooleanValue enableCraftingUpgrade;
+            public final ModConfigSpec.BooleanValue enableStonecutterUpgrade;
             public final ModConfigSpec.BooleanValue enableFurnaceUpgrade;
             public final ModConfigSpec.BooleanValue enableSmokerUpgrade;
             public final ModConfigSpec.BooleanValue enableBlastFurnaceUpgrade;
@@ -74,6 +75,9 @@ public class TravelersBackpackConfig {
 
                 enableCraftingUpgrade = builder
                         .define("enableCraftingUpgrade", true);
+
+                enableStonecutterUpgrade = builder
+                        .define("enableStonecutterUpgrade", true);
 
                 enableFurnaceUpgrade = builder
                         .define("enableFurnaceUpgrade", true);
