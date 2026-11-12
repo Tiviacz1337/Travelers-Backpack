@@ -62,7 +62,7 @@ public class ContainerSorter {
         ResourceHandler<ItemResource> playerStacks = VanillaContainerWrapper.of(player.getInventory());
         for(int i = shiftPressed ? 0 : 9; i < 36; ++i) {
             ItemStack playerStack = playerStacks.getResource(i).toStack(playerStacks.getAmountAsInt(i));
-            if(playerStack.isEmpty() || (backpackWrapper.getScreenID() == Reference.ITEM_SCREEN_ID && i == (backpackWrapper.getBackpackSlotIndex() == -1 ? player.getInventory().getSelectedSlot() : backpackWrapper.getBackpackSlotIndex())))
+            if(playerStack.isEmpty() || (backpackWrapper.getOpenContext().isItem() && i == (backpackWrapper.getBackpackSlotIndex() == -1 ? player.getInventory().getSelectedSlot() : backpackWrapper.getBackpackSlotIndex())))
                 continue;
             CustomResourceHandler storage = new CustomResourceHandler(backpackWrapper, backpackWrapper.getStorage());
             boolean hasExistingStack = IntStream.range(0, storage.getSlots()).mapToObj(storage::getStackInSlot).filter(existing -> !existing.isEmpty()).anyMatch(existing -> existing.getItem() == playerStack.getItem());
@@ -85,7 +85,7 @@ public class ContainerSorter {
             for(Pair<Integer, Pair<ItemStack, Boolean>> pair : backpackWrapper.getMemorySlots()) {
                 for(int i = shiftPressed ? 0 : 9; i < 36; ++i) {
                     ItemStack playerStack = playerStacks.getResource(i).toStack(playerStacks.getAmountAsInt(i));
-                    if(playerStack.isEmpty() || (backpackWrapper.getScreenID() == Reference.ITEM_SCREEN_ID && i == (backpackWrapper.getBackpackSlotIndex() == -1 ? player.getInventory().getSelectedSlot() : backpackWrapper.getBackpackSlotIndex())))
+                    if(playerStack.isEmpty() || (backpackWrapper.getOpenContext().isItem() && i == (backpackWrapper.getBackpackSlotIndex() == -1 ? player.getInventory().getSelectedSlot() : backpackWrapper.getBackpackSlotIndex())))
                         continue;
                     CustomResourceHandler wrapper = new CustomResourceHandler(backpackWrapper, backpackWrapper.getStorage());
                     ItemStack extSimulate = InventoryHelper.extractItem(playerStacks, i, Integer.MAX_VALUE, true);
@@ -105,7 +105,7 @@ public class ContainerSorter {
         //Run for Normal Slots
         for(int i = shiftPressed ? 0 : 9; i < 36; ++i) {
             ItemStack playerStack = playerStacks.getResource(i).toStack(playerStacks.getAmountAsInt(i));
-            if(playerStack.isEmpty() || (backpackWrapper.getScreenID() == Reference.ITEM_SCREEN_ID && i == (backpackWrapper.getBackpackSlotIndex() == -1 ? player.getInventory().getSelectedSlot() : backpackWrapper.getBackpackSlotIndex())))
+            if(playerStack.isEmpty() || (backpackWrapper.getOpenContext().isItem() && i == (backpackWrapper.getBackpackSlotIndex() == -1 ? player.getInventory().getSelectedSlot() : backpackWrapper.getBackpackSlotIndex())))
                 continue;
             CustomResourceHandler wrapper = new CustomResourceHandler(backpackWrapper, backpackWrapper.getStorage());
             ItemStack ext = InventoryHelper.extractItem(playerStacks, i, Integer.MAX_VALUE, false);

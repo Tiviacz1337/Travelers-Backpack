@@ -59,7 +59,7 @@ public class JukeboxWidget extends UpgradeWidgetBase<JukeboxUpgrade> {
 
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean pButton) {
-        if(this.upgrade.getUpgradeManager().getWrapper().getScreenID() == Reference.WEARABLE_SCREEN_ID) {
+        if(this.upgrade.getUpgradeManager().getWrapper().getOpenContext().isEquipped()) {
             if(isMouseOverPlayButton(event.x(), event.y()) && isBackpackOwner()) {
                 if(isTabOpened() && this.upgrade.canPlayRecord()) {
                     ServerboundActionTagPacket.create(ServerboundActionTagPacket.UPGRADE_TAB, this.dataHolderSlot, true, ServerActions.PLAY_RECORD);
@@ -73,7 +73,7 @@ public class JukeboxWidget extends UpgradeWidgetBase<JukeboxUpgrade> {
         if(isMouseOverStopButton(event.x(), event.y()) && isBackpackOwner()) {
             if(isTabOpened() && this.upgrade.isPlayingRecord()) {
                 ServerboundActionTagPacket.create(ServerboundActionTagPacket.UPGRADE_TAB, this.dataHolderSlot, false, ServerActions.PLAY_RECORD);
-                if(this.upgrade.getUpgradeManager().getWrapper().getScreenID() == Reference.WEARABLE_SCREEN_ID) {
+                if(this.upgrade.getUpgradeManager().getWrapper().getOpenContext().isEquipped()) {
                     stopDisc(getFromDisk(StacksHandlerUtils.getStackInSlot(upgrade.diskHandler, 0)));
                 }
                 this.screen.playUIClickSound();

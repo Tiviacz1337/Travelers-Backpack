@@ -103,7 +103,7 @@ public class FeedingUpgrade extends FilterUpgradeBase<FeedingUpgrade, FeedingFil
         }
 
         boolean stillHungry = false;
-        if(getUpgradeManager().getWrapper().getScreenID() == Reference.BLOCK_ENTITY_SCREEN_ID) {
+        if(getUpgradeManager().getWrapper().getOpenContext().isBlockEntity()) {
             AtomicBoolean stillHungryPlayer = new AtomicBoolean(false);
             this.particlePos = pos;
             level.getEntities(EntityType.PLAYER, new AABB(pos).inflate(FEEDING_RANGE), p -> true).forEach(p -> stillHungryPlayer.set(stillHungryPlayer.get() || feedPlayerAndGetHungry(p, level)));

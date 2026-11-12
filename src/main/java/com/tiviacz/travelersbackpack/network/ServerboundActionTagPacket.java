@@ -4,6 +4,7 @@ import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
 import com.tiviacz.travelersbackpack.common.ServerActions;
 import com.tiviacz.travelersbackpack.inventory.BackpackContainer;
+import com.tiviacz.travelersbackpack.inventory.OpenContext;
 import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TankActions;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.core.BlockPos;
@@ -61,7 +62,7 @@ public record ServerboundActionTagPacket(CompoundTag actionTag) implements Custo
                 }
                 case OPEN_SCREEN -> {
                     if(AttachmentUtils.isWearingBackpack(player)) {
-                        BackpackContainer.openBackpack(player, AttachmentUtils.getWearingBackpack(player), Reference.WEARABLE_SCREEN_ID);
+                        BackpackContainer.openBackpack(player, AttachmentUtils.getWearingBackpack(player), OpenContext.EQUIPPED);
                     }
                 }
                 case OPEN_BACKPACK -> {

@@ -16,15 +16,15 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 
-public record BackpackContainer(ItemStack stack, Player player, int screenID,
+public record BackpackContainer(ItemStack stack, Player player, OpenContext openContext,
                                 int index,
                                 boolean triggerClientSideContainerClosing) implements MenuProvider, Nameable {
-    public BackpackContainer(ItemStack stack, Player player, int screenID, int index) {
-        this(stack, player, screenID, index, true);
+    public BackpackContainer(ItemStack stack, Player player, OpenContext openContext, int index) {
+        this(stack, player, openContext, index, true);
     }
 
-    public BackpackContainer(ItemStack stack, Player player, int screenID) {
-        this(stack, player, screenID, -1, true);
+    public BackpackContainer(ItemStack stack, Player player, OpenContext openContext) {
+        this(stack, player, openContext, -1, true);
     }
 
     @Override
@@ -40,10 +40,10 @@ public record BackpackContainer(ItemStack stack, Player player, int screenID,
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int pContainerId, Inventory pPlayerInventory, Player pPlayer) {
-        if(this.screenID == Reference.WEARABLE_SCREEN_ID) {
+        if(this.openContext.isEquipped()) {
             return new BackpackItemMenu(pContainerId, pPlayerInventory, AttachmentUtils.getBackpackWrapper(this.player));
         } else {
-            return new BackpackItemMenu(pContainerId, pPlayerInventory, new BackpackWrapper(this.stack, this.screenID, pPlayer, this.index));
+            return new BackpackItemMenu(pContainerId, pPlayerInventory, new BackpackWrapper(this.stack, this.openContext, pPlayer, this.index));
         }
     }
 
@@ -52,36 +52,36 @@ public record BackpackContainer(ItemStack stack, Player player, int screenID,
         return this.triggerClientSideContainerClosing;
     }
 
-    public static FriendlyByteBuf saveExtraData(FriendlyByteBuf buf, @Nullable Player target, int screenID) {
-        buf.writeInt(screenID);
+    public static FriendlyByteBuf saveExtraData(FriendlyByteBuf buf, @Nullable Player target, OpenContext openContext) {
+        buf.writeInt(openContext.getId());
         buf.writeInt(target == null ? -1 : target.getId());
         return buf;
     }
 
-    public static FriendlyByteBuf saveExtraData(FriendlyByteBuf buf, int index, int screenID) {
-        buf.writeInt(screenID);
+    public static FriendlyByteBuf saveExtraData(FriendlyByteBuf buf, int index, OpenContext openContext) {
+        buf.writeInt(openContext.getId());
         buf.writeInt(index);
         return buf;
     }
 
     //Capability
-    public static void openBackpack(ServerPlayer serverPlayerEntity, ItemStack stack, int screenID) {
+    public static void openBackpack(ServerPlayer serverPlayerEntity, ItemStack stack, OpenContext openContext) {
         if(!serverPlayerEntity.level().isClientSide()) {
-            serverPlayerEntity.openMenu(new BackpackContainer(stack, serverPlayerEntity, screenID), buf -> saveExtraData(buf, null, screenID));
+            serverPlayerEntity.openMenu(new BackpackContainer(stack, serverPlayerEntity, openContext), buf -> saveExtraData(buf, null, openContext));
         }
     }
 
     //Item
-    public static void openBackpack(ServerPlayer serverPlayerEntity, ItemStack stack, int screenID, int index) {
+    public static void openBackpack(ServerPlayer serverPlayerEntity, ItemStack stack, OpenContext openContext, int index) {
         if(!serverPlayerEntity.level().isClientSide()) {
-            serverPlayerEntity.openMenu(new BackpackContainer(stack, serverPlayerEntity, screenID, index, false), buf -> saveExtraData(buf, index, screenID));
+            serverPlayerEntity.openMenu(new BackpackContainer(stack, serverPlayerEntity, openContext, index, false), buf -> saveExtraData(buf, index, openContext));
         }
     }
 
-    public static void openAnotherPlayerBackpack(ServerPlayer opener, ServerPlayer targetPlayer, ItemStack stack, int screenID) {
+    public static void openAnotherPlayerBackpack(ServerPlayer opener, ServerPlayer targetPlayer, ItemStack stack, OpenContext openContext) {
         if(!opener.level().isClientSide()) {
             synchroniseToOpener(opener, targetPlayer);
-            opener.openMenu(new BackpackContainer(stack, targetPlayer, screenID), buf -> saveExtraData(buf, targetPlayer, screenID));
+            opener.openMenu(new BackpackContainer(stack, targetPlayer, openContext), buf -> saveExtraData(buf, targetPlayer, openContext));
         }
     }
 

@@ -7,6 +7,7 @@ import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModBlockEntityTypes;
 import com.tiviacz.travelersbackpack.init.ModBlocks;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
+import com.tiviacz.travelersbackpack.inventory.OpenContext;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBlockEntityMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackSettingsMenu;
 import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
@@ -89,7 +90,7 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider {
     public void setBackpack(ItemStack backpack) {
         if(backpack.getItem() instanceof TravelersBackpackItem) {
             if(this.wrapper == BackpackWrapper.DUMMY) {
-                this.wrapper = new BackpackWrapper(backpack.copy(), Reference.BLOCK_ENTITY_SCREEN_ID, getLevel());
+                this.wrapper = new BackpackWrapper(backpack.copy(), OpenContext.BLOCK_ENTITY, getLevel());
                 wrapper.setBackpackPos(this::getBlockPos);
                 wrapper.saveHandler = () -> {
                     this.setChanged();

@@ -168,7 +168,7 @@ public class BackpackSettingsScreen extends AbstractBackpackScreen<BackpackSetti
         this.memoryWidget = new MemoryWidget(this, new Point(this.leftPos + this.imageWidth - 3, this.topPos + 4 + 24 + 1 + 24 + 1), false);
         addRenderableWidget(this.memoryWidget);
 
-        if(getWrapper().getScreenID() == Reference.WEARABLE_SCREEN_ID) {
+        if(getWrapper().getOpenContext().isEquipped()) {
             this.visibilityWidget = new VisibilityWidget(this, new Point(this.leftPos + this.imageWidth - 3, this.topPos + 4 + 24 + 1 + 24 + 1 + 24 + 1));
             addRenderableWidget(this.visibilityWidget);
 

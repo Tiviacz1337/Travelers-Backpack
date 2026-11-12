@@ -49,7 +49,7 @@ public class ReiTransferHandler implements SimpleTransferHandler {
             }
             //Player Inv
             for(int i = menu.PLAYER_INV_START; i < menu.PLAYER_HOT_END; i++) {
-                if(menu.getWrapper().getScreenID() == Reference.ITEM_SCREEN_ID && menu.getSlot(i) instanceof DisabledSlot)
+                if(menu.getWrapper().getOpenContext().isItem() && menu.getSlot(i) instanceof DisabledSlot)
                     continue;
 
                 list.add(SlotAccessor.fromSlot(menu.getSlot(i)));

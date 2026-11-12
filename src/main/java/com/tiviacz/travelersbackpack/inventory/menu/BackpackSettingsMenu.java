@@ -4,6 +4,7 @@ import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
 import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
 import com.tiviacz.travelersbackpack.init.ModMenuTypes;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
+import com.tiviacz.travelersbackpack.inventory.OpenContext;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.DisabledSlot;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.core.BlockPos;
@@ -30,7 +31,7 @@ public class BackpackSettingsMenu extends AbstractBackpackMenu {
     public BackpackSettingsMenu(int windowID, Inventory playerInventory, BackpackWrapper wrapper) {
         this(ModMenuTypes.BACKPACK_SETTINGS_MENU.get(), windowID, playerInventory, wrapper);
 
-        if(this.wrapper.getScreenID() == Reference.BLOCK_ENTITY_SCREEN_ID) {
+        if(this.wrapper.getOpenContext().isBlockEntity()) {
             this.access = ContainerLevelAccess.create(player.level(), getWrapper().getBackpackPos());
             this.backpackBlock = player.level().getBlockState(getWrapper().getBackpackPos()).getBlock();
             this.wrapper.addUser(inventory.player);
@@ -69,7 +70,7 @@ public class BackpackSettingsMenu extends AbstractBackpackMenu {
             modifiedOffset += 18;
         }
 
-        if(wrapper.getScreenID() == Reference.ITEM_SCREEN_ID) {
+        if(wrapper.getOpenContext().isItem()) {
             for(int y = 0; y < 3; y++) {
                 for(int x = 0; x < 9; x++) {
                     if(x + y * 9 + 9 == currentItemIndex) {
@@ -118,7 +119,7 @@ public class BackpackSettingsMenu extends AbstractBackpackMenu {
 
     @Override
     public void removed(Player player) {
-        if(getWrapper().getScreenID() == Reference.BLOCK_ENTITY_SCREEN_ID) {
+        if(getWrapper().getOpenContext().isBlockEntity()) {
             if(!player.level().isClientSide()) {
                 BlockPos pos = getWrapper().getBackpackPos();
                 if(pos != null && player.level().getBlockEntity(pos) instanceof BackpackBlockEntity backpackBlockEntity) {
@@ -134,7 +135,7 @@ public class BackpackSettingsMenu extends AbstractBackpackMenu {
 
     @Override
     public boolean stillValid(Player player) {
-        if(getWrapper().getScreenID() == Reference.BLOCK_ENTITY_SCREEN_ID) {
+        if(getWrapper().getOpenContext().isBlockEntity()) {
             return this.access.evaluate((level, blockPos) -> level.getBlockState(blockPos).is(this.backpackBlock) && player.isWithinBlockInteractionRange(blockPos, 4.0), true);
         } else {
             if(getWrapper().getBackpackOwner() != null) {
@@ -157,14 +158,14 @@ public class BackpackSettingsMenu extends AbstractBackpackMenu {
 
     private static BackpackWrapper getWrapper(Inventory inventory, RegistryFriendlyByteBuf data) {
         //Read all data with correct order
-        int screenID = data.readInt();
+        OpenContext openContext = OpenContext.fromId(data.readInt());
         BlockPos pos = data.readBlockPos(); //Not used here
         int index = data.readInt();
         ItemStack backpackStack = index == -1 ? inventory.player.getItemInHand(InteractionHand.MAIN_HAND) : inventory.getNonEquipmentItems().get(index);
-        if(screenID == Reference.WEARABLE_SCREEN_ID) {
+        if(openContext.isEquipped()) {
             return AttachmentUtils.getBackpackWrapper(inventory.player);
         } else {
-            return new BackpackWrapper(backpackStack, screenID, inventory.player, index);
+            return new BackpackWrapper(backpackStack, openContext, inventory.player, index);
         }
     }
 

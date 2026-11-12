@@ -2,7 +2,6 @@ package com.tiviacz.travelersbackpack.inventory;
 
 import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackSettingsMenu;
-import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -15,7 +14,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
-public record BackpackSettingsContainer(ItemStack stack, Player player, int screenID,
+public record BackpackSettingsContainer(ItemStack stack, Player player, OpenContext openContext,
                                         int index) implements MenuProvider, Nameable {
     @Override
     public Component getName() {
@@ -27,9 +26,9 @@ public record BackpackSettingsContainer(ItemStack stack, Player player, int scre
         return Component.translatable("screen.travelersbackpack.item");
     }
 
-    public static RegistryFriendlyByteBuf saveSettingsExtraData(RegistryFriendlyByteBuf buf, int screenID, int index) {
+    public static RegistryFriendlyByteBuf saveSettingsExtraData(RegistryFriendlyByteBuf buf, OpenContext openContext, int index) {
         buf.writeBoolean(false);
-        buf.writeInt(screenID);
+        buf.writeInt(openContext.getId());
         buf.writeBlockPos(BlockPos.ZERO); //Not used
         buf.writeInt(index);
         return buf;
@@ -43,16 +42,16 @@ public record BackpackSettingsContainer(ItemStack stack, Player player, int scre
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int pContainerId, Inventory pPlayerInventory, Player pPlayer) {
-        if(this.screenID == Reference.WEARABLE_SCREEN_ID) {
+        if(this.openContext.isEquipped()) {
             return new BackpackSettingsMenu(pContainerId, pPlayerInventory, AttachmentUtils.getBackpackWrapper(this.player));
         } else {
-            return new BackpackSettingsMenu(pContainerId, pPlayerInventory, new BackpackWrapper(this.stack, this.screenID, pPlayer, this.index));
+            return new BackpackSettingsMenu(pContainerId, pPlayerInventory, new BackpackWrapper(this.stack, this.openContext, pPlayer, this.index));
         }
     }
 
-    public static void openSettings(ServerPlayer serverPlayerEntity, ItemStack stack, int screenID, int index) {
+    public static void openSettings(ServerPlayer serverPlayerEntity, ItemStack stack, OpenContext openContext, int index) {
         if(!serverPlayerEntity.level().isClientSide()) {
-            serverPlayerEntity.openMenu(new BackpackSettingsContainer(stack, serverPlayerEntity, screenID, index), buf -> saveSettingsExtraData(buf, screenID, index));
+            serverPlayerEntity.openMenu(new BackpackSettingsContainer(stack, serverPlayerEntity, openContext, index), buf -> saveSettingsExtraData(buf, openContext, index));
         }
     }
 }

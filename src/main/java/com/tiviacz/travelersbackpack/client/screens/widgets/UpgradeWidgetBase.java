@@ -2,6 +2,7 @@ package com.tiviacz.travelersbackpack.client.screens.widgets;
 
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.common.ServerActions;
+import com.tiviacz.travelersbackpack.inventory.OpenContext;
 import com.tiviacz.travelersbackpack.inventory.upgrades.IEnable;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
@@ -119,9 +120,9 @@ public class UpgradeWidgetBase<U extends UpgradeBase> extends WidgetBase<Backpac
             List<Component> tooltips = new ArrayList<>();
             tooltips.add(Component.translatable(this.upgradeIconTooltip));
             this.getAdditionalTooltips(tooltips::add);
-            int screenID = getUpgrade().getUpgradeManager().getWrapper().getScreenID();
+            OpenContext openContext = getUpgrade().getUpgradeManager().getWrapper().getOpenContext();
             if(this.upgrade.getDataHolderStack().getItem() instanceof UpgradeItem upgradeItem) {
-                if((screenID == Reference.ITEM_SCREEN_ID && upgradeItem.requiresEquippedBackpack() || (!upgradeItem.hasBlockFunctionality() && screenID == Reference.BLOCK_ENTITY_SCREEN_ID))) {
+                if((openContext.isItem() && upgradeItem.requiresEquippedBackpack() || (!upgradeItem.hasBlockFunctionality() && openContext.isBlockEntity()))) {
                     tooltips.add(Component.translatable("screen.travelersbackpack.equip_to_use"));
                 }
             }

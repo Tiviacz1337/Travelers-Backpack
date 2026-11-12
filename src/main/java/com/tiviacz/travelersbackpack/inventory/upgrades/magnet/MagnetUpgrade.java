@@ -55,7 +55,7 @@ public class MagnetUpgrade extends FilterUpgradeBase<MagnetUpgrade, MagnetFilter
         if(currentTick % getCooldown() != 0) {
             return;
         }
-        if(getUpgradeManager().getWrapper().getScreenID() == Reference.BLOCK_ENTITY_SCREEN_ID) {
+        if(getUpgradeManager().getWrapper().getOpenContext().isBlockEntity()) {
             teleportNearbyItems(Vec3.atBottomCenterOf(pos), level, null);
         } else {
             teleportNearbyItems(player.position(), level, player);

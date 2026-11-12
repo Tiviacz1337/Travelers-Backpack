@@ -6,6 +6,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
 import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
 import com.tiviacz.travelersbackpack.inventory.BackpackContainer;
+import com.tiviacz.travelersbackpack.inventory.OpenContext;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -47,7 +48,7 @@ public class AccessCommand {
         ItemStack stack = AttachmentUtils.getWearingBackpack(target);
 
         if(hasBackpack) {
-            BackpackContainer.openAnotherPlayerBackpack(self, target, stack, Reference.WEARABLE_SCREEN_ID);
+            BackpackContainer.openAnotherPlayerBackpack(self, target, stack, OpenContext.EQUIPPED);
             source.sendSuccess(() -> Component.literal("Accessing backpack of " + target.getDisplayName().getString()), true);
             return 1;
         } else {

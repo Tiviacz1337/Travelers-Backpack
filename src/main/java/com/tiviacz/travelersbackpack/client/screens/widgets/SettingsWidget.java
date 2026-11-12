@@ -35,7 +35,7 @@ public class SettingsWidget extends WidgetBase<AbstractBackpackScreen<?>> {
     }
 
     public int getSettingsUser() {
-        if(this.screen.getWrapper().getScreenID() == Reference.BLOCK_ENTITY_SCREEN_ID) {
+        if(this.screen.getWrapper().getOpenContext().isBlockEntity()) {
             BlockPos pos = this.screen.getWrapper().getBackpackPos();
             if(pos != null) {
                 return ((BackpackBlockEntity)this.screen.getScreenPlayer().level().getBlockEntity(pos)).getSettingsUser();
@@ -50,7 +50,7 @@ public class SettingsWidget extends WidgetBase<AbstractBackpackScreen<?>> {
             if(this.isSettingsScreen) {
                 guiGraphics.setTooltipForNextFrame(screen.getScreenFont(), Component.translatable("screen.travelersbackpack.settings_back"), mouseX, mouseY);
             } else {
-                if(this.screen.getWrapper().getScreenID() != Reference.BLOCK_ENTITY_SCREEN_ID) {
+                if(!this.screen.getWrapper().getOpenContext().isBlockEntity()) {
                     if(!this.screen.getWrapper().isOwner(this.screen.getScreenPlayer())) {
                         guiGraphics.setTooltipForNextFrame(screen.getScreenFont(), Component.translatable("screen.travelersbackpack.settings_owner"), mouseX, mouseY);
                         return;
@@ -66,11 +66,11 @@ public class SettingsWidget extends WidgetBase<AbstractBackpackScreen<?>> {
 
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean pButton) {
-        if(this.screen.getWrapper().getScreenID() != Reference.BLOCK_ENTITY_SCREEN_ID && !this.screen.getWrapper().isOwner(this.screen.getScreenPlayer())) {
+        if(!this.screen.getWrapper().getOpenContext().isBlockEntity() && !this.screen.getWrapper().isOwner(this.screen.getScreenPlayer())) {
             return false;
         }
 
-        if(this.screen.getWrapper().getScreenID() == Reference.BLOCK_ENTITY_SCREEN_ID && (getSettingsUser() != -1 && !this.isSettingsScreen)) {
+        if(this.screen.getWrapper().getOpenContext().isBlockEntity() && (getSettingsUser() != -1 && !this.isSettingsScreen)) {
             return false;
         }
 
