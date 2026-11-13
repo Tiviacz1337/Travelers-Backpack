@@ -2,6 +2,7 @@ package com.tiviacz.travelersbackpack.attachment;
 
 import com.mojang.serialization.Codec;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
+import com.tiviacz.travelersbackpack.inventory.OpenContext;
 import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.network.ClientboundSyncAttachmentPacket;
 import com.tiviacz.travelersbackpack.network.ClientboundSyncComponentsPacket;
@@ -38,7 +39,7 @@ public class BackpackAttachment {
         if(!(stack.getItem() instanceof TravelersBackpackItem)) return;
 
         this.backpack = stack;
-        this.backpackWrapper = new BackpackWrapper(this.backpack, Reference.WEARABLE_SCREEN_ID, player, player.level());
+        this.backpackWrapper = new BackpackWrapper(this.backpack, OpenContext.EQUIPPED, player, player.level());
         this.backpackWrapper.setBackpackOwner(player);
 
         //Update client

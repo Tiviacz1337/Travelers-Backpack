@@ -60,7 +60,7 @@ public class AutoPickupUpgrade extends FilterUpgradeBase<AutoPickupUpgrade, Auto
 
     @Override
     public void tick(@Nullable Player player, Level level, BlockPos pos, int currentTick) {
-        if(getUpgradeManager().getWrapper().getScreenID() != Reference.BLOCK_ENTITY_SCREEN_ID) {
+        if(!getUpgradeManager().getWrapper().getOpenContext().isBlockEntity()) {
             return;
         }
         if(getCooldown() == 0) {

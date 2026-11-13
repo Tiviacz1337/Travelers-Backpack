@@ -99,7 +99,7 @@ public class RefillUpgrade extends UpgradeBase<RefillUpgrade> implements IEnable
             return;
         }
 
-        if(getUpgradeManager().getWrapper().getScreenID() == Reference.BLOCK_ENTITY_SCREEN_ID) {
+        if(getUpgradeManager().getWrapper().getOpenContext().isBlockEntity()) {
             level.getEntities(EntityType.PLAYER, new AABB(pos).inflate(REFILL_RANGE), p -> true).forEach(this::tryRefillItems);
         } else {
             tryRefillItems(player);

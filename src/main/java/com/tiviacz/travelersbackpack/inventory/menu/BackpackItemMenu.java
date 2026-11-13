@@ -3,6 +3,7 @@ package com.tiviacz.travelersbackpack.inventory.menu;
 import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
 import com.tiviacz.travelersbackpack.init.ModScreenHandlerTypes;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
+import com.tiviacz.travelersbackpack.inventory.OpenContext;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.DisabledSlot;
 import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.Reference;
@@ -29,10 +30,10 @@ public class BackpackItemMenu extends BackpackBaseMenu {
         Objects.requireNonNull(inventory, "playerInventory cannot be null");
         Objects.requireNonNull(data, "data cannot be null");
 
-        int screenID = data.screenID();
+        OpenContext openContext = OpenContext.fromId(data.openContext());
         int entityId = data.entityID();
 
-        if(screenID == Reference.WEARABLE_SCREEN_ID) {
+        if(openContext.isEquipped()) {
             if(entityId != -1) {
                 BackpackWrapper targetWrapper = AttachmentUtils.getBackpackWrapper((Player)inventory.player.level().getEntity(entityId));
                 targetWrapper.addUser(inventory.player);
@@ -41,13 +42,13 @@ public class BackpackItemMenu extends BackpackBaseMenu {
             return AttachmentUtils.getBackpackWrapper(inventory.player);
         } else {
             ItemStack backpackStack = entityId == -1 ? inventory.player.getItemInHand(InteractionHand.MAIN_HAND) : inventory.getNonEquipmentItems().get(entityId);
-            return new BackpackWrapper(backpackStack, screenID, inventory.player, inventory.player.level(), entityId);
+            return new BackpackWrapper(backpackStack, openContext, inventory.player, inventory.player.level(), entityId);
         }
     }
 
     @Override
     public void clicked(int slotId, int dragType, ContainerInput containerInput, Player player) {
-        if(getWrapper().getScreenID() == Reference.ITEM_SCREEN_ID && containerInput == ContainerInput.SWAP) {
+        if(getWrapper().getOpenContext().isItem() && containerInput == ContainerInput.SWAP) {
             ItemStack stack = player.getInventory().getItem(dragType);
             ItemStack currentItem = player.getInventory().getSelectedItem();
 
@@ -77,7 +78,7 @@ public class BackpackItemMenu extends BackpackBaseMenu {
         }
 
         for(int x = 0; x < 9; x++) {
-            if(x == currentItemIndex && wrapper.getScreenID() == Reference.ITEM_SCREEN_ID) {
+            if(x == currentItemIndex && wrapper.getOpenContext().isItem()) {
                 this.addSlot(new DisabledSlot(inventory, x, modifiedOffset + 8 + x * 18, wrapper.getRows() * 18 + 7 + 83));
                 this.disabledSlotIndex = this.slots.size() - 1;
             } else {
@@ -97,7 +98,7 @@ public class BackpackItemMenu extends BackpackBaseMenu {
         if(getWrapper().getBackpackOwner() != null) {
             return getWrapper().getBackpackOwner().isAlive() && AttachmentUtils.isWearingBackpack(getWrapper().getBackpackOwner());
         }
-        if(getWrapper().getScreenID() == Reference.ITEM_SCREEN_ID) {
+        if(getWrapper().getOpenContext().isItem()) {
             ItemStack backpackStack = getWrapper().getBackpackSlotIndex() == -1 ? player.getItemInHand(InteractionHand.MAIN_HAND) : inventory.getItem(getWrapper().getBackpackSlotIndex());
             return backpackStack.getItem() instanceof TravelersBackpackItem;
         }

@@ -205,7 +205,7 @@ public class InventoryActions {
                 Vec3 backpackPos = menu.getWrapper().getBackpackPos().getCenter();
                 menu.player.level().playSound(null, backpackPos.x(), backpackPos.y() + 0.5, backpackPos.z(), soundEvent, SoundSource.BLOCKS, 1.0F, 1.0F);
             }
-            if(user.containerMenu instanceof BackpackItemMenu menu && menu.getWrapper().getScreenID() == Reference.ITEM_SCREEN_ID && !menu.player.level().isClientSide()) {
+            if(user.containerMenu instanceof BackpackItemMenu menu && menu.getWrapper().getOpenContext().isItem() && !menu.player.level().isClientSide()) {
                 var vec3 = menu.player.blockPosition().getCenter();
                 menu.player.level().playSound(null, vec3.x(), vec3.y(), vec3.z(), soundEvent, SoundSource.BLOCKS, 1.0F, 1.0F);
             }

@@ -136,7 +136,7 @@ public class AbstractSmeltingUpgrade<T> extends UpgradeBase<T> implements IEnabl
             }
         }
 
-        if((player != null && player.containerMenu instanceof BackpackBaseMenu) || getUpgradeManager().getWrapper().getScreenID() == Reference.BLOCK_ENTITY_SCREEN_ID) {
+        if((player != null && player.containerMenu instanceof BackpackBaseMenu) || getUpgradeManager().getWrapper().getOpenContext().isBlockEntity()) {
             if(level instanceof ServerLevel serverLevel) {
                 tickSmelting(serverLevel);
             }
@@ -388,7 +388,7 @@ public class AbstractSmeltingUpgrade<T> extends UpgradeBase<T> implements IEnabl
             protected void onContentsChanged(int slot) {
                 updateDataHolderUnchecked(dataHolderStack -> setSlotChanged(dataHolderStack, slot, getStackInSlot(slot)));
 
-                if(getUpgradeManager().getWrapper().getScreenID() != Reference.ITEM_SCREEN_ID) {
+                if(!getUpgradeManager().getWrapper().getOpenContext().isItem()) {
                     checkCooking(AbstractSmeltingUpgrade.this.serverLevel.get(), false);
                 }
             }

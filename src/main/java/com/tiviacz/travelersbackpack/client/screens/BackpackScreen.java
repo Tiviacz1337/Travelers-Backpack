@@ -264,13 +264,13 @@ public class BackpackScreen extends AbstractBackpackScreen<BackpackBaseMenu> imp
     public void initButtons() {
         buttons.clear();
         int xOffset = 0;
-        if(getWrapper().getScreenID() == Reference.ITEM_SCREEN_ID) {
+        if(getWrapper().getOpenContext().isItem()) {
             if(!TravelersBackpack.enableIntegration()) {
                 buttons.add(new EquipButton(this, getWrapper().getBackpackSlotIndex() == getScreenPlayer().getInventory().getSelectedSlot()));
                 xOffset += 12;
             }
         }
-        if(getWrapper().getScreenID() == Reference.WEARABLE_SCREEN_ID && getWrapper().isOwner(getMenu().player)) {
+        if(getWrapper().getOpenContext().isEquipped() && getWrapper().isOwner(getMenu().player)) {
             buttons.add(new MoreButton(this));
 
             if(!TravelersBackpack.enableIntegration()) {
@@ -292,7 +292,7 @@ public class BackpackScreen extends AbstractBackpackScreen<BackpackBaseMenu> imp
                 buttons.remove(0);
             }
         }
-        if(getWrapper().getScreenID() == Reference.BLOCK_ENTITY_SCREEN_ID) {
+        if(getWrapper().getOpenContext().isBlockEntity()) {
             buttons.add(new MoreButton(this));
 
             if(wrapper.getSleepingBagColor() != -1) {

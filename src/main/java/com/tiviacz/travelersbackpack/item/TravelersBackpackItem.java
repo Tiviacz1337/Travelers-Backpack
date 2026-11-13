@@ -12,6 +12,7 @@ import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.BackpackContainer;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
+import com.tiviacz.travelersbackpack.inventory.OpenContext;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.BackpackSlotItemHandler;
 import com.tiviacz.travelersbackpack.util.InventoryHelper;
@@ -72,7 +73,7 @@ public class TravelersBackpackItem extends BlockItem {
 
         if(TravelersBackpackConfig.serverSpec.isLoaded() && !TravelersBackpackConfig.SERVER.backpackSettings.allowOnlyEquippedBackpack.get()) {
             if(!level.isClientSide()) {
-                BackpackContainer.openBackpack((ServerPlayer)player, player.getInventory().getSelectedItem(), Reference.ITEM_SCREEN_ID, player.getInventory().getSelectedSlot());
+                BackpackContainer.openBackpack((ServerPlayer)player, player.getInventory().getSelectedItem(), OpenContext.ITEM, player.getInventory().getSelectedSlot());
             }
         } else {
             if(!AttachmentUtils.isWearingBackpack(player) && !TravelersBackpack.enableIntegration()) {

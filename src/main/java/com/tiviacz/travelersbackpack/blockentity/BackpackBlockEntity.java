@@ -8,6 +8,7 @@ import com.tiviacz.travelersbackpack.init.ModBlockEntityTypes;
 import com.tiviacz.travelersbackpack.init.ModBlocks;
 import com.tiviacz.travelersbackpack.init.ModScreenHandlerTypes;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
+import com.tiviacz.travelersbackpack.inventory.OpenContext;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBlockEntityMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackSettingsMenu;
 import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
@@ -88,7 +89,7 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Re
     public void setBackpack(ItemStack backpack) {
         if(backpack.getItem() instanceof TravelersBackpackItem) {
             if(this.wrapper == BackpackWrapper.DUMMY) {
-                this.wrapper = new BackpackWrapper(backpack.copy(), Reference.BLOCK_ENTITY_SCREEN_ID, null, getLevel());
+                this.wrapper = new BackpackWrapper(backpack.copy(), OpenContext.BLOCK_ENTITY, null, getLevel());
                 wrapper.setBackpackPos(this::getBlockPos);
                 wrapper.saveHandler = () -> {
                     this.setChanged();
@@ -366,7 +367,7 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Re
     }
 
     public static ModScreenHandlerTypes.SettingsScreenData saveSettingsExtraData(BlockPos pos) {
-        return new ModScreenHandlerTypes.SettingsScreenData(true, Reference.BLOCK_ENTITY_SCREEN_ID, pos, -1);
+        return new ModScreenHandlerTypes.SettingsScreenData(true, OpenContext.BLOCK_ENTITY.getId(), pos, -1);
     }
 
     public static ModScreenHandlerTypes.BlockEntityScreenData saveExtraData(int entityId, BlockPos pos) {

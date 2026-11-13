@@ -14,11 +14,11 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
-public record BackpackSettingsContainer(ItemStack stack, Player player, int screenID,
+public record BackpackSettingsContainer(ItemStack stack, Player player, OpenContext openContext,
                                         int index) implements ExtendedMenuProvider<ModScreenHandlerTypes.SettingsScreenData> {
     @Override
     public ModScreenHandlerTypes.SettingsScreenData getScreenOpeningData(ServerPlayer serverPlayer) {
-        return new ModScreenHandlerTypes.SettingsScreenData(false, screenID, BlockPos.ZERO, index);
+        return new ModScreenHandlerTypes.SettingsScreenData(false, openContext.getId(), BlockPos.ZERO, index);
     }
 
     @Override
@@ -33,16 +33,16 @@ public record BackpackSettingsContainer(ItemStack stack, Player player, int scre
 
     @Override
     public @Nullable AbstractContainerMenu createMenu(int i, Inventory inventory, Player player) {
-        if(screenID == Reference.WEARABLE_SCREEN_ID) {
+        if(openContext.isEquipped()) {
             return new BackpackSettingsMenu(i, inventory, AttachmentUtils.getBackpackWrapper(player));
         } else {
-            return new BackpackSettingsMenu(i, inventory, new BackpackWrapper(stack, screenID, player, player.level(), index));
+            return new BackpackSettingsMenu(i, inventory, new BackpackWrapper(stack, openContext, player, player.level(), index));
         }
     }
 
-    public static void openSettings(ServerPlayer serverPlayerEntity, ItemStack stack, int screenID, int index) {
+    public static void openSettings(ServerPlayer serverPlayerEntity, ItemStack stack, OpenContext openContext, int index) {
         if(!serverPlayerEntity.level().isClientSide()) {
-            serverPlayerEntity.openMenu(new BackpackSettingsContainer(stack, serverPlayerEntity, screenID, index));
+            serverPlayerEntity.openMenu(new BackpackSettingsContainer(stack, serverPlayerEntity, openContext, index));
         }
     }
 }

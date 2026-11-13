@@ -55,7 +55,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class BackpackWrapper {
-    public static final BackpackWrapper DUMMY = new BackpackWrapper(ModItems.STANDARD_TRAVELERS_BACKPACK.getDefaultInstance(), Reference.BLOCK_ENTITY_SCREEN_ID, null, null);
+    public static final BackpackWrapper DUMMY = new BackpackWrapper(ModItems.STANDARD_TRAVELERS_BACKPACK.getDefaultInstance(), OpenContext.BLOCK_ENTITY, null, null);
 
     protected ItemStack stack;
     private ItemStackHandler inventory = new ItemStackHandler(0);
@@ -66,7 +66,7 @@ public class BackpackWrapper {
 
     private UpgradeManager upgradeManager = new UpgradeManager();
     private final LinkedHashSet<Player> playersUsing = new LinkedHashSet<>();
-    private final int screenID;
+    private final OpenContext openContext;
     private long tanksCapacity = 0;
     public int index = -1;
 
@@ -88,16 +88,16 @@ public class BackpackWrapper {
     public static final int UPGRADES_ID = 1;
     public static final int TOOLS_ID = 2;
 
-    public BackpackWrapper(ItemStack stack, int screenID, @Nullable Player player, @Nullable Level level, int index) {
-        this(stack, screenID, player, level);
+    public BackpackWrapper(ItemStack stack, OpenContext openContext, @Nullable Player player, @Nullable Level level, int index) {
+        this(stack, openContext, player, level);
         this.index = index;
     }
 
-    public BackpackWrapper(ItemStack stack, int screenID, @Nullable Player player, @Nullable Level level) {
-        this(stack, screenID, player, level, new int[]{1, 1, 1});
+    public BackpackWrapper(ItemStack stack, OpenContext openContext, @Nullable Player player, @Nullable Level level) {
+        this(stack, openContext, player, level, new int[]{1, 1, 1});
     }
 
-    public BackpackWrapper(ItemStack stack, int screenID, @Nullable Player player, @Nullable Level level, int[] dataLoad) {
+    public BackpackWrapper(ItemStack stack, OpenContext openContext, @Nullable Player player, @Nullable Level level, int[] dataLoad) {
         if(player != null) {
             addUser(player);
             setLevel(player::level);
@@ -105,7 +105,7 @@ public class BackpackWrapper {
         } else {
             setLevel(() -> level);
         }
-        if(screenID == Reference.WEARABLE_SCREEN_ID && player != null) {
+        if(openContext.isEquipped() && player != null) {
             this.setBackpackOwner(player);
         }
 
@@ -115,10 +115,10 @@ public class BackpackWrapper {
         }
 
         this.stack = stack;
-        this.screenID = screenID;
+        this.openContext = openContext;
         this.dataLoad = dataLoad;
 
-        if(getLevel() == null && screenID == Reference.BLOCK_ENTITY_SCREEN_ID) {
+        if(getLevel() == null && openContext.isBlockEntity()) {
             return;
         }
         this.loadBackpackData();
@@ -146,7 +146,7 @@ public class BackpackWrapper {
 
     //Create wrapper from the Backpack Stack
     public static BackpackWrapper fromStack(ItemStack backpackStack) {
-        return new BackpackWrapper(backpackStack, Reference.ITEM_SCREEN_ID, null, null);
+        return new BackpackWrapper(backpackStack, OpenContext.ITEM, null, null);
     }
 
     public void setBackpackStack(ItemStack backpack) {
@@ -343,8 +343,8 @@ public class BackpackWrapper {
         return this.stack.getOrDefault(ModDataComponents.SLOTS, Slots.EMPTY).memory();
     }
 
-    public int getScreenID() {
-        return this.screenID;
+    public OpenContext getOpenContext() {
+        return this.openContext;
     }
 
     public Component getBackpackScreenTitle() {
@@ -507,10 +507,10 @@ public class BackpackWrapper {
 
     public void sendDataToClients(DataComponentType... dataComponentTypes) {
         //Other methods sync data for block entities
-        if(getScreenID() == Reference.BLOCK_ENTITY_SCREEN_ID) return;
+        if(getOpenContext().isBlockEntity()) return;
 
         //Sync stack in slot or hand
-        if(getScreenID() == Reference.ITEM_SCREEN_ID && !getPlayersUsing().stream().filter(p -> !p.level().isClientSide()).toList().isEmpty()) {
+        if(getOpenContext().isItem() && !getPlayersUsing().stream().filter(p -> !p.level().isClientSide()).toList().isEmpty()) {
             int slotIndex = this.index == -1 ? getPlayersUsing().getFirst().getInventory().getSelectedSlot() : this.index;
             PacketDistributor.sendToPlayer((ServerPlayer)this.getPlayersUsing().getFirst(), new ClientboundSyncItemStackPacket(getPlayersUsing().getFirst().getId(), slotIndex, getBackpackStack().typeHolder(), ItemStackUtils.createDataComponentMap(getBackpackStack(), dataComponentTypes)));
             return;
@@ -518,7 +518,7 @@ public class BackpackWrapper {
         //Sync stack equipped in back slot
         if(TravelersBackpack.enableIntegration()) {
             //Sync backpack data on clients differently for integration, because of the way backpacks are handled
-            if(getScreenID() == Reference.WEARABLE_SCREEN_ID && !getPlayersUsing().stream().filter(p -> !p.level().isClientSide()).toList().isEmpty()) {
+            if(getOpenContext().isEquipped() && !getPlayersUsing().stream().filter(p -> !p.level().isClientSide()).toList().isEmpty()) {
                 for(Player player : getPlayersUsing()) {
                     if(((ServerPlayer)player).connection == null) continue; //?
                     PacketDistributor.sendToPlayer((ServerPlayer)player, new ClientboundSyncItemStackPacket(player.getId(), -1, getBackpackStack().typeHolder(), ItemStackUtils.createDataComponentMap(getBackpackStack(), dataComponentTypes)));
@@ -789,15 +789,15 @@ public class BackpackWrapper {
     @Nullable
     public static BackpackWrapper getBackpackWrapper(Player player, ItemStack backpack, int[] dataLoad) {
         if(AttachmentUtils.isWearingBackpack(player)) {
-            if(player.containerMenu instanceof BackpackItemMenu menu && menu.getWrapper().getScreenID() == Reference.WEARABLE_SCREEN_ID) {
+            if(player.containerMenu instanceof BackpackItemMenu menu && menu.getWrapper().getOpenContext().isEquipped()) {
                 return menu.getWrapper();
             } else {
                 for(Player otherPlayer : player.level().players()) {
-                    if(otherPlayer.containerMenu instanceof BackpackItemMenu menu && menu.getWrapper().isOwner(player) && menu.getWrapper().getScreenID() == Reference.WEARABLE_SCREEN_ID) {
+                    if(otherPlayer.containerMenu instanceof BackpackItemMenu menu && menu.getWrapper().isOwner(player) && menu.getWrapper().getOpenContext().isEquipped()) {
                         return menu.getWrapper();
                     }
                 }
-                return new BackpackWrapper(backpack, Reference.WEARABLE_SCREEN_ID, player, player.level(), dataLoad);
+                return new BackpackWrapper(backpack, OpenContext.EQUIPPED, player, player.level(), dataLoad);
             }
         }
         return null;

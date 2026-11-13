@@ -221,7 +221,7 @@ public class ServerActions {
             if(backpackStack.getItem() instanceof TravelersBackpackItem) {
                 if(!TravelersBackpackConfig.SERVER.backpackSettings.allowOnlyEquippedBackpack.get()) {
                     if(!fromSlot || TravelersBackpackConfig.SERVER.backpackSettings.allowOpeningFromSlot.get()) {
-                        BackpackContainer.openBackpack(player, backpackStack, Reference.ITEM_SCREEN_ID, index);
+                        BackpackContainer.openBackpack(player, backpackStack, OpenContext.ITEM, index);
                     }
                 }
             }
@@ -232,22 +232,22 @@ public class ServerActions {
         if(player.getId() == entityId) {
             if(player.containerMenu instanceof BackpackBaseMenu menu) {
                 if(open) {
-                    if(menu.getWrapper().getScreenID() == Reference.BLOCK_ENTITY_SCREEN_ID) {
+                    if(menu.getWrapper().getOpenContext().isBlockEntity()) {
                         if(player.level().getBlockEntity(menu.getWrapper().getBackpackPos()) instanceof BackpackBlockEntity backpackBlockEntity) {
                             backpackBlockEntity.openSettings(player, backpackBlockEntity, menu.getWrapper().getBackpackPos());
                         }
                     } else {
-                        BackpackSettingsContainer.openSettings(player, menu.getWrapper().getBackpackStack(), menu.getWrapper().getScreenID(), menu.getWrapper().getBackpackSlotIndex());
+                        BackpackSettingsContainer.openSettings(player, menu.getWrapper().getBackpackStack(), menu.getWrapper().getOpenContext(), menu.getWrapper().getBackpackSlotIndex());
                     }
                 }
             } else if(player.containerMenu instanceof BackpackSettingsMenu menu) {
                 if(!open) {
-                    if(menu.getWrapper().getScreenID() == Reference.BLOCK_ENTITY_SCREEN_ID) {
+                    if(menu.getWrapper().getOpenContext().isBlockEntity()) {
                         if(player.level().getBlockEntity(menu.getWrapper().getBackpackPos()) instanceof BackpackBlockEntity backpackBlockEntity) {
                             backpackBlockEntity.openBackpack(player, backpackBlockEntity, menu.getWrapper().getBackpackPos());
                         }
                     } else {
-                        BackpackContainer.openBackpack(player, menu.getWrapper().getBackpackStack(), menu.getWrapper().getScreenID(), menu.getWrapper().getBackpackSlotIndex());
+                        BackpackContainer.openBackpack(player, menu.getWrapper().getBackpackStack(), menu.getWrapper().getOpenContext(), menu.getWrapper().getBackpackSlotIndex());
                     }
                 }
             }
@@ -381,7 +381,7 @@ public class ServerActions {
                 ItemStack sleepingBag = BackpackBlockEntity.getProperSleepingBag(menu.getWrapper().getSleepingBagColor()).getBlock().asItem().getDefaultInstance();
                 player.getInventory().placeItemBackInInventory(sleepingBag);
                 menu.getWrapper().setSleepingBagColor(-1);
-                if(menu.getWrapper().getScreenID() == Reference.BLOCK_ENTITY_SCREEN_ID && level.getBlockEntity(menu.getWrapper().getBackpackPos()) instanceof BackpackBlockEntity backpackBlockEntity) {
+                if(menu.getWrapper().getOpenContext().isBlockEntity() && level.getBlockEntity(menu.getWrapper().getBackpackPos()) instanceof BackpackBlockEntity backpackBlockEntity) {
                     backpackBlockEntity.removeSleepingBag(level, backpackBlockEntity.getBlockDirection());
                 }
                 if(player instanceof ServerPlayer serverPlayer) {
