@@ -87,7 +87,7 @@ dependencies {
     //compileOnly("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}") //Not Updated
 
 	//JEI
-	implementation ("maven.modrinth:jei:cHJ1j59c")
+	implementation ("maven.modrinth:jei:j5HrJ8M2")
 
 	//Polymorph
 	implementation("maven.modrinth:polymorph_plus:QrDv5S9t")
