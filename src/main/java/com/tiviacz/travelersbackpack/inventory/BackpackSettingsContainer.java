@@ -36,7 +36,7 @@ public record BackpackSettingsContainer(ItemStack stack, Player player, OpenCont
         if(openContext.isEquipped()) {
             return new BackpackSettingsMenu(i, inventory, AttachmentUtils.getBackpackWrapper(player));
         } else {
-            return new BackpackSettingsMenu(i, inventory, new BackpackWrapper(stack, openContext, player, player.level(), index));
+            return new BackpackSettingsMenu(i, inventory, new BackpackWrapper(stack, openContext, player, index));
         }
     }
 

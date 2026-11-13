@@ -39,7 +39,7 @@ public class BackpackAttachment {
         if(!(stack.getItem() instanceof TravelersBackpackItem)) return;
 
         this.backpack = stack;
-        this.backpackWrapper = new BackpackWrapper(this.backpack, OpenContext.EQUIPPED, player, player.level());
+        this.backpackWrapper = new BackpackWrapper(this.backpack, OpenContext.EQUIPPED, player);
         this.backpackWrapper.setBackpackOwner(player);
 
         //Update client

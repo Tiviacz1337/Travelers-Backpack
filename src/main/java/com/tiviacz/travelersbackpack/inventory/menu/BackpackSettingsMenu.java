@@ -164,7 +164,7 @@ public class BackpackSettingsMenu extends AbstractBackpackMenu {
             return AttachmentUtils.getBackpackWrapper(inventory.player);
         } else {
             ItemStack backpackStack = index == -1 ? inventory.player.getItemInHand(InteractionHand.MAIN_HAND) : inventory.getNonEquipmentItems().get(index);
-            return new BackpackWrapper(backpackStack, openContext, inventory.player, inventory.player.level(), index);
+            return new BackpackWrapper(backpackStack, openContext, inventory.player, index);
         }
     }
 

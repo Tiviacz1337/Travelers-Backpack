@@ -37,7 +37,7 @@ public record BackpackContainer(ItemStack stack, Player player, OpenContext open
                     if(openContext.isEquipped()) {
                         return new BackpackItemMenu(i, inventory, AttachmentUtils.getBackpackWrapper(player));
                     } else {
-                        return new BackpackItemMenu(i, inventory, new BackpackWrapper(stack, openContext, player, player.level()));
+                        return new BackpackItemMenu(i, inventory, new BackpackWrapper(stack, openContext, player));
                     }
                 }
 
@@ -68,7 +68,7 @@ public record BackpackContainer(ItemStack stack, Player player, OpenContext open
                     if(openContext.isEquipped()) {
                         return new BackpackItemMenu(i, inventory, AttachmentUtils.getBackpackWrapper(player));
                     } else {
-                        return new BackpackItemMenu(i, inventory, new BackpackWrapper(stack, openContext, player, player.level(), index));
+                        return new BackpackItemMenu(i, inventory, new BackpackWrapper(stack, openContext, player, index));
                     }
                 }
 
@@ -94,7 +94,7 @@ public record BackpackContainer(ItemStack stack, Player player, OpenContext open
                     if(openContext.isEquipped()) {
                         return new BackpackItemMenu(i, inventory, AttachmentUtils.getBackpackWrapper(targetPlayer));
                     } else {
-                        return new BackpackItemMenu(i, inventory, new BackpackWrapper(stack, openContext, player, player.level()));
+                        return new BackpackItemMenu(i, inventory, new BackpackWrapper(stack, openContext, player));
                     }
                 }
 

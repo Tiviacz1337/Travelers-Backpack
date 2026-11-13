@@ -55,7 +55,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class BackpackWrapper {
-    public static final BackpackWrapper DUMMY = new BackpackWrapper(ModItems.STANDARD_TRAVELERS_BACKPACK.getDefaultInstance(), OpenContext.BLOCK_ENTITY, null, null);
+    public static final BackpackWrapper DUMMY = new BackpackWrapper(ModItems.STANDARD_TRAVELERS_BACKPACK.getDefaultInstance(), OpenContext.BLOCK_ENTITY, (Level)null);
 
     protected ItemStack stack;
     private ItemStackHandler inventory = new ItemStackHandler(0);
@@ -68,7 +68,7 @@ public class BackpackWrapper {
     private final LinkedHashSet<Player> playersUsing = new LinkedHashSet<>();
     private final OpenContext openContext;
     private long tanksCapacity = 0;
-    public int index = -1;
+    private int index = -1;
 
     @Nullable
     private UUID owner = null;
@@ -88,15 +88,24 @@ public class BackpackWrapper {
     public static final int UPGRADES_ID = 1;
     public static final int TOOLS_ID = 2;
 
-    public BackpackWrapper(ItemStack stack, OpenContext openContext, @Nullable Player player, @Nullable Level level, int index) {
-        this(stack, openContext, player, level);
+    //Equipped
+    public BackpackWrapper(ItemStack stack, OpenContext openContext, @Nullable Player player) {
+        this(stack, openContext, player, -1);
+    }
+
+    //Item in slot
+    public BackpackWrapper(ItemStack stack, OpenContext openContext, @Nullable Player player, int index) {
+        this(stack, openContext, player, player == null ? null : player.level(), new int[]{1, 1, 1});
+        //Index argument to disable slot with backpack
         this.index = index;
     }
 
-    public BackpackWrapper(ItemStack stack, OpenContext openContext, @Nullable Player player, @Nullable Level level) {
-        this(stack, openContext, player, level, new int[]{1, 1, 1});
+    //Block Entity
+    public BackpackWrapper(ItemStack stack, OpenContext openContext, @Nullable Level level) {
+        this(stack, openContext, null, level, new int[]{1, 1, 1});
     }
 
+    //Custom data context
     public BackpackWrapper(ItemStack stack, OpenContext openContext, @Nullable Player player, @Nullable Level level, int[] dataLoad) {
         if(player != null) {
             addUser(player);
@@ -146,7 +155,7 @@ public class BackpackWrapper {
 
     //Create wrapper from the Backpack Stack
     public static BackpackWrapper fromStack(ItemStack backpackStack) {
-        return new BackpackWrapper(backpackStack, OpenContext.ITEM, null, null);
+        return new BackpackWrapper(backpackStack, OpenContext.ITEM, (Level)null);
     }
 
     public void setBackpackStack(ItemStack backpack) {
