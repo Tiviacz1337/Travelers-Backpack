@@ -388,7 +388,7 @@ public class AbstractSmeltingUpgrade<T> extends UpgradeBase<T> implements IEnabl
             protected void onContentsChanged(int slot) {
                 updateDataHolderUnchecked(dataHolderStack -> setSlotChanged(dataHolderStack, slot, getStackInSlot(slot)));
 
-                if(getUpgradeManager().getWrapper().getScreenID() == Reference.WEARABLE_SCREEN_ID) {
+                if(getUpgradeManager().getWrapper().getScreenID() != Reference.ITEM_SCREEN_ID) {
                     checkCooking(AbstractSmeltingUpgrade.this.serverLevel.get(), false);
                 }
             }

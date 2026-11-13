@@ -89,7 +89,7 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Re
         if(backpack.getItem() instanceof TravelersBackpackItem) {
             if(this.wrapper == BackpackWrapper.DUMMY) {
                 this.wrapper = new BackpackWrapper(backpack.copy(), Reference.BLOCK_ENTITY_SCREEN_ID, null, getLevel());
-                wrapper.setBackpackPos(getBlockPos());
+                wrapper.setBackpackPos(this::getBlockPos);
                 wrapper.saveHandler = () -> {
                     this.setChanged();
                     this.notifyBlockUpdate();
@@ -117,7 +117,8 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Re
     public void setLevel(Level level) {
         super.setLevel(level);
         if(this.wrapper != BackpackWrapper.DUMMY) {
-            this.wrapper.setLevel(level);
+            this.wrapper.setLevel(() -> level);
+            this.wrapper.loadBackpackData(); //Load level dependent data so it won't crash
         }
     }
 

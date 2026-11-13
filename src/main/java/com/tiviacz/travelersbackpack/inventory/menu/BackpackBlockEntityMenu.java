@@ -42,7 +42,7 @@ public class BackpackBlockEntityMenu extends BackpackBaseMenu {
 
         if(blockEntityAtPos instanceof BackpackBlockEntity backpackBlockEntity) {
             backpackBlockEntity.getWrapper().addUser(inventory.player);
-            backpackBlockEntity.getWrapper().setBackpackPos(pos);
+            backpackBlockEntity.getWrapper().setBackpackPos(() -> pos);
             return backpackBlockEntity.getWrapper();
         }
         throw new IllegalStateException("Block Entity is not correct! " + blockEntityAtPos);
@@ -55,7 +55,7 @@ public class BackpackBlockEntityMenu extends BackpackBaseMenu {
 
     @Override
     public void removed(Player player) {
-        this.wrapper.playersUsing.remove(player);
+        this.wrapper.invalidateUser(player);
         super.removed(player);
     }
 }

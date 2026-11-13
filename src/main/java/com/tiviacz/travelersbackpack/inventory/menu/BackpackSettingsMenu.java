@@ -126,7 +126,7 @@ public class BackpackSettingsMenu extends AbstractBackpackMenu {
             }
         }
         if(player.containerMenu instanceof InventoryMenu || player.containerMenu instanceof BackpackSettingsMenu) {
-            this.wrapper.playersUsing.remove(player);
+            this.wrapper.invalidateUserDirect(player);
         }
         super.removed(player);
     }
@@ -173,7 +173,7 @@ public class BackpackSettingsMenu extends AbstractBackpackMenu {
         BlockEntity blockEntityAtPos = inventory.player.level().getBlockEntity(pos);
         if(blockEntityAtPos instanceof BackpackBlockEntity backpackBlockEntity) {
             backpackBlockEntity.getWrapper().addUser(inventory.player);
-            backpackBlockEntity.getWrapper().setBackpackPos(pos);
+            backpackBlockEntity.getWrapper().setBackpackPos(() -> pos);
             backpackBlockEntity.setSettingsUser(inventory.player);
             return backpackBlockEntity.getWrapper();
         }
