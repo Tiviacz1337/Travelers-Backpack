@@ -79,7 +79,7 @@ public class FeedingUpgrade extends FilterUpgradeBase<FeedingUpgrade, FeedingFil
 
             @Override
             public boolean isValid(int slot, ItemResource resource) {
-                return resource.has(DataComponents.FOOD);
+                return resource.has(DataComponents.FOOD) && resource.has(DataComponents.CONSUMABLE);
             }
         };
     }
@@ -174,6 +174,9 @@ public class FeedingUpgrade extends FilterUpgradeBase<FeedingUpgrade, FeedingFil
 
     private static boolean isEdible(ItemStack stack, LivingEntity player) {
         if(!stack.has(DataComponents.FOOD)) {
+            return false;
+        }
+        if(!stack.has(DataComponents.CONSUMABLE)) {
             return false;
         }
         FoodProperties foodProperties = stack.get(DataComponents.FOOD);
