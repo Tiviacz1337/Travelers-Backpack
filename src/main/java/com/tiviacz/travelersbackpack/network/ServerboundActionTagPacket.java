@@ -5,6 +5,7 @@ import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
 import com.tiviacz.travelersbackpack.common.ServerActions;
 import com.tiviacz.travelersbackpack.inventory.BackpackContainer;
 import com.tiviacz.travelersbackpack.inventory.OpenContext;
+import com.tiviacz.travelersbackpack.inventory.upgrades.anvil.AnvilUpgrade;
 import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TankActions;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.core.BlockPos;
@@ -44,6 +45,7 @@ public record ServerboundActionTagPacket(CompoundTag actionTag) implements Custo
     public static final int ABILITY_SLIDER = 14;
     public static final int EQUIP_BACKPACK = 15;
     public static final int SET_STACK = 16;
+    public static final int ANVIL_NAME = 17;
 
     public static void handle(ServerboundActionTagPacket message, IPayloadContext ctx) {
         ctx.enqueueWork(() -> {
@@ -127,6 +129,11 @@ public record ServerboundActionTagPacket(CompoundTag actionTag) implements Custo
                     int slot = actionTag.getIntOr("Arg2", -1);
                     ServerActions.setStack(player, type, stack, slot);
                 }
+                case ANVIL_NAME -> {
+                    int slot = actionTag.getIntOr("Arg0", -1);
+                    String name = actionTag.getStringOr("Arg1", "");
+                    AnvilUpgrade.setName(player, slot, name);
+                }
             }
         });
     }
@@ -152,6 +159,8 @@ public record ServerboundActionTagPacket(CompoundTag actionTag) implements Custo
                 tag.putDouble(argName, (double)args[i]);
             } else if(args[i] instanceof ItemStack itemstack) {
                 tag.put(argName, ItemStack.OPTIONAL_CODEC.encodeStart(NbtOps.INSTANCE, itemstack).getOrThrow());
+            } else if(args[i] instanceof String string) {
+                tag.putString(argName, string);
             }
         }
         return tag;

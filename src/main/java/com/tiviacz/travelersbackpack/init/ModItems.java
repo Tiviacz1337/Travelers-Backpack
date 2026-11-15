@@ -121,6 +121,7 @@ public class ModItems {
     public static final DeferredItem<BlastFurnaceUpgradeItem> BLAST_FURNACE_UPGRADE = ITEMS.registerItem("blast_furnace_upgrade", (props) -> new BlastFurnaceUpgradeItem(props.stacksTo(16)));
     public static final DeferredItem<PickupUpgradeItem> PICKUP_UPGRADE = ITEMS.registerItem("pickup_upgrade", (props) -> new PickupUpgradeItem(props.stacksTo(16)));
     public static final DeferredItem<MagnetUpgradeItem> MAGNET_UPGRADE = ITEMS.registerItem("magnet_upgrade", (props) -> new MagnetUpgradeItem(props.stacksTo(16)));
+    public static final DeferredItem<AnvilUpgradeItem> ANVIL_UPGRADE = ITEMS.registerItem("anvil_upgrade", (props) -> new AnvilUpgradeItem(props.stacksTo(16)));
     public static final DeferredItem<JukeboxUpgradeItem> JUKEBOX_UPGRADE = ITEMS.registerItem("jukebox_upgrade", (props) -> new JukeboxUpgradeItem(props.stacksTo(16)));
     public static final DeferredItem<VoidUpgradeItem> VOID_UPGRADE = ITEMS.registerItem("void_upgrade", (props) -> new VoidUpgradeItem(props.stacksTo(16)));
     public static final DeferredItem<FeedingUpgradeItem> FEEDING_UPGRADE = ITEMS.registerItem("feeding_upgrade", (props) -> new FeedingUpgradeItem(props.stacksTo(16)));

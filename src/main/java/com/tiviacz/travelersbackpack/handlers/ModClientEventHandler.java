@@ -26,6 +26,8 @@ import com.tiviacz.travelersbackpack.init.ModFluids;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.init.ModMenuTypes;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
+import com.tiviacz.travelersbackpack.inventory.upgrades.anvil.AnvilUpgrade;
+import com.tiviacz.travelersbackpack.inventory.upgrades.anvil.AnvilWidget;
 import com.tiviacz.travelersbackpack.inventory.upgrades.crafting.CraftingUpgrade;
 import com.tiviacz.travelersbackpack.inventory.upgrades.crafting.CraftingWidget;
 import com.tiviacz.travelersbackpack.inventory.upgrades.feeding.FeedingUpgrade;
@@ -331,6 +333,9 @@ public class ModClientEventHandler {
         );
         UpgradeWidgetRegistry.register(FeedingUpgrade.class, (screen, upgrade, x, y) ->
                 new FeedingWidget(screen, upgrade, new Point(screen.getGuiLeft() + x, screen.getGuiTop() + y))
+        );
+        UpgradeWidgetRegistry.register(AnvilUpgrade.class, (screen, upgrade, x, y) ->
+                new AnvilWidget(screen, upgrade, new Point(screen.getLeftPos() + x, screen.getTopPos() + y))
         );
         UpgradeWidgetRegistry.register(JukeboxUpgrade.class, (screen, upgrade, x, y) ->
                 new JukeboxWidget(screen, upgrade, new Point(screen.getGuiLeft() + x, screen.getGuiTop() + y))

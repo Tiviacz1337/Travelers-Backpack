@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": "minecraft:anvil",
+    "B": "travelersbackpack:blank_upgrade",
+    "C": "#c:chests/wooden"
+  },
+  "pattern": [
+    "A",
+    "B",
+    "C"
+  ],
+  "result": {
+    "id": "travelersbackpack:anvil_upgrade"
+  }
+}
