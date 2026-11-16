@@ -6,6 +6,7 @@ import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.UpgradeManager;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
+import com.tiviacz.travelersbackpack.inventory.menu.slot.BackpackSlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.UpgradeSlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
@@ -31,6 +32,7 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.block.LevelEvent;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
 
 import java.util.ArrayList;
@@ -88,6 +90,11 @@ public class AnvilUpgrade extends UpgradeBase<AnvilUpgrade> {
                 }
                 updateDataHolderUnchecked(dataHolderStack -> dataHolderStack.update(ModDataComponents.BACKPACK_CONTAINER, ItemContainerContents.EMPTY, currentContents -> ContainerContentsHelper.updateStack(currentContents, 2, current, slot)));
                 createResult();
+            }
+
+            @Override
+            public boolean isValid(int slot, ItemResource stack) {
+                return BackpackSlotItemHandler.isItemValid(stack.toStack());
             }
         };
     }

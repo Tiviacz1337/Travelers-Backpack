@@ -5,6 +5,7 @@ import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.UpgradeManager;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
+import com.tiviacz.travelersbackpack.inventory.menu.slot.BackpackSlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.UpgradeSlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.upgrades.IMoveSelector;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
@@ -24,6 +25,7 @@ import net.minecraft.world.item.crafting.SelectableRecipe;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.item.crafting.StonecutterRecipe;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
 
 import java.util.ArrayList;
@@ -130,6 +132,11 @@ public class StonecutterUpgrade extends UpgradeBase<StonecutterUpgrade> implemen
 
                 StonecutterUpgrade.this.slotsChanged(StacksHandlerUtils.getStackInSlot(this, slot));
                 StonecutterUpgrade.this.slotUpdateListener.run();
+            }
+
+            @Override
+            public boolean isValid(int slot, ItemResource stack) {
+                return BackpackSlotItemHandler.isItemValid(stack.toStack());
             }
         };
     }
