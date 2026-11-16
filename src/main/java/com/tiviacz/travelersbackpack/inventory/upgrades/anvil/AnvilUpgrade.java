@@ -9,6 +9,7 @@ import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.UpgradeManager;
 import com.tiviacz.travelersbackpack.inventory.handler.ItemStackHandler;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
+import com.tiviacz.travelersbackpack.inventory.menu.slot.BackpackSlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.UpgradeSlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
@@ -55,7 +56,7 @@ public class AnvilUpgrade extends UpgradeBase<AnvilUpgrade> {
     private int repairItemCountCost;
     private boolean onlyRenaming;
     private String itemName = "";
-    //Fabric ItemStackHandler#onContentsChanged doesn't pass the previous stack, track the input to detect changes
+    //Track input to detect changes  
     private ItemStack lastInputStack = ItemStack.EMPTY;
 
     public AnvilUpgrade(UpgradeManager manager, int dataHolderSlot, NonNullList<ItemStack> contents) {
@@ -105,6 +106,11 @@ public class AnvilUpgrade extends UpgradeBase<AnvilUpgrade> {
                 }
                 updateDataHolderUnchecked(dataHolderStack -> dataHolderStack.update(ModDataComponents.BACKPACK_CONTAINER, ItemContainerContents.EMPTY, currentContents -> ContainerContentsHelper.updateStack(currentContents, 2, current, slot)));
                 createResult();
+            }
+
+            @Override
+            public boolean isItemValid(int slot, ItemStack stack) {
+                return BackpackSlotItemHandler.isItemValid(stack);
             }
         };
     }

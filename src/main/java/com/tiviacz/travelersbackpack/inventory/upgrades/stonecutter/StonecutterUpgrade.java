@@ -9,6 +9,7 @@ import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.UpgradeManager;
 import com.tiviacz.travelersbackpack.inventory.handler.ItemStackHandler;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
+import com.tiviacz.travelersbackpack.inventory.menu.slot.BackpackSlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.UpgradeSlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.upgrades.IMoveSelector;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
@@ -141,6 +142,11 @@ public class StonecutterUpgrade extends UpgradeBase<StonecutterUpgrade> implemen
 
                 StonecutterUpgrade.this.slotsChanged(this.getSlot(slot));
                 StonecutterUpgrade.this.slotUpdateListener.run();
+            }
+
+            @Override
+            public boolean isItemValid(int slot, ItemStack stack) {
+                return BackpackSlotItemHandler.isItemValid(stack);
             }
         };
     }
