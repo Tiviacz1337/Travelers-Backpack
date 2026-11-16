@@ -68,6 +68,10 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                         .define('B', ModItems.BLANK_UPGRADE).define('C', ConventionalItemTags.WOODEN_CHESTS).pattern("A").pattern("B").pattern("C")
                         .unlockedBy(getHasName(ModItems.BLANK_UPGRADE), has(ModItems.BLANK_UPGRADE)).save(writer);
 
+                ShapedRecipeBuilder.shaped(registries.lookupOrThrow(Registries.ITEM), RecipeCategory.MISC, ModItems.ANVIL_UPGRADE).define('A', Items.ANVIL)
+                        .define('B', ModItems.BLANK_UPGRADE).define('C', ConventionalItemTags.WOODEN_CHESTS).pattern("A").pattern("B").pattern("C")
+                        .unlockedBy(getHasName(ModItems.BLANK_UPGRADE), has(ModItems.BLANK_UPGRADE)).save(writer);
+
                 ShapedRecipeBuilder.shaped(registries.lookupOrThrow(Registries.ITEM), RecipeCategory.MISC, ModItems.STONECUTTER_UPGRADE).define('A', Items.STONECUTTER)
                         .define('B', ModItems.BLANK_UPGRADE).define('C', ConventionalItemTags.WOODEN_CHESTS).pattern("A").pattern("B").pattern("C")
                         .unlockedBy(getHasName(ModItems.BLANK_UPGRADE), has(ModItems.BLANK_UPGRADE)).save(writer);

@@ -43,7 +43,7 @@ public class StonecutterWidget extends UpgradeWidgetBase<StonecutterUpgrade> {
         super.renderBg(guiGraphics, x, y, mouseX, mouseY);
         if(isTabOpened()) {
             this.resultArrowElement.renderBg(guiGraphics, x, y, mouseX, mouseY);
-            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BackpackScreen.TABS_2, pos.x() + craftArrowElement.pos().x(), pos.y() + craftArrowElement.pos().y(), 93, 15, craftArrowElement.size().x(), craftArrowElement.size().y(), 256, 256);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BackpackScreen.TABS_2, pos.x() + craftArrowElement.pos().x(), pos.y() + craftArrowElement.pos().y(), 72, 105, craftArrowElement.size().x(), craftArrowElement.size().y(), 256, 256);
 
             int xo = this.pos.x();
             int yo = this.pos.y();

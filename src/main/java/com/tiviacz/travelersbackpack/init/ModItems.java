@@ -112,6 +112,7 @@ public class ModItems {
     public static Item BLAST_FURNACE_UPGRADE;
     public static Item PICKUP_UPGRADE;
     public static Item MAGNET_UPGRADE;
+    public static Item ANVIL_UPGRADE;
     public static Item JUKEBOX_UPGRADE;
     public static Item VOID_UPGRADE;
     public static Item FEEDING_UPGRADE;
@@ -205,6 +206,7 @@ public class ModItems {
         BLAST_FURNACE_UPGRADE = Registry.register(BuiltInRegistries.ITEM, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "blast_furnace_upgrade"), new BlastFurnaceUpgradeItem(new Item.Properties().stacksTo(16).setId(resourceKey("blast_furnace_upgrade"))));
         PICKUP_UPGRADE = Registry.register(BuiltInRegistries.ITEM, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "pickup_upgrade"), new PickupUpgradeItem(new Item.Properties().stacksTo(16).setId(resourceKey("pickup_upgrade"))));
         MAGNET_UPGRADE = Registry.register(BuiltInRegistries.ITEM, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "magnet_upgrade"), new MagnetUpgradeItem(new Item.Properties().stacksTo(16).setId(resourceKey("magnet_upgrade"))));
+        ANVIL_UPGRADE = Registry.register(BuiltInRegistries.ITEM, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "anvil_upgrade"), new AnvilUpgradeItem(new Item.Properties().stacksTo(16).setId(resourceKey("anvil_upgrade"))));
         JUKEBOX_UPGRADE = Registry.register(BuiltInRegistries.ITEM, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "jukebox_upgrade"), new JukeboxUpgradeItem(new Item.Properties().stacksTo(16).setId(resourceKey("jukebox_upgrade"))));
         VOID_UPGRADE = Registry.register(BuiltInRegistries.ITEM, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "void_upgrade"), new VoidUpgradeItem(new Item.Properties().stacksTo(16).setId(resourceKey("void_upgrade"))));
         FEEDING_UPGRADE = Registry.register(BuiltInRegistries.ITEM, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "feeding_upgrade"), new FeedingUpgradeItem(new Item.Properties().stacksTo(16).setId(resourceKey("feeding_upgrade"))));

@@ -9,6 +9,7 @@ import com.tiviacz.travelersbackpack.inventory.handler.ItemStackHandler;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.*;
 import com.tiviacz.travelersbackpack.inventory.upgrades.IUpgrade;
 import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
+import com.tiviacz.travelersbackpack.inventory.upgrades.anvil.AnvilResultSlot;
 import com.tiviacz.travelersbackpack.inventory.upgrades.crafting.CraftingUpgrade;
 import com.tiviacz.travelersbackpack.inventory.upgrades.stonecutter.StonecutterResultSlot;
 import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;
@@ -464,7 +465,7 @@ public class BackpackBaseMenu extends AbstractBackpackMenu {
                         }
                     }
                 }
-                if(slot instanceof StonecutterResultSlot<?>) {
+                if(slot instanceof StonecutterResultSlot<?> || slot instanceof AnvilResultSlot) {
                     slot.onQuickCraft(stack, result);
                 }
             }

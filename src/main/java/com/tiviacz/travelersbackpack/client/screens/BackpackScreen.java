@@ -1,5 +1,6 @@
 package com.tiviacz.travelersbackpack.client.screens;
 
+import com.tiviacz.travelersbackpack.inventory.upgrades.anvil.AnvilWidget;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.client.screens.buttons.*;
 import com.tiviacz.travelersbackpack.client.screens.widgets.*;
@@ -413,6 +414,10 @@ public class BackpackScreen extends AbstractBackpackScreen<BackpackBaseMenu> imp
 
     @Override
     public boolean keyPressed(KeyEvent event) {
+        //Anvil Upgrade name field consumes keys while it's being edited (AnvilScreen#keyPressed)
+        if(!event.isEscape() && getFocused() instanceof AnvilWidget anvilWidget && anvilWidget.isFocused() && anvilWidget.keyPressed(event)) {
+            return true;
+        }
         if(KeybindHandler.SORT_BACKPACK.matches(event)) {
             ServerboundActionTagPacket.create(ServerboundActionTagPacket.SORTER, ContainerSorter.SORT_BACKPACK, KeyHelper.isShiftPressed());
             playUIClickSound();

@@ -57,6 +57,7 @@ public class ModItemGroups {
             output.accept(ModItems.PICKUP_UPGRADE);
             output.accept(ModItems.MAGNET_UPGRADE);
             output.accept(ModItems.VOID_UPGRADE);
+            output.accept(ModItems.ANVIL_UPGRADE);
             output.accept(ModItems.JUKEBOX_UPGRADE);
             output.accept(ModItems.LANTERN_UPGRADE);
 

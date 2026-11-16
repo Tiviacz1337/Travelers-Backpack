@@ -16,6 +16,7 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -95,7 +96,10 @@ public class UpgradeWidgetBase<U extends UpgradeBase> extends WidgetBase<Backpac
             } else {
                 guiGraphics.blit(RenderPipelines.GUI_TEXTURED, this.getBackgroundTexture(), pos.x(), pos.y(), tabUv.x(), tabUv.y(), width, height, 256, 256);
             }
-            guiGraphics.item(screen.getWrapper().getUpgrades().getStackInSlot(this.dataHolderSlot), pos.x() + 4, pos.y() + 4);
+            ItemStack upgradeStack = screen.getWrapper().getUpgrades().getStackInSlot(this.dataHolderSlot);
+            guiGraphics.item(upgradeStack, pos.x() + 4, pos.y() + 4);
+            //Durability bar (Anvil Upgrade)
+            guiGraphics.itemDecorations(screen.getFont(), upgradeStack, pos.x() + 4, pos.y() + 4);
         }
     }
 

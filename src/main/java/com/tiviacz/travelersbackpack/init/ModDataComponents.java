@@ -51,6 +51,9 @@ public class ModDataComponents {
     //Stonecutter
     public static final DataComponentType<Integer> INDEX = DataComponentType.<Integer>builder().persistent(Codec.INT).networkSynchronized(ByteBufCodecs.INT).build();
 
+    //Anvil
+    public static final DataComponentType<Integer> ANVIL_DAMAGE = DataComponentType.<Integer>builder().persistent(Codec.INT).networkSynchronized(ByteBufCodecs.INT).build();
+
     public static void init() {
         Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "tier"), TIER);
         Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "storage_slots"), STORAGE_SLOTS);
@@ -85,5 +88,7 @@ public class ModDataComponents {
         Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "cooking_total_time"), COOKING_TOTAL_TIME);
 
         Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "index"), INDEX);
+
+        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "anvil_damage"), ANVIL_DAMAGE);
     }
 }
