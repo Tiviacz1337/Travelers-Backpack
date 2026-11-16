@@ -7,6 +7,7 @@ import com.tiviacz.travelersbackpack.component.RenderInfo;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.FluidTank;
+import com.tiviacz.travelersbackpack.inventory.FluidVariantWrapper;
 import com.tiviacz.travelersbackpack.item.HoseItem;
 import com.tiviacz.travelersbackpack.util.RenderHelper;
 import net.minecraft.client.DeltaTracker;
@@ -20,6 +21,8 @@ import net.minecraft.world.level.GameType;
 
 public class HudOverlay {
     public static final Identifier OVERLAY = Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "textures/gui/overlay.png");
+    private static final AnimatedTank LEFT_TANK = new AnimatedTank();
+    private static final AnimatedTank RIGHT_TANK = new AnimatedTank();
 
     public static void renderOverlay(GuiGraphicsExtractor guiGraphics, DeltaTracker deltaTracker) {
         if(!TravelersBackpackConfig.CLIENT.overlay.enableOverlay.get()) return;
@@ -37,19 +40,17 @@ public class HudOverlay {
         int y = window.getGuiScaledHeight() - TravelersBackpackConfig.CLIENT.overlay.offsetY.get();
 
         RenderInfo info = stack.getOrDefault(ModDataComponents.RENDER_INFO, RenderInfo.EMPTY);
-        if(!info.hasTanks()) return;
-
-        if(!info.getRightFluidStack().isEmpty()) {
-            FluidTank right = new FluidTank(info.getCapacity());
-            right.setFluid(info.getRightFluidStack());
-            drawGuiTank(guiGraphics, right, x + 1, y, 21, 8);
+        if(!info.hasTanks()) {
+            LEFT_TANK.reset();
+            RIGHT_TANK.reset();
+            return;
         }
 
-        if(!info.getLeftFluidStack().isEmpty()) {
-            FluidTank left = new FluidTank(info.getCapacity());
-            left.setFluid(info.getLeftFluidStack());
-            drawGuiTank(guiGraphics, left, x - 11, y, 21, 8);
-        }
+        FluidVariantWrapper rightFluid = info.getRightFluidStack();
+        RIGHT_TANK.render(guiGraphics, rightFluid, rightFluid.getAmount(), info.getCapacity(), x + 1, y, 21, 8);
+
+        FluidVariantWrapper leftFluid = info.getLeftFluidStack();
+        LEFT_TANK.render(guiGraphics, leftFluid, leftFluid.getAmount(), info.getCapacity(), x - 11, y, 21, 8);
 
         int tankSel = 0;
         if(player != null && player.getMainHandItem().getItem() instanceof HoseItem) {

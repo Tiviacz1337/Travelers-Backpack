@@ -1,5 +1,6 @@
 package com.tiviacz.travelersbackpack.inventory.upgrades.tanks;
 
+import com.tiviacz.travelersbackpack.client.screens.AnimatedTank;
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.client.screens.widgets.UpgradeWidgetBase;
 import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetElement;
@@ -35,6 +36,8 @@ public class TankWidget extends UpgradeWidgetBase<TanksUpgrade> {
     public final int tankHeight;
     public final Point leftTankPos;
     public final Point rightTankPos;
+    private final AnimatedTank leftAnimatedTank = new AnimatedTank();
+    private final AnimatedTank rightAnimatedTank = new AnimatedTank();
 
     public TankWidget(BackpackScreen screen, TanksUpgrade upgrade, Point pos) {
         super(screen, upgrade, pos, new Point(0, 0), "screen.travelersbackpack.tanks_upgrade");
@@ -61,9 +64,9 @@ public class TankWidget extends UpgradeWidgetBase<TanksUpgrade> {
     @Override
     public void renderAboveBg(GuiGraphicsExtractor guiGraphics, int x, int y, int mouseX, int mouseY, float partialTicks) {
         int rows = upgrade.getUpgradeManager().getWrapper().getRows();
-        RenderHelper.renderScreenTank(guiGraphics, this.upgrade.leftTank, this.leftTankPos.x() + 1, this.leftTankPos.y() + 1, 0, getTankHeight(rows), 16);
+        this.leftAnimatedTank.render(guiGraphics, this.upgrade.leftTank.getFluid(), this.upgrade.leftTank.getFluidAmount(), this.upgrade.leftTank.getCapacity(), this.leftTankPos.x() + 1, this.leftTankPos.y() + 1, getTankHeight(rows), 16);
         renderTank(guiGraphics, this.leftTankElement, 0, mouseX, mouseY, rows, this.leftTankPos.x(), this.leftTankPos.y());
-        RenderHelper.renderScreenTank(guiGraphics, this.upgrade.rightTank, this.rightTankPos.x() + 1, this.rightTankPos.y() + 1, 0, getTankHeight(rows), 16);
+        this.rightAnimatedTank.render(guiGraphics, this.upgrade.rightTank.getFluid(), this.upgrade.rightTank.getFluidAmount(), this.upgrade.rightTank.getCapacity(), this.rightTankPos.x() + 1, this.rightTankPos.y() + 1, getTankHeight(rows), 16);
         renderTank(guiGraphics, this.rightTankElement, 1, mouseX, mouseY, rows, this.rightTankPos.x(), this.rightTankPos.y());
     }
 

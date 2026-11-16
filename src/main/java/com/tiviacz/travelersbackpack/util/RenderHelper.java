@@ -21,10 +21,31 @@ public class RenderHelper {
             return;
         }
 
+        int renderAmount = (int)Math.max(Math.min(height, amount * height / capacity), 1);
+        renderScreenTank(guiGraphics, fluid, renderAmount, x, y, height, width);
+    }
+
+    public static void renderSmoothScreenTank(GuiGraphicsExtractor guiGraphics, FluidVariantWrapper fluid, float renderHeight, int x, int y, int height, int width) {
+        if(renderHeight <= 0) {
+            return;
+        }
+        int wholeHeight = (int)Math.ceil(renderHeight);
+        guiGraphics.enableScissor(x, y, x + width, y + height);
+        guiGraphics.pose().pushMatrix();
+        guiGraphics.pose().translate(0.0F, wholeHeight - renderHeight);
+        renderScreenTank(guiGraphics, fluid, wholeHeight, x, y, height, width);
+        guiGraphics.pose().popMatrix();
+        guiGraphics.disableScissor();
+    }
+
+    public static void renderScreenTank(GuiGraphicsExtractor guiGraphics, FluidVariantWrapper fluid, int renderAmount, double x, double y, double height, double width) {
+        if(fluid == null || fluid.fluidVariant().getFluid() == null || renderAmount <= 0) {
+            return;
+        }
+
         FluidModel fluidModel = Minecraft.getInstance().getModelManager().getFluidStateModelSet().get(fluid.fluidVariant().getFluid().defaultFluidState());
         TextureAtlasSprite icon = fluidModel.stillMaterial().sprite();
 
-        int renderAmount = (int)Math.max(Math.min(height, amount * height / capacity), 1);
         int posY = (int)(y + height - renderAmount);
 
         int color = FluidVariantRendering.getColor(fluid.fluidVariant());
