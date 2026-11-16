@@ -24,6 +24,9 @@ public class TravelersBackpackMixinPlugin implements IMixinConfigPlugin {
         if(mixinClassName.equals("com.tiviacz.travelersbackpack.mixin.AbstractContainerMenuMixin")) {
             return FabricLoader.getInstance().isModLoaded("easyshulkerboxes");
         }
+        if(mixinClassName.equals("com.tiviacz.travelersbackpack.mixin.client.FabricMenuClientNetworkingMixin")) {
+            return FabricLoader.getInstance().isModLoaded("replaymod") || FabricLoader.getInstance().isModLoaded("flashback");
+        }
         return true;
     }
 

@@ -24,7 +24,8 @@
     "GuiMixin",
     "HumanoidRenderStateMixin",
     "HumoanoidMobRenderer",
-    "LocalPlayerMixin"
+    "LocalPlayerMixin",
+    "client.FabricMenuClientNetworkingMixin"
   ],
   "injectors": {
     "defaultRequire": 1

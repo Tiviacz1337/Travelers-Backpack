@@ -4,6 +4,7 @@ import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
 import com.tiviacz.travelersbackpack.block.TravelersBackpackBlock;
 import com.tiviacz.travelersbackpack.compat.craftingtweaks.CraftingTweaksCompat;
 import com.tiviacz.travelersbackpack.compat.pneumonogravestones.PneumonoGravestonesCompat;
+import com.tiviacz.travelersbackpack.compat.replay.ReplayCompat;
 import com.tiviacz.travelersbackpack.compat.trinkets.BackpackTrinket;
 import com.tiviacz.travelersbackpack.compat.universalgraves.UniversalGravesCompat;
 import com.tiviacz.travelersbackpack.compat.vinurl.VinURLNetwork;
@@ -111,6 +112,8 @@ public class TravelersBackpack implements ModInitializer {
 
         lambDynamicLightsLoaded = fabricLoader.isModLoaded("lambdynlights");
         mouseTweaksLoaded = fabricLoader.isModLoaded("mousetweaks");
+
+        ReplayCompat.init();
 
         //Fetch supporters
         Supporters.fetchSupporters();

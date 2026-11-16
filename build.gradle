@@ -73,6 +73,10 @@ dependencies {
 	//VinURL
 	compileOnly("maven.modrinth:vinurl:myqNwplT")
 
+	//ReplayMod & Flashback
+	compileOnly("maven.modrinth:replaymod:5LxshONI")
+	compileOnly("maven.modrinth:flashback:2obIELyD")
+
 	//Trinkets
 	implementation "maven.modrinth:trinkets-updated:ObfwZi0X"
 
