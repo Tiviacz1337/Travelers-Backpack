@@ -119,7 +119,11 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Re
         super.setLevel(level);
         if(this.wrapper != BackpackWrapper.DUMMY) {
             this.wrapper.setLevel(() -> level);
+            //Replace save handler with noop to prevent watchdog
+            Runnable originalSaveHandler = this.wrapper.saveHandler;
+            this.wrapper.saveHandler = () -> {};
             this.wrapper.loadBackpackData(); //Load level dependent data so it won't crash
+            this.wrapper.saveHandler = originalSaveHandler;
         }
     }
 
