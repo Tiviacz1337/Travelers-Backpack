@@ -47,7 +47,7 @@ public class BackpackUpgradeRecipe extends SimpleSmithingRecipe {
     private final Optional<Ingredient> template;
     private final Ingredient base;
     private final Optional<Ingredient> addition;
-    private final ItemStackTemplate result;
+    public final ItemStackTemplate result;
 
     public BackpackUpgradeRecipe(CommonInfo commonInfo, Optional<Ingredient> template, Ingredient base, Optional<Ingredient> addition, ItemStackTemplate result) {
         super(commonInfo);
