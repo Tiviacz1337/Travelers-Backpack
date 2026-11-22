@@ -74,8 +74,11 @@ dependencies {
     compileOnly("dev.lambdaurora.lambdynamiclights:lambdynamiclights-api:4.10.2+26.1.2")
     //localRuntime("dev.lambdaurora.lambdynamiclights:lambdynamiclights-runtime:4.10.2+26.1.2")
 
-    //JEI
-    implementation("maven.modrinth:jei:XkrFsbih")
+    //JEI TODO: Make this impl and rrv compileOnly after testing
+    compileOnly("maven.modrinth:jei:XkrFsbih")
+
+    //RRV
+    implementation("maven.modrinth:rrv:ucE1lbOf")
 
     //EMI
     //compileOnly("maven.modrinth:emi:ouSj7NfF") //Not Updated
