@@ -90,11 +90,11 @@ dependencies {
 	//REI
     //compileOnly("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}") //Not Updated
 
-	//JEI TODO: Make this impl and rrv compileOnly after testing
-	compileOnly ("maven.modrinth:jei:j5HrJ8M2")
+	//JEI
+    implementation("maven.modrinth:jei:j5HrJ8M2")
 
 	//RRV
-	implementation("maven.modrinth:rrv:jvmQSYZ2")
+    compileOnly("maven.modrinth:rrv:jvmQSYZ2")
 
 	//Polymorph
 	implementation("maven.modrinth:polymorph_plus:QrDv5S9t")
