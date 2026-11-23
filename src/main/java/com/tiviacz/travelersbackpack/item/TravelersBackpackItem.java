@@ -67,7 +67,7 @@ public class TravelersBackpackItem extends BlockItem {
 
     @Override
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
-        if(hand == InteractionHand.OFF_HAND || player.isCrouching()) {
+        if(hand == InteractionHand.OFF_HAND || player.isShiftKeyDown()) {
             return InteractionResult.FAIL;
         }
 
@@ -92,7 +92,7 @@ public class TravelersBackpackItem extends BlockItem {
 
     @Override
     public InteractionResult place(BlockPlaceContext context) {
-        if(!context.canPlace() || (context.getHand() == InteractionHand.MAIN_HAND && context.getPlayer() != null && !context.getPlayer().isCrouching())) {
+        if(!context.canPlace() || (context.getHand() == InteractionHand.MAIN_HAND && context.getPlayer() != null && !context.getPlayer().isShiftKeyDown())) {
             return InteractionResult.FAIL;
         } else {
             BlockPlaceContext blockitemusecontext = this.updatePlacementContext(context);
