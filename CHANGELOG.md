@@ -1,10 +1,4 @@
-✨ Anvil Upgrade: works like a regular anvil and can break the same way. When destroyed, it returns a Blank Upgrade  
-✨ Added Stonecutter upgrade  
-✨ Fluid tanks in the backpack GUI now animate while filling and draining  
-🔧 Code improvements  
-🐛 Fixed Smelting upgrades not consuming fuel in specific conditions  
-🐛 Fixed a fish spawning bug with the Feeding Upgrade by only allowing consumables in its filter  
-📚 Updated hu_hu translation - Thank you Gery D.!  
+🐛 Fixed a bug that could get players kicked under certain conditions  
 
 ⭐ Want to receive **Supporter Star Badge** for a **lifetime**? - [visit my Ko-Fi page](https://ko-fi.com/tiviacz1337)!  
 ![Banner](https://i.imgur.com/juBSoLl.png)
