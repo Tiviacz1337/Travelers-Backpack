@@ -90,7 +90,7 @@ public class BackpackItemMenu extends BackpackBaseMenu {
 
     @Override
     public void removed(Player player) {
-        this.wrapper.invalidateUser(player);
+        this.wrapper.invalidateUser(player, this);
         super.removed(player);
     }
 
