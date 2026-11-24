@@ -70,8 +70,8 @@ public class TanksUpgrade extends UpgradeBase<TanksUpgrade> {
     public void syncClients(ItemStack backpack) {
         int slot = getDataHolderSlot();
         ItemContainerContents contents = backpack.get(ModDataComponents.UPGRADES);
-        int upgradesSize = backpack.get(ModDataComponents.UPGRADE_SLOTS);
         if(contents == null) return;
+        int upgradesSize = backpack.get(ModDataComponents.UPGRADE_SLOTS);
         NonNullList<ItemStack> stacks = ContainerContentsHelper.getItems(contents, upgradesSize);
         if(slot >= stacks.size()) return;
         ItemStack stack = stacks.get(slot);
