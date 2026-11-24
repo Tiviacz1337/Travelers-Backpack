@@ -198,10 +198,15 @@ public class BackpackWrapper {
         this.playersUsing.add(player);
     }
 
-    public void invalidateUser(Player player) {
-        if(!(player.containerMenu instanceof AbstractBackpackMenu)) {
-            this.playersUsing.remove(player);
+    public void invalidateUser(Player player, AbstractBackpackMenu closingMenu) {
+        //Client side fix to prevent breaking screen while viewing JEI recipes, can't think of other solution as of now
+        if(player.level().isClientSide() && player.containerMenu == closingMenu) {
+            return;
         }
+        if(player.containerMenu instanceof AbstractBackpackMenu menu && menu != closingMenu && menu.getWrapper() == this) {
+            return;
+        }
+        this.playersUsing.remove(player);
     }
 
     public void invalidateUserDirect(Player player) {
