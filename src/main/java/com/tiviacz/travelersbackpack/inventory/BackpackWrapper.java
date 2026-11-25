@@ -183,11 +183,11 @@ public class BackpackWrapper {
 
     @Nullable
     public Player getBackpackOwner() {
-        Level level = this.levelSupplier.get();
+        Level level = getLevel();
         if(level == null || this.owner == null) {
             return null;
         }
-        return (Player)level.getEntity(this.owner);
+        return level.getPlayerByUUID(this.owner);
     }
 
     public LinkedHashSet<Player> getPlayersUsing() {
