@@ -148,4 +148,8 @@ public class TravelersBackpack implements ModInitializer {
     public static boolean isAnyGraveModInstalled() {
         return TravelersBackpack.universalGravesLoaded || TravelersBackpack.pneumonoGravestonesLoaded;
     }
+
+    public static String getModVersion() {
+        return FabricLoader.getInstance().getModContainer(MODID).map(container -> container.getMetadata().getVersion().getFriendlyString()).orElse("unknown");
+    }
 }

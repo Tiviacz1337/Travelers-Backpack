@@ -12,6 +12,10 @@ public class LogHelper {
         log(Level.INFO, format, data);
     }
 
+    public static void warn(String format, Object... data) {
+        log(Level.WARN, format, data);
+    }
+
     public static void error(String format, Object... data) {
         log(Level.ERROR, format, data);
     }
