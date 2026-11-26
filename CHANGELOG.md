@@ -1,3 +1,4 @@
+✨ Added RRV integration  
 🐛 Fixed a bug that could get players kicked under certain conditions  
 🐛 Fixed a bug that made backpacks inaccessible after someone opened them in block form  
 🐛 Fixed client error in specific conditions when trinketsIntegration is enabled  
