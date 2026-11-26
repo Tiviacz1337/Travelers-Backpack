@@ -43,11 +43,11 @@ public class TravelersBackpackPlugin implements ReliableRecipeViewerClientPlugin
                 if (!(recipeHolder.value() instanceof BackpackUpgradeRecipe upgradeRecipe)) return;
 
                 recipeList.add(SmithingClientRecipe.transformationRecipe(
-                        Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "backpack_upgrading/" + upgradeRecipe.result.item().getRegisteredName().replace(':', '/')),
+                        Identifier.fromNamespaceAndPath(TravelersBackpack.MODID, "backpack_upgrading/" + upgradeRecipe.getResult().item().getRegisteredName().replace(':', '/')),
                         upgradeRecipe.additionIngredient().map(SlotContent::of).orElseGet(SlotContent::of),
                         SlotContent.of(upgradeRecipe.baseIngredient()),
                         upgradeRecipe.templateIngredient().map(SlotContent::of).orElseGet(SlotContent::of),
-                        SlotContent.of(upgradeRecipe.result)
+                        SlotContent.of(upgradeRecipe.getResult())
                 ));
             });
         });

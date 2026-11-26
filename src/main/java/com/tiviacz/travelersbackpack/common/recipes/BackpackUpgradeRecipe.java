@@ -49,7 +49,7 @@ public class BackpackUpgradeRecipe extends SimpleSmithingRecipe {
     private final Optional<Ingredient> template;
     private final Ingredient base;
     private final Optional<Ingredient> addition;
-    public final ItemStackTemplate result;
+    private final ItemStackTemplate result;
 
     public BackpackUpgradeRecipe(CommonInfo commonInfo, Optional<Ingredient> template, Ingredient base, Optional<Ingredient> addition, ItemStackTemplate result) {
         super(commonInfo);
@@ -107,6 +107,10 @@ public class BackpackUpgradeRecipe extends SimpleSmithingRecipe {
     @Override
     public Optional<Ingredient> additionIngredient() {
         return this.addition;
+    }
+
+    public ItemStackTemplate getResult() {
+        return this.result;
     }
 
     @Override
