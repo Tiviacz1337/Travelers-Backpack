@@ -77,6 +77,9 @@ dependencies {
     //JEI
     implementation("maven.modrinth:jei:XkrFsbih")
 
+    //RRV
+    compileOnly("maven.modrinth:rrv:ucE1lbOf")
+
     //EMI
     //compileOnly("maven.modrinth:emi:ouSj7NfF") //Not Updated
 

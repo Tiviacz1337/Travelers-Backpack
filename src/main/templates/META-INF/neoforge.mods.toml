@@ -9,6 +9,7 @@ license = "${mod_license}"
     authors = "${mod_authors}"
     description = '''${mod_description}'''
     logoFile = "assets/${mod_id}/textures/logo.png"
+    rrv_client = "com.tiviacz.travelersbackpack.compat.rrv.TravelersBackpackPlugin"
 
 [[accessTransformers]]
     file = "META-INF/accesstransformer.cfg"
