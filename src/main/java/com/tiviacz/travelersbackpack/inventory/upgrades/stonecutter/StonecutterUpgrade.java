@@ -188,8 +188,9 @@ public class StonecutterUpgrade extends UpgradeBase<StonecutterUpgrade> implemen
             this.selectedRecipeIndex = buttonId;
             this.setupResultSlot(buttonId);
             updateDataHolderUnchecked(ModDataComponents.INDEX.get(), buttonId);
+            return true;
         }
-        return true;
+        return false;
     }
 
     private boolean isValidRecipeIndex(int buttonId) {
