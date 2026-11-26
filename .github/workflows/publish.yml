@@ -75,5 +75,6 @@ jobs:
             jei(optional){modrinth:u6dRKJwZ}{curseforge:238222}
             rei(optional){modrinth:nfn13YXA}{curseforge:310111}
             emi(optional){modrinth:fRiHVvU7}{curseforge:580555}
+            rrv(optional){modrinth:5VolwT6c}{curseforge:1422317}
 
           java: "${{ env.JAVA_VERSION }}"

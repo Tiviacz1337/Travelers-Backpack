@@ -91,7 +91,10 @@ dependencies {
     //compileOnly("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}") //Not Updated
 
 	//JEI
-	implementation ("maven.modrinth:jei:j5HrJ8M2")
+    implementation("maven.modrinth:jei:j5HrJ8M2")
+
+	//RRV
+    compileOnly("maven.modrinth:rrv:jvmQSYZ2")
 
 	//Polymorph
 	implementation("maven.modrinth:polymorph_plus:QrDv5S9t")

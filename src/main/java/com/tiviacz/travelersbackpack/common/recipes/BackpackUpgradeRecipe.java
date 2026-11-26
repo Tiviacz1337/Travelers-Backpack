@@ -109,6 +109,10 @@ public class BackpackUpgradeRecipe extends SimpleSmithingRecipe {
         return this.addition;
     }
 
+    public ItemStackTemplate getResult() {
+        return this.result;
+    }
+
     @Override
     public RecipeSerializer<BackpackUpgradeRecipe> getSerializer() {
         return ModRecipeSerializers.BACKPACK_UPGRADE;
