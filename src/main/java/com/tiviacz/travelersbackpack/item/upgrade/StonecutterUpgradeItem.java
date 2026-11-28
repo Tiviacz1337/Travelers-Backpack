@@ -33,6 +33,11 @@ public class StonecutterUpgradeItem extends UpgradeItem {
     }
 
     @Override
+    public boolean requiresEquippedBackpack() {
+        return false;
+    }
+
+    @Override
     public TriFunction<UpgradeManager, Integer, ItemStack, Optional<? extends UpgradeBase<?>>> getUpgrade() {
         return (upgradeManager, dataHolderSlot, provider) -> {
             ItemContainerContents contents = provider.getOrDefault(ModDataComponents.BACKPACK_CONTAINER, ItemContainerContents.EMPTY);
